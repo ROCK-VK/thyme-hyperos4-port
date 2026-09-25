@@ -127,5 +127,8 @@
 ## 下一步
 
 1. 当前设备为 PixelOS A0′ 六项恢复镜像已写回后的 Bootloader Fastboot；未自动重启。PixelOS 本次恢复后的正常启动尚未验证，首次启动需另行授权。
-2. 本轮用户要求在恢复后创建独立公开 GitHub 仓库；公开仓库内容应只来自显式筛选的文本资料、脚本、补丁和报告，不包括完整 ROM、镜像、分区备份或密钥数据。
-3. 后续 C13 技术工作围绕 3.75 秒后未记录阶段与 Logo/黑屏循环获取真实错误；Keymaster/Gatekeeper/ION/QSEECom、vold、`/data`、启动动画或桌面仍未验证。不要重复清除数据。
+2. 后续 C13 技术工作围绕 3.75 秒后未记录阶段与 Logo/黑屏循环获取真实错误；Keymaster/Gatekeeper/ION/QSEECom、vold、`/data`、启动动画或桌面仍未验证。不要重复清除数据。
+
+## 公开资料仓库
+
+- 精选项目资料已于 2026-09-26 发布至 [ROCK-VK/thyme-hyperos4-port](https://github.com/ROCK-VK/thyme-hyperos4-port)。仓库只包含审核过的文档、脚本、补丁和日志，不包含完整 ROM、镜像、设备分区备份或密钥数据；后续增量更新使用仓库内的显式白名单同步脚本。
