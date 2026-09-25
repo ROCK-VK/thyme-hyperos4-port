@@ -1,0 +1,4 @@
+; Candidate 13 policy additions, host-side compiled and permission-queried.
+; Runtime HAL effect has not been verified on the device.
+(allow hal_keymaster ion_device (chr_file (ioctl read getattr lock map open watch watch_reads)))
+(allow hal_gatekeeper ion_device (chr_file (ioctl read getattr lock map open watch watch_reads)))

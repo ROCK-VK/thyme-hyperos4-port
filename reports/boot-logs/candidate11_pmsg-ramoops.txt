@@ -1,0 +1,267 @@
+01-17 07:53:56.386  712  712 :  FMultiple same specifications for vendor.qti.gnss.ILocAidlGnss/default.01-17 07:53:56.386  712  712 :  XMultiple same specifications for android.media.audio.IHalAdapterVendorExtension/default.01-17 07:53:56.386  712  712 :  XMultiple same specifications for android.media.audio.IHalAdapterVendorExtension/default.01-17 07:53:56.388  712  712 :  XMultiple same specifications for android.media.audio.IHalAdapterVendorExtension/default.01-17 07:53:56.391  712  712 :  %SELinux: Loaded service context from:01-17 07:53:56.391  712  712 :  +		/system/etc/selinux/plat_service_contexts01-17 07:53:56.391  712  712 :  5		/system_ext/etc/selinux/system_ext_service_contexts01-17 07:53:56.391  712  712 :  /		/product/etc/selinux/product_service_contexts01-17 07:53:56.391  712  712 :  -		/vendor/etc/selinux/vendor_service_contexts01-17 07:53:56.391  712  712 :  '		/odm/etc/selinux/odm_service_contexts01-17 07:53:56.491  732  744 :  QISLQSEE Interrupt Service Listener Thread is started01-17 07:53:56.491  732  744 :  QISLListener registration failed01-17 07:53:56.492  732  744 :  QISLQSEE Interrupt Service Listener Thread is stopped01-17 07:53:56.492  732  732 :  SPLCall QSEECom_register_listener()01-17 07:53:56.492  732  732 :  SPLlistener Register failed, ret [-1]01-17 07:53:56.512  734  734 :  voldVold 3.0 (the awakening) firing up01-17 07:53:56.512  734  734 :  voldDetected support for: exfat ext4 f2fs vfat01-17 07:53:56.515  734  734 :  vold[libfstab] Using Android DT directory /proc/device-tree/firmware/android/01-17 07:53:56.515  734  734 :  vold[libfstab] ReadDefaultFstab(): target default fstab path=/vendor/etc/fstab.qcom01-17 07:53:56.516  734  734 :  vold[libfstab] InjectMiProductMountEntries: injecting 2 entries (mi_product_mounted=0)01-17 07:53:56.516  734  734 :  vold[libfstab] ModifyOverlayLowerdirsForMiProduct: /mnt/vendor/mi_product not mounted, skipping01-17 07:53:56.516  734  734 :  voldDM_DEV_STATUS failed for mi_product_a: No such device or address01-17 07:53:56.516  734  734 :  voldDM_DEV_STATUS failed for mi_product_a: No such device or address01-17 07:53:56.517  734  734 :  voldVoldNativeService::start() completed OK01-17 07:53:56.533  734  734 :  voldVendorVoldNativeService::try_start() completed OK01-17 07:53:56.568  731  731 :  libcFatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 731 (android.hardwar), pid 731 (android.hardwar)01-17 07:53:56.616  752  752 :  DEBUG*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+01-17 07:53:56.616  752  752 :  DEBUGBuild fingerprint: 'Xiaomi/custom_thyme/thyme:17/CP2A.260605.016/OS4.0.0.8.XOCCNXM:user/release-keys'
+01-17 07:53:56.616  752  752 :  DEBUGKernel Release: '4.19.325-perf-g45b9b954f074'
+01-17 07:53:56.616  752  752 :  DEBUGRevision: '0'
+01-17 07:53:56.616  752  752 :  DEBUGABI: 'arm64'
+01-17 07:53:56.616  752  752 :  DEBUGTimestamp: 1970-01-17 07:53:56.592929366+0800
+01-17 07:53:56.617  752  752 :  DEBUGProcess uptime: 1s
+01-17 07:53:56.617  752  752 :  DEBUGExecutable: /vendor/bin/hw/android.hardware.keymaster@4.0-service-qti
+01-17 07:53:56.617  752  752 :  DEBUGCmdline: /vendor/bin/hw/android.hardware.keymaster@4.0-service-qti
+01-17 07:53:56.617  752  752 :  DEBUGpid: 731, ppid: 1, tid: 731, name: android.hardwar  >>> /vendor/bin/hw/android.hardware.keymaster@4.0-service-qti <<<
+01-17 07:53:56.617  752  752 :  DEBUGuid: 1000
+01-17 07:53:56.617  752  752 :  DEBUGsignal 6 (SIGABRT), code -1 (SI_QUEUE), fault addr --------
+01-17 07:53:56.617  752  752 :  DEBUGAbort message: 'QSEECom_start_app failed'
+01-17 07:53:56.617  752  752 :  DEBUG    x0  [REDACTED_LONG_ID]  x1  00000000000002db  x2  [REDACTED_LONG_ID]  x3  0000007feb677400
+01-17 07:53:56.617  752  752 :  DEBUG    x4  [REDACTED_LONG_ID]  x5  [REDACTED_LONG_ID]  x6  [REDACTED_LONG_ID]  x7  7f7f7f7fff7f7f7f
+01-17 07:53:56.617  752  752 :  DEBUG    x8  00000000000000f0  x9  24174da373187360  x10 000000ff00000020  x11 0000007feb6773d8
+01-17 07:53:56.617  752  752 :  DEBUG    x12 ffffffffffffffff  x13 0000007feb677590  x14 [REDACTED_LONG_ID]  x15 000000000b0f2f5f
+01-17 07:53:56.617  752  752 :  DEBUG    x16 00000075459cd420  x17 00000075459b1580  x18 0000007547c78000  x19 00000000000002db
+01-17 07:53:56.617  752  752 :  DEBUG    x20 00000000000002db  x21 00000000ffffffff  x22 00000075479c4f80  x23 [REDACTED_LONG_ID]
+01-17 07:53:56.617  752  752 :  DEBUG    x24 [REDACTED_LONG_ID]  x25 [REDACTED_LONG_ID]  x26 [REDACTED_LONG_ID]  x27 [REDACTED_LONG_ID]
+01-17 07:53:56.617  752  752 :  DEBUG    x28 [REDACTED_LONG_ID]  x29 0000007feb677480
+01-17 07:53:56.617  752  752 :  DEBUG    lr  000000754594ddec  sp  0000007feb677400  pc  000000754594de10  pst [REDACTED_LONG_ID]
+01-17 07:53:56.617  752  752 :  DEBUG    esr [REDACTED_LONG_ID]  vg  [REDACTED_LONG_ID]
+01-17 07:53:56.617  752  752 :  DEBUG8 total frames
+01-17 07:53:56.617  752  752 :  DEBUGbacktrace:
+01-17 07:53:56.617  752  752 :  DEBUG      #00 pc 000000000007be10  /apex/com.android.runtime/lib64/bionic/libc.so (abort+160) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+01-17 07:53:56.617  752  752 :  DEBUG      #01 pc 000000000000cbc4  /system/lib64/liblog.so (__android_log_default_aborter+16) (BuildId: 2f8c6caff66907ec6904fdd0720d6df4)
+01-17 07:53:56.617  752  752 :  DEBUG      #02 pc 000000000000ce8c  /system/lib64/liblog.so (__android_log_assert+296) (BuildId: 2f8c6caff66907ec6904fdd0720d6df4)
+01-17 07:53:56.617  752  752 :  DEBUG      #03 pc 00000000000026e0  /vendor/lib64/libkeymasterdeviceutils.so (keymasterutils::KeymasterUtils::KeymasterUtils(keymaster_security_level_t)+864) (BuildId: dc272eadd87b91541b4de4fb6ec58299)
+01-17 07:53:56.617  752  752 :  DEBUG      #04 pc 000000000000dab8  /vendor/lib64/libqtikeymaster4.so (keymaster::V4_0::Keymaster4Device::Keymaster4Device(keymaster_security_level_t)+148) (BuildId: 39e5288770b13b3977793188c70bb6c5)
+01-17 07:53:56.617  752  752 :  DEBUG      #05 pc 0000000000010a38  /vendor/lib64/libqtikeymaster4.so (keymaster::V4_0::CreateKeymasterDevice()+28) (BuildId: 39e5288770b13b3977793188c70bb6c5)
+01-17 07:53:56.617  752  752 :  DEBUG      #06 pc [REDACTED_LONG_ID]  /vendor/bin/hw/android.hardware.keymaster@4.0-service-qti (main+44) (BuildId: 322dc750fbb2504a052e184e427fc86c)
+01-17 07:53:56.617  752  752 :  DEBUG      #07 pc 000000000006eee8  /apex/com.android.runtime/lib64/bionic/libc.so (__libc_init+124) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+01-17 07:53:56.617  752  752 :  DEBUGNote: To display stack pointer information, use the pbtombstone tool:
+01-17 07:53:56.617  752  752 :  DEBUG        pbtombstone --display-sp tombstone_XX.pb
+01-17 07:54:01.555  757  757 :  libcFatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 757 (android.hardwar), pid 757 (android.hardwar)01-17 07:54:01.599  761  761 :  DEBUG*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+01-17 07:54:01.599  761  761 :  DEBUGBuild fingerprint: 'Xiaomi/custom_thyme/thyme:17/CP2A.260605.016/OS4.0.0.8.XOCCNXM:user/release-keys'
+01-17 07:54:01.599  761  761 :  DEBUGKernel Release: '4.19.325-perf-g45b9b954f074'
+01-17 07:54:01.599  761  761 :  DEBUGRevision: '0'
+01-17 07:54:01.599  761  761 :  DEBUGABI: 'arm64'
+01-17 07:54:01.599  761  761 :  DEBUGTimestamp: 1970-01-17 07:54:01.573965018+0800
+01-17 07:54:01.599  761  761 :  DEBUGProcess uptime: 1s
+01-17 07:54:01.599  761  761 :  DEBUGExecutable: /vendor/bin/hw/android.hardware.keymaster@4.0-service-qti
+01-17 07:54:01.599  761  761 :  DEBUGCmdline: /vendor/bin/hw/android.hardware.keymaster@4.0-service-qti
+01-17 07:54:01.599  761  761 :  DEBUGpid: 757, ppid: 1, tid: 757, name: android.hardwar  >>> /vendor/bin/hw/android.hardware.keymaster@4.0-service-qti <<<
+01-17 07:54:01.599  761  761 :  DEBUGuid: 1000
+01-17 07:54:01.599  761  761 :  DEBUGsignal 6 (SIGABRT), code -1 (SI_QUEUE), fault addr --------
+01-17 07:54:01.599  761  761 :  DEBUGAbort message: 'QSEECom_start_app failed'
+01-17 07:54:01.599  761  761 :  DEBUG    x0  [REDACTED_LONG_ID]  x1  00000000000002f5  x2  [REDACTED_LONG_ID]  x3  0000007fff6d8c20
+01-17 07:54:01.599  761  761 :  DEBUG    x4  [REDACTED_LONG_ID]  x5  [REDACTED_LONG_ID]  x6  [REDACTED_LONG_ID]  x7  7f7f7f7fff7fff7f
+01-17 07:54:01.599  761  761 :  DEBUG    x8  00000000000000f0  x9  29d4b7d92ef25efe  x10 000000ff00000020  x11 0000007fff6d8bf8
+01-17 07:54:01.599  761  761 :  DEBUG    x12 ffffffffffffffff  x13 0000007fff6d8db0  x14 [REDACTED_LONG_ID]  x15 0000000010c41f5f
+01-17 07:54:01.599  761  761 :  DEBUG    x16 00000072439bd420  x17 00000072439a1580  x18 [REDACTED_LONG_ID]  x19 00000000000002f5
+01-17 07:54:01.599  761  761 :  DEBUG    x20 00000000000002f5  x21 00000000ffffffff  x22 0000007246a87f80  x23 [REDACTED_LONG_ID]
+01-17 07:54:01.599  761  761 :  DEBUG    x24 [REDACTED_LONG_ID]  x25 [REDACTED_LONG_ID]  x26 [REDACTED_LONG_ID]  x27 [REDACTED_LONG_ID]
+01-17 07:54:01.599  761  761 :  DEBUG    x28 [REDACTED_LONG_ID]  x29 0000007fff6d8ca0
+01-17 07:54:01.600  761  761 :  DEBUG    lr  000000724393ddec  sp  0000007fff6d8c20  pc  000000724393de10  pst [REDACTED_LONG_ID]
+01-17 07:54:01.600  761  761 :  DEBUG    esr [REDACTED_LONG_ID]  vg  [REDACTED_LONG_ID]
+01-17 07:54:01.600  761  761 :  DEBUG8 total frames
+01-17 07:54:01.600  761  761 :  DEBUGbacktrace:
+01-17 07:54:01.600  761  761 :  DEBUG      #00 pc 000000000007be10  /apex/com.android.runtime/lib64/bionic/libc.so (abort+160) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+01-17 07:54:01.600  761  761 :  DEBUG      #01 pc 000000000000cbc4  /system/lib64/liblog.so (__android_log_default_aborter+16) (BuildId: 2f8c6caff66907ec6904fdd0720d6df4)
+01-17 07:54:01.600  761  761 :  DEBUG      #02 pc 000000000000ce8c  /system/lib64/liblog.so (__android_log_assert+296) (BuildId: 2f8c6caff66907ec6904fdd0720d6df4)
+01-17 07:54:01.600  761  761 :  DEBUG      #03 pc 00000000000026e0  /vendor/lib64/libkeymasterdeviceutils.so (keymasterutils::KeymasterUtils::KeymasterUtils(keymaster_security_level_t)+864) (BuildId: dc272eadd87b91541b4de4fb6ec58299)
+01-17 07:54:01.600  761  761 :  DEBUG      #04 pc 000000000000dab8  /vendor/lib64/libqtikeymaster4.so (keymaster::V4_0::Keymaster4Device::Keymaster4Device(keymaster_security_level_t)+148) (BuildId: 39e5288770b13b3977793188c70bb6c5)
+01-17 07:54:01.600  761  761 :  DEBUG      #05 pc 0000000000010a38  /vendor/lib64/libqtikeymaster4.so (keymaster::V4_0::CreateKeymasterDevice()+28) (BuildId: 39e5288770b13b3977793188c70bb6c5)
+01-17 07:54:01.600  761  761 :  DEBUG      #06 pc [REDACTED_LONG_ID]  /vendor/bin/hw/android.hardware.keymaster@4.0-service-qti (main+44) (BuildId: 322dc750fbb2504a052e184e427fc86c)
+01-17 07:54:01.600  761  761 :  DEBUG      #07 pc 000000000006eee8  /apex/com.android.runtime/lib64/bionic/libc.so (__libc_init+124) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+01-17 07:54:01.600  761  761 :  DEBUGNote: To display stack pointer information, use the pbtombstone tool:
+01-17 07:54:01.600  761  761 :  DEBUG        pbtombstone --display-sp tombstone_XX.pb
+01-17 07:54:01.743  712  712 :  avc:  denied  { find } for pid=766 uid=0 name=vendor.xiaomi.hardware.misys.common.IMiSysImpl/default scontext=u:r:hypsys_ssi_default:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=001-17 07:54:01.783  782  782 :  libcFatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 782 (android.hardwar), pid 782 (android.hardwar)01-17 07:54:01.807  781  781 :  libcFatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 781 (android.hardwar), pid 781 (android.hardwar)01-17 07:54:01.812  734  734 :  Checkpointcp_needsCheckpoint called01-17 07:54:01.813  734  734 :  voldUsing AIDL version of IBootControl01-17 07:54:01.828  734  734 :  voldfscrypt_mount_metadata_encrypted: /data encrypt: 0 format: 0 with null block device: /dev/block/bootdevice/by-name/userdata with zoned 0 length: 001-17 07:54:01.828  734  734 :  voldmetadata_key_dir/key: /metadata/vold/metadata_encryption/key01-17 07:54:01.828  734  734 :  voldKey exists, using: /metadata/vold/metadata_encryption/key01-17 07:54:01.834  796  796 :  DEBUG*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+01-17 07:54:01.834  796  796 :  DEBUGBuild fingerprint: 'Xiaomi/custom_thyme/thyme:17/CP2A.260605.016/OS4.0.0.8.XOCCNXM:user/release-keys'
+01-17 07:54:01.834  796  796 :  DEBUGKernel Release: '4.19.325-perf-g45b9b954f074'
+01-17 07:54:01.834  796  796 :  DEBUGRevision: '0'
+01-17 07:54:01.834  796  796 :  DEBUGABI: 'arm64'
+01-17 07:54:01.834  796  796 :  DEBUGTimestamp: 1970-01-17 07:54:01.823202959+0800
+01-17 07:54:01.834  796  796 :  DEBUGProcess uptime: 1s
+01-17 07:54:01.834  796  796 :  DEBUGExecutable: /vendor/bin/hw/android.hardware.gatekeeper@1.0-service-qti
+01-17 07:54:01.834  796  796 :  DEBUGCmdline: /vendor/bin/hw/android.hardware.gatekeeper@1.0-service-qti
+01-17 07:54:01.834  796  796 :  DEBUGpid: 781, ppid: 1, tid: 781, name: android.hardwar  >>> /vendor/bin/hw/android.hardware.gatekeeper@1.0-service-qti <<<
+01-17 07:54:01.834  796  796 :  DEBUGuid: 1000
+01-17 07:54:01.834  796  796 :  DEBUGsignal 6 (SIGABRT), code -1 (SI_QUEUE), fault addr --------
+01-17 07:54:01.834  796  796 :  DEBUGAbort message: 'QSEECom_start_app failed'
+01-17 07:54:01.834  796  796 :  DEBUG    x0  [REDACTED_LONG_ID]  x1  000000000000030d  x2  [REDACTED_LONG_ID]  x3  0000007fc6e32460
+01-17 07:54:01.834  796  796 :  DEBUG    x4  [REDACTED_LONG_ID]  x5  [REDACTED_LONG_ID]  x6  [REDACTED_LONG_ID]  x7  7f7f7f7fffff7f7f
+01-17 07:54:01.834  796  796 :  DEBUG    x8  00000000000000f0  x9  93db2529fa27140a  x10 000000ff00000020  x11 0000007fc6e32438
+01-17 07:54:01.834  796  796 :  DEBUG    x12 ffffffffffffffff  x13 0000007fc6e325f0  x14 [REDACTED_LONG_ID]  x15 00000000110d5d5f
+01-17 07:54:01.834  796  796 :  DEBUG    x16 000000713bf0a420  x17 000000713beee580  x18 000000713d5c4000  x19 000000000000030d
+01-17 07:54:01.834  796  796 :  DEBUG    x20 000000000000030d  x21 00000000ffffffff  x22 000000713c6edf80  x23 [REDACTED_LONG_ID]
+01-17 07:54:01.834  796  796 :  DEBUG    x24 b40000712bdbc0d0  x25 0000007fc6e32c31  x26 [REDACTED_LONG_ID]  x27 [REDACTED_LONG_ID]
+01-17 07:54:01.834  796  796 :  DEBUG    x28 b40000712bdbc0e8  x29 0000007fc6e324e0
+01-17 07:54:01.834  796  796 :  DEBUG    lr  000000713be8adec  sp  0000007fc6e32460  pc  000000713be8ae10  pst [REDACTED_LONG_ID]
+01-17 07:54:01.834  796  796 :  DEBUG    esr [REDACTED_LONG_ID]  vg  [REDACTED_LONG_ID]
+01-17 07:54:01.834  796  796 :  DEBUG14 total frames
+01-17 07:54:01.834  796  796 :  DEBUGbacktrace:
+01-17 07:54:01.834  796  796 :  DEBUG      #00 pc 000000000007be10  /apex/com.android.runtime/lib64/bionic/libc.so (abort+160) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+01-17 07:54:01.834  796  796 :  DEBUG      #01 pc 000000000000cbc4  /system/lib64/liblog.so (__android_log_default_aborter+16) (BuildId: 2f8c6caff66907ec6904fdd0720d6df4)
+01-17 07:54:01.834  796  796 :  DEBUG      #02 pc 000000000000ce8c  /system/lib64/liblog.so (__android_log_assert+296) (BuildId: 2f8c6caff66907ec6904fdd0720d6df4)
+01-17 07:54:01.834  796  796 :  DEBUG      #03 pc 00000000000026e0  /vendor/lib64/libkeymasterdeviceutils.so (keymasterutils::KeymasterUtils::KeymasterUtils(keymaster_security_level_t)+864) (BuildId: dc272eadd87b91541b4de4fb6ec58299)
+01-17 07:54:01.834  796  796 :  DEBUG      #04 pc 0000000000005ee0  /vendor/lib64/hw/[REDACTED_EMAIL] (HIDL_FETCH_IGatekeeper+204) (BuildId: 200c38497c5929b7a5dcabb3cd1f5082)
+01-17 07:54:01.834  796  796 :  DEBUG      #05 pc 000000000006257c  /vendor/lib64/libhidlbase.so (android::hardware::PassthroughServiceManager::get(android::hardware::hidl_string const&, android::hardware::hidl_string const&)::'lambda'(void*, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&)::operator()(void*, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&) const+92) (BuildId: a9f547fecba743f30d109e919686df9e)
+01-17 07:54:01.834  796  796 :  DEBUG      #06 pc 000000000005fb7c  /vendor/lib64/libhidlbase.so (android::hardware::PassthroughServiceManager::openLibs(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, std::__1::function<bool (void*, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&)> const&)+796) (BuildId: a9f547fecba743f30d109e919686df9e)
+01-17 07:54:01.834  796  796 :  DEBUG      #07 pc 000000000006180c  /vendor/lib64/libhidlbase.so (android::hardware::PassthroughServiceManager::get(android::hardware::hidl_string const&, android::hardware::hidl_string const&)+188) (BuildId: a9f547fecba743f30d109e919686df9e)
+01-17 07:54:01.834  796  796 :  DEBUG      #08 pc 000000000004accc  /vendor/lib64/libhidlbase.so (android::hardware::details::getRawServiceInternal(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, bool, bool)+1164) (BuildId: a9f547fecba743f30d109e919686df9e)
+01-17 07:54:01.834  796  796 :  DEBUG      #09 pc 000000000005ee08  /vendor/lib64/libhidlbase.so (android::hardware::details::registerPassthroughServiceImplementation(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, std::__1::function<int (android::sp<android::hidl::base::V1_0::IBase> const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&)>, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&)+72) (BuildId: a9f547fecba743f30d109e919686df9e)
+01-17 07:54:01.834  796  796 :  DEBUG      #10 pc 000000000005f16c  /vendor/lib64/libhidlbase.so (android::hardware::registerPassthroughServiceImplementation(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&)+60) (BuildId: a9f547fecba743f30d109e919686df9e)
+01-17 07:54:01.834  796  796 :  DEBUG      #11 pc [REDACTED_LONG_ID]  /vendor/bin/hw/android.hardware.gatekeeper@1.0-service-qti (BuildId: e75420c11f8a62bdfec08534645db463)
+01-17 07:54:01.834  796  796 :  DEBUG      #12 pc 00000000000010c8  /vendor/bin/hw/android.hardware.gatekeeper@1.0-service-qti (main+128) (BuildId: e75420c11f8a62bdfec08534645db463)
+01-17 07:54:01.834  796  796 :  DEBUG      #13 pc 000000000006eee8  /apex/com.android.runtime/lib64/bionic/libc.so (__libc_init+124) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+01-17 07:54:01.834  796  796 :  DEBUGNote: To display stack pointer information, use the pbtombstone tool:
+01-17 07:54:01.834  796  796 :  DEBUG        pbtombstone --display-sp tombstone_XX.pb
+01-17 07:54:01.842  788  788 :  DEBUG*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+01-17 07:54:01.842  788  788 :  DEBUGBuild fingerprint: 'Xiaomi/custom_thyme/thyme:17/CP2A.260605.016/OS4.0.0.8.XOCCNXM:user/release-keys'
+01-17 07:54:01.842  788  788 :  DEBUGKernel Release: '4.19.325-perf-g45b9b954f074'
+01-17 07:54:01.842  788  788 :  DEBUGRevision: '0'
+01-17 07:54:01.842  788  788 :  DEBUGABI: 'arm64'
+01-17 07:54:01.842  788  788 :  DEBUGTimestamp: 1970-01-17 07:54:01.813408167+0800
+01-17 07:54:01.842  788  788 :  DEBUGProcess uptime: 1s
+01-17 07:54:01.842  788  788 :  DEBUGExecutable: /vendor/bin/hw/android.hardware.keymaster@4.0-service-qti
+01-17 07:54:01.842  788  788 :  DEBUGCmdline: /vendor/bin/hw/android.hardware.keymaster@4.0-service-qti
+01-17 07:54:01.842  788  788 :  DEBUGpid: 782, ppid: 1, tid: 782, name: android.hardwar  >>> /vendor/bin/hw/android.hardware.keymaster@4.0-service-qti <<<
+01-17 07:54:01.842  788  788 :  DEBUGuid: 1000
+01-17 07:54:01.842  788  788 :  DEBUGsignal 6 (SIGABRT), code -1 (SI_QUEUE), fault addr --------
+01-17 07:54:01.842  788  788 :  DEBUGAbort message: 'QSEECom_start_app failed'
+01-17 07:54:01.842  788  788 :  DEBUG    x0  [REDACTED_LONG_ID]  x1  000000000000030e  x2  [REDACTED_LONG_ID]  x3  0000007fd6f65250
+01-17 07:54:01.842  788  788 :  DEBUG    x4  [REDACTED_LONG_ID]  x5  [REDACTED_LONG_ID]  x6  [REDACTED_LONG_ID]  x7  7f7f7f7fffff7f7f
+01-17 07:54:01.842  788  788 :  DEBUG    x8  00000000000000f0  x9  af80a3fe6fcc418d  x10 000000ff00000020  x11 0000007fd6f65228
+01-17 07:54:01.842  788  788 :  DEBUG    x12 ffffffffffffffff  x13 0000007fd6f653e0  x14 [REDACTED_LONG_ID]  x15 000000001106875f
+01-17 07:54:01.842  788  788 :  DEBUG    x16 00000070b5340420  x17 00000070b5324580  x18 00000070ba56c000  x19 000000000000030e
+01-17 07:54:01.842  788  788 :  DEBUG    x20 000000000000030e  x21 00000000ffffffff  x22 00000070b952ef80  x23 [REDACTED_LONG_ID]
+01-17 07:54:01.842  788  788 :  DEBUG    x24 [REDACTED_LONG_ID]  x25 [REDACTED_LONG_ID]  x26 [REDACTED_LONG_ID]  x27 [REDACTED_LONG_ID]
+01-17 07:54:01.843  788  788 :  DEBUG    x28 [REDACTED_LONG_ID]  x29 0000007fd6f652d0
+01-17 07:54:01.843  788  788 :  DEBUG    lr  00000070b52c0dec  sp  0000007fd6f65250  pc  00000070b52c0e10  pst [REDACTED_LONG_ID]
+01-17 07:54:01.843  788  788 :  DEBUG    esr [REDACTED_LONG_ID]  vg  [REDACTED_LONG_ID]
+01-17 07:54:01.843  788  788 :  DEBUG8 total frames
+01-17 07:54:01.843  788  788 :  DEBUGbacktrace:
+01-17 07:54:01.843  788  788 :  DEBUG      #00 pc 000000000007be10  /apex/com.android.runtime/lib64/bionic/libc.so (abort+160) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+01-17 07:54:01.843  788  788 :  DEBUG      #01 pc 000000000000cbc4  /system/lib64/liblog.so (__android_log_default_aborter+16) (BuildId: 2f8c6caff66907ec6904fdd0720d6df4)
+01-17 07:54:01.843  788  788 :  DEBUG      #02 pc 000000000000ce8c  /system/lib64/liblog.so (__android_log_assert+296) (BuildId: 2f8c6caff66907ec6904fdd0720d6df4)
+01-17 07:54:01.843  788  788 :  DEBUG      #03 pc 00000000000026e0  /vendor/lib64/libkeymasterdeviceutils.so (keymasterutils::KeymasterUtils::KeymasterUtils(keymaster_security_level_t)+864) (BuildId: dc272eadd87b91541b4de4fb6ec58299)
+01-17 07:54:01.843  788  788 :  DEBUG      #04 pc 000000000000dab8  /vendor/lib64/libqtikeymaster4.so (keymaster::V4_0::Keymaster4Device::Keymaster4Device(keymaster_security_level_t)+148) (BuildId: 39e5288770b13b3977793188c70bb6c5)
+01-17 07:54:01.843  788  788 :  DEBUG      #05 pc 0000000000010a38  /vendor/lib64/libqtikeymaster4.so (keymaster::V4_0::CreateKeymasterDevice()+28) (BuildId: 39e5288770b13b3977793188c70bb6c5)
+01-17 07:54:01.843  788  788 :  DEBUG      #06 pc [REDACTED_LONG_ID]  /vendor/bin/hw/android.hardware.keymaster@4.0-service-qti (main+44) (BuildId: 322dc750fbb2504a052e184e427fc86c)
+01-17 07:54:01.843  788  788 :  DEBUG      #07 pc 000000000006eee8  /apex/com.android.runtime/lib64/bionic/libc.so (__libc_init+124) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+01-17 07:54:01.843  788  788 :  DEBUGNote: To display stack pointer information, use the pbtombstone tool:
+01-17 07:54:01.843  788  788 :  DEBUG        pbtombstone --display-sp tombstone_XX.pb
+01-17 07:54:01.861  779  779 :  keystore2system/security/keystore2/src/keystore2_main.rs:61 - Keystore2 is starting.
+01-17 07:54:01.861  779  779 :  keystore2system/security/keystore2/src/keystore2_main.rs:67 - Setting up sqlite logging for keystore2
+01-17 07:54:01.865  779  801 :  keystore2system/security/keystore2/src/maintenance.rs:277 - start monitoring 'apexd.status' property
+01-17 07:54:01.865  779  801 :  keystore2system/security/keystore2/src/maintenance.rs:282 - property 'apexd.status' is now 'Err(SystemPropertyAbsent)'
+01-17 07:54:01.865  779  801 :  keystore2system/security/keystore2/src/maintenance.rs:287 - await a change to 'apexd.status'...
+01-17 07:54:01.866  779  802 :  keystore2system/security/keystore2/src/globals.rs:475 - monitoring for sys.boot_completed=1
+01-17 07:54:01.866  779  779 :  keystore2system/security/keystore2/src/keystore2_main.rs:105 - Starting thread pool now.
+01-17 07:59:01.866  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:160 - ### Keystore Watchdog report - BEGIN ###
+01-17 07:59:01.866  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:169 - When extracting from a bug report, please include this header
+01-17 07:59:01.866  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:170 - and all 1 records below.
+01-17 07:59:01.866  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:223 - ThreadId(3) await_boot_completed Started: 01-16 23:54:01.866 UTC Pending: 300.000609049s Overdue 612.435µs
+01-17 07:59:01.868  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:249 - Severe timeout reported: await_boot_completed (pending: 300.000544362s)
+01-17 07:59:01.868  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:255 - ### Keystore Watchdog report - END ###
+01-17 07:59:07.868  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:160 - ### Keystore Watchdog report - BEGIN ###
+01-17 07:59:07.868  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:169 - When extracting from a bug report, please include this header
+01-17 07:59:07.868  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:170 - and all 1 records below.
+01-17 07:59:07.868  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:223 - ThreadId(3) await_boot_completed Started: 01-16 23:54:01.866 UTC Pending: 306.002684647s Overdue 6.002687304s
+01-17 07:59:07.868  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:251 - Severe timeout skipped: await_boot_completed (already reported today)
+01-17 07:59:07.869  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:255 - ### Keystore Watchdog report - END ###
+01-17 07:59:18.869  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:160 - ### Keystore Watchdog report - BEGIN ###
+01-17 07:59:18.869  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:169 - When extracting from a bug report, please include this header
+01-17 07:59:18.869  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:170 - and all 1 records below.
+01-17 07:59:18.869  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:223 - ThreadId(3) await_boot_completed Started: 01-16 23:54:01.866 UTC Pending: 317.003466837s Overdue 17.003469494s
+01-17 07:59:18.869  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:251 - Severe timeout skipped: await_boot_completed (already reported today)
+01-17 07:59:18.869  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:255 - ### Keystore Watchdog report - END ###
+01-17 07:59:34.870  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:160 - ### Keystore Watchdog report - BEGIN ###
+01-17 07:59:34.870  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:169 - When extracting from a bug report, please include this header
+01-17 07:59:34.870  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:170 - and all 1 records below.
+01-17 07:59:34.870  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:223 - ThreadId(3) await_boot_completed Started: 01-16 23:54:01.866 UTC Pending: 333.004242441s Overdue 33.004245463s
+01-17 07:59:34.870  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:251 - Severe timeout skipped: await_boot_completed (already reported today)
+01-17 07:59:34.870  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:255 - ### Keystore Watchdog report - END ###
+01-17 07:59:55.870  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:160 - ### Keystore Watchdog report - BEGIN ###
+01-17 07:59:55.871  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:169 - When extracting from a bug report, please include this header
+01-17 07:59:55.871  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:170 - and all 1 records below.
+01-17 07:59:55.871  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:223 - ThreadId(3) await_boot_completed Started: 01-16 23:54:01.866 UTC Pending: 354.00509995s Overdue 54.005102919s
+01-17 07:59:55.871  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:251 - Severe timeout skipped: await_boot_completed (already reported today)
+01-17 07:59:55.871  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:255 - ### Keystore Watchdog report - END ###
+01-17 08:00:21.871  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:160 - ### Keystore Watchdog report - BEGIN ###
+01-17 08:00:21.871  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:169 - When extracting from a bug report, please include this header
+01-17 08:00:21.871  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:170 - and all 1 records below.
+01-17 08:00:21.872  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:223 - ThreadId(3) await_boot_completed Started: 01-16 23:54:01.866 UTC Pending: 380.005881446s Overdue 80.005884311s
+01-17 08:00:21.873  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:249 - Severe timeout reported: await_boot_completed (pending: 380.005823894s)
+01-17 08:00:21.873  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:255 - ### Keystore Watchdog report - END ###
+01-17 08:00:51.873  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:160 - ### Keystore Watchdog report - BEGIN ###
+01-17 08:00:51.873  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:169 - When extracting from a bug report, please include this header
+01-17 08:00:51.873  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:170 - and all 1 records below.
+01-17 08:00:51.873  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:223 - ThreadId(3) await_boot_completed Started: 01-16 23:54:01.866 UTC Pending: 410.007504695s Overdue 110.007507716s
+01-17 08:00:51.873  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:251 - Severe timeout skipped: await_boot_completed (already reported today)
+01-17 08:00:51.873  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:255 - ### Keystore Watchdog report - END ###
+01-17 08:01:21.874  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:160 - ### Keystore Watchdog report - BEGIN ###
+01-17 08:01:21.874  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:169 - When extracting from a bug report, please include this header
+01-17 08:01:21.874  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:170 - and all 1 records below.
+01-17 08:01:21.874  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:223 - ThreadId(3) await_boot_completed Started: 01-16 23:54:01.866 UTC Pending: 440.008420027s Overdue 140.0084231s
+01-17 08:01:21.874  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:251 - Severe timeout skipped: await_boot_completed (already reported today)
+01-17 08:01:21.874  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:255 - ### Keystore Watchdog report - END ###
+01-17 08:01:51.875  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:160 - ### Keystore Watchdog report - BEGIN ###
+01-17 08:01:51.875  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:169 - When extracting from a bug report, please include this header
+01-17 08:01:51.875  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:170 - and all 1 records below.
+01-17 08:01:51.875  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:223 - ThreadId(3) await_boot_completed Started: 01-16 23:54:01.866 UTC Pending: 470.009201869s Overdue 170.009204786s
+01-17 08:01:51.875  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:251 - Severe timeout skipped: await_boot_completed (already reported today)
+01-17 08:01:51.875  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:255 - ### Keystore Watchdog report - END ###
+01-17 08:02:21.875  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:160 - ### Keystore Watchdog report - BEGIN ###
+01-17 08:02:21.875  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:169 - When extracting from a bug report, please include this header
+01-17 08:02:21.876  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:170 - and all 1 records below.
+01-17 08:02:21.876  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:223 - ThreadId(3) await_boot_completed Started: 01-16 23:54:01.866 UTC Pending: 500.009980326s Overdue 200.009983295s
+01-17 08:02:21.876  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:251 - Severe timeout skipped: await_boot_completed (already reported today)
+01-17 08:02:21.876  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:255 - ### Keystore Watchdog report - END ###
+01-17 08:02:51.876  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:160 - ### Keystore Watchdog report - BEGIN ###
+01-17 08:02:51.876  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:169 - When extracting from a bug report, please include this header
+01-17 08:02:51.876  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:170 - and all 1 records below.
+01-17 08:02:51.877  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:223 - ThreadId(3) await_boot_completed Started: 01-16 23:54:01.866 UTC Pending: 530.010816908s Overdue 230.01082019s
+01-17 08:02:51.877  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:251 - Severe timeout skipped: await_boot_completed (already reported today)
+01-17 08:02:51.877  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:255 - ### Keystore Watchdog report - END ###
+01-17 08:03:21.877  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:160 - ### Keystore Watchdog report - BEGIN ###
+01-17 08:03:21.877  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:169 - When extracting from a bug report, please include this header
+01-17 08:03:21.877  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:170 - and all 1 records below.
+01-17 08:03:21.877  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:223 - ThreadId(3) await_boot_completed Started: 01-16 23:54:01.866 UTC Pending: 560.011740625s Overdue 260.011743803s
+01-17 08:03:21.878  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:251 - Severe timeout skipped: await_boot_completed (already reported today)
+01-17 08:03:21.878  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:255 - ### Keystore Watchdog report - END ###
+01-17 08:03:51.878  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:160 - ### Keystore Watchdog report - BEGIN ###
+01-17 08:03:51.878  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:169 - When extracting from a bug report, please include this header
+01-17 08:03:51.878  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:170 - and all 1 records below.
+01-17 08:03:51.878  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:223 - ThreadId(3) await_boot_completed Started: 01-16 23:54:01.866 UTC Pending: 590.012551166s Overdue 290.0125545s
+01-17 08:03:51.878  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:251 - Severe timeout skipped: await_boot_completed (already reported today)
+01-17 08:03:51.878  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:255 - ### Keystore Watchdog report - END ###
+01-17 08:04:21.879  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:160 - ### Keystore Watchdog report - BEGIN ###
+01-17 08:04:21.879  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:169 - When extracting from a bug report, please include this header
+01-17 08:04:21.879  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:170 - and all 1 records below.
+01-17 08:04:21.879  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:223 - ThreadId(3) await_boot_completed Started: 01-16 23:54:01.866 UTC Pending: 620.013354779s Overdue 320.013358009s
+01-17 08:04:21.879  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:251 - Severe timeout skipped: await_boot_completed (already reported today)
+01-17 08:04:21.879  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:255 - ### Keystore Watchdog report - END ###
+01-17 08:04:51.879  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:160 - ### Keystore Watchdog report - BEGIN ###
+01-17 08:04:51.880  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:169 - When extracting from a bug report, please include this header
+01-17 08:04:51.880  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:170 - and all 1 records below.
+01-17 08:04:51.880  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:223 - ThreadId(3) await_boot_completed Started: 01-16 23:54:01.866 UTC Pending: 650.01413782s Overdue 350.014140841s
+01-17 08:04:51.880  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:251 - Severe timeout skipped: await_boot_completed (already reported today)
+01-17 08:04:51.880  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:255 - ### Keystore Watchdog report - END ###
+01-17 08:05:21.880  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:160 - ### Keystore Watchdog report - BEGIN ###
+01-17 08:05:21.881  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:169 - When extracting from a bug report, please include this header
+01-17 08:05:21.881  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:170 - and all 1 records below.
+01-17 08:05:21.881  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:223 - ThreadId(3) await_boot_completed Started: 01-16 23:54:01.866 UTC Pending: 680.015040288s Overdue 380.015043413s
+01-17 08:05:21.881  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:251 - Severe timeout skipped: await_boot_completed (already reported today)
+01-17 08:05:21.881  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:255 - ### Keystore Watchdog report - END ###
+01-17 08:05:51.881  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:160 - ### Keystore Watchdog report - BEGIN ###
+01-17 08:05:51.881  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:169 - When extracting from a bug report, please include this header
+01-17 08:05:51.881  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:170 - and all 1 records below.
+01-17 08:05:51.882  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:223 - ThreadId(3) await_boot_completed Started: 01-16 23:54:01.866 UTC Pending: 710.015838276s Overdue 410.015841506s
+01-17 08:05:51.882  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:251 - Severe timeout skipped: await_boot_completed (already reported today)
+01-17 08:05:51.882  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:255 - ### Keystore Watchdog report - END ###
+01-17 08:06:21.882  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:160 - ### Keystore Watchdog report - BEGIN ###
+01-17 08:06:21.882  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:169 - When extracting from a bug report, please include this header
+01-17 08:06:21.882  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:170 - and all 1 records below.
+01-17 08:06:21.882  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:223 - ThreadId(3) await_boot_completed Started: 01-16 23:54:01.866 UTC Pending: 740.016639963s Overdue 440.016642828s
+01-17 08:06:21.882  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:251 - Severe timeout skipped: await_boot_completed (already reported today)
+01-17 08:06:21.883  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:255 - ### Keystore Watchdog report - END ###
+01-17 08:06:51.883  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:160 - ### Keystore Watchdog report - BEGIN ###
+01-17 08:06:51.883  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:169 - When extracting from a bug report, please include this header
+01-17 08:06:51.883  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:170 - and all 1 records below.
+01-17 08:06:51.883  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:223 - ThreadId(3) await_boot_completed Started: 01-16 23:54:01.866 UTC Pending: 770.017464774s Overdue 470.017468004s
+01-17 08:06:51.883  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:251 - Severe timeout skipped: await_boot_completed (already reported today)
+01-17 08:06:51.883  779  803 :  keystore2system/security/keystore2/watchdog/src/lib.rs:255 - ### Keystore Watchdog report - END ###

@@ -1,0 +1,154 @@
+01-17 18:32:56.220  713  713 :  FMultiple same specifications for vendor.qti.gnss.ILocAidlGnss/default.01-17 18:32:56.220  713  713 :  XMultiple same specifications for android.media.audio.IHalAdapterVendorExtension/default.01-17 18:32:56.220  713  713 :  XMultiple same specifications for android.media.audio.IHalAdapterVendorExtension/default.01-17 18:32:56.222  713  713 :  XMultiple same specifications for android.media.audio.IHalAdapterVendorExtension/default.01-17 18:32:56.226  713  713 :  %SELinux: Loaded service context from:01-17 18:32:56.226  713  713 :  +		/system/etc/selinux/plat_service_contexts01-17 18:32:56.226  713  713 :  5		/system_ext/etc/selinux/system_ext_service_contexts01-17 18:32:56.226  713  713 :  /		/product/etc/selinux/product_service_contexts01-17 18:32:56.226  713  713 :  -		/vendor/etc/selinux/vendor_service_contexts01-17 18:32:56.226  713  713 :  '		/odm/etc/selinux/odm_service_contexts01-17 18:32:56.335  733  746 :  QISLQSEE Interrupt Service Listener Thread is started01-17 18:32:56.337  733  746 :  QISLQSEE Interrupt Service Listener was activated successfully01-17 18:32:56.338  733  733 :  SPLCall QSEECom_register_listener()01-17 18:32:56.339  733  733 :  SPLRegistered listener sucessfully!01-17 18:32:56.339  733  733 :  SPLpipe read-fd [32] write-fd [33]
+01-17 18:32:56.339  733  733 :  SPLCreate thread01-17 18:32:56.339  733  733 :  SPLThread created sucessfully.01-17 18:32:56.340  733  747 :  SPLspl_dispatch() started01-17 18:32:56.340  733  747 :  SPL==== Wait For Request ======01-17 18:32:56.360  735  735 :  voldVold 3.0 (the awakening) firing up01-17 18:32:56.360  735  735 :  voldDetected support for: exfat ext4 f2fs vfat01-17 18:32:56.363  735  735 :  vold[libfstab] Using Android DT directory /proc/device-tree/firmware/android/01-17 18:32:56.363  735  735 :  vold[libfstab] ReadDefaultFstab(): target default fstab path=/vendor/etc/fstab.qcom01-17 18:32:56.363  735  735 :  vold[libfstab] InjectMiProductMountEntries: injecting 2 entries (mi_product_mounted=0)01-17 18:32:56.363  735  735 :  vold[libfstab] ModifyOverlayLowerdirsForMiProduct: /mnt/vendor/mi_product not mounted, skipping01-17 18:32:56.364  735  735 :  voldDM_DEV_STATUS failed for mi_product_a: No such device or address01-17 18:32:56.364  735  735 :  voldDM_DEV_STATUS failed for mi_product_a: No such device or address01-17 18:32:56.365  735  735 :  voldVoldNativeService::start() completed OK01-17 18:32:56.381  735  735 :  voldVendorVoldNativeService::try_start() completed OK01-17 18:32:56.406  732  732 :  libcFatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 732 (android.hardwar), pid 732 (android.hardwar)01-17 18:32:56.456  761  761 :  DEBUG*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+01-17 18:32:56.456  761  761 :  DEBUGBuild fingerprint: 'Xiaomi/custom_thyme/thyme:17/CP2A.260605.016/OS4.0.0.8.XOCCNXM:user/release-keys'
+01-17 18:32:56.456  761  761 :  DEBUGKernel Release: '4.19.325-perf-g45b9b954f074'
+01-17 18:32:56.456  761  761 :  DEBUGRevision: '0'
+01-17 18:32:56.456  761  761 :  DEBUGABI: 'arm64'
+01-17 18:32:56.456  761  761 :  DEBUGTimestamp: 1970-01-17 18:32:56.431197631+0800
+01-17 18:32:56.456  761  761 :  DEBUGProcess uptime: 1s
+01-17 18:32:56.456  761  761 :  DEBUGExecutable: /vendor/bin/hw/android.hardware.keymaster@4.0-service-qti
+01-17 18:32:56.456  761  761 :  DEBUGCmdline: /vendor/bin/hw/android.hardware.keymaster@4.0-service-qti
+01-17 18:32:56.456  761  761 :  DEBUGpid: 732, ppid: 1, tid: 732, name: android.hardwar  >>> /vendor/bin/hw/android.hardware.keymaster@4.0-service-qti <<<
+01-17 18:32:56.456  761  761 :  DEBUGuid: 1000
+01-17 18:32:56.456  761  761 :  DEBUGsignal 6 (SIGABRT), code -1 (SI_QUEUE), fault addr --------
+01-17 18:32:56.456  761  761 :  DEBUGAbort message: 'QSEECom_start_app failed'
+01-17 18:32:56.456  761  761 :  DEBUG    x0  [REDACTED_LONG_ID]  x1  00000000000002dc  x2  [REDACTED_LONG_ID]  x3  0000007feb805640
+01-17 18:32:56.456  761  761 :  DEBUG    x4  [REDACTED_LONG_ID]  x5  [REDACTED_LONG_ID]  x6  [REDACTED_LONG_ID]  x7  7f7f7f7fffff7f7f
+01-17 18:32:56.456  761  761 :  DEBUG    x8  00000000000000f0  x9  374f1fc4eaff8503  x10 000000ff00000020  x11 0000007feb805618
+01-17 18:32:56.456  761  761 :  DEBUG    x12 ffffffffffffffff  x13 0000007feb8057d0  x14 [REDACTED_LONG_ID]  x15 000000000afab6a4
+01-17 18:32:56.456  761  761 :  DEBUG    x16 [REDACTED_LONG_ID]  x17 00000077138e5580  x18 000000771507c000  x19 00000000000002dc
+01-17 18:32:56.457  761  761 :  DEBUG    x20 00000000000002dc  x21 00000000ffffffff  x22 0000007714267f80  x23 [REDACTED_LONG_ID]
+01-17 18:32:56.457  761  761 :  DEBUG    x24 [REDACTED_LONG_ID]  x25 [REDACTED_LONG_ID]  x26 [REDACTED_LONG_ID]  x27 [REDACTED_LONG_ID]
+01-17 18:32:56.457  761  761 :  DEBUG    x28 [REDACTED_LONG_ID]  x29 0000007feb8056c0
+01-17 18:32:56.457  761  761 :  DEBUG    lr  0000007713881dec  sp  0000007feb805640  pc  0000007713881e10  pst [REDACTED_LONG_ID]
+01-17 18:32:56.457  761  761 :  DEBUG    esr [REDACTED_LONG_ID]  vg  [REDACTED_LONG_ID]
+01-17 18:32:56.457  761  761 :  DEBUG8 total frames
+01-17 18:32:56.457  761  761 :  DEBUGbacktrace:
+01-17 18:32:56.457  761  761 :  DEBUG      #00 pc 000000000007be10  /apex/com.android.runtime/lib64/bionic/libc.so (abort+160) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+01-17 18:32:56.457  761  761 :  DEBUG      #01 pc 000000000000cbc4  /system/lib64/liblog.so (__android_log_default_aborter+16) (BuildId: 2f8c6caff66907ec6904fdd0720d6df4)
+01-17 18:32:56.457  761  761 :  DEBUG      #02 pc 000000000000ce8c  /system/lib64/liblog.so (__android_log_assert+296) (BuildId: 2f8c6caff66907ec6904fdd0720d6df4)
+01-17 18:32:56.457  761  761 :  DEBUG      #03 pc 00000000000026e0  /vendor/lib64/libkeymasterdeviceutils.so (keymasterutils::KeymasterUtils::KeymasterUtils(keymaster_security_level_t)+864) (BuildId: dc272eadd87b91541b4de4fb6ec58299)
+01-17 18:32:56.457  761  761 :  DEBUG      #04 pc 000000000000dab8  /vendor/lib64/libqtikeymaster4.so (keymaster::V4_0::Keymaster4Device::Keymaster4Device(keymaster_security_level_t)+148) (BuildId: 39e5288770b13b3977793188c70bb6c5)
+01-17 18:32:56.457  761  761 :  DEBUG      #05 pc 0000000000010a38  /vendor/lib64/libqtikeymaster4.so (keymaster::V4_0::CreateKeymasterDevice()+28) (BuildId: 39e5288770b13b3977793188c70bb6c5)
+01-17 18:32:56.457  761  761 :  DEBUG      #06 pc [REDACTED_LONG_ID]  /vendor/bin/hw/android.hardware.keymaster@4.0-service-qti (main+44) (BuildId: 322dc750fbb2504a052e184e427fc86c)
+01-17 18:32:56.457  761  761 :  DEBUG      #07 pc 000000000006eee8  /apex/com.android.runtime/lib64/bionic/libc.so (__libc_init+124) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+01-17 18:32:56.457  761  761 :  DEBUGNote: To display stack pointer information, use the pbtombstone tool:
+01-17 18:32:56.457  761  761 :  DEBUG        pbtombstone --display-sp tombstone_XX.pb
+01-17 18:33:01.439  764  764 :  libcFatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 764 (android.hardwar), pid 764 (android.hardwar)01-17 18:33:01.484  768  768 :  DEBUG*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+01-17 18:33:01.484  768  768 :  DEBUGBuild fingerprint: 'Xiaomi/custom_thyme/thyme:17/CP2A.260605.016/OS4.0.0.8.XOCCNXM:user/release-keys'
+01-17 18:33:01.484  768  768 :  DEBUGKernel Release: '4.19.325-perf-g45b9b954f074'
+01-17 18:33:01.484  768  768 :  DEBUGRevision: '0'
+01-17 18:33:01.484  768  768 :  DEBUGABI: 'arm64'
+01-17 18:33:01.484  768  768 :  DEBUGTimestamp: 1970-01-17 18:33:01.457537975+0800
+01-17 18:33:01.484  768  768 :  DEBUGProcess uptime: 1s
+01-17 18:33:01.484  768  768 :  DEBUGExecutable: /vendor/bin/hw/android.hardware.keymaster@4.0-service-qti
+01-17 18:33:01.484  768  768 :  DEBUGCmdline: /vendor/bin/hw/android.hardware.keymaster@4.0-service-qti
+01-17 18:33:01.484  768  768 :  DEBUGpid: 764, ppid: 1, tid: 764, name: android.hardwar  >>> /vendor/bin/hw/android.hardware.keymaster@4.0-service-qti <<<
+01-17 18:33:01.484  768  768 :  DEBUGuid: 1000
+01-17 18:33:01.484  768  768 :  DEBUGsignal 6 (SIGABRT), code -1 (SI_QUEUE), fault addr --------
+01-17 18:33:01.484  768  768 :  DEBUGAbort message: 'QSEECom_start_app failed'
+01-17 18:33:01.484  768  768 :  DEBUG    x0  [REDACTED_LONG_ID]  x1  00000000000002fc  x2  [REDACTED_LONG_ID]  x3  0000007ff6dbdb40
+01-17 18:33:01.484  768  768 :  DEBUG    x4  [REDACTED_LONG_ID]  x5  [REDACTED_LONG_ID]  x6  [REDACTED_LONG_ID]  x7  7f7f7f7fffffff7f
+01-17 18:33:01.484  768  768 :  DEBUG    x8  00000000000000f0  x9  440fe606da887ea4  x10 000000ff00000020  x11 0000007ff6dbdb18
+01-17 18:33:01.484  768  768 :  DEBUG    x12 ffffffffffffffff  x13 0000007ff6dbdcd0  x14 [REDACTED_LONG_ID]  x15 0000000010bd52a4
+01-17 18:33:01.484  768  768 :  DEBUG    x16 0000007990d66420  x17 0000007990d4a580  x18 [REDACTED_LONG_ID]  x19 00000000000002fc
+01-17 18:33:01.484  768  768 :  DEBUG    x20 00000000000002fc  x21 00000000ffffffff  x22 0000007995c49f80  x23 [REDACTED_LONG_ID]
+01-17 18:33:01.484  768  768 :  DEBUG    x24 [REDACTED_LONG_ID]  x25 [REDACTED_LONG_ID]  x26 [REDACTED_LONG_ID]  x27 [REDACTED_LONG_ID]
+01-17 18:33:01.484  768  768 :  DEBUG    x28 [REDACTED_LONG_ID]  x29 0000007ff6dbdbc0
+01-17 18:33:01.484  768  768 :  DEBUG    lr  0000007990ce6dec  sp  0000007ff6dbdb40  pc  0000007990ce6e10  pst [REDACTED_LONG_ID]
+01-17 18:33:01.484  768  768 :  DEBUG    esr [REDACTED_LONG_ID]  vg  [REDACTED_LONG_ID]
+01-17 18:33:01.484  768  768 :  DEBUG8 total frames
+01-17 18:33:01.484  768  768 :  DEBUGbacktrace:
+01-17 18:33:01.484  768  768 :  DEBUG      #00 pc 000000000007be10  /apex/com.android.runtime/lib64/bionic/libc.so (abort+160) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+01-17 18:33:01.485  768  768 :  DEBUG      #01 pc 000000000000cbc4  /system/lib64/liblog.so (__android_log_default_aborter+16) (BuildId: 2f8c6caff66907ec6904fdd0720d6df4)
+01-17 18:33:01.485  768  768 :  DEBUG      #02 pc 000000000000ce8c  /system/lib64/liblog.so (__android_log_assert+296) (BuildId: 2f8c6caff66907ec6904fdd0720d6df4)
+01-17 18:33:01.485  768  768 :  DEBUG      #03 pc 00000000000026e0  /vendor/lib64/libkeymasterdeviceutils.so (keymasterutils::KeymasterUtils::KeymasterUtils(keymaster_security_level_t)+864) (BuildId: dc272eadd87b91541b4de4fb6ec58299)
+01-17 18:33:01.485  768  768 :  DEBUG      #04 pc 000000000000dab8  /vendor/lib64/libqtikeymaster4.so (keymaster::V4_0::Keymaster4Device::Keymaster4Device(keymaster_security_level_t)+148) (BuildId: 39e5288770b13b3977793188c70bb6c5)
+01-17 18:33:01.485  768  768 :  DEBUG      #05 pc 0000000000010a38  /vendor/lib64/libqtikeymaster4.so (keymaster::V4_0::CreateKeymasterDevice()+28) (BuildId: 39e5288770b13b3977793188c70bb6c5)
+01-17 18:33:01.485  768  768 :  DEBUG      #06 pc [REDACTED_LONG_ID]  /vendor/bin/hw/android.hardware.keymaster@4.0-service-qti (main+44) (BuildId: 322dc750fbb2504a052e184e427fc86c)
+01-17 18:33:01.485  768  768 :  DEBUG      #07 pc 000000000006eee8  /apex/com.android.runtime/lib64/bionic/libc.so (__libc_init+124) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+01-17 18:33:01.485  768  768 :  DEBUGNote: To display stack pointer information, use the pbtombstone tool:
+01-17 18:33:01.485  768  768 :  DEBUG        pbtombstone --display-sp tombstone_XX.pb
+01-17 18:33:01.555  713  713 :  avc:  denied  { find } for pid=773 uid=0 name=vendor.xiaomi.hardware.misys.common.IMiSysImpl/default scontext=u:r:hypsys_ssi_default:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=001-17 18:33:01.589  789  789 :  libcFatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 789 (android.hardwar), pid 789 (android.hardwar)01-17 18:33:01.617  788  788 :  libcFatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 788 (android.hardwar), pid 788 (android.hardwar)01-17 18:33:01.621  735  735 :  Checkpointcp_needsCheckpoint called01-17 18:33:01.622  735  735 :  voldUsing AIDL version of IBootControl01-17 18:33:01.633  735  735 :  voldfscrypt_mount_metadata_encrypted: /data encrypt: 0 format: 0 with null block device: /dev/block/bootdevice/by-name/userdata with zoned 0 length: 001-17 18:33:01.634  735  735 :  voldmetadata_key_dir/key: /metadata/vold/metadata_encryption/key01-17 18:33:01.634  735  735 :  voldKey exists, using: /metadata/vold/metadata_encryption/key01-17 18:33:01.642  802  802 :  DEBUG*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+01-17 18:33:01.642  802  802 :  DEBUGBuild fingerprint: 'Xiaomi/custom_thyme/thyme:17/CP2A.260605.016/OS4.0.0.8.XOCCNXM:user/release-keys'
+01-17 18:33:01.642  802  802 :  DEBUGKernel Release: '4.19.325-perf-g45b9b954f074'
+01-17 18:33:01.642  802  802 :  DEBUGRevision: '0'
+01-17 18:33:01.642  802  802 :  DEBUGABI: 'arm64'
+01-17 18:33:01.642  802  802 :  DEBUGTimestamp: 1970-01-17 18:33:01.629142107+0800
+01-17 18:33:01.642  802  802 :  DEBUGProcess uptime: 1s
+01-17 18:33:01.642  802  802 :  DEBUGExecutable: /vendor/bin/hw/android.hardware.gatekeeper@1.0-service-qti
+01-17 18:33:01.642  802  802 :  DEBUGCmdline: /vendor/bin/hw/android.hardware.gatekeeper@1.0-service-qti
+01-17 18:33:01.642  802  802 :  DEBUGpid: 788, ppid: 1, tid: 788, name: android.hardwar  >>> /vendor/bin/hw/android.hardware.gatekeeper@1.0-service-qti <<<
+01-17 18:33:01.642  802  802 :  DEBUGuid: 1000
+01-17 18:33:01.642  802  802 :  DEBUGsignal 6 (SIGABRT), code -1 (SI_QUEUE), fault addr --------
+01-17 18:33:01.642  802  802 :  DEBUGAbort message: 'QSEECom_start_app failed'
+01-17 18:33:01.642  802  802 :  DEBUG    x0  [REDACTED_LONG_ID]  x1  [REDACTED_LONG_ID]  x2  [REDACTED_LONG_ID]  x3  0000007fd491c2a0
+01-17 18:33:01.642  802  802 :  DEBUG    x4  [REDACTED_LONG_ID]  x5  [REDACTED_LONG_ID]  x6  [REDACTED_LONG_ID]  x7  7f7f7f7fffffff7f
+01-17 18:33:01.642  802  802 :  DEBUG    x8  00000000000000f0  x9  018bfe3096113836  x10 000000ff00000020  x11 0000007fd491c278
+01-17 18:33:01.642  802  802 :  DEBUG    x12 ffffffffffffffff  x13 0000007fd491c430  x14 [REDACTED_LONG_ID]  x15 0000000010f114a4
+01-17 18:33:01.642  802  802 :  DEBUG    x16 [REDACTED_LONG_ID]  x17 000000727052d580  x18 00000072734f0000  x19 [REDACTED_LONG_ID]
+01-17 18:33:01.642  802  802 :  DEBUG    x20 [REDACTED_LONG_ID]  x21 00000000ffffffff  x22 00000072726a6f80  x23 [REDACTED_LONG_ID]
+01-17 18:33:01.642  802  802 :  DEBUG    x24 b40000721c6ae190  x25 0000007fd491ca71  x26 [REDACTED_LONG_ID]  x27 [REDACTED_LONG_ID]
+01-17 18:33:01.642  802  802 :  DEBUG    x28 b40000721c6ae1a8  x29 0000007fd491c320
+01-17 18:33:01.642  802  802 :  DEBUG    lr  00000072704c9dec  sp  0000007fd491c2a0  pc  00000072704c9e10  pst [REDACTED_LONG_ID]
+01-17 18:33:01.642  802  802 :  DEBUG    esr [REDACTED_LONG_ID]  vg  [REDACTED_LONG_ID]
+01-17 18:33:01.642  802  802 :  DEBUG14 total frames
+01-17 18:33:01.642  802  802 :  DEBUGbacktrace:
+01-17 18:33:01.642  802  802 :  DEBUG      #00 pc 000000000007be10  /apex/com.android.runtime/lib64/bionic/libc.so (abort+160) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+01-17 18:33:01.642  802  802 :  DEBUG      #01 pc 000000000000cbc4  /system/lib64/liblog.so (__android_log_default_aborter+16) (BuildId: 2f8c6caff66907ec6904fdd0720d6df4)
+01-17 18:33:01.642  802  802 :  DEBUG      #02 pc 000000000000ce8c  /system/lib64/liblog.so (__android_log_assert+296) (BuildId: 2f8c6caff66907ec6904fdd0720d6df4)
+01-17 18:33:01.642  802  802 :  DEBUG      #03 pc 00000000000026e0  /vendor/lib64/libkeymasterdeviceutils.so (keymasterutils::KeymasterUtils::KeymasterUtils(keymaster_security_level_t)+864) (BuildId: dc272eadd87b91541b4de4fb6ec58299)
+01-17 18:33:01.643  802  802 :  DEBUG      #04 pc 0000000000005ee0  /vendor/lib64/hw/[REDACTED_EMAIL] (HIDL_FETCH_IGatekeeper+204) (BuildId: 200c38497c5929b7a5dcabb3cd1f5082)
+01-17 18:33:01.643  802  802 :  DEBUG      #05 pc 000000000006257c  /vendor/lib64/libhidlbase.so (android::hardware::PassthroughServiceManager::get(android::hardware::hidl_string const&, android::hardware::hidl_string const&)::'lambda'(void*, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&)::operator()(void*, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&) const+92) (BuildId: a9f547fecba743f30d109e919686df9e)
+01-17 18:33:01.643  802  802 :  DEBUG      #06 pc 000000000005fb7c  /vendor/lib64/libhidlbase.so (android::hardware::PassthroughServiceManager::openLibs(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, std::__1::function<bool (void*, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&)> const&)+796) (BuildId: a9f547fecba743f30d109e919686df9e)
+01-17 18:33:01.643  802  802 :  DEBUG      #07 pc 000000000006180c  /vendor/lib64/libhidlbase.so (android::hardware::PassthroughServiceManager::get(android::hardware::hidl_string const&, android::hardware::hidl_string const&)+188) (BuildId: a9f547fecba743f30d109e919686df9e)
+01-17 18:33:01.643  802  802 :  DEBUG      #08 pc 000000000004accc  /vendor/lib64/libhidlbase.so (android::hardware::details::getRawServiceInternal(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, bool, bool)+1164) (BuildId: a9f547fecba743f30d109e919686df9e)
+01-17 18:33:01.643  802  802 :  DEBUG      #09 pc 000000000005ee08  /vendor/lib64/libhidlbase.so (android::hardware::details::registerPassthroughServiceImplementation(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, std::__1::function<int (android::sp<android::hidl::base::V1_0::IBase> const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&)>, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&)+72) (BuildId: a9f547fecba743f30d109e919686df9e)
+01-17 18:33:01.643  802  802 :  DEBUG      #10 pc 000000000005f16c  /vendor/lib64/libhidlbase.so (android::hardware::registerPassthroughServiceImplementation(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&)+60) (BuildId: a9f547fecba743f30d109e919686df9e)
+01-17 18:33:01.643  802  802 :  DEBUG      #11 pc [REDACTED_LONG_ID]  /vendor/bin/hw/android.hardware.gatekeeper@1.0-service-qti (BuildId: e75420c11f8a62bdfec08534645db463)
+01-17 18:33:01.643  802  802 :  DEBUG      #12 pc 00000000000010c8  /vendor/bin/hw/android.hardware.gatekeeper@1.0-service-qti (main+128) (BuildId: e75420c11f8a62bdfec08534645db463)
+01-17 18:33:01.643  802  802 :  DEBUG      #13 pc 000000000006eee8  /apex/com.android.runtime/lib64/bionic/libc.so (__libc_init+124) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+01-17 18:33:01.643  802  802 :  DEBUGNote: To display stack pointer information, use the pbtombstone tool:
+01-17 18:33:01.643  802  802 :  DEBUG        pbtombstone --display-sp tombstone_XX.pb
+01-17 18:33:01.650  796  796 :  DEBUG*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+01-17 18:33:01.650  796  796 :  DEBUGBuild fingerprint: 'Xiaomi/custom_thyme/thyme:17/CP2A.260605.016/OS4.0.0.8.XOCCNXM:user/release-keys'
+01-17 18:33:01.650  796  796 :  DEBUGKernel Release: '4.19.325-perf-g45b9b954f074'
+01-17 18:33:01.650  796  796 :  DEBUGRevision: '0'
+01-17 18:33:01.650  796  796 :  DEBUGABI: 'arm64'
+01-17 18:33:01.650  796  796 :  DEBUGTimestamp: 1970-01-17 18:33:01.618695231+0800
+01-17 18:33:01.650  796  796 :  DEBUGProcess uptime: 1s
+01-17 18:33:01.650  796  796 :  DEBUGExecutable: /vendor/bin/hw/android.hardware.keymaster@4.0-service-qti
+01-17 18:33:01.650  796  796 :  DEBUGCmdline: /vendor/bin/hw/android.hardware.keymaster@4.0-service-qti
+01-17 18:33:01.650  796  796 :  DEBUGpid: 789, ppid: 1, tid: 789, name: android.hardwar  >>> /vendor/bin/hw/android.hardware.keymaster@4.0-service-qti <<<
+01-17 18:33:01.650  796  796 :  DEBUGuid: 1000
+01-17 18:33:01.650  796  796 :  DEBUGsignal 6 (SIGABRT), code -1 (SI_QUEUE), fault addr --------
+01-17 18:33:01.650  796  796 :  DEBUGAbort message: 'QSEECom_start_app failed'
+01-17 18:33:01.650  796  796 :  DEBUG    x0  [REDACTED_LONG_ID]  x1  [REDACTED_LONG_ID]  x2  [REDACTED_LONG_ID]  x3  0000007fc2e5d090
+01-17 18:33:01.650  796  796 :  DEBUG    x4  [REDACTED_LONG_ID]  x5  [REDACTED_LONG_ID]  x6  [REDACTED_LONG_ID]  x7  7f7f7f7fffffff7f
+01-17 18:33:01.650  796  796 :  DEBUG    x8  00000000000000f0  x9  14dcd1a533ff352b  x10 000000ff00000020  x11 0000007fc2e5d068
+01-17 18:33:01.650  796  796 :  DEBUG    x12 ffffffffffffffff  x13 0000007fc2e5d220  x14 [REDACTED_LONG_ID]  x15 0000000010e944a4
+01-17 18:33:01.650  796  796 :  DEBUG    x16 000000788ed3b420  x17 000000788ed1f580  x18 00000078979c8000  x19 [REDACTED_LONG_ID]
+01-17 18:33:01.651  796  796 :  DEBUG    x20 [REDACTED_LONG_ID]  x21 00000000ffffffff  x22 0000007896a9bf80  x23 [REDACTED_LONG_ID]
+01-17 18:33:01.651  796  796 :  DEBUG    x24 [REDACTED_LONG_ID]  x25 [REDACTED_LONG_ID]  x26 [REDACTED_LONG_ID]  x27 [REDACTED_LONG_ID]
+01-17 18:33:01.651  796  796 :  DEBUG    x28 [REDACTED_LONG_ID]  x29 0000007fc2e5d110
+01-17 18:33:01.651  796  796 :  DEBUG    lr  000000788ecbbdec  sp  0000007fc2e5d090  pc  000000788ecbbe10  pst [REDACTED_LONG_ID]
+01-17 18:33:01.651  796  796 :  DEBUG    esr [REDACTED_LONG_ID]  vg  [REDACTED_LONG_ID]
+01-17 18:33:01.651  796  796 :  DEBUG8 total frames
+01-17 18:33:01.651  796  796 :  DEBUGbacktrace:
+01-17 18:33:01.651  796  796 :  DEBUG      #00 pc 000000000007be10  /apex/com.android.runtime/lib64/bionic/libc.so (abort+160) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+01-17 18:33:01.651  796  796 :  DEBUG      #01 pc 000000000000cbc4  /system/lib64/liblog.so (__android_log_default_aborter+16) (BuildId: 2f8c6caff66907ec6904fdd0720d6df4)
+01-17 18:33:01.651  796  796 :  DEBUG      #02 pc 000000000000ce8c  /system/lib64/liblog.so (__android_log_assert+296) (BuildId: 2f8c6caff66907ec6904fdd0720d6df4)
+01-17 18:33:01.651  796  796 :  DEBUG      #03 pc 00000000000026e0  /vendor/lib64/libkeymasterdeviceutils.so (keymasterutils::KeymasterUtils::KeymasterUtils(keymaster_security_level_t)+864) (BuildId: dc272eadd87b91541b4de4fb6ec58299)
+01-17 18:33:01.651  796  796 :  DEBUG      #04 pc 000000000000dab8  /vendor/lib64/libqtikeymaster4.so (keymaster::V4_0::Keymaster4Device::Keymaster4Device(keymaster_security_level_t)+148) (BuildId: 39e5288770b13b3977793188c70bb6c5)
+01-17 18:33:01.651  796  796 :  DEBUG      #05 pc 0000000000010a38  /vendor/lib64/libqtikeymaster4.so (keymaster::V4_0::CreateKeymasterDevice()+28) (BuildId: 39e5288770b13b3977793188c70bb6c5)
+01-17 18:33:01.651  796  796 :  DEBUG      #06 pc [REDACTED_LONG_ID]  /vendor/bin/hw/android.hardware.keymaster@4.0-service-qti (main+44) (BuildId: 322dc750fbb2504a052e184e427fc86c)
+01-17 18:33:01.651  796  796 :  DEBUG      #07 pc 000000000006eee8  /apex/com.android.runtime/lib64/bionic/libc.so (__libc_init+124) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+01-17 18:33:01.651  796  796 :  DEBUGNote: To display stack pointer information, use the pbtombstone tool:
+01-17 18:33:01.651  796  796 :  DEBUG        pbtombstone --display-sp tombstone_XX.pb
+01-17 18:33:01.659  786  786 :  keystore2system/security/keystore2/src/keystore2_main.rs:61 - Keystore2 is starting.
+01-17 18:33:01.659  786  786 :  keystore2system/security/keystore2/src/keystore2_main.rs:67 - Setting up sqlite logging for keystore2
+01-17 18:33:01.664  786  808 :  keystore2system/security/keystore2/src/maintenance.rs:277 - start monitoring 'apexd.status' property
+01-17 18:33:01.664  786  808 :  keystore2system/security/keystore2/src/maintenance.rs:282 - property 'apexd.status' is now 'Err(SystemPropertyAbsent)'
+01-17 18:33:01.664  786  808 :  keystore2system/security/keystore2/src/maintenance.rs:287 - await a change to 'apexd.status'...
+01-17 18:33:01.664  786  809 :  keystore2system/security/keystore2/src/globals.rs:475 - monitoring for sys.boot_completed=1
+01-17 18:33:01.665  786  786 :  keystore2system/security/keystore2/src/keystore2_main.rs:105 - Starting thread pool now.
