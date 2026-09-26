@@ -6,9 +6,9 @@
 
 ## 当前设备与刷写版本
 
-- 最近一次持久分区刷写仍为 C17：仅 vbmeta_system_a 与 super；其余引导镜像沿用 C13 基线。C17 后未刷写其他 Candidate，也未清除 userdata/metadata。
+- C18 已顺序刷写 `super`、`vbmeta_system_a`；super 10/10 sparse 块全部 OKAY（206.216 秒），vbmeta_system_a 发送/写入 OKAY（13.321 秒）。刷后只读状态：唯一序列号 [REDACTED_DEVICE_ID]、product=thyme、A 槽、unlocked=yes、is-userspace=no；Bootloader Fastboot 在线，ADB 不在线，无活动 Fastboot 写入进程。
 - C17 首启复验已执行一次受控 Fastboot reboot。观察器记录命令成功、USB/Fastboot 离线，约 148 秒后 Fastboot 重新出现；用户确认是手动返回 Fastboot。
-- 故障后按既有授权 RAM 启动 Standalone 并只读导出。最近一次主机查询中设备处于 Standalone USB Mass Storage，THYME_DIAG 卷已挂载；ADB、Fastboot 均未枚举。PixelOS 尚未恢复或启动。
+- 本轮未 reboot、擦除 userdata/metadata、启动 Standalone、恢复 PixelOS 或写入其他分区；手机保持 Fastboot，C18 尚未首次启动。
 - Bootloader 仍保持解锁。未写 persist、modemst、EFS/NV、misc/BCB、校准或设备身份分区；未执行回锁。
 - C17 后未再次擦除 userdata/metadata。C17 本轮确认 metadata 加密状态可用，/data F2FS 挂载成功。
 
@@ -22,7 +22,7 @@
 - vold 使用已有 metadata encryption key；/data F2FS 挂载成功，并记录 enablefilecrypto 与 keymaster earlyBootEnded 完成。
 - C16 的 hal_graphics_allocator_default -> ion_device { open } AVC 与该域 { read } AVC 在本轮 console/pmsg 中均未出现；支持 C17 权限修复生效，但不是对 HAL 全调用路径的完整验证。
 - SurfaceFlinger 仍有 24 次 no suitable EGLConfig found abort；pmsg 另有 graphicsengine 在 vkEnumeratePhysicalDevices+4 的一次 SIGSEGV。二者关联尚未证明。
-- 未发现 ANGLE 实际加载证据；未取得 bootanimation、设置向导、桌面或 sys.boot_completed=1 证据。没有新证据支持 C18 镜像改动，C18 未构建。
+- 未发现 ANGLE 实际加载证据；未取得 bootanimation、设置向导、桌面或 sys.boot_completed=1 证据。C17 的 24 次 EGLConfig abort 具有重复的 chooseEglConfig/Create 调用路径；graphicsengine 的 Vulkan 枚举 SIGSEGV 早约 0.6 秒，但属于独立进程，因果未证。
 - 另有 hal_camera_default 对 ion_device 的 read AVC，以及 graphicsengine 对 vendor_default_prop 的 read AVC；不得据此扩大权限，先查明属性访问和实际故障关联。
 - Standalone 卷内全部 7 个可访问文件已复制；Manifest 中源/副本大小与 SHA-256 全部相符，复制错误为 0。dmesg_diag_boot.txt 属于 Standalone；oops.raw 与 C14–C16 相同，是旧数据，不作 C17 新崩溃证据。C13–C17 的 Standalone 原始卷副本与主机观察记录已按用户授权逐字节同步到公开仓库 evidence/；本地原件保持未修改。
 
@@ -34,6 +34,16 @@
 - C16：graphics allocator 的 ion_device read AVC 消失，后续出现 open AVC。
 - C17：加入 allocator open 权限；本轮图形 allocator AVC 未复现，但 EGLConfig 阻塞仍在。
 
+## Candidate 18 当前构建
+
+- 报告：work/reports/20260926_CANDIDATE18_NATIVE_ADRENO/REPORT.md。
+- C17 的实际 EGL 后端未确定：system build.prop 指向 ANGLE，实际 Android 17 libEGL 含相应路由，但 pmsg 没有 ANGLE 加载或实际 driver 身份记录。
+- C18 仅修改 system EGL 路由：默认 persist.graphics.egl=adreno；在 ro.persistent_properties.ready=true 后再次设为 adreno，避免旧 /data 持久 ANGLE 属性覆盖本次路由。目标 thyme vendor 声明 ro.hardware.egl=adreno/ro.hardware.vulkan=adreno，并有原生 Adreno EGL/GLES 库。K40 成功包只作为 adreno 路由参考，未复制其硬件库。
+- C18 保留 C17 其余修复和硬件栈；无 SELinux 扩权、无 Vulkan 库替换、无 userdata/metadata 擦除。
+- 构建目录：work/stage_h_thyme_os4_candidate_18_native_adreno_run1/images/。写入镜像：super.img 7,684,274,964 bytes，SHA-256 EEA7DD2378DDF84BF1BAF0DC86445025AFDAED3E0CE20DE75654D11D0AA35132；vbmeta_system.img 131,072 bytes，SHA-256 932CFBE646D588AF3B61C3A8D075C2AAD37C5DC6F4906C5200D6B6BEFF65DE73。
+- EROFS 检查通过；从 super 提取的 system_a.img 与 C18 system 镜像逐字节一致；vbmeta_system system descriptor 匹配新 root digest，product/system_ext descriptors 继承 C17；LP 布局与 C17 一致。Python 编译、PowerShell AST 和刷写 Dry-Run 通过。
+- Observer 属性快照已补充 persist.graphics.egl、ro.hardware.egl、ro.hardware.vulkan、ro.board.platform。C18 已刷写但尚无真机启动验证；启动前须先运行 C18 observer 并 ARMED，再等用户现场确认。
+
 ## 公开诊断证据
 
 - 用户于 2026-09-26 明确授权将 C13–C17 已保存的 Standalone 原始日志和主机观察记录上传到现有 Public GitHub 仓库；旧的“raw pstore/oops 只留本地”限制已被此授权替代。
@@ -43,8 +53,7 @@
 - 原始证据已推送到 Public 仓库 main，提交 3147a6fd8c0ff1d8c46f1cc49a510d0d0a3790c5；匿名 API 确认 public，4 个跨 Candidate 原始文件 HTTP 200 且远端 SHA-256 与本地清单一致。
 ## 下一步
 
-1. 暂不重复启动 C17，也不盲目构建 C18。
-2. 定点检查 EGL Loader 实际后端、ANGLE 是否加载、EGLConfig/native visual 与 thyme Gralloc/HWC 格式匹配；将 Vulkan SIGSEGV 作为相关但未证因果的现象。
-3. 对 graphicsengine -> vendor_default_prop { read } 查明属性名及实际调用路径后再决定是否修改。
-4. 保留当前 C17 镜像与原始日志；确定最小证据支持的修复后再构建。下一次刷写和新 Candidate 启动遵守当轮授权及用户现场确认要求。
-5. 取证完成后如需恢复 PixelOS，先确认设备模式并沿用项目恢复流程；不得覆盖本轮证据。
+1. 手机当前保持 C18 Bootloader Fastboot；不要自动 reboot。
+2. 请用户准备现场观察；启动前运行 C18 标签 observer 并确认 ARMED，等用户明确确认后只 reboot 一次。
+3. 验收 C18 runtime persist.graphics.egl=adreno、SurfaceFlinger EGLConfig 结果、ANGLE/Adreno 初始化及启动界面；将独立 Vulkan SIGSEGV 单独记录。
+4. 若 EGLConfig 仍失败，使用新日志中实际 EGLConfig/HWC/Gralloc 证据定点修复；不得无证据扩大 SELinux 权限或替换整套 GPU 栈。

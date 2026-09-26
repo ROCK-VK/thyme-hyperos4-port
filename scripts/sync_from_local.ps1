@@ -2,7 +2,8 @@
 param(
     [Parameter(Mandatory = $true)]
     [string]$SourceRoot,
-    [string]$DestinationRoot = (Split-Path -Parent $PSScriptRoot)
+    [string]$DestinationRoot = (Split-Path -Parent $PSScriptRoot),
+    [switch]$SkipRawEvidence
 )
 $ErrorActionPreference = 'Stop'
 $SourceRoot = (Resolve-Path -LiteralPath $SourceRoot).Path
@@ -35,15 +36,18 @@ $Allowlist = @(
     @{ Source='tools/build_candidate15_angle_egl.py'; Destination='tools/build_candidate15_angle_egl.py' }
     @{ Source='tools/build_candidate16_graphics_allocator_ion.py'; Destination='tools/build_candidate16_graphics_allocator_ion.py' }
     @{ Source='tools/build_candidate17_graphics_allocator_open.py'; Destination='tools/build_candidate17_graphics_allocator_open.py' }
+    @{ Source='tools/build_candidate18_native_adreno.py'; Destination='tools/build_candidate18_native_adreno.py' }
     @{ Source='tools/build_standalone_diag.py'; Destination='tools/build_standalone_diag.py' }
     @{ Source='tools/flash_candidate13.ps1'; Destination='tools/flash_candidate13.ps1' }
     @{ Source='tools/flash_candidate14_bpf_bootstrap_bypass.ps1'; Destination='tools/flash_candidate14_bpf_bootstrap_bypass.ps1' }
     @{ Source='tools/flash_candidate15_angle_egl.ps1'; Destination='tools/flash_candidate15_angle_egl.ps1' }
     @{ Source='tools/flash_candidate16_graphics_allocator_ion.ps1'; Destination='tools/flash_candidate16_graphics_allocator_ion.ps1' }
     @{ Source='tools/flash_candidate17_graphics_allocator_open.ps1'; Destination='tools/flash_candidate17_graphics_allocator_open.ps1' }
+    @{ Source='tools/flash_candidate18_native_adreno.ps1'; Destination='tools/flash_candidate18_native_adreno.ps1' }
     @{ Source='tools/observe_candidate13_readonly.py'; Destination='tools/observe_candidate13_readonly.py' }
     @{ Source='tools/record_candidate13_event.ps1'; Destination='tools/record_candidate13_event.ps1' }
     @{ Source='tools/start_candidate13_observed_boot.ps1'; Destination='tools/start_candidate13_observed_boot.ps1' }
+    @{ Source='tools/start_candidate18_observed_boot.ps1'; Destination='tools/start_candidate18_observed_boot.ps1' }
     @{ Source='tools/patch_candidate_fs_configs.py'; Destination='tools/patch_candidate_fs_configs.py' }
     @{ Source='tools/precheck_candidate9.py'; Destination='tools/precheck_candidate9.py' }
     @{ Source='tools/precheck_candidate10_warm_dtb.py'; Destination='tools/precheck_candidate10_warm_dtb.py' }
@@ -69,6 +73,8 @@ $Allowlist = @(
     @{ Source='work/reports/20260926_CANDIDATE16_FAILURE_AND_CANDIDATE17_BUILD_FLASH.md'; Destination='reports/candidate17/20260926_CANDIDATE16_FAILURE_AND_CANDIDATE17_BUILD_FLASH.md' }
     @{ Source='work/reports/20260926_CANDIDATE17_FIRST_BOOT/REPORT.md'; Destination='reports/candidate17/20260926_CANDIDATE17_FIRST_BOOT_REPORT.md' }
     @{ Source='work/reports/20260926_CANDIDATE17_RETEST/REPORT.md'; Destination='reports/candidate17/20260926_CANDIDATE17_RETEST_REPORT.md' }
+    @{ Source='work/reports/20260926_CANDIDATE18_NATIVE_ADRENO/REPORT.md'; Destination='reports/candidate18/20260926_CANDIDATE18_NATIVE_ADRENO_REPORT.md' }
+    @{ Source='work/stage_h_thyme_os4_candidate_18_native_adreno_run1/images/BUILD_MANIFEST.json'; Destination='reports/candidate18/BUILD_MANIFEST.json' }
     @{ Source='work/reports/20260926_CANDIDATE13_NETBPFLOAD_EVIDENCE_EXCERPT.txt'; Destination='reports/boot-logs/candidate13_netbpfload_failure_excerpt.txt' }
     @{ Source='@STORAGE_SAFETY_REPORT'; Destination='reports/candidate13/20260925_CANDIDATE13_STORAGE_SAFETY_AND_FIRST_FAILURE.md' }
     @{ Source='work/reports/20260924_CANDIDATE10_WARMDTB_LOG_SALVAGE/pstore/console-ramoops-0'; Destination='reports/boot-logs/candidate10_console-ramoops.txt' }
@@ -100,15 +106,15 @@ function ConvertTo-PublicText([string]$Text) {
     $Text = [regex]::Replace($Text, '(?m)^([^\r\n]*?/path/to/thyme-os4-local[^\r\n]*?)[ \t]+\r?$', '$1')
     $Text = [regex]::Replace($Text, '(?i)/root/[^/\s]+', '[LOCAL_WSL_USER]')
     $Text = [regex]::Replace($Text, '(?i)(androidboot\.cpuid=)0x[0-9a-f]+', '$1[REDACTED_CPUID]')
-    $LocalBuildDir = [string]::Concat('10s','_os4_build')
-    $Text = [regex]::Replace($Text, '(?i)' + [regex]::Escape($LocalBuildDir), '[LOCAL_WSL_BUILD_DIR]')
     $Text = [regex]::Replace($Text, '(?i)\b[A-Z]:\\Users\\[^\s"''<>|]+', '[LOCAL_USER_PATH]')
     $Text = [regex]::Replace($Text, '(?i)\b[DE]:\\[^\s"''<>|]+', '[LOCAL_PATH]')
     $Text = [regex]::Replace($Text, '(?i)\b[DE]:/[^\s"''<>|]+', '[LOCAL_PATH]')
-    $Text = [regex]::Replace($Text, '(?i)\b[a-f0-9]{8}\b', '[REDACTED_DEVICE_ID]')
+    $Text = [regex]::Replace($Text, '(?i)\b(?=[a-f0-9]{8}\b)(?=[a-f0-9]*[a-f])(?=[a-f0-9]*[0-9])[a-f0-9]{8}\b', '[REDACTED_DEVICE_ID]')
     $Text = [regex]::Replace($Text, '(?i)\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b', '[REDACTED_EMAIL]')
     $Text = [regex]::Replace($Text, '(?i)\b[A-Z]:\\Users\\[^\\\r\n\s"'']+', '[LOCAL_USER_PATH]')
     $Text = [regex]::Replace($Text, '(?i)\b\d{15,17}\b', '[REDACTED_LONG_ID]')
+    $LocalBuildDir = [string]::Concat('10s','_os4_build')
+    $Text = [regex]::Replace($Text, '(?i)' + [regex]::Escape($LocalBuildDir), '[LOCAL_WSL_BUILD_DIR]')
     $Text = [regex]::Replace($Text, '\bgh[pousr]_[A-Za-z0-9_]{20,}\b|\bgithub_pat_[A-Za-z0-9_]{20,}\b', '[REDACTED_GITHUB_TOKEN]')
     $Text = [regex]::Replace($Text, '-----BEGIN [^-]*PRIVATE KEY-----.*?-----END [^-]*PRIVATE KEY-----', '[REDACTED_PRIVATE_KEY]', [System.Text.RegularExpressions.RegexOptions]::Singleline)
     return $Text
@@ -126,10 +132,15 @@ foreach ($Entry in $Allowlist) {
     New-Item -ItemType Directory -Path (Split-Path -Parent $DestinationPath) -Force | Out-Null
     $Text = [IO.File]::ReadAllText($SourcePath, [Text.Encoding]::UTF8)
     $Text = ConvertTo-PublicText $Text
+    if ($Entry.Destination -eq 'tools/build_candidate18_native_adreno.py') {
+        $Text = $Text.Replace('[LOCAL_WSL_USER]/10s_os4_build', '/path/to/thyme-os4-build')
+    }
     if ($Entry.Destination -match '_pmsg-ramoops\.txt$') { $Text = $Text.Replace([string][char]0, '') }
     [IO.File]::WriteAllText($DestinationPath, $Text, [Text.UTF8Encoding]::new($false))
     $Copied++
 }
 [pscustomobject]@{Copied=$Copied; Missing=$Missing; Destination=$DestinationRoot} | ConvertTo-Json -Depth 4
 if ($Missing.Count -gt 0) { Write-Warning ('Allowlisted source files absent: ' + ($Missing -join ', ')) }
-& (Join-Path $PSScriptRoot 'sync_raw_startup_evidence.ps1') -SourceRoot $SourceRoot -DestinationRoot $DestinationRoot
+if (-not $SkipRawEvidence) {
+    & (Join-Path $PSScriptRoot 'sync_raw_startup_evidence.ps1') -SourceRoot $SourceRoot -DestinationRoot $DestinationRoot
+}

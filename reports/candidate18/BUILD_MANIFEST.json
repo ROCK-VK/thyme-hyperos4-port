@@ -1,0 +1,63 @@
+{
+  "candidate": "Candidate 18 native Adreno EGL selection",
+  "base": "Candidate 17 graphics allocator ion_device open fix",
+  "changes": [
+    "system/build.prop: change persist.graphics.egl from angle to adreno, matching the exact thyme vendor ro.hardware.egl=adreno.",
+    "system/etc/init/surfaceflinger.rc: after ro.persistent_properties.ready=true, set persist.graphics.egl=adreno so a stale /data persistent ANGLE value cannot override this test route."
+  ],
+  "retained_from_c17": [
+    "C14 BPF bootstrap bypass.",
+    "C13 Keymaster/Gatekeeper ion_device rules.",
+    "C17 hal_graphics_allocator_default ion_device open/read rule.",
+    "C13 fstab, metadata encryption and /data path.",
+    "thyme boot, vendor_boot, dtbo, vbmeta, product, vendor, odm and mi_ext inputs.",
+    "C17 system_ext image and policy; no kernel or hardware HAL replacement."
+  ],
+  "flash_scope_prepared": [
+    "vbmeta_system_a",
+    "super"
+  ],
+  "evidence_basis": [
+    "C17 has 24 identical SurfaceFlinger chooseEglConfig abort stacks; ANGLE runtime loading is not proven.",
+    "C17 graphicsengine independently SIGSEGVs in vkEnumeratePhysicalDevices+4 shortly before the first SurfaceFlinger abort; causality is unproven.",
+    "C17 target vendor image declares ro.hardware.egl=adreno and contains 64-bit libEGL_adreno.so and libGLESv2_adreno.so.",
+    "The K40 Snapdragon 870 success package uses ro.hardware.egl=adreno."
+  ],
+  "limits": [
+    "C18 tests the native Adreno route; it does not prove the prior Vulkan SIGSEGV caused the EGLConfig failure.",
+    "If SurfaceFlinger still rejects EGLConfig, the next target is the actual EGLConfig/HWC/Gralloc format contract.",
+    "No userdata or metadata wipe is included.",
+    "Build script is host-only; flashing is handled by a separate restricted script and this script never reboots the device."
+  ],
+  "checks": [
+    "system EROFS fsck and property/init-script readback.",
+    "vbmeta_system system descriptor matches the new system image; product and system_ext descriptors remain inherited from C17.",
+    "LP dump includes all active A partitions with the C17 layout."
+  ],
+  "images": {
+    "boot.img": {
+      "bytes": 201326592,
+      "sha256": "E5A016056D5C93C7A886980A7C062617EC44DC06A48417D7DD0F4476708A6368"
+    },
+    "vendor_boot.img": {
+      "bytes": 100663296,
+      "sha256": "02333B82BA936F1BAAB1ECAB744632C70F8FC16688A206C7041EF319F112A137"
+    },
+    "dtbo.img": {
+      "bytes": 33554432,
+      "sha256": "50E1AC0EDCBD333778217AA6FE8D972F6FF85ADD0DAE8A015A6642C2172DD886"
+    },
+    "vbmeta.img": {
+      "bytes": 131072,
+      "sha256": "013335BCA9B312E0BEFF737D30903A9B0A1EF829BA19A7BD5802BF83C04F40E9"
+    },
+    "vbmeta_system.img": {
+      "bytes": 131072,
+      "sha256": "932CFBE646D588AF3B61C3A8D075C2AAD37C5DC6F4906C5200D6B6BEFF65DE73"
+    },
+    "super.img": {
+      "bytes": 7684274964,
+      "sha256": "EEA7DD2378DDF84BF1BAF0DC86445025AFDAED3E0CE20DE75654D11D0AA35132"
+    }
+  }
+}

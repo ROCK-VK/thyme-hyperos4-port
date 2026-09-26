@@ -13195,3 +13195,28 @@
 - 尚未验证：公开网页 UI 的人工浏览体验；不影响 API、匿名 raw 下载和远端 main 校验。
 - 待处理：今后每次 Standalone 完整备份完成后，将对应新导出和观察目录加入 raw evidence allowlist，完成凭据扫描、字节校验后随里程碑推送。
 - 替代：结清 21:00 记录中的“远端推送待确认”状态；旧的 raw pstore/oops 仅本地发布限制已废止。
+
+## 2026-09-26 21:37｜C17 图形路由定点分析与 C18 构建
+
+- 状态：C18 主机构建与静态检查完成；构建期间修正两处脚本问题后以同一 C18 暂存目录恢复完成。设备尚未刷写。
+- 改动/结论：C17 pmsg 中 24 次 SurfaceFlinger `no suitable EGLConfig found` 具有重复的 `SkiaGLRenderEngine::chooseEglConfig` 调用路径；graphicsengine 在 `vkEnumeratePhysicalDevices+4` 的 SIGSEGV 早约 0.6 秒，但属于另一进程且无因果栈证据。C17 system 默认属性为 ANGLE，实际 Android 17 libEGL 有 ANGLE/property 路由代码，但原始 pmsg 未证明运行时后端。C18 在 system/build.prop 将 `persist.graphics.egl` 改为 `adreno`，并在 `ro.persistent_properties.ready=true` 后重新设为 adreno，以测试 thyme 原生 EGL 路由及排除旧 `/data` persist 值覆盖。
+- 原因：C17 的 EGLConfig 错误稳定复现、allocator AVC 已消失；目标 thyme vendor 明确配置 Adreno 且含本机 EGL/GLES 库，K40 成功包也选用 Adreno 后缀。该证据支持定点后端实验，但尚不证明 ANGLE 是根因或 native Adreno 一定解决配置匹配。
+- 涉及文件：新增 `tools/build_candidate18_native_adreno.py`、`tools/flash_candidate18_native_adreno.ps1`、`tools/start_candidate18_observed_boot.ps1`；更新 `tools/observe_candidate13_readonly.py`；新增 `work/reports/20260926_CANDIDATE18_NATIVE_ADRENO/REPORT.md`；C18 images 目录及本状态。
+- 验证：C18 只重建 system EROFS、`vbmeta_system.img`、LP `super.img`，其他四镜像沿用 C17；system 文件可读回新属性和 init property action。EROFS fsck 通过；lpunpack 从最终 super 提取的 system_a 与独立 system 镜像逐字节一致，二者 SHA-256 为 `688d47c20002826231843fce53a42f77f2c9f510494af632bff653bc35eb38d5`；vbmeta_system 的 system root digest 匹配新 system，product/system_ext descriptors 保持 C17；LP dump 布局通过。Python 编译、PowerShell AST 和受限刷写脚本 Dry-Run 通过。镜像：super 7,684,274,964 bytes，SHA-256 `EEA7DD2378DDF84BF1BAF0DC86445025AFDAED3E0CE20DE75654D11D0AA35132`；vbmeta_system 131,072 bytes，SHA-256 `932CFBE646D588AF3B61C3A8D075C2AAD37C5DC6F4906C5200D6B6BEFF65DE73`。
+- 构建问题：首次调用的 EROFS 后文件大小检查因 WSL `stat` 短暂报告目标不存在而停止；恢复调用随后发现内嵌 Python dict/set 的花括号被外层 f-string 求值。构建脚本改为 Python pathlib 大小断言、加 `--resume` 并转义内嵌字面量后，从保留的 C18 暂存继续成功。未改写 C17 或历史资产。
+- 尚未验证：实际刷写、运行时 EGL backend、EGLConfig 是否恢复、SurfaceFlinger/bootanimation/桌面、Vulkan SIGSEGV 是否仍出现。
+- 安全边界：截至本记录，没有刷写、reboot、擦除、RAM 启动、BCB/misc 写入或 PixelOS 恢复。刷写将限于 `super` 与 `vbmeta_system_a`，结束后保持 Bootloader Fastboot；首次 C18 启动等待用户现场确认。
+- 待处理：先受限刷写 C18，再集中更新实机写入结果、状态文件和公开仓库；随后请求用户现场确认并进行一次有 observer ARMED 的 C18 启动。
+- 替代：替代当前状态中“C18 未构建/ANGLE 路由仍是下一步调查”的快照结论；C17 后端身份和最终 EGLConfig 根因仍未确定。
+
+## 2026-09-26 21:44｜Candidate 18 两分区刷写完成并保持 Fastboot
+
+- 状态：C18 受限刷写完成；设备仍在 Bootloader Fastboot，尚未启动 C18。
+- 改动/结论：按当前授权顺序刷写 `super` 与 `vbmeta_system_a`。`super` 的 10/10 sparse 块全部 `OKAY`，耗时 206.216 秒；`vbmeta_system_a` send/write 均 `OKAY`，目标耗时 13.321 秒。
+- 原因：C17 的重复 SurfaceFlinger EGLConfig 失败仍未定位到 EGL 后端；C18 已完成有目标的 native Adreno EGL 路由变体并通过主机检查。
+- 涉及文件：`tools/flash_candidate18_native_adreno.ps1`、C18 images manifest、`work/reports/20260926_CANDIDATE18_NATIVE_ADRENO/REPORT.md`、本状态文件。
+- 验证：写前镜像大小/SHA-256 与 C18 manifest 一致；刷前 Fastboot 预检为唯一设备 `[REDACTED_DEVICE_ID]`、product=thyme、A 槽、unlocked=yes、is-userspace=no。刷后复核仍为同一产品/槽/解锁/Bootloader Fastboot；ADB 无设备、无残留 fastboot 写入进程。
+- 尚未验证：C18 runtime EGL backend、SurfaceFlinger EGLConfig、Vulkan 初始化、bootanimation/设置向导/桌面。
+- 安全边界：仅写入 `super`、`vbmeta_system_a`。无 reboot、userdata/metadata 擦除、Standalone RAM 启动、PixelOS 恢复、BCB/misc 写入或其他分区操作；Bootloader 未锁定。
+- 待处理：等用户准备观察；先运行 `C18-native-adreno` observer 并等 `[ARMED]`，再取得用户在场确认后首次启动一次。
+- 替代：更新 21:37 记录中“C18 设备尚未刷写”；刷写完成但真机启动结果仍未知。

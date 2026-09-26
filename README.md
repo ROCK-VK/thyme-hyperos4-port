@@ -10,9 +10,10 @@
 - C16 实际进入 Android first/second stage、SELinux 动态策略编译和 enforcing，/data 有挂载记录；未出现 bootanimation、设置向导或桌面。
 - C16 记录 31 次 SurfaceFlinger `no suitable EGLConfig found` abort、一次 graphicsengine Vulkan 空指针 SIGSEGV，以及图形分配器对 `/dev/ion` 的 `{ open }` AVC。通过跨日志时间对齐，该 AVC 早于首个 EGLConfig abort 约 2.2 秒；两项图形故障是否因果相关仍待验证。
 - C17 复验 pstore 证明系统进入 Android First/Second Stage、SELinux enforcing、APEX Bootstrap 和 /data 挂载；graphics allocator 的 ion_device open/read AVC 均未复现。SurfaceFlinger 仍有 24 次 EGLConfig abort，另有一次 Vulkan 设备枚举 SIGSEGV。
-- C17 未上线 ADB，也未进入 HyperOS 启动画面、设置向导或桌面；ANGLE 是否实际加载及 EGL/HWC/Gralloc 故障原因仍待查。
+- C17 pmsg 有 24 次重复的 SurfaceFlinger `SkiaGLRenderEngine::chooseEglConfig` 失败；C17 实际 EGL 后端仍未确认。`graphicsengine` 在 Vulkan 枚举处的 SIGSEGV 早约 0.6 秒，但没有证据证明它导致 EGLConfig 故障。
+- C18 已在主机侧构建并刷写 `super`、`vbmeta_system_a`，手机保持 Bootloader Fastboot，尚未首次启动。C18 将 `persist.graphics.egl` 路由到 thyme vendor 配置的 native Adreno，并在持久属性加载后再次设置，以排除旧 ANGLE 持久值覆盖；真机效果待验证。
 
-最新结果见 [C17 复验报告](reports/candidate17/20260926_CANDIDATE17_RETEST_REPORT.md)、[C17 首次取证报告](reports/candidate17/20260926_CANDIDATE17_FIRST_BOOT_REPORT.md)、[C16 首启与 C17 构建/刷写报告](reports/candidate17/20260926_CANDIDATE16_FAILURE_AND_CANDIDATE17_BUILD_FLASH.md)、[项目当前状态](logs/PROJECT_STATUS.md) 和按时间追加的 [执行记录](logs/EXECUTION_LOG.md)。
+最新结果见 [C18 native Adreno 路由报告](reports/candidate18/20260926_CANDIDATE18_NATIVE_ADRENO_REPORT.md)、[C18 构建清单](reports/candidate18/BUILD_MANIFEST.json)、[C17 复验报告](reports/candidate17/20260926_CANDIDATE17_RETEST_REPORT.md)、[项目当前状态](logs/PROJECT_STATUS.md) 和按时间追加的 [执行记录](logs/EXECUTION_LOG.md)。
 
 ## 设备与来源
 
@@ -36,6 +37,7 @@ K40 对照资料显示，成功包的 vendor_boot ramdisk 与原包不同，并�
 - **C15**：保留 C14 绕过并增加 ANGLE EGL 选择属性；实机进入 second stage 和 /data 挂载，但仍有 SurfaceFlinger EGLConfig abort，未进入启动动画。
 - **C16**：图形 allocator 的 ion_device read 拒绝消失，但仍有 open AVC；SurfaceFlinger EGLConfig abort 继续出现。
 - **C17**：依据 C16 的 open AVC 增加精确权限，已刷写 vbmeta_system_a 与 super。复验已确认进入 Second Stage，图形 allocator 的 open/read AVC 未复现；SurfaceFlinger EGLConfig abort 持续，尚未进入启动动画。
+- **C18**：保留 C17 启动链和修复，将 EGL 路由从未经运行时确认的 ANGLE 改为 thyme vendor 所配置的 native Adreno；已刷写 `super` 和 `vbmeta_system_a`，等待用户现场确认后首次启动，尚无运行时结果。
 
 具体阶段和证据等级以项目状态文件及 Candidate 报告为准，旧报告的“计划/待验证”不会自动成为当前结论。
 
@@ -67,7 +69,7 @@ scripts/           带明确文件白名单的本地增量同步脚本
 
 ## 脚本与构建
 
-`tools/` 中保留了 C9–C13 的部分构建/预检流程、C13 SELinux 审核、首次启动只读观察器、时间戳启动助手、Standalone 日志导出工具和 PixelOS A0′ 恢复脚本。启动、刷写和 `fastboot boot` 辅助脚本都需要各自的授权；脚本本身不构成设备操作许可。它们依赖本机 WSL 环境、外部 ROM 输入和原工程中的暂存资产。本仓库没有完整输入镜像，**不能仅凭 clone 一键复现完整 ROM 构建**。脚本来源及设备操作分类见 [`tools/README.md`](tools/README.md)。
+`tools/` 中保留了历史 Candidate 构建/预检流程、C13 SELinux 审核、只读启动观察器、启动门控、Standalone 日志导出工具和 PixelOS A0′ 恢复脚本。C18 构建脚本把 `/system` EGL 路由切换到 native Adreno，刷写脚本只写 `super`/`vbmeta_system_a` 并默认 Dry-Run，启动脚本要求 observer ARMED 和用户在场确认。启动、刷写和 `fastboot boot` 辅助脚本都需要审阅其操作范围；脚本本身不构成设备操作许可。它们依赖本机 WSL 环境、外部 ROM 输入和原工程中的暂存资产。本仓库没有完整输入镜像，**不能仅凭 clone 一键复现完整 ROM 构建**。脚本来源及设备操作分类见 [`tools/README.md`](tools/README.md)。
 
 后续更新公开副本时，先审核允许发布的本地变更，再运行文本与原始诊断证据同步器。原始证据同步器只递归处理明确列入 allowlist 的 Standalone 导出和 host-observation 目录，复制原始字节并生成逐文件 SHA-256 清单；识别到凭据、分区/固件镜像名或超大文件时会排除并记录原因：
 
