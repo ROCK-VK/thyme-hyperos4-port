@@ -3,9 +3,9 @@
 ## 当前阶段
 
 - 项目目标：将 Xiaomi 15（dada）的 HyperOS 4 / Android 17 用户空间移植到 Xiaomi Mi 10S（thyme），优先越过厂商启动阶段，进入 Android 后续启动、开机动画、设置向导或桌面。
-- 当前有效诊断版本：Candidate 14 BPF bootstrap bypass（C14），由已实机测试过的 C13 派生；仅主机侧构建，尚未刷写或启动。
+- 当前有效诊断版本：Candidate 14 BPF bootstrap bypass（C14 run5），已将 `vbmeta_system_a` 与 `super` 刷入 A 槽；尚未首次启动。
 - 当前最明确阻塞：C13 正常进入 Android second stage、APEX bootstrap 和 vold 数据初始化后，Connectivity NetBpfLoad 因 Android 25Q2 要求内核 5.4、而目标内核为 4.19.325，触发 init 的 bpfloader-failed 暖重启。
-- 最近一次 C13 设备现象：用户看到小米 Logo/黑屏循环，随后手动进入 Fastboot；Standalone RAM 取证已完成。本轮只读复查重新确认设备当前仍在 Bootloader Fastboot（serial `[REDACTED_DEVICE_ID]`、product `thyme`、A 槽、unlocked=yes、非 userspace Fastboot），ADB 未枚举。
+- 最近一次 C13 设备现象：用户看到小米 Logo/黑屏循环，随后手动进入 Fastboot；Standalone RAM 取证已完成。本轮 C14 两分区写入后，设备仍在 Bootloader Fastboot（serial `[REDACTED_DEVICE_ID]`、product `thyme`、A 槽、unlocked=yes、非 userspace Fastboot），ADB 未枚举。
 - PixelOS A0′：救援镜像仍在本地，但 C13 重刷和启动实验后没有恢复 PixelOS；当前没有 PixelOS 在线或健康验证证据。
 
 ## 已验证的工程事实
@@ -28,6 +28,7 @@
 - 拟写入范围仅为 vbmeta_system_a 和 super。脚本 tools/flash_candidate14_bpf_bootstrap_bypass.ps1 默认 Dry-Run；显式 -Execute 才写入。脚本没有重启、userdata/metadata 擦除、其他分区写入或 bootloader lock/unlock 命令。
 - 额外发现 C13 自身 vbmeta_system 中 system 描述符与 C13 super 内 system_a 描述符不同；C13 vbmeta_system flags=2（VERIFICATION_DISABLED），顶层 vbmeta flags=3。C14 已为它实际构建的 system/system_ext 生成匹配描述符；该旧描述符差异不等于 C7 内容基线不匹配，也不是本轮已证实的启动阻塞。
 - 最终脚本 Dry-Run 已通过：vbmeta_system.img 131,072 字节、SHA-256 `5347D67BEADC9A0F8DCE49B3C76DA3F34E3E60805F3974ED895990724740D744`；super.img 7,684,274,964 字节、SHA-256 `112A0EB7FE6D13CD70848453528466219ADE18E3749D15F934854033E20B8093`。计划仅写两个批准目标。
+- 按用户授权已顺序刷写 `vbmeta_system_a` 和 `super`：vbmeta_system 写入成功；super sparse 10/10 段成功，总耗时 204.655 秒。写后 Fastboot 仍在线；没有重启、擦除或写入其他分区。
 
 ## 继承的有效修复与约束
 
@@ -39,8 +40,8 @@
 
 ## 设备操作边界与下一步
 
-- 当前设备只读预检为 Bootloader Fastboot：serial `[REDACTED_DEVICE_ID]`、product `thyme`、current-slot `a`、unlocked=yes、is-userspace=no；ADB 未枚举。
-- 下一步等待用户单独授权后，才可依序写 Candidate 14 的 vbmeta_system_a、super；刷完保持 Fastboot。首次启动仍需另一条明确授权。
+- 当前设备写后只读状态为 Bootloader Fastboot：serial `[REDACTED_DEVICE_ID]`、product `thyme`、current-slot `a`、unlocked=yes、is-userspace=no；ADB 未枚举。
+- 下一步等待用户单独授权首次启动；获得授权后先启动只读观察器并确认 ARMED，再执行一次 Fastboot reboot，用户观察屏幕。失败后 Standalone RAM 启动和导出仍需遵守对应授权边界。
 - 失败后如需新的 Standalone RAM 临时启动，也须取得相应授权；日志保存完成前不恢复 PixelOS。
 - 严禁回锁 Bootloader；未经单独授权不擦除 userdata/metadata，不修改 persist、modemst、EFS/NV、射频校准、设备身份或 misc/BCB。
-- 当前源码、C14 主机成品与设备上运行版本并不一致：设备最近运行的是 C13 测试流程；C14 尚未部署。
+- 当前 C14 镜像与设备写入目标一致：C14 `vbmeta_system_a`、`super` 已部署，boot/vendor_boot/dtbo/vbmeta 保持 C13 基线；Android 尚未启动，因此运行态和 C14 是否越过 bpfloader-failed 均未验证。

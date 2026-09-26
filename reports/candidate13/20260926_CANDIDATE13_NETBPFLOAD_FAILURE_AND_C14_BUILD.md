@@ -78,4 +78,12 @@ Candidate 14 六项镜像清单位于 work/stage_d_thyme_os4_candidate_14_bpf_bo
 
 最终 EROFS 回读仍确认 BPF bypass 改动和 C13 两条 ion_device allow 规则；两份 EROFS 的 fsck.erofs 检查通过。受限刷写脚本语法检查及默认 Dry-Run 均通过，且只计划顺序写 `vbmeta_system_a` 与 `super`。两项镜像大小、SHA-256 以本报告前表为准。本轮未刷写、重启、擦除或恢复 PixelOS。
 
-本轮最新只读设备状态：Bootloader Fastboot、product=thyme、A 槽、unlocked=yes、is-userspace=no；ADB 未枚举。PixelOS A0′ 未恢复或启动验证。当前等待用户明确授权 C14 两分区刷写；刷后保持 Fastboot，首次启动需独立授权。
+本轮刷写后的只读设备状态：Bootloader Fastboot、product=thyme、A 槽、unlocked=yes、is-userspace=no；ADB 未枚举。PixelOS A0′ 未恢复或启动验证。Candidate 14 的首次启动仍需独立授权。
+
+## C14 两分区实际写入（2026-09-26）
+
+用户授权后，受限脚本按顺序将 `vbmeta_system.img` 写入 `vbmeta_system_a`，再将 `super.img` 写入 `super`。`vbmeta_system_a` 的发送和写入均返回 `OKAY`；`super` 的 sparse 1/10 至 10/10 段全部发送/写入成功，总耗时 204.655 秒。脚本退出码为 0。
+
+写后只读 Fastboot 复查：serial `[REDACTED_DEVICE_ID]`、product `thyme`、current-slot `a`、unlocked=yes、is-userspace=no；Fastboot 设备仍在线，ADB 未枚举。boot、vendor_boot、dtbo、vbmeta 保持 C13 基线。没有执行 reboot、userdata/metadata erase、其他分区写入或 Bootloader 状态操作。Fastboot 提示 `skip copying super image avb footer due to sparse image`，但所有 10 段均返回 `OKAY` 且流程成功结束。
+
+当前 C14 尚未启动，不能判断是否已越过 bpfloader-failed。下一步须等待用户单独授权首次启动；启动前先运行只读观察器并确认 ARMED，再执行一次 reboot。若失败，先保留现场；新的 Standalone RAM 启动/取证按单独授权边界执行。

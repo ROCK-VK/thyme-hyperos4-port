@@ -12998,3 +12998,14 @@
 - 尚未验证：C14 未刷写/启动；是否绕过 bpfloader-failed、后续 Android 启动阶段及 SELinux HAL 实际效果均未知。PixelOS A0′ 未恢复或启动验证。
 - 待处理：等待用户明确授权 C14 两分区顺序刷写；写入后保持 Fastboot。首次启动及故障后 Standalone RAM 取证分别遵守独立授权边界。
 - 替代：纠正本轮早先“C7 system 来源与 C13 实际 system 不一致、run5 不可用”的临时判断；实际 C13 super 的 system 描述符证明两者匹配。
+## 2026-09-26 15:20｜Candidate 14 两分区刷写完成
+
+- 状态：按用户本轮明确授权完成 C14 写入；设备保持 Bootloader Fastboot，未启动。
+- 改动/结论：只刷写 `vbmeta_system_a` 与 `super`。`vbmeta_system_a` 的发送、写入均返回 `OKAY`；`super` sparse 1/10 至 10/10 全部成功，Fastboot 报总耗时 204.655 秒。刷后确认设备仍为 `[REDACTED_DEVICE_ID] fastboot`、product=thyme、current-slot=a、unlocked=yes、is-userspace=no；无 fastboot 写入进程残留。其他启动镜像维持 C13 基线。
+- 原因：用户授权验证 C14 是否可越过 C13 的 bpfloader-failed 重启点；先完成受控镜像部署并保持 Fastboot，首次启动需另行授权。
+- 涉及文件：`tools/flash_candidate14_bpf_bootstrap_bypass.ps1`；`work/stage_d_thyme_os4_candidate_14_bpf_bootstrap_bypass_run5/images/`；`work/reports/20260926_CANDIDATE13_NETBPFLOAD_FAILURE_AND_C14_BUILD.md`；`日志/项目当前状态.md`。
+- 验证：刷写前脚本重新校验 `vbmeta_system.img` 131072 字节、SHA-256 `5347D67BEADC9A0F8DCE49B3C76DA3F34E3E60805F3974ED895990724740D744`；`super.img` 7684274964 字节、SHA-256 `112A0EB7FE6D13CD70848453528466219ADE18E3749D15F934854033E20B8093`。预检确认 serial `[REDACTED_DEVICE_ID]`、thyme、A 槽、unlocked=yes、bootloader Fastboot。super 显示非致命提示“skip copying super image avb footer due to sparse image”，10/10 sparse 段均 `OKAY`，脚本退出码 0。刷后只读身份/槽位/解锁状态复查通过。
+- 尚未验证：C14 首次启动、bpfloader-failed 是否消失、后续启动阶段、Keymaster/Gatekeeper/ION/QSEECom 与桌面状态。
+- 安全边界：没有 reboot、userdata/metadata 擦除、其他分区写入、Bootloader 解锁/回锁或 PixelOS 恢复。
+- 待处理：启动前先启动观察器并确认 ARMED；等待用户单独回复“准备好了，开始启动”后才执行一次 Fastboot reboot。失败后 Standalone RAM 取证仍按单独授权边界执行。
+- 替代：将 15:12 的“C14 两分区待刷写授权”状态更新为“刷写完成、等待首次启动授权”。
