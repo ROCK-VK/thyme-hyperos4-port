@@ -13349,3 +13349,15 @@
 - 安全边界：没有 reboot/fastboot boot、userdata/metadata 擦除、其他分区写入、misc/BCB 修改、槽位切换、硬件 persist/modemst/EFS/NV 修改或 Bootloader 回锁；没有恢复 PixelOS。
 - 待处理：用户现场确认后启动 C19 Observer 并等待 ARMED，再执行一次受控首次启动；优先捕获 logcat 与实时状态，失败时保存完整 Standalone 诊断卷。
 - 替代：替代 00:05/00:06 中“C19 尚未构建/待构建”的当前状态；对应记录保留其当时进度。
+
+## 2026-09-27 00:28｜C18 retest 证据与 C19 资料公开同步
+
+- 状态：C18 retest Standalone/主机观察原始证据、C18 报告及 C19 构建清单/脚本/报告已推送现有 Public 仓库；匿名访问校验通过。
+- 改动/结论：按显式 allowlist 新增本轮 C18 retest 的 20 个原始文件；C13–C18 当前公开原始证据共 156 个文件、177,313,846 bytes。同步器未发现凭据或策略排除项，allowlist 目录缺失数为 0。Commit `0dbd63b71c5c0a0c6b7bbcfe9e66c799ee69c396` 已推送到 `main`。
+- 原因：遵循用户对完整启动诊断证据公开同步的授权，并公开 C19 可审核的构建/操作元数据；不分发 ROM 镜像。
+- 涉及文件：公开仓库 `evidence/candidate18/`、`evidence/RAW_EVIDENCE_MANIFEST.csv`、`scripts/sync_raw_startup_evidence.ps1`、C18/C19 报告、C19 六镜像清单与工具脚本；本地 `日志/项目当前状态.md`。
+- 验证：公开仓库匿名 API 返回 `visibility=public`、默认分支 `main`；远端 main 指向 commit `0dbd63b71c5c0a0c6b7bbcfe9e66c799ee69c396`。匿名下载 README、C19 报告、C18 pmsg 成功；pmsg 实际大小 1,056,813 bytes、SHA-256 `74277095DB9552388A7A45A53E69DA5B3E59FFFD5CD8C3DAA3ED54AFF34005CE`，与公开 manifest 一致。暂存筛查 52 个文件、24,043,689 bytes，最大单文件 16,777,216 bytes；凭据扫描 0，镜像/分区文件筛查 0。原始日志 CRLF/行尾空格保留，未通过格式化改变原始证据字节。
+- 尚未验证：C19 尚未首次启动；RGBX/EGL/HWC/Gralloc 运行时结果待用户现场确认后采集。
+- 安全边界：本次仅公开同步和主机文件变更；不上传完整 ROM、系统分区镜像或用户数据分区备份。设备保持 Fastboot。
+- 待处理：等待用户在场确认后开始 C19 首次启动。
+- 替代：无。
