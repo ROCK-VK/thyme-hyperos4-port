@@ -10063,7 +10063,7 @@
 - 改动/结论：
   1. 技术认知纠偏：收紧内核诊断实验结论边界，明确单次实验不能 100% 排除全部内核问题；自建内核若在 PixelOS 运行仅证明特定环境可用，不直接等同于 HyperOS4 兼容；明确 API 30/33 与 A13 携带 30.0 策略的区别；确认 180 组旧版本化 SELinux 冲突不能靠单一 mapping 文件解决；明确 Fastboot 无法直接读 pstore 且无 panic 静态卡死不保证产出日志。
   2. WSL 空间深度调查：查明除 `[LOCAL_WSL_USER]/root` 根下仍有 112G 历史 v04/B0 早期产物（如 `v04_b0_super_provenance_final8` 32G、`final7` 26G、`images_repro_final7` 16G、`super_sky/10s` raw/partitions 等）；仅作报告，未擅自删除。
-  3. 安全释放项目空间：确认 Candidate 1 中 `super/unpacked` 与 `super/unpacked_avb` 为纯回读校验副本，予以安全删除，实测释放 **14.4 GiB**。WSL ext4 已用从 205G 降至 190G，可用升至 766G；Candidate 1 降至 45G，`10s_os4_build` 降至 69G。未触碰唯一来源、正式镜像、内核构建树或救援资产。
+  3. 安全释放项目空间：确认 Candidate 1 中 `super/unpacked` 与 `super/unpacked_avb` 为纯回读校验副本，予以安全删除，实测释放 **14.4 GiB**。WSL ext4 已用从 205G 降至 190G，可用升至 766G；Candidate 1 降至 45G，`[LOCAL_WSL_BUILD_DIR]` 降至 69G。未触碰唯一来源、正式镜像、内核构建树或救援资产。
   4. 历史 PixelOS 成功证据核验：复核 2026-09-13 实验（`C02~C07`），当时写入的是 `work/payload_pixel/` 原生 boot/vendor_boot/dtbo/vbmeta/vbmeta_system 与 `super_a.img`（6469630544 bytes）；实物全部完好在盘。
   5. 双组对照实验设计：
      - 组 1（原生基线）：全套刷入上述 Pixel 原生启动链 + 原生 super + 清除 userdata/metadata，用于复现已验证可开机基座；
@@ -13063,3 +13063,15 @@
 - 安全边界：未擦除 `userdata`/`metadata`，未写入其他分区，未执行 Bootloader 解锁/回锁，未重启或恢复 PixelOS。
 - 待处理：保持 Fastboot，等待用户单独授权 C15 首次启动；启动前运行观察器并确认 ARMED。失败后再按授权范围进行现场取证。
 - 替代：更新 16:14 与 16:23 记录中的“C15 待刷写授权”状态；实际刷写已完成，C15 启动仍待授权。
+
+## 2026-09-26 18:10｜C15 首启取证与 C16 图形分配器 AVC 修复
+
+- 状态：C15 实机启动及 Standalone 只读取证完成；C16 主机侧构建、静态验证和刷写 Dry-Run 完成；C16 尚未刷写或启动。
+- 改动/结论：C15 进入正常 Android first/second stage、SELinux enforcing、4 个 Bootstrap APEX 激活和 `/data` F2FS 挂载；未上线 ADB，未出现启动动画/设置向导/桌面。pstore/pmsg 显示 SurfaceFlinger 仍以 `no suitable EGLConfig found` 重复中止；C14/C15 均出现图形分配器读取 `ion_device` 的 enforcing AVC。C15 的角度路由属性是否实际启用 ANGLE 未由日志证明。根据重复 AVC，C16 仅新增 `hal_graphics_allocator_default` 对 `ion_device` 的 `{ read }` 权限，保留 C14 BPF bypass、C15 ANGLE 配置和 C13 Keymaster/Gatekeeper 策略。
+- 原因：用户报告 C15 停留小米 Logo 后手动回到 Fastboot；需要依据真实 pstore 修复重复且明确的图形访问拒绝，推进下一次启动实验。
+- 涉及文件：新增 `tools/build_candidate16_graphics_allocator_ion.py`、`tools/flash_candidate16_graphics_allocator_ion.ps1`、`work/reports/20260926_CANDIDATE15_FIRST_BOOT_AND_CANDIDATE16_GRAPHICS_ALLOCATOR_FIX.md`；更新 `日志/项目当前状态.md`；本记录；C15 Standalone 原始取证目录 `work/reports/20260926_CANDIDATE15_FIRST_BOOT/standalone/run_20260926_174212/`；C16 镜像位于 `work/stage_f_thyme_os4_candidate_16_graphics_allocator_ion_run1/images/`。
+- 验证：C15 console 可见一个 Android 启动实例：first stage 1.895 秒、second stage 3.168 秒，enforcing 状态及 APEX Bootstrap 正常；pmsg 延续约 151 秒。C15 的 `/data` F2FS mount/vold Mounted 记录成功，无需重复清数据。C14/C15 的图形分配器 AVC 均指向 `ion_device` 的 read 权限。C16 新 system_ext EROFS fsck 和规则回读通过；原 C13 规则与 ion 标签保留；vbmeta_system 的 product/system/system_ext 描述符及 super LP 分区检查通过。刷写脚本 PowerShell 解析通过，默认 Dry-Run 核验两项镜像：`vbmeta_system.img` 131,072 字节、SHA-256 `24AA0C2971ECA3E2B88F01DBB4E7285834A30AA20498713712DEF8333BC8AAEC`；`super.img` 7,684,274,964 字节、SHA-256 `888988A0D9E5307F751B718D573032A14DE4B80A2F47223FB34D5BC8EFEFC6C8`。只读设备状态为 thyme、A 槽、Bootloader 解锁、Bootloader Fastboot；ADB 未在线。未启动或刷写 C16。
+- 尚未验证：图形分配器 AVC 修复是否消除 AVC；ANGLE 是否被选中；SurfaceFlinger 是否获得 EGLConfig；是否进入启动动画或更后续界面；C13 Keymaster/Gatekeeper 规则真机效果。
+- 安全边界：本轮没有刷写、重启、擦除 userdata/metadata、恢复 PixelOS 或修改其他分区；Bootloader 保持解锁。
+- 待处理：将净化报告与两份脚本加入公开仓库白名单，审查 staged 文件后推送；随后向用户申请 C16 仅 `vbmeta_system_a`、`super` 的刷写授权。刷写后保持 Fastboot，首次启动另行授权。
+- 替代：更新此前“C15 已刷写但尚未启动”的当前状态；不把 C16 主机侧 SELinux 验证提升为真机结论。C15 的 EGLConfig 根因仍待继续诊断。

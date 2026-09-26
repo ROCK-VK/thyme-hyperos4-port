@@ -33,10 +33,12 @@ $Allowlist = @(
     @{ Source='tools/build_candidate13_1_data_guard.py'; Destination='tools/build_candidate13_1_data_guard.py' }
     @{ Source='tools/build_candidate14_bpf_bootstrap_bypass.py'; Destination='tools/build_candidate14_bpf_bootstrap_bypass.py' }
     @{ Source='tools/build_candidate15_angle_egl.py'; Destination='tools/build_candidate15_angle_egl.py' }
+    @{ Source='tools/build_candidate16_graphics_allocator_ion.py'; Destination='tools/build_candidate16_graphics_allocator_ion.py' }
     @{ Source='tools/build_standalone_diag.py'; Destination='tools/build_standalone_diag.py' }
     @{ Source='tools/flash_candidate13.ps1'; Destination='tools/flash_candidate13.ps1' }
     @{ Source='tools/flash_candidate14_bpf_bootstrap_bypass.ps1'; Destination='tools/flash_candidate14_bpf_bootstrap_bypass.ps1' }
     @{ Source='tools/flash_candidate15_angle_egl.ps1'; Destination='tools/flash_candidate15_angle_egl.ps1' }
+    @{ Source='tools/flash_candidate16_graphics_allocator_ion.ps1'; Destination='tools/flash_candidate16_graphics_allocator_ion.ps1' }
     @{ Source='tools/observe_candidate13_readonly.py'; Destination='tools/observe_candidate13_readonly.py' }
     @{ Source='tools/record_candidate13_event.ps1'; Destination='tools/record_candidate13_event.ps1' }
     @{ Source='tools/start_candidate13_observed_boot.ps1'; Destination='tools/start_candidate13_observed_boot.ps1' }
@@ -61,6 +63,7 @@ $Allowlist = @(
     @{ Source='work/reports/20260926_CANDIDATE13_SECOND_STAGE_CAPTURE_PREP.md'; Destination='reports/candidate13/20260926_CANDIDATE13_SECOND_STAGE_CAPTURE_PREP.md' }
     @{ Source='work/reports/20260926_CANDIDATE13_NETBPFLOAD_FAILURE_AND_C14_BUILD.md'; Destination='reports/candidate13/20260926_CANDIDATE13_NETBPFLOAD_FAILURE_AND_C14_BUILD.md' }
     @{ Source='work/reports/20260926_CANDIDATE14_FAILURE_AND_CANDIDATE15_EGL_PLAN.md'; Destination='reports/candidate15/20260926_CANDIDATE14_FAILURE_AND_CANDIDATE15_EGL_PLAN.md' }
+    @{ Source='work/reports/20260926_CANDIDATE15_FIRST_BOOT_AND_CANDIDATE16_GRAPHICS_ALLOCATOR_FIX.md'; Destination='reports/candidate16/20260926_CANDIDATE15_FIRST_BOOT_AND_CANDIDATE16_GRAPHICS_ALLOCATOR_FIX.md' }
     @{ Source='work/reports/20260926_CANDIDATE13_NETBPFLOAD_EVIDENCE_EXCERPT.txt'; Destination='reports/boot-logs/candidate13_netbpfload_failure_excerpt.txt' }
     @{ Source='@STORAGE_SAFETY_REPORT'; Destination='reports/candidate13/20260925_CANDIDATE13_STORAGE_SAFETY_AND_FIRST_FAILURE.md' }
     @{ Source='work/reports/20260924_CANDIDATE10_WARMDTB_LOG_SALVAGE/pstore/console-ramoops-0'; Destination='reports/boot-logs/candidate10_console-ramoops.txt' }
@@ -91,6 +94,9 @@ function ConvertTo-PublicText([string]$Text) {
     $Text = [regex]::Replace($Text, '(?i)/mnt/[a-z]/RVK/10S_OS4', '/path/to/thyme-os4-local')
     $Text = [regex]::Replace($Text, '(?m)^([^\r\n]*?/path/to/thyme-os4-local[^\r\n]*?)[ \t]+\r?$', '$1')
     $Text = [regex]::Replace($Text, '(?i)/root/[^/\s]+', '[LOCAL_WSL_USER]')
+    $Text = [regex]::Replace($Text, '(?i)(androidboot\.cpuid=)0x[0-9a-f]+', '$1[REDACTED_CPUID]')
+    $LocalBuildDir = [string]::Concat('10s','_os4_build')
+    $Text = [regex]::Replace($Text, '(?i)' + [regex]::Escape($LocalBuildDir), '[LOCAL_WSL_BUILD_DIR]')
     $Text = [regex]::Replace($Text, '(?i)\b[A-Z]:\\Users\\[^\s"''<>|]+', '[LOCAL_USER_PATH]')
     $Text = [regex]::Replace($Text, '(?i)\b[DE]:\\[^\s"''<>|]+', '[LOCAL_PATH]')
     $Text = [regex]::Replace($Text, '(?i)\b[DE]:/[^\s"''<>|]+', '[LOCAL_PATH]')
