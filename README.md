@@ -6,14 +6,13 @@
 
 ## 当前状态（2026-09-26）
 
-- C14 已在真实启动中越过 C13 的 `bpfloader-failed` 重启点：console 进入 Android first/second stage 并记录至约 115.8 秒，保存的 pmsg 未出现该 BPF 重启错误。BPF 本身仍未适配，网络完整性未验证。
-- C14 的直接显示故障是 SurfaceFlinger 反复因 `no suitable EGLConfig found` 中止（pmsg 记录 20 次）。没有 ADB 证据证明启动完成、设置向导或桌面出现。
-- C14 还记录一次 MIUI graphicsengine Vulkan 调用空指针崩溃及多次 netd fatal；其根因和是否阻止 Android 完成启动尚未确认。当前没有把它们写成确定根因。
-- C15 已实际启动并进入 Android first/second stage、SELinux enforcing、APEX Bootstrap 和 /data 挂载；用户观察到小米 Logo 常亮后手动回到 Fastboot。没有 ADB、启动动画、设置向导或桌面验收。
-- C15 仍重复出现 SurfaceFlinger no suitable EGLConfig found；C14/C15 均记录图形分配器读取 ion_device 被 SELinux 拒绝。ANGLE 是否在 C15 实际被选中尚未从 pstore 证明。
-- C16 已按授权刷写 vbmeta_system_a、super，当前保持 Bootloader Fastboot，等待用户现场确认首次启动。实际启动结果尚未取得。
+- C14 已在真实启动中越过 C13 的 `bpfloader-failed` 重启点；C14–C17 均保留该 BPF bypass。
+- C16 实际进入 Android first/second stage、SELinux 动态策略编译和 enforcing，/data 有挂载记录；未出现 bootanimation、设置向导或桌面。
+- C16 记录 31 次 SurfaceFlinger `no suitable EGLConfig found` abort、一次 graphicsengine Vulkan 空指针 SIGSEGV，以及图形分配器对 `/dev/ion` 的 `{ open }` AVC。通过跨日志时间对齐，该 AVC 早于首个 EGLConfig abort 约 2.2 秒；两项图形故障是否因果相关仍待验证。
+- C17 只把 `hal_graphics_allocator_default` 对 `ion_device` 的 SELinux 权限从 `read` 扩为 `open read`，已完成构建并只刷写 `vbmeta_system_a`、`super`。用户报告小米 Logo 持续亮屏并手动进入 Fastboot；故障后 pstore 只有 kernel console，没有 pmsg 或可定位的 Android userspace 错误。
+- C16/C17 均未取得 ADB、启动动画或桌面验收；C17 的 SELinux 和 EGL 效果待真机验证。
 
-最新结果见 [C15 首启与 C16 图形权限修复报告](reports/candidate16/20260926_CANDIDATE15_FIRST_BOOT_AND_CANDIDATE16_GRAPHICS_ALLOCATOR_FIX.md)、[C14 启动故障与 C15 EGL 方案](reports/candidate15/20260926_CANDIDATE14_FAILURE_AND_CANDIDATE15_EGL_PLAN.md)、[项目当前状态](logs/PROJECT_STATUS.md) 和按时间追加的 [执行记录](logs/EXECUTION_LOG.md)。
+最新结果见 [C17 首启现场取证结果](reports/candidate17/20260926_CANDIDATE17_FIRST_BOOT_REPORT.md)、[C16 首启与 C17 构建/刷写报告](reports/candidate17/20260926_CANDIDATE16_FAILURE_AND_CANDIDATE17_BUILD_FLASH.md)、[C15 首启与 C16 图形权限修复报告](reports/candidate16/20260926_CANDIDATE15_FIRST_BOOT_AND_CANDIDATE16_GRAPHICS_ALLOCATOR_FIX.md)、[项目当前状态](logs/PROJECT_STATUS.md) 和按时间追加的 [执行记录](logs/EXECUTION_LOG.md)。
 
 ## 设备与来源
 
@@ -35,7 +34,8 @@ K40 对照资料显示，成功包的 vendor_boot ramdisk 与原包不同，并�
 - **C13.1**：主机侧构建过数据挂载保护变体，尚未实机验证；不是当前已验证版本。
 - **C14**：绕过已证实与 Android 25Q2/kernel 4.19 不兼容的 BPF loader 重启门控；真机 pstore 证实越过该点，随后发现 SurfaceFlinger EGLConfig abort。
 - **C15**：保留 C14 绕过并增加 ANGLE EGL 选择属性；实机进入 second stage 和 /data 挂载，但仍有 SurfaceFlinger EGLConfig abort，未进入启动动画。
-- **C16**：依据 C14/C15 重复出现的 graphics allocator ion_device read AVC 增加一条最小策略允许；主机验证完成且两分区已刷写，首次启动待现场确认。
+- **C16**：图形 allocator 的 ion_device read 拒绝消失，但仍有 open AVC；SurfaceFlinger EGLConfig abort 继续出现。
+- **C17**：依据 C16 的 open AVC 增加精确权限，已完成构建并刷写 `vbmeta_system_a` 与 `super`；用户报告 Logo 卡住。pstore 未含 pmsg，启动归属缺少主机 observer 佐证，具体阻塞待定位。
 
 具体阶段和证据等级以项目状态文件及 Candidate 报告为准，旧报告的“计划/待验证”不会自动成为当前结论。
 
@@ -53,12 +53,14 @@ scripts/           带明确文件白名单的本地增量同步脚本
 建议阅读顺序:
 
 1. [当前项目状态](logs/PROJECT_STATUS.md)
-2. [C15 首启与 C16 图形权限修复报告](reports/candidate16/20260926_CANDIDATE15_FIRST_BOOT_AND_CANDIDATE16_GRAPHICS_ALLOCATOR_FIX.md)
-3. [C14 故障与 C15 EGL 诊断方案](reports/candidate15/20260926_CANDIDATE14_FAILURE_AND_CANDIDATE15_EGL_PLAN.md)
-4. [C13 netbpfload 故障与 C14 构建](reports/candidate13/20260926_CANDIDATE13_NETBPFLOAD_FAILURE_AND_C14_BUILD.md)
-5. [C13 首次启动证据摘要](reports/boot-logs/candidate13_netbpfload_failure_excerpt.txt)
-6. [C13 Second Stage 取证准备](reports/candidate13/20260926_CANDIDATE13_SECOND_STAGE_CAPTURE_PREP.md)
-7. [K40 三方移植分析](reports/k40/20260918_K40_THREE_WAY_PORT_REVERSE_ENGINEERING_1.md)
+2. [C17 首启现场取证结果](reports/candidate17/20260926_CANDIDATE17_FIRST_BOOT_REPORT.md)
+3. [C16 首启与 C17 构建/刷写报告](reports/candidate17/20260926_CANDIDATE16_FAILURE_AND_CANDIDATE17_BUILD_FLASH.md)
+4. [C15 首启与 C16 图形权限修复报告](reports/candidate16/20260926_CANDIDATE15_FIRST_BOOT_AND_CANDIDATE16_GRAPHICS_ALLOCATOR_FIX.md)
+4. [C14 故障与 C15 EGL 诊断方案](reports/candidate15/20260926_CANDIDATE14_FAILURE_AND_CANDIDATE15_EGL_PLAN.md)
+5. [C13 netbpfload 故障与 C14 构建](reports/candidate13/20260926_CANDIDATE13_NETBPFLOAD_FAILURE_AND_C14_BUILD.md)
+6. [C13 首次启动证据摘要](reports/boot-logs/candidate13_netbpfload_failure_excerpt.txt)
+7. [C13 Second Stage 取证准备](reports/candidate13/20260926_CANDIDATE13_SECOND_STAGE_CAPTURE_PREP.md)
+8. [K40 三方移植分析](reports/k40/20260918_K40_THREE_WAY_PORT_REVERSE_ENGINEERING_1.md)
 
 ## 脚本与构建
 
@@ -67,7 +69,7 @@ scripts/           带明确文件白名单的本地增量同步脚本
 后续更新公开副本时，先审核允许发布的本地变更，再运行显式白名单同步器：
 
 ```powershell
-$env:THYME_OS4_SOURCE = 'D:\projects\thyme-os4-local'
+$env:THYME_OS4_SOURCE = 'C:\path\to\thyme-os4-local'
 .\scripts\sync_from_local.ps1 -SourceRoot $env:THYME_OS4_SOURCE
 git status --short
 git diff --stat

@@ -100,7 +100,7 @@ def new_export_dir(export_base: Path) -> Path:
     candidate = export_base / f"run_{stamp}"
     suffix = 1
     while candidate.exists():
-        candidate = EXPORT_BASE / f"run_{stamp}_{suffix:02d}"
+        candidate = export_base / f"run_{stamp}_{suffix:02d}"
         suffix += 1
     candidate.mkdir(parents=False, exist_ok=False)
     return candidate
@@ -208,9 +208,10 @@ def main() -> int:
     required_files = ("diag_status.log", "dmesg_diag_boot.txt")
     missing_files = [name for name in required_files if not (volume / name).is_file()]
     if missing_files:
-        print(f"[ERROR] THYME_DIAG label matched, but required Standalone evidence files are missing: {missing_files}")
-        timeline(event_path, "diag_volume_invalid", {"volume": str(volume), "missing_files": missing_files})
-        return 5
+        print(
+            "[WARN] THYME_DIAG volume matched, but expected Standalone files are "
+            f"missing; remaining accessible files will still be copied: {missing_files}"
+        )
 
     print(f"[EXPORT] Copying from dynamically detected volume {volume} to {export_dir}")
     timeline(event_path, "diag_volume_found", {"volume": str(volume)})
@@ -223,28 +224,86 @@ def main() -> int:
     )
     timeline(event_path, "copy_started", {"volume": str(volume)})
     copied: list[tuple[str, int, str]] = []
-    for source_root, dirs, files in os.walk(volume):
-        dirs[:] = [name for name in dirs if name not in {"System Volume Information", "$RECYCLE.BIN"}]
+    copy_errors: list[str] = [f"missing required top-level file: {name}" for name in missing_files]
+    volume_export = export_dir / "THYME_DIAG"
+    volume_export.mkdir()
+
+    def record_walk_error(error: OSError) -> None:
+        message = f"directory {error.filename!r}: {error}"
+        copy_errors.append(message)
+        print(f"  [COPY-ERROR] {message}")
+
+    for source_root, dirs, files in os.walk(volume, onerror=record_walk_error):
+        dirs.sort()
+        files.sort()
+        relative_dir = Path(source_root).relative_to(volume)
+        for dirname in dirs:
+            (volume_export / relative_dir / dirname).mkdir(parents=True, exist_ok=True)
         for filename in files:
             source = Path(source_root) / filename
             relative = source.relative_to(volume)
-            destination = export_dir / relative
-            destination.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(source, destination)
-            size = destination.stat().st_size
-            digest = sha256_file(destination)
-            copied.append((relative.as_posix(), size, digest))
-            print(f"  [SAVED] {relative.as_posix()} ({size:,} bytes) SHA256={digest}")
+            destination = volume_export / relative
+            try:
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                source_size_before = source.stat().st_size
+                shutil.copy2(source, destination)
+                source_size_after = source.stat().st_size
+                destination_size = destination.stat().st_size
+                source_digest = sha256_file(source)
+                destination_digest = sha256_file(destination)
+                if source_size_before != source_size_after:
+                    raise OSError("source size changed while it was being copied")
+                if source_size_after != destination_size:
+                    raise OSError(
+                        f"size mismatch: source={source_size_after}, copy={destination_size}"
+                    )
+                if source_digest != destination_digest:
+                    raise OSError(
+                        f"SHA-256 mismatch: source={source_digest}, copy={destination_digest}"
+                    )
+            except OSError as exc:
+                message = f"file {relative.as_posix()!r}: {exc}"
+                copy_errors.append(message)
+                print(f"  [COPY-ERROR] {message}")
+                continue
+            copied.append((relative.as_posix(), destination_size, destination_digest))
+            print(
+                f"  [SAVED] {relative.as_posix()} ({destination_size:,} bytes) "
+                f"SHA256={destination_digest} (source verified)"
+            )
 
     manifest = export_dir / "SHA256SUMS.txt"
     with manifest.open("w", encoding="utf-8", newline="\n") as stream:
         for relative, _size, digest in copied:
-            stream.write(f"{digest}  {relative}\n")
+            stream.write(f"{digest}  THYME_DIAG/{relative}\n")
 
-    timeline(event_path, "copy_finished", {"file_count": len(copied), "files": [item[0] for item in copied]})
-    print(f"[DONE] Exported {len(copied)} files to {export_dir}")
+    file_manifest = export_dir / "FILE_MANIFEST.csv"
+    with file_manifest.open("w", encoding="utf-8", newline="") as stream:
+        writer = csv.writer(stream)
+        writer.writerow(("relative_path", "bytes", "sha256"))
+        for relative, size, digest in copied:
+            writer.writerow((f"THYME_DIAG/{relative}", size, digest))
+
+    if copy_errors:
+        (export_dir / "COPY_ERRORS.txt").write_text(
+            "Some source content could not be traversed or verified:\n"
+            + "\n".join(copy_errors)
+            + "\n",
+            encoding="utf-8",
+        )
+
+    timeline(event_path, "copy_finished", {
+        "file_count": len(copied),
+        "copy_error_count": len(copy_errors),
+        "files": [item[0] for item in copied],
+        "copy_errors": copy_errors,
+    })
+    print(
+        f"[DONE] Exported and source-verified {len(copied)} files to {volume_export}; "
+        f"copy errors={len(copy_errors)}"
+    )
     print(f"[NEXT] Review the new {args.candidate} console/pmsg logs before any recovery action.")
-    return 0
+    return 6 if copy_errors else 0
 
 
 if __name__ == "__main__":

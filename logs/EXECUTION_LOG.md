@@ -13096,3 +13096,46 @@
 - 安全边界：未写入其他分区；未擦除 userdata/metadata；未重启；未回锁 Bootloader；未恢复 PixelOS。
 - 待处理：用户现场确认后，先启动只读观察器并确认为 C16/ARMED，再执行一次启动。故障后按长期授权的 Standalone 流程完整复制诊断卷，再分析。
 - 替代：更新 C16“主机已构建、待刷写”的状态；现在已刷写但仍未启动。
+## 2026-09-26 19:18｜Candidate 16 首启停留小米 Logo 与 Standalone 全量导出加固
+- 状态：C16 首次启动已执行，未到达 HyperOS 动画；用户手动回到 Bootloader Fastboot。Standalone 尚未启动。
+- 改动/结论：用户观察到小米 Logo 持续亮屏。C16 observer 在启动命令前以 C16 标签 ARMED；host Fastboot 在启动后消失并约 228 秒重新出现，ADB 未上线。按用户“全量复制诊断卷”的要求，修改 salvage_c13_diag.py：不再跳过目录，保留空目录，源卷文件复制到独立 THYME_DIAG 子目录，生成带路径/大小/SHA-256 的清单，逐文件比对源与副本；读取/遍历失败写入 COPY_ERRORS.txt 并以非零状态报告；避免清单与源文件同名覆盖，并修正自定义输出目录碰撞处理。
+- 原因：在 C16 故障现场完整取证前，现有采集器未满足本轮要求的全卷复制和源/副本一致性检查。
+- 涉及文件：tools/salvage_c13_diag.py；work/reports/20260926_CANDIDATE16_FIRST_BOOT/observations/run_20260926_191130/；日志/项目当前状态.md；本记录。
+- 验证：Python AST 解析通过；salvage_c13_diag.py 的 C16 Dry-Run 确认 Standalone 镜像 SHA-256 与预期匹配，且未执行 Fastboot 查询/设备命令。脚本当前按唯一 THYME_DIAG 标签动态识别卷，不固定盘符。
+- 尚未验证：改进后的递归复制、目录保留、逐文件源副本哈希比较尚未在本轮真实 Standalone 卷上执行；C16 的 kernel/init 图形故障日志尚未取得。
+- 安全边界：C16 只做过一次首次启动；没有新的分区刷写、数据擦除、BCB/persist/射频/设备身份修改或自动恢复。Standalone RAM 启动尚未执行。
+- 待处理：依据用户长期授权，先只读确认 Fastboot 设备与身份，然后启动已核验 Standalone RAM 镜像；保存并核验诊断卷全部文件后再分析。
+- 替代：更新“C16 已刷写、等待首次启动”的状态；首次启动已发生且用户已手动返回 Fastboot。## 2026-09-26 19:27｜C16 Standalone 全量取证及 C17 定点修复准备
+
+- 状态：C16 RAM 诊断卷全量复制与日志分析已完成；C17 两个主机脚本已编写并通过语法解析，构建尚未执行。
+- 改动/结论：salvage_c13_diag.py 的递归复制修正已在本轮真实 THYME_DIAG 卷上验证：8 个源文件/目录全部复制，主机副本集合、字节数、SHA-256 与源卷相符。C16 console/pmsg 证明正常 Android first/second stage、SELinux 动态编译和 enforcing 已发生；BPF 失败标记消失。图形分配器 read 拒绝消失，实际剩余的 enforcing 拒绝为 hal_graphics_allocator_default 对 /dev/ion 的 { open }。通过同一 SELinux 服务上下文日志对齐 C16 pmsg/kernel 时钟，该拒绝早于第一次 EGLConfig abort 约 2.2 秒。
+- 原因：C16 仍有 31 次 SurfaceFlinger EGLConfig 中止；只处理新出现且直接观测到的图形分配器 open 拒绝，避免把图形问题仅归因于无证据的 ANGLE 或 Vulkan 猜测。
+- 涉及文件：tools/salvage_c13_diag.py、新增 tools/build_candidate17_graphics_allocator_open.py、新增 tools/flash_candidate17_graphics_allocator_open.ps1、work/reports/20260926_CANDIDATE16_FIRST_BOOT/standalone/run_20260926_191835/、work/reports/20260926_CANDIDATE16_FIRST_BOOT/observations/run_20260926_191130/、日志/项目当前状态.md。
+- 验证：源卷与副本 8 项文件清单逐项一致，独立主机复核 PASS；C16 console-ramoops-0 只见一个启动实例，first stage 1.878667 秒、second stage 3.095433 秒、enforcing=1 约 3.086 秒；pmsg 31 次 SurfaceFlinger EGLConfig SIGABRT、一次 graphicsengine 在 vkEnumeratePhysicalDevices+4 的 SIGSEGV。C16 oops.raw SHA-256 与 C15 相同，不能归属为本轮新现场。C17 Python AST/编译检查及 PowerShell 解析通过。
+- 尚未验证：C17 policy CIL 编译/sesearch、镜像构建、AVB/LP 检查、刷写、设备启动；ANGLE 是否运行时加载仍未知；graphicsengine 与 EGLConfig 两项故障是否因果相关未知。
+- 安全边界：C16 后唯一设备状态改变为已授权的 Standalone RAM 临时启动及只读采集；没有持久分区写入、userdata/metadata 擦除或 PixelOS 恢复。Standalone 后主机当前未枚举 Fastboot/ADB，设备模式未确认。
+- 待处理：执行 C17 主机构建并完成必要静态检查；设备重新处于 Bootloader Fastboot 后，按现行授权仅顺序刷 vbmeta_system_a、super 并保持 Fastboot，首次启动等待用户现场确认。
+- 替代：更新前一条记录中 Standalone 尚未启动/取证尚未验证的阶段结论；C16 的 EGLConfig 阻塞仍未解决。
+
+## 2026-09-26 19:42｜Candidate 17 图形分配器 open 修复构建与刷写
+
+- 状态：Candidate 17 主机构建、静态检查及两分区刷写完成；设备保持 Fastboot，Candidate 17 未启动。
+- 改动/结论：C16 原始 pstore 证明图形分配器 ion_device 的 read AVC 消失，但出现 open AVC；该拒绝早于第一次 EGLConfig abort 约 2.2 秒。C17 唯一策略变更是将该域权限扩为 { open read }。C17 镜像仅重建 system_ext、vbmeta_system 和 super，实际只刷 vbmeta_system_a、super。
+- 原因：以新的 enforcing AVC 推进最小图形修复；同时记录独立的 graphicsengine Vulkan SIGSEGV，未在无明确修复依据时同时改动驱动。
+- 涉及文件：新增 tools/build_candidate17_graphics_allocator_open.py、tools/flash_candidate17_graphics_allocator_open.ps1、work/stage_g_thyme_os4_candidate_17_graphics_allocator_open_run1/images/、work/reports/20260926_CANDIDATE16_FAILURE_AND_CANDIDATE17_BUILD_FLASH.md、日志/项目当前状态.md。
+- 验证：C17 CIL 经 secilc -N 合并编译，sesearch 返回 allow hal_graphics_allocator_default ion_device:chr_file { open read };（-N 禁用 neverallow 检查）。新 EROFS fsck、最终 CIL 与 /dev/ion ion_device:s0 标签回读通过；vbmeta_system system_ext hashtree descriptor 匹配，product/system descriptor 保持，lpdump 验证 LP 布局。刷写 Dry-Run 校验大小/哈希。设备预检 thyme/A/unlocked=yes/is-userspace=no；vbmeta_system_a send/write OKAY，super sparse 1/10 至 10/10 全部 OKAY，总计 200.546 秒；刷后仍为 Bootloader Fastboot，无残留写入进程。
+- 尚未验证：C17 首启、AVC 是否消失、EGLConfig 是否恢复、graphicsengine Vulkan 错误是否仍出现、bootanimation/设置向导/桌面及 Keymaster/Gatekeeper HAL 功能。
+- 安全边界：仅写入 vbmeta_system_a、super；未 reboot、擦除 userdata/metadata、写其他分区、恢复 PixelOS 或改变 Bootloader 状态。
+- 待处理：同步净化后的状态/日志/报告/脚本到公开仓库；随后等待用户在场确认，运行 C17 只读观察器并授权首次启动。
+- 替代：更新 19:27 记录中 Candidate 17 尚未构建、设备未枚举 Fastboot 的阶段状态；C17 仍未启动，图形问题尚未实机验收。
+
+## 2026-09-26 19:50｜C17 首启现场只读取证
+
+- 状态：Standalone RAM 诊断及诊断卷只读导出完成；未执行 Candidate 重启、分区写入、擦除或 PixelOS 恢复。
+- 改动/结论：用户报告最后刷入的 C17 小米 Logo 持续亮屏并手动进入 Fastboot。RAM 诊断镜像哈希核验通过，Fastboot 预检为 thyme、A 槽、已解锁、非 userspace Fastboot；`fastboot boot` 临时启动成功。THYME_DIAG 唯一卷动态识别，7 个文件逐项核对源/副本大小与 SHA-256，零错误。pstore 仅有一份 console（165,019 字节），无 pmsg；console 内有一个 normal-boot/A 槽 kernel 记录，uptime 到约 168.466 秒，没有 `init first stage started` 或后续 Android/图形日志。`oops.raw` 16 MiB 哈希与 C14、C15、C16 相同，为重复旧内容。
+- 原因：保存 C17 实机失败后的可用 pstore，判断是否出现新的可定位启动故障。
+- 涉及文件：`work/reports/20260926_CANDIDATE17_FIRST_BOOT/REPORT.md`；原始本地证据目录 `work/reports/20260926_CANDIDATE17_FIRST_BOOT/standalone/run_20260926_194616/`；`日志/项目当前状态.md`；本记录。
+- 验证：Standalone `fastboot boot` 成功且无分区写入；源与副本 7 个文件的字节数/哈希逐一相同，`FILE_MANIFEST.csv` 与 `SHA256SUMS.txt` 独立复核通过。`diag_status.log` 明确标识 `dmesg_diag_boot.txt` 为 Standalone 自身内核记录。本轮 pstore 缺 `pmsg-ramoops`；C17 无启动前主机 observer 记录。
+- 尚未验证：console 是否完整代表用户所述 C17 启动；C17 first-stage 是否实际运行但未留存；动态策略编译、allocator open AVC、SurfaceFlinger/EGL/ANGLE/Vulkan、zygote、bootanimation/桌面均未知。C17 本身未证明成功，也未获得可修改的明确 root cause。
+- 待处理：不构建 C18、不改变 C17 镜像；待设备重新可见并用户准备观察时，先启动 C17 标签只读 observer，再做一次受控观察启动，以获得 USB/ADB/Fastboot 时间线和完整 logcat。启动需用户在场确认；若失败，再按既有授权采集 Standalone。主机在本次导出后未枚举 ADB、Fastboot 或诊断卷，设备当前物理模式未知。
+- 替代：更新 19:42 的“C17 尚未首次启动”状态；现改为用户已报告一次 Logo 卡住，但主机侧启动归属和时间未独立记录。
