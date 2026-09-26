@@ -12976,3 +12976,14 @@
 - 尚未验证：C14 未刷写或启动；bpfloader 是否不再触发重启、后续 Keymaster/Gatekeeper HAL 与 ion_device AVC、QSEECom、启动动画/桌面均未验证。pmsg 中密钥初始化活动不等于完整用户数据解锁。设备在 Standalone 导出后没有被主机枚举到，当前物理模式未知；PixelOS 没有恢复或在线验证。
 - 待处理：先取得 C14 写入授权，再做 Fastboot 只读身份/槽位/解锁预检；仅顺序写 vbmeta_system_a、super 并保持 Fastboot。首次启动和新的 Standalone RAM 诊断各按单独授权边界执行。不得再次擦除 userdata/metadata，除非另获明确授权。
 - 替代：替代 2026-09-26 10:36 取证准备记录中“尚未定位 APEX bootstrap 后启动故障”的当前判断；此前旧数据状态下的 Recovery 记录仍为独立历史事件，不被本次正常启动日志推翻。
+
+## 2026-09-26 13:25｜Candidate 14 故障证据与工具公开同步
+
+- 状态：公开资料已推送，匿名访问验证完成。
+- 改动/结论：将 C13 netbpfload 启动证据摘要、Candidate 14 构建报告、C14 构建与受限 Fastboot 脚本，以及更新后的状态和 README 同步至公开仓库。仅发布 allowlist 内容；完整镜像、原始 pstore/pmsg、oops.raw、设备备份与密钥引用均未加入公开仓库。
+- 原因：项目要求在取得新的实际启动证据并准备新实验后，及时同步可公开的增量资料。
+- 涉及文件：[LOCAL_PATH] 报告及项目日志。
+- 验证：公开 main 的初始增量提交 c7b06af8b26889ef5c7ee125500919d8b10e114f 已推送，README 执行记录链接修正提交 af6179b 已推送。匿名 HTTPS 请求读取仓库页、README、状态、执行记录、C14 报告、净化日志摘录和两份 C14 工具均返回 HTTP 200；git ls-remote 确认 origin/main 指向最新发布。GitHub API 查询当时受匿名请求速率限制，未作为本次可见性判断依据。
+- 尚未验证：本地 GitHub Desktop UI 未打开确认；不影响远程匿名读取和 main 分支推送验证。
+- 待处理：等待用户授权 C14 的 vbmeta_system_a 与 super 两项写入；刷完保持 Fastboot，首次启动另行授权。
+- 替代：无。
