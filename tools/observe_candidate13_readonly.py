@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Read-only host observer for a separately authorized Candidate 13 boot.
+"""Read-only host observer for a separately authorized Android boot.
 
 This tool never reboots, boots, flashes, erases, or writes to the device. It
 polls ADB/Fastboot discovery, streams ADB logcat while ADB is online, and saves
 read-only startup snapshots, and tries to copy readable pstore files as soon as
-ADB becomes available. Start it before the separately authorized Candidate 13
-startup and stop it with Ctrl-C after the observation window.
+ADB becomes available. Start it before the separately authorized startup
+command and stop it with Ctrl-C after the observation window.
 """
 
 from __future__ import annotations
@@ -203,6 +203,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--seconds", type=int, default=600, help="Observation window (default: 600 seconds).")
     parser.add_argument("--output-base", type=Path, default=DEFAULT_BASE, help="Parent directory for a new timestamped run folder.")
+    parser.add_argument("--candidate", default="C13-original", help="Candidate label stored in the run metadata (default: C13-original).")
     args = parser.parse_args()
     if args.seconds < 30 or args.seconds > 3600:
         parser.error("--seconds must be between 30 and 3600")
@@ -214,7 +215,7 @@ def main() -> int:
     started = time.monotonic()
     started_wall = utc_now()
     metadata = {
-        "candidate": "C13-original",
+        "candidate": args.candidate,
         "observer_started_utc": started_wall,
         "serial": SERIAL,
         "observation_seconds": args.seconds,
@@ -225,7 +226,7 @@ def main() -> int:
         json.dumps(metadata, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
     host_events_path = run_dir / "host_events.jsonl"
-    append_host_event(host_events_path, "observer_started", candidate="C13-original", serial=SERIAL)
+    append_host_event(host_events_path, "observer_started", candidate=args.candidate, serial=SERIAL)
     print(f"[INIT] Observer output: {run_dir}")
     print("[INIT] Read-only observer; it never boots, reboots, flashes, erases, or writes to the device.")
     print("[INFO] Wait for [ARMED] before the separately authorized startup command.")
@@ -297,7 +298,7 @@ def main() -> int:
                 stream.flush()
                 if not armed_written:
                     armed = {
-                        "candidate": "C13-original",
+                        "candidate": args.candidate,
                         "armed_utc": sample_finished_utc,
                         "elapsed_seconds": round(elapsed, 3),
                         "serial": SERIAL,
@@ -310,7 +311,7 @@ def main() -> int:
                     )
                     append_host_event(
                         host_events_path, "observer_armed", elapsed_seconds=round(elapsed, 3),
-                        adb_state=adb_state, fastboot_state=fastboot_state,
+                        candidate=args.candidate, adb_state=adb_state, fastboot_state=fastboot_state,
                     )
                     print(
                         f"[ARMED] ADB={adb_state}; Fastboot={fastboot_state}; "

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export Candidate 13 boot evidence from the Standalone Diag USB volume.
+"""Export boot evidence from the Standalone Diag USB volume.
 
 The default is a host-only dry run. ``--execute-authorized-ram-boot`` is
 required before this script may issue ``fastboot boot``. That command loads
@@ -29,7 +29,7 @@ SERIAL = "[REDACTED_DEVICE_ID]"
 DIAG_BOOT = ROOT / "work" / "standalone_diag" / "standalone_diag_boot.img"
 DIAG_BOOT_BYTES = 201_326_592
 DIAG_BOOT_SHA256 = "8A5803F09CBCB11056D8356F8D235C3C4450846244FA1B4033ABAAACB213E98B"
-EXPORT_BASE = ROOT / "work" / "reports" / "20260925_CANDIDATE13_LOG_SALVAGE"
+DEFAULT_EXPORT_BASE = ROOT / "work" / "reports" / "20260925_CANDIDATE13_LOG_SALVAGE"
 EXPECTED_PRODUCT = "thyme"
 EXPECTED_SLOT = "a"
 
@@ -94,10 +94,10 @@ def find_diag_volume() -> Path | None:
     return None
 
 
-def new_export_dir() -> Path:
-    EXPORT_BASE.mkdir(parents=True, exist_ok=True)
+def new_export_dir(export_base: Path) -> Path:
+    export_base.mkdir(parents=True, exist_ok=True)
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    candidate = EXPORT_BASE / f"run_{stamp}"
+    candidate = export_base / f"run_{stamp}"
     suffix = 1
     while candidate.exists():
         candidate = EXPORT_BASE / f"run_{stamp}_{suffix:02d}"
@@ -107,14 +107,28 @@ def new_export_dir() -> Path:
 
 
 def main() -> int:
-    print("=== CANDIDATE 13 STANDALONE DIAGNOSTIC EXPORT ===")
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--candidate",
+        default="C13-original",
+        help="Label the boot whose evidence is being salvaged (default: C13-original).",
+    )
+    parser.add_argument(
+        "--output-base",
+        type=Path,
+        default=DEFAULT_EXPORT_BASE,
+        help="Parent directory for a new, non-overwriting export folder.",
+    )
     parser.add_argument(
         "--execute-authorized-ram-boot",
         action="store_true",
         help="Permit fastboot boot only after the user has separately authorized this Standalone RAM session.",
     )
     args = parser.parse_args()
+    if not re.fullmatch(r"[A-Za-z0-9._-]+", args.candidate):
+        print("[ERROR] Candidate label may contain only letters, digits, dot, underscore, and hyphen.")
+        return 1
+    print(f"=== {args.candidate} STANDALONE DIAGNOSTIC EXPORT ===")
     if not FASTBOOT.is_file():
         print(f"[ERROR] Fastboot executable missing: {FASTBOOT}")
         return 1
@@ -129,10 +143,10 @@ def main() -> int:
     print(f"[READY] Standalone Diag SHA256 verified: {actual_hash}")
     if not args.execute_authorized_ram_boot:
         print("[DRY-RUN] No Fastboot query or device command issued.")
-        print("[NEXT] After separate Standalone RAM-start authorization, pass --execute-authorized-ram-boot.")
+        print("[NEXT] Pass --execute-authorized-ram-boot only when this RAM diagnostic boot is authorized.")
         return 0
 
-    export_dir = new_export_dir()
+    export_dir = new_export_dir(args.output_base)
     event_path = export_dir / "host_salvage_timeline.csv"
     timeline(event_path, "salvage_script_started", {"image_sha256": actual_hash, "image_bytes": DIAG_BOOT_BYTES})
     print(f"[WAIT] Waiting up to 300 seconds for Fastboot target {SERIAL}...")
@@ -202,7 +216,8 @@ def main() -> int:
     timeline(event_path, "diag_volume_found", {"volume": str(volume)})
     (export_dir / "EXPORT_SOURCE.txt").write_text(
         "Source: the unique host volume labeled THYME_DIAG, exposed by the Standalone RAM diagnostic environment.\n"
-        "dmesg_diag_boot.txt is the Standalone diagnostic kernel log, not the preceding Candidate 13 kernel log.\n"
+        f"dmesg_diag_boot.txt is the Standalone diagnostic kernel log, not the preceding {args.candidate} kernel log.\n"
+        f"Salvaged boot label: {args.candidate}.\n"
         f"Export started (UTC): {utc_now()}\n",
         encoding="utf-8",
     )
@@ -228,7 +243,7 @@ def main() -> int:
 
     timeline(event_path, "copy_finished", {"file_count": len(copied), "files": [item[0] for item in copied]})
     print(f"[DONE] Exported {len(copied)} files to {export_dir}")
-    print("[NEXT] Review the new Candidate 13 console/pmsg logs before restoring PixelOS A0'.")
+    print(f"[NEXT] Review the new {args.candidate} console/pmsg logs before any recovery action.")
     return 0
 
 

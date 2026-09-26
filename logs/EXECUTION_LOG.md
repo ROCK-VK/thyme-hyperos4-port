@@ -13009,3 +13009,34 @@
 - 安全边界：没有 reboot、userdata/metadata 擦除、其他分区写入、Bootloader 解锁/回锁或 PixelOS 恢复。
 - 待处理：启动前先启动观察器并确认 ARMED；等待用户单独回复“准备好了，开始启动”后才执行一次 Fastboot reboot。失败后 Standalone RAM 取证仍按单独授权边界执行。
 - 替代：将 15:12 的“C14 两分区待刷写授权”状态更新为“刷写完成、等待首次启动授权”。
+## 2026-09-26 15:24｜C14 启动观察器标签调整
+
+- 状态：主机侧诊断脚本小幅修改并静态验证；尚未启动观察器或设备。
+- 改动/结论：`tools/observe_candidate13_readonly.py` 新增 `--candidate` 参数；默认仍为 `C13-original`，本轮 C14 将使用 `C14-run5` 并指定独立输出目录。采集命令仍只查询 ADB/Fastboot、读取 logcat/属性/dmesg/pstore，不执行设备写入或启动。
+- 原因：避免把 C14 的观察结果误标为 C13，同时复用已经准备的只读采集逻辑。
+- 涉及文件：`tools/observe_candidate13_readonly.py`；`日志/项目当前状态.md`；本记录。
+- 验证：WSL Python AST 解析通过；`--help` 显示候选标签、观察时长及输出目录参数。未启动观察器、未执行 Fastboot reboot。
+- 尚未验证：本轮实际 observer ARMED、C14 ADB/logcat/pstore 捕获能力及启动结果。
+- 待处理：以 `C14-run5` 标签启动观察器，确认 ADB=absent/Fastboot=fastboot 的 `[ARMED]` 后，才执行已单独授权的一次 Fastboot reboot。
+- 替代：无。
+## 2026-09-26 15:33｜C14 首启故障现场与 Standalone 导出准备
+
+- 状态：C14 首次启动已按授权执行；故障后 Standalone 取证准备完成，RAM 采集尚未执行。
+- 改动/结论：用户观察到小米 Logo 持续亮屏后手动进入 Fastboot。观察器记录启动前已 ARMED、Fastboot 离线后约 125 秒重新出现，ADB 整程未上线。最新只读 Fastboot 状态为 serial `[REDACTED_DEVICE_ID]`、product=thyme、A 槽、unlocked=yes、非 userspace Fastboot。
+- 原因：C14 的 BPF bootstrap bypass 是否越过 C13 的 bpfloader-failed，需要 C14 pstore 证据；主机无 ADB 现场。
+- 涉及文件：`tools/salvage_c13_diag.py`；`tools/observe_candidate13_readonly.py`；`work/reports/20260925_CANDIDATE13_STORAGE_SAFETY_AND_FIRST_FAILURE/observations/candidate14/run_20260926_152457/`；`work/reports/20260926_CANDIDATE14_FIRST_BOOT/standalone/`；`日志/项目当前状态.md`。
+- 验证：Standalone 镜像大小为 201,326,592 字节，SHA-256=`8A5803F09CBCB11056D8356F8D235C3C4450846244FA1B4033ABAAACB213E98B`。导出脚本增加 `--candidate` 与 `--output-base`，保留 C13 默认目的地；Python 编译、帮助参数检查通过；C14 新导出路径未存在，避免覆盖旧证据。用户已明确授权本轮 Standalone RAM 临时启动及只读取证。
+- 尚未验证：C14 pstore、pmsg、oops 是否记录了新阶段或新故障；Standalone 介质导出和文件完整性尚未完成。
+- 待处理：只用已核验 Standalone 镜像 RAM 启动，读取并完整复制唯一 `THYME_DIAG` 卷所有可用文件至新 C14 目录，校验哈希；保存现场前不恢复 PixelOS、不写持久分区。
+- 替代：更新 15:24 记录中“观察器尚未实跑、待首次启动”的过期状态；不改变 C14 故障根因未定的判断。
+
+## 2026-09-26 16:14｜C14 首次启动故障定位与 C15 EGL 诊断包准备
+
+- 状态：C14 首启及 Standalone RAM 只读取证按用户授权完成；C14 故障分析、C15 主机侧构建与刷写准备完成。本轮未进行分区写入、数据擦除或 PixelOS 恢复。
+- 改动/结论：C14 console-ramoops 只有一个可见 Android 启动实例，first stage 1.788557 秒、second stage 3.044160 秒，日志延伸至 115.817 秒；pmsg 从设备时间 23:26:13.211 延续至 23:28:03.891。记录未出现 C13 的 `NetBpfLoad` / `bpfloader-failed`，确认 C14 绕过了该重启点。pmsg 中 SurfaceFlinger 有 20 次相同 `no suitable EGLConfig` abort，是当前直接显示阻塞证据。另有 graphicsengine Vulkan 调用空指针崩溃一次、netd fatal/tombstone 14 次；netd 未记录明确 Abort message，暂不能证明其阻止图形启动，未擅自修改。
+- 原因：用户提出以证据驱动的最小修复集合取代机械单变量策略；本轮保留已通过实际启动记录证明有效的 C14 BPF 绕过，只对 SurfaceFlinger 的 EGLConfig 致命错误增加一项 Android 17 ANGLE 路由诊断。
+- 涉及文件：`tools/build_candidate15_angle_egl.py`；新增 `tools/flash_candidate15_angle_egl.ps1`；`work/stage_e_thyme_os4_candidate_15_angle_egl_run1/images/`；新增 `work/reports/20260926_CANDIDATE14_FAILURE_AND_CANDIDATE15_EGL_PLAN.md`；`日志/项目当前状态.md`；本记录。
+- 验证：C15 system EROFS fsck 成功；最终 system build.prop 回读确认 `persist.graphics.egl=angle`；`vbmeta_system` 的 product/system/system_ext hashtree descriptors 存在，system descriptor 匹配本轮 system 镜像，LP dump 包含所需逻辑分区。C15 六镜像构建清单生成；boot/vendor_boot/dtbo/vbmeta 哈希与 C14 完全一致。刷写脚本 PowerShell 解析通过；默认 Dry-Run 对 `vbmeta_system.img`（131,072 字节，SHA-256 `634EB12F681ECFFFF5E07CEF633377F5C16903E32901AFE7B6EF56FE4D5A4190`）及 `super.img`（7,684,274,964 字节，SHA-256 `4CD34B53A7E47E25522C191AC748B8EE91348091C9B0F31FF59EC677CF8C9B56`）实文件校验通过，计划仅写 `vbmeta_system_a` 和 `super`，不查询设备、不重启、不擦数据。
+- 尚未验证：C15 未刷写或启动；ANGLE 是否能通过当前 Vulkan 底层稳定提供 EGLConfig、SurfaceFlinger 是否保持运行、HyperOS 启动动画/设置向导/桌面是否出现均未知。ION/Keymaster/Gatekeeper 真机策略效果仍未验收。ADB 未上线，不能确认 `sys.boot_completed`。
+- 待处理：将净化后的报告、C15 构建脚本与受限刷写脚本加入公开仓库 allowlist 并推送；随后向用户申请一次 C15 两分区刷写授权。刷后保持 Fastboot；首次启动仍等待单独授权。无需再次清除 userdata/metadata。
+- 替代：替代“C14 仍待 pstore 取证、尚不知是否越过 BPF 重启点”的临时状态；不把 netd 或 Vulkan 次级崩溃写成已确认启动根因。

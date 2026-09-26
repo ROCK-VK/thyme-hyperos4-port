@@ -6,14 +6,14 @@
 
 ## 当前状态（2026-09-26）
 
-- 本轮新保存的 C13 console-ramoops 证明系统进入 enforcing second stage、完成 APEX bootstrap、挂载 F2FS /data 并开始 fscrypt 密钥初始化；约 15.96 秒 NetBpfLoad 报 Android 25Q2 要求内核 5.4，随后 init 明确以 bpfloader-failed 请求暖重启。
-- 这为用户观察到的 Xiaomi Logo/黑屏循环提供了直接启动证据；本轮日志没有证明进入 Recovery，也没有取得实时 ADB logcat。
-- C13 SELinux 的 ion_device 规则尚未完成 Keymaster/Gatekeeper HAL 阶段实机验收；fscrypt 活动也不等价于确认所有密钥服务长期健康或进入桌面。
-- Candidate 14 已在主机侧完成最小 BPF bootstrap 绕过构建和静态检查，保留 C13 内核、SELinux Enforcing、APEX、fstab 和加密配置。它尚未刷写或启动，且不加载供体 BPF 程序，网络功能可能不完整。
-- C14 下一次仅计划写入 vbmeta_system_a 与 super，不再次清除 userdata/metadata；刷写与首次启动仍须分别获得用户授权。
-- Standalone 导出后主机未枚举到 ADB、Fastboot 或 THYME_DIAG 卷；当前设备物理模式未经重新确认。PixelOS A0′ 未在本轮恢复或验证为在线健康系统。
+- C14 已在真实启动中越过 C13 的 `bpfloader-failed` 重启点：console 进入 Android first/second stage 并记录至约 115.8 秒，保存的 pmsg 未出现该 BPF 重启错误。BPF 本身仍未适配，网络完整性未验证。
+- C14 的直接显示故障是 SurfaceFlinger 反复因 `no suitable EGLConfig found` 中止（pmsg 记录 20 次）。没有 ADB 证据证明启动完成、设置向导或桌面出现。
+- C14 还记录一次 MIUI graphicsengine Vulkan 调用空指针崩溃及多次 netd fatal；其根因和是否阻止 Android 完成启动尚未确认。当前没有把它们写成确定根因。
+- Candidate 15 已在主机侧构建：保留 C14 BPF 绕过，只新增 `persist.graphics.egl=angle`，针对 SurfaceFlinger EGLConfig 故障进行最小路由诊断。ANGLE 是否能使用当前 Vulkan 底层尚未实机验证。
+- C15 尚未刷写。计划仅写 `vbmeta_system_a` 和 `super`，不再次清除 userdata/metadata；刷写和首次启动需要分别获得用户授权。
+- 本轮故障后通过 Standalone RAM 只读导出了 pstore。最近一次设备记录为 THYME_DIAG USB 存储导出；之后没有重新查询物理模式。PixelOS A0′ 尚未恢复或验证为在线健康系统。
 
-最新分析与构建状态见 [C13 netbpfload 故障和 C14 构建报告](reports/candidate13/20260926_CANDIDATE13_NETBPFLOAD_FAILURE_AND_C14_BUILD.md)、[项目当前状态](logs/PROJECT_STATUS.md) 和按时间追加的 [执行记录](logs/EXECUTION_LOG.md)。
+最新分析与构建状态见 [C14 启动故障与 C15 EGL 诊断方案](reports/candidate15/20260926_CANDIDATE14_FAILURE_AND_CANDIDATE15_EGL_PLAN.md)、[C13 netbpfload 故障和 C14 构建报告](reports/candidate13/20260926_CANDIDATE13_NETBPFLOAD_FAILURE_AND_C14_BUILD.md)、[项目当前状态](logs/PROJECT_STATUS.md) 和按时间追加的 [执行记录](logs/EXECUTION_LOG.md)。
 
 ## 设备与来源
 
@@ -33,6 +33,8 @@ K40 对照资料显示，成功包的 vendor_boot ramdisk 与原包不同，并�
 - **C12**：实机确认 `/dev/ion` 使用 `ion_device:s0` 标签；Keymaster/Gatekeeper 的后续访问仍曾被拒绝。
 - **C13**：在动态 system_ext SELinux policy 中增加 Keymaster/Gatekeeper 对 `ion_device` 的访问规则。主机侧编译与权限断言通过；真机 C13 日志已进入动态策略编译和 enforcing second stage，但未覆盖相关 HAL，因此 AVC 是否消失仍待验证。
 - **C13.1**：主机侧构建过数据挂载保护变体，尚未实机验证；不是当前已验证版本。
+- **C14**：绕过已证实与 Android 25Q2/kernel 4.19 不兼容的 BPF loader 重启门控；真机 pstore 证实越过该点，随后发现 SurfaceFlinger EGLConfig abort。
+- **C15**：保留 C14 绕过并增加 Android 17 ANGLE EGL 选择属性；主机侧已构建，尚未刷写或实机验证。
 
 具体阶段和证据等级以项目状态文件及 Candidate 报告为准，旧报告的“计划/待验证”不会自动成为当前结论。
 
@@ -50,10 +52,10 @@ scripts/           带明确文件白名单的本地增量同步脚本
 建议阅读顺序：
 
 1. [当前项目状态](logs/PROJECT_STATUS.md)
-2. [C13 netbpfload 故障与 C14 构建](reports/candidate13/20260926_CANDIDATE13_NETBPFLOAD_FAILURE_AND_C14_BUILD.md)
-3. [C13 首次启动证据摘要](reports/boot-logs/candidate13_netbpfload_failure_excerpt.txt)
-4. [C13 Second Stage 取证准备](reports/candidate13/20260926_CANDIDATE13_SECOND_STAGE_CAPTURE_PREP.md)
-5. [C13 Recovery 分析](reports/candidate13/20260925_CANDIDATE13_RECOVERY_ANALYSIS.md)
+2. [C14 故障与 C15 EGL 诊断方案](reports/candidate15/20260926_CANDIDATE14_FAILURE_AND_CANDIDATE15_EGL_PLAN.md)
+3. [C13 netbpfload 故障与 C14 构建](reports/candidate13/20260926_CANDIDATE13_NETBPFLOAD_FAILURE_AND_C14_BUILD.md)
+4. [C13 首次启动证据摘要](reports/boot-logs/candidate13_netbpfload_failure_excerpt.txt)
+5. [C13 Second Stage 取证准备](reports/candidate13/20260926_CANDIDATE13_SECOND_STAGE_CAPTURE_PREP.md)
 6. [K40 三方移植分析](reports/k40/20260918_K40_THREE_WAY_PORT_REVERSE_ENGINEERING_1.md)
 
 ## 脚本与构建
