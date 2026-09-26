@@ -13220,3 +13220,15 @@
 - 安全边界：仅写入 `super`、`vbmeta_system_a`。无 reboot、userdata/metadata 擦除、Standalone RAM 启动、PixelOS 恢复、BCB/misc 写入或其他分区操作；Bootloader 未锁定。
 - 待处理：等用户准备观察；先运行 `C18-native-adreno` observer 并等 `[ARMED]`，再取得用户在场确认后首次启动一次。
 - 替代：更新 21:37 记录中“C18 设备尚未刷写”；刷写完成但真机启动结果仍未知。
+
+## 2026-09-26 21:52｜C18 构建与实验资料公开同步
+
+- 状态：C18 工具、报告、清单和当前状态增量已推送至现有 GitHub Public 仓库；设备仍保持 Fastboot，未首次启动。
+- 改动/结论：提交 `d9a56e34b63b27c07b3c04a5d0fdebcf68ea948e` 发布 C18 报告、六镜像构建清单、构建/受限刷写/启动门控脚本、observer 属性更新、README 和状态记录；没有发布 C18 镜像或完整 ROM。
+- 原因：让独立审核者可检查本轮定点图形路由、构建输入摘要、改动范围和首次启动门控。
+- 涉及文件：公开仓库 `thyme-hyperos4-port`；公开路径 `reports/candidate18/`、`tools/`、`logs/`、README 与同步脚本。
+- 验证：GitHub API 显示 `private=false`、默认分支 `main`；本地/远端 main 相同。匿名 GET README、C18 报告、BUILD_MANIFEST 均 HTTP 200。C18 构建清单有效 JSON；公开安全扫描未发现凭据、私钥、本机路径或设备序列号；无 C18 镜像文件或 >100 MiB 文件。
+- 尚未验证：C18 首次启动与 native Adreno/EGLConfig 真机行为。
+- 安全边界：本轮只同步文档和脚本；不上传 C18 分区镜像、完整 ROM 或 userdata 数据。此前用户明确授权公开的 C13–C17 `oops.raw` 仍保留在原有 evidence 目录。
+- 待处理：待用户准备现场观察后，运行 C18 observer 至 ARMED，再启动一次；失败时先完整备份 Standalone 诊断卷。
+- 替代：结清 21:44 记录中“C18 公开同步待处理”；C18 镜像仍未首次启动。
