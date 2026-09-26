@@ -13075,3 +13075,13 @@
 - 安全边界：本轮没有刷写、重启、擦除 userdata/metadata、恢复 PixelOS 或修改其他分区；Bootloader 保持解锁。
 - 待处理：将净化报告与两份脚本加入公开仓库白名单，审查 staged 文件后推送；随后向用户申请 C16 仅 `vbmeta_system_a`、`super` 的刷写授权。刷写后保持 Fastboot，首次启动另行授权。
 - 替代：更新此前“C15 已刷写但尚未启动”的当前状态；不把 C16 主机侧 SELinux 验证提升为真机结论。C15 的 EGLConfig 根因仍待继续诊断。
+## 2026-09-26 18:19｜C15/C16 增量公开同步与设备标识脱敏
+
+- 状态：公开仓库增量 Commit/Push 完成；匿名远程读取验证通过。
+- 改动/结论：公开了净化后的 C15/C16 报告、C16 构建和受限刷写脚本、更新的 README/项目状态/执行记录及同步白名单。检查时发现旧公开 ramoops 摘录的 androidboot.cpuid=0x... 未被旧规则识别；补充 CPUID 与本机 WSL 构建目录脱敏后重新生成公开摘录。原始本地证据保持不变。
+- 原因：让外部审核者取得最新 C15 失败证据摘要和 C16 主机侧实现，同时不公开设备身份资料、原始 pstore、oops 或镜像。
+- 涉及文件：公开副本 [LOCAL_PATH] ROCK-VK/thyme-hyperos4-port。
+- 验证：12 个文件、约 4.32 MB staged；git diff --cached --check 通过；公开副本敏感标识/私钥/Token/本机路径扫描无命中；无 ROM/分区镜像、原始设备备份或超过 100 MiB 文件。内容提交 4b45a185a48dfef9aed1fb535ab61ba625576bc0 已推送。匿名 HTTPS 仓库页、README、项目状态和新 C15/C16 报告均返回 HTTP 200；推送时远端 main 与本地 HEAD 一致。
+- 尚未验证：GitHub Desktop UI 本轮未打开确认；不影响公开 HTTPS 与 main 推送验证。
+- 待处理：等待用户授权 C16 仅 vbmeta_system_a 和 super 两项顺序刷写；刷完保持 Fastboot，首次启动另行授权。
+- 替代：将本轮较早记录中的“公开同步待处理”更新为已完成；C16 仍仅有主机侧构建验证。
