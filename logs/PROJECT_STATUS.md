@@ -36,4 +36,4 @@
 - 先让主机重新识别 Bootloader Fastboot；若 Standalone 画面/模式仍在，需用户手动操作并告知，不发不明确的模式切换命令。
 - 下一次不刷写、不清数据：设备可见且用户准备观察后，先以 C17 标签启动只读 observer，确认 ARMED，再由用户现场确认后受控启动当前 C17。观察 ADB、logcat、pstore；若未上线且用户返回 Fastboot，再用既有 Standalone 流程取证。
 - 在取得更明确启动证据前，不构建 C18、不扩展 SELinux 权限、不修改 EGL/ANGLE/HAL。
-- C16/C17 公开同步待完成；发布仅净化后的报告、脚本与状态日志，不上传原始 pstore/oops、镜像或设备备份。
+- GitHub Public 仓库已同步 C16/C17 脚本、构建/首启报告、README 与净化状态/执行记录；C17 内容提交 `6e7d325` 已推送并通过匿名仓库页、README、新报告 HTTP 200 验证。原始 pstore/oops、镜像及设备备份未公开。

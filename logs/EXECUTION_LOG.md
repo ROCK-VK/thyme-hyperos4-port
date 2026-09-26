@@ -13139,3 +13139,14 @@
 - 尚未验证：console 是否完整代表用户所述 C17 启动；C17 first-stage 是否实际运行但未留存；动态策略编译、allocator open AVC、SurfaceFlinger/EGL/ANGLE/Vulkan、zygote、bootanimation/桌面均未知。C17 本身未证明成功，也未获得可修改的明确 root cause。
 - 待处理：不构建 C18、不改变 C17 镜像；待设备重新可见并用户准备观察时，先启动 C17 标签只读 observer，再做一次受控观察启动，以获得 USB/ADB/Fastboot 时间线和完整 logcat。启动需用户在场确认；若失败，再按既有授权采集 Standalone。主机在本次导出后未枚举 ADB、Fastboot 或诊断卷，设备当前物理模式未知。
 - 替代：更新 19:42 的“C17 尚未首次启动”状态；现改为用户已报告一次 Logo 卡住，但主机侧启动归属和时间未独立记录。
+
+## 2026-09-26 19:55｜C16/C17 资料增量公开同步
+
+- 状态：C17 报告、C16/C17 工具与净化项目状态已提交并推送至 GitHub Public。
+- 改动/结论：公开增量包含 C17 图形 allocator 构建/受限刷写脚本、C16→C17 构建报告、C17 首启现场报告、诊断导出脚本、README、工具说明及状态/执行日志。内容提交 `6e7d325adb6b6106a5b46d8e0306a74e210e1ef3`。
+- 原因：发布最新 C17 实机证据与当前判断，供外部审核；仅同步白名单中的净化内容。
+- 涉及文件：`[LOCAL_PATH]
+- 验证：提交后 `git push origin main` 成功，远端 `main` 与本地提交一致；匿名 GET 仓库页、README、C17 首启报告均 HTTP 200；GitHub API 返回 `visibility=public`、`private=false`、默认分支 `main`。公开副本扫描未命中设备序列号、真实 CPUID、Token、私钥或原始分区/镜像文件。
+- 尚未验证：GitHub Desktop UI 本轮未打开确认；不影响公共 HTTPS 与 main 读取验证。
+- 待处理：将本条同步记录及其状态更新再推送一次；后续候选资料继续按明确白名单增量发布。
+- 替代：更新 C17 首启取证记录中“公开同步待完成”的待办。
