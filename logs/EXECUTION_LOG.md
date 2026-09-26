@@ -13361,3 +13361,14 @@
 - 安全边界：本次仅公开同步和主机文件变更；不上传完整 ROM、系统分区镜像或用户数据分区备份。设备保持 Fastboot。
 - 待处理：等待用户在场确认后开始 C19 首次启动。
 - 替代：无。
+
+## 2026-09-27 00:54｜C19 RGBX 实机结果与完整取证
+
+- 状态：C19 首次启动实验及 Standalone 全量只读取证完成；RGBX 改动未消除 EGLConfig 阻塞，公开同步准备已完成。
+- 改动/结论：C19 pstore 有一个 Linux 启动实例，First/Second Stage Init、APEX 激活和 vold metadata-encrypted `/data` 初始化路径均有记录。SurfaceFlinger 的 43 次 `no suitable EGLConfig found` 均请求 `format: 2`，说明配置改动实际到达请求端但未解决失败。graphicsengine 出现一次 `vkEnumeratePhysicalDevices+4` SIGSEGV，和首条 EGL abort 时间接近，因果未证。未见 bootanimation、设置向导或桌面。
+- 原因：验证 C18 日志中 `format: 1` 的 EGLConfig 故障是否能通过最小 RGBX_8888 配置变化解除。
+- 涉及文件：`work/reports/20260927_CANDIDATE19_RGBX_EGL/REPORT.md`；observer `observations/run_20260927_003223/`；Standalone 全量副本 `standalone/run_20260927_003826/`；公开副本 `[LOCAL_PATH]
+- 验证：用户报告看到小米 Logo 后手动进入 Fastboot；Observer 记录一次 `fastboot reboot` 返回 0、ADB 未上线、约 267 秒后 Fastboot 重新出现。最近只读预检确认唯一设备 `[REDACTED_DEVICE_ID]`、thyme、A 槽、unlocked=yes、非 userspace Fastboot。Standalone 原始卷 8 个文件、18,670,818 bytes；本地导出 manifest 大小与 SHA-256 全部匹配，错误 0。C19 公开暂存 manifest 含 19 个文件、18,758,650 bytes，与本地来源逐项大小及 SHA-256 相同；同步器当前报告凭据/策略排除 0、缺失目录 0，GitHub 推送待完成。
+- 尚未验证：ANGLE/Adreno 的实际运行时 EGL 后端；Vulkan 枚举崩溃是否导致 EGLConfig 失败；启动动画及其后的界面。
+- 待处理：完成公开仓库 commit/push 与匿名访问校验；下一轮可评估持久属性加载后显式 ANGLE 路由的定点实验。不要重复启动 C19 或无理由清除 userdata/metadata。
+- 替代：替代当前状态文件中“C19 尚未首次启动”的旧状态；旧执行记录保留当时事实。
