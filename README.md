@@ -9,9 +9,9 @@
 - C14 已在真实启动中越过 C13 的 `bpfloader-failed` 重启点：console 进入 Android first/second stage 并记录至约 115.8 秒，保存的 pmsg 未出现该 BPF 重启错误。BPF 本身仍未适配，网络完整性未验证。
 - C14 的直接显示故障是 SurfaceFlinger 反复因 `no suitable EGLConfig found` 中止（pmsg 记录 20 次）。没有 ADB 证据证明启动完成、设置向导或桌面出现。
 - C14 还记录一次 MIUI graphicsengine Vulkan 调用空指针崩溃及多次 netd fatal；其根因和是否阻止 Android 完成启动尚未确认。当前没有把它们写成确定根因。
-- Candidate 15 已在主机侧构建：保留 C14 BPF 绕过，只新增 `persist.graphics.egl=angle`，针对 SurfaceFlinger EGLConfig 故障进行最小路由诊断。ANGLE 是否能使用当前 Vulkan 底层尚未实机验证。
-- C15 尚未刷写。计划仅写 `vbmeta_system_a` 和 `super`，不再次清除 userdata/metadata；刷写和首次启动需要分别获得用户授权。
-- 本轮故障后通过 Standalone RAM 只读导出了 pstore。最近一次设备记录为 THYME_DIAG USB 存储导出；之后没有重新查询物理模式。PixelOS A0′ 尚未恢复或验证为在线健康系统。
+- Candidate 15 已在主机侧构建并按授权仅刷写 `vbmeta_system_a`、`super`。它保留 C14 BPF 绕过，只新增 `persist.graphics.egl=angle`，用于验证 SurfaceFlinger EGLConfig 故障的最小路由修复。ANGLE 是否能使用当前 Vulkan 底层尚未实机验证。
+- C15 尚未启动。最近只读核验设备仍处于 Bootloader Fastboot，槽位 A、Bootloader 解锁；设备等待单独的首次启动授权。本轮未清除 userdata/metadata。
+- C14 故障后通过 Standalone RAM 只读导出了 pstore。PixelOS A0′ 尚未恢复或验证为在线健康系统。
 
 最新分析与构建状态见 [C14 启动故障与 C15 EGL 诊断方案](reports/candidate15/20260926_CANDIDATE14_FAILURE_AND_CANDIDATE15_EGL_PLAN.md)、[C13 netbpfload 故障和 C14 构建报告](reports/candidate13/20260926_CANDIDATE13_NETBPFLOAD_FAILURE_AND_C14_BUILD.md)、[项目当前状态](logs/PROJECT_STATUS.md) 和按时间追加的 [执行记录](logs/EXECUTION_LOG.md)。
 

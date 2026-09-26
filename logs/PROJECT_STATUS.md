@@ -8,9 +8,9 @@
 
 ## 当前工程/设备状态
 
-- 当前最新主机侧 Candidate：C15 ANGLE EGL 诊断版，已构建并通过基础镜像检查，尚未刷写。
-- 当前持久分区版本：C14 run5 的 `vbmeta_system_a` 与 `super`；`boot_a`、`vendor_boot_a`、`dtbo_a`、`vbmeta_a` 仍为 C13 基线。C14 已启动一次；故障后用 `fastboot boot` 临时运行 Standalone 并只读导出 pstore。
-- 设备当前 USB/启动模式尚未复核。最后一次确证是在 Standalone 导出时出现 `THYME_DIAG` USB 存储卷；此后没有设备查询或状态操作。不要把此前 Fastboot 状态当作当前状态。
+- 当前最新 Candidate：C15 ANGLE EGL 诊断版。已按本轮授权仅将 `vbmeta_system_a` 与 `super` 刷写为 C15；设备刷后仍处于 Bootloader Fastboot，尚未启动 C15。
+- 当前持久分区版本：C15 的 `vbmeta_system_a`、`super`；`boot_a`、`vendor_boot_a`、`dtbo_a`、`vbmeta_a` 仍是 C13 基线（C14/C15 均未改动这些引导分区）。C14 曾启动一次；故障后用 `fastboot boot` 临时运行 Standalone 并只读导出 pstore。
+- 最近只读复核：设备 `[REDACTED_DEVICE_ID]` 在线，`product=thyme`、`current-slot=a`、`unlocked=yes`、`is-userspace=no`；Fastboot 写入进程已退出。不要启动，除非获得单独的首次启动授权。
 - PixelOS A0′ 未在 C14 后恢复或在线验证。
 - C14/C15 均未在本阶段重新擦除 `userdata` 或 `metadata`。下一次 C15 方案也不需要擦除。
 
@@ -30,7 +30,7 @@
 - 构建基线为已实机启动的 C14 run5。C15 保留 C14 BPF bypass，并只增加 `system/build.prop` 属性 `persist.graphics.egl=angle`，尝试 Android 17 系统 ANGLE EGL 路径来解决 SurfaceFlinger 无 EGLConfig 的明确错误。
 - 重建 system EROFS、匹配的 `vbmeta_system.img` 与 sparse `super.img`；boot、vendor_boot、dtbo、vbmeta 原样继承 C14。C13 SELinux/ION 规则、fstab、APEX、加密路径和 thyme 硬件底层不变。
 - 基础验证：EROFS fsck 成功；build.prop 回读属性正确；AVB system descriptor 匹配 C15 system，product/system_ext descriptors 保留；LP dump 包含必需逻辑分区。脚本 `tools/flash_candidate15_angle_egl.ps1` 已通过 PowerShell 解析和默认 Dry-Run。
-- 计划写入仅 `vbmeta_system_a` 与 `super`；脚本默认不查询设备、不写入，只有显式 `-Execute` 才刷写，并在刷前核对镜像大小/SHA-256、设备身份、A 槽及 Bootloader 解锁状态。完成后保持 Fastboot，不自动启动。
+- 已实际写入仅 `vbmeta_system_a` 与 `super`。脚本默认仍为 Dry-Run，只有显式 `-Execute` 才刷写；本轮刷前镜像大小/SHA-256、设备身份、A 槽及 Bootloader 解锁状态均核验通过。完成后保持 Fastboot，没有自动启动。
 - `vbmeta_system.img`：131,072 字节，SHA-256 `634EB12F681ECFFFF5E07CEF633377F5C16903E32901AFE7B6EF56FE4D5A4190`。
 - `super.img`：7,684,274,964 字节，SHA-256 `4CD34B53A7E47E25522C191AC748B8EE91348091C9B0F31FF59EC677CF8C9B56`。
 - ANGLE 依赖当前 Vulkan 运行时的风险尚未实机验证；C14 graphicsengine 单次 Vulkan 崩溃是已知风险，不是 ANGLE 必然失败的证明。
@@ -47,7 +47,8 @@
 - C14/C15 主机报告：`work/reports/20260926_CANDIDATE14_FAILURE_AND_CANDIDATE15_EGL_PLAN.md`。
 - C15 构建脚本：`tools/build_candidate15_angle_egl.py`；受限刷写脚本：`tools/flash_candidate15_angle_egl.ps1`。
 - C14 观察器与 Standalone 采集：`tools/observe_candidate13_readonly.py`、`tools/salvage_c13_diag.py`；C14 原始观察及取证材料留在独立目录，不覆盖 C13 证据。
-- 下一步：公开同步净化后的 C14/C15 报告与工具，然后申请 C15 `vbmeta_system_a`、`super` 两分区刷写授权。刷后等待单独首次启动授权；先 ARMED observer，再启动并观察。若失败，保留现场并取得新的 Android pstore；不清除 `userdata`/`metadata`。
+- 本轮实刷结果：`vbmeta_system_a` Fastboot 发送/写入均为 `OKAY`；`super` sparse 1/10 至 10/10 均返回 `OKAY`，流程退出码 0；Fastboot 提示 sparse 镜像跳过 AVB footer 复制，与既往相同且本轮所有 sparse 段成功。镜像分别为 131,072 字节（SHA-256 `634EB12F681ECFFFF5E07CEF633377F5C16903E32901AFE7B6EF56FE4D5A4190`）和 7,684,274,964 字节（SHA-256 `4CD34B53A7E47E25522C191AC748B8EE91348091C9B0F31FF59EC677CF8C9B56`）。
+- 下一步：设备保持 Fastboot，等待用户单独授权首次启动；启动前先运行观察器并确认 ARMED，再执行一次启动并采集 C15 结果。若失败，保留现场并取得新的 Android pstore；不清除 `userdata`/`metadata`。
 - 禁止回锁 Bootloader；无授权不得刷写、启动、擦除、修改 misc/BCB、persist、modemst、EFS/NV、射频校准或设备身份数据。刷写与启动授权相互独立。
 
 ## 公开仓库

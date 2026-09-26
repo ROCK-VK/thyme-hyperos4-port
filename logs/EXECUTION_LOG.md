@@ -13051,3 +13051,15 @@
 - 尚未验证：C15 未刷写或启动。
 - 待处理：本记录及状态更新将作为后续公开同步提交；等待用户授权 C15 两分区刷写，刷后保持 Fastboot，首次启动另行授权。
 - 替代：将 16:14 记录中的“公开同步待处理”更新为已完成；C15 设备实验仍待授权。
+
+## 2026-09-26 16:41｜Candidate 15 两分区刷写完成
+
+- 状态：按用户明确授权完成 C15 两项分区写入；设备保持 Bootloader Fastboot，未启动。
+- 改动/结论：仅写入 `vbmeta_system_a` 与 `super`。Fastboot 发送和写入 `vbmeta_system_a` 均返回 `OKAY`；`super` sparse 1/10 至 10/10 均成功，流程退出码 0。脚本未包含重启、擦除或其他分区写入。
+- 原因：用户授权验证 C15 ANGLE EGL 诊断版；C14 pmsg 已有 SurfaceFlinger `no suitable EGLConfig` abort 的直接证据。
+- 涉及文件：`tools/flash_candidate15_angle_egl.ps1`；`work/stage_e_thyme_os4_candidate_15_angle_egl_run1/images/`；`日志/项目当前状态.md`。
+- 验证：刷前只读 Fastboot 核验 `[REDACTED_DEVICE_ID]`、`product=thyme`、A 槽、`unlocked=yes`、`is-userspace=no`；脚本对两镜像大小和 SHA-256 核对通过。`vbmeta_system.img` 为 131,072 字节、SHA-256 `634EB12F681ECFFFF5E07CEF633377F5C16903E32901AFE7B6EF56FE4D5A4190`；`super.img` 为 7,684,274,964 字节、SHA-256 `4CD34B53A7E47E25522C191AC748B8EE91348091C9B0F31FF59EC677CF8C9B56`。刷后再次确认设备仍为 `[REDACTED_DEVICE_ID] fastboot`、thyme、A 槽、解锁且非 userspace Fastboot；无残留 fastboot 进程。
+- 尚未验证：C15 尚未启动；ANGLE EGLConfig 是否可用、SurfaceFlinger 是否保持运行、是否进入 HyperOS 启动画面/设置向导/桌面，以及 C13 的 SELinux HAL 效果均未知。
+- 安全边界：未擦除 `userdata`/`metadata`，未写入其他分区，未执行 Bootloader 解锁/回锁，未重启或恢复 PixelOS。
+- 待处理：保持 Fastboot，等待用户单独授权 C15 首次启动；启动前运行观察器并确认 ARMED。失败后再按授权范围进行现场取证。
+- 替代：更新 16:14 与 16:23 记录中的“C15 待刷写授权”状态；实际刷写已完成，C15 启动仍待授权。
