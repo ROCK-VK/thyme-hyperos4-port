@@ -44,12 +44,24 @@ Android 17 AOSP EGL Loader 以 `persist.graphics.egl`、硬件 EGL 属性选择�
 - C18 已刷写到 thyme：`super` 的 10/10 sparse 块全部 `OKAY`，Fastboot 用时 206.216 秒；随后 `vbmeta_system_a` 发送与写入均 `OKAY`，Fastboot 用时 13.321 秒。
 - 首次启动观察器于 2026-09-26 21:55:04（UTC+8）显示 C18 ARMED；`fastboot reboot` 于 21:55:33 返回成功。主机在约 34 秒后检测到 Fastboot 消失，约 69 秒后重新出现；ADB 全程未上线。用户看到小米 Logo 亮约十几秒后黑屏，随后设备自动进入 Fastboot；未看到 HyperOS 启动动画、设置向导或桌面。
 - 重启后的只读查询仍为 `product=thyme`、A 槽、`unlocked=yes`、`is-userspace=no`。另读到 `slot-unbootable:a=yes`、`slot-successful:a=no`、`slot-retry-count:a=0`；这些值仅在启动失败后采集，缺少刷前对照，不能据此确定原因。
-- 取证时两次 Standalone RAM 尝试均通过主机镜像大小/SHA-256 检查和 Fastboot 身份预检，但 Bootloader 在传输 196608 KB 后返回 `Failed to load/authenticate boot image: Load Error`。第一次发生在自动回到 Fastboot 后，第二次发生在用户手动重新进入 Fastboot 后；结果相同。未出现 THYME_DIAG 卷，因此没有导出本轮 Android pstore，也没有任何分区写入。
-- 自动进入或手动进入 Fastboot 不影响主机识别设备；当前取证阻塞是 Bootloader 拒绝加载 Standalone RAM 镜像。Standalone 本地 SHA-256 与既有已验证镜像一致：`8A5803F09CBCB11056D8356F8D235C3C4450846244FA1B4033ABAAACB213E98B`。
+- 取证初期两次 Standalone RAM 尝试均通过主机镜像大小/SHA-256 检查和 Fastboot 身份预检，但 Bootloader 在传输 196608 KB 后返回 `Failed to load/authenticate boot image: Load Error`。第一次发生在自动回到 Fastboot 后，第二次发生在用户手动重新进入 Fastboot 后；结果相同。两次具体记录分别在 `work/reports/20260926_C18_NATIVE_ADRENO/standalone/run_20260926_215725/` 与 `run_20260926_220042/`。
+- 自动进入或手动进入 Fastboot 不影响主机识别设备；最初两次取证阻塞是 Bootloader 根据当时 A 槽状态拒绝加载 Standalone RAM 镜像。该阻塞已在后续授权操作中解除。Standalone 本地 SHA-256 与既有已验证镜像一致：`8A5803F09CBCB11056D8356F8D235C3C4450846244FA1B4033ABAAACB213E98B`。
 - C18 的 native Adreno 属性是否在 Android 运行时生效、EGLConfig/SurfaceFlinger 是否推进、崩溃发生在哪个 Android 启动阶段，均未取得日志，尚不能验收 C18 修改效果；也没有依据构建 C19。
 
 本次主机证据位置：观察记录 `work/reports/20260926_CANDIDATE18_NATIVE_ADRENO/observations/run_20260926_215459/`；Standalone 失败尝试及其 Fastboot 时间线分别在 `work/reports/20260926_C18_NATIVE_ADRENO/standalone/run_20260926_215725/` 和 `run_20260926_220042/`。两次目录没有设备诊断卷副本，保留的是主机侧尝试记录。
 
-项目执行记录中有一条同设备、同类症状的历史实测（2026-09-23 Candidate 5）：当 A 槽 `slot-unbootable=yes` 时，`fastboot boot` 返回同一 `Load Error`；执行 `fastboot set_active a` 后，槽位状态重置且 Standalone RAM 镜像随即成功启动。该先例与本轮观测高度吻合，解释的是诊断镜像为何被拒绝，不能反推 C18 系统启动的根因，因为本次没有 C18 启动前的槽位标志基线。
+项目执行记录中有一条同设备、同类症状的历史实测（2026-09-23 Candidate 5）：当 A 槽 `slot-unbootable=yes` 时，`fastboot boot` 返回同一 `Load Error`；执行 `fastboot set_active a` 后，槽位状态重置且 Standalone RAM 镜像随即成功启动。该先例解释的是诊断镜像为何被拒绝，不反推 C18 系统启动根因。
 
-下一步可在当前 A 槽执行一次 `fastboot set_active a`，然后立即对同一已核验 Standalone 镜像执行 `fastboot boot` 并完整导出 C18 pstore。`set_active` 会改变持久 A/B boot-control 槽位元数据，因此本轮尚未执行，需取得用户对此项状态修改的明确授权。它不刷写 ROM、不擦除数据、不启动 Android，也不切换到 B 槽。授权前保持 Fastboot，不重试 Candidate、不清数据、不写 misc/BCB 的其他字段。
+### A 槽状态恢复后的 Standalone 取证（2026-09-26 22:16，UTC+8）
+
+用户明确授权后，先记录并复核 Fastboot 状态，再只执行一次 `fastboot set_active a`。执行前为 `product=thyme`、`current-slot=a`、`unlocked=yes`、`is-userspace=no`、`slot-unbootable:a=yes`、`slot-successful:a=no`、`slot-retry-count:a=0`。命令返回 `OKAY`；执行后 `slot-unbootable:a=no`、`slot-retry-count:a=7`，其余身份/槽位状态一致。
+
+随后使用既有 Standalone 镜像 `fastboot boot` 成功，未写入持久分区。动态发现 `THYME_DIAG` 卷为 `F:`，将整个卷复制到 `work/reports/20260926_C18_NATIVE_ADRENO/standalone/run_20260926_221653/`，保留空目录和系统文件。共复制 6 个文件、16,934,939 bytes，复制错误为 0；脚本逐文件比对源/副本大小与 SHA-256，结果全部一致。副本包括完整 `diag_status.log`、Standalone `dmesg_diag_boot.txt`、`oops.raw`、其校验文件、两个 `System Volume Information` 文件，以及清单和导出时间线。
+
+此轮 THYME_DIAG 的 `pstore/` 目录为空；Standalone 报告 `/sys/fs/pstore` 已挂载，但没有可复制记录（0 records）。因此本轮没有取得 C18 的 console-ramoops、pmsg 或其他 Android pstore 记录。`oops.raw` 为 16 MiB，SHA-256 `7D1E254BBEB4803D79FDF96F673EF4DC9C7D0EAE68DF3019C2384B3439E4BB66`，与 C15–C17 的旧副本一致，判为历史残留，不能归属 C18。`dmesg_diag_boot.txt` 是 Standalone 自身内核日志；其中 pstore 无记录和 mtdoops 容量提示不能当作 C18 Android 的错误。
+
+Standalone 启动及导出时间线位于上述目录的 `host_salvage_timeline.csv`；C18 首启的 USB/ADB/Fastboot 时间线位于 `observations/run_20260926_215459/`。首启时 Fastboot 在启动命令返回后约 34 秒消失、约 69 秒重新出现，ADB 未上线。最新主机只读查询显示 ADB/Fastboot 均未枚举，Windows 已识别 `THYME_DIAG` FAT32 卷 `F:`，设备仍处于 Standalone USB 诊断模式。
+
+**结论边界：** A 槽不可启动状态造成的 Standalone `Load Error` 取证阻塞已解除；这只恢复了 RAM 诊断入口，没有解释 C18 为什么回到 Fastboot。由于没有任何能归属 C18 Android 的 pstore 或 ADB 日志，First/Second Stage、Adreno 路由、EGLConfig、SurfaceFlinger、Vulkan、panic 或 init fatal 均仍未知。当前没有足够证据构建 C19 或将 C18 归因于图形栈。未重启 C18、未刷写/擦除任何分区、未恢复 PixelOS、未改 misc/BCB 或切换 B 槽；Bootloader 未回锁。
+
+后续应先解决 C18 首次失败现场没有留下 Android pstore 的取证缺口，再决定是否重试 C18 或修改图形方案。A 槽状态修改仅限本次用户授权的一次 `set_active a`；不得据此推导出对其他 boot-control 操作的授权。

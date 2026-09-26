@@ -8,8 +8,9 @@
 
 - C18 已刷写到 `super`、`vbmeta_system_a` 并执行一次首次启动。用户观察到小米 Logo 亮约十几秒后黑屏，随后设备自动返回 Fastboot；未看到 HyperOS 启动画面、设置向导或桌面。ADB 未上线，Android 日志未取得。
 - C18 观察器运行目录：`work/reports/20260926_CANDIDATE18_NATIVE_ADRENO/observations/run_20260926_215459/`。记录显示启动命令于 21:55:33（UTC+8）返回成功，Fastboot 约 34 秒后消失、约 69 秒后重新出现。
-- 随后的两次 Standalone RAM 启动均在镜像传输后被 Bootloader 拒绝：`Failed to load/authenticate boot image: Load Error`。本地镜像仍通过原大小与 SHA-256 检查；未出现 THYME_DIAG 卷，故没有 C18 pstore/Standalone 文件副本。尝试记录在 `work/reports/20260926_C18_NATIVE_ADRENO/standalone/run_20260926_215725/` 与 `run_20260926_220042/`。
-- 最新只读 Fastboot 状态：设备 `[REDACTED_DEVICE_ID]`、product=thyme、A 槽、unlocked=yes、is-userspace=no；`slot-unbootable:a=yes`、`slot-successful:a=no`、`slot-retry-count:a=0`。这些槽位标志没有启动前基线，原因未知。当前未恢复 PixelOS。
+- 取证初期两次 Standalone RAM 启动被 Bootloader 拒绝：`Failed to load/authenticate boot image: Load Error`。按本轮明确授权保存预状态并只执行一次 `fastboot set_active a`：A 槽 `slot-unbootable` 从 yes 变为 no，`slot-retry-count` 从 0 恢复为 7；设备仍为 `product=thyme`、A 槽、unlocked=yes、非 userspace Fastboot。随后既有 Standalone RAM 镜像启动成功。
+- 成功导出目录：`work/reports/20260926_C18_NATIVE_ADRENO/standalone/run_20260926_221653/`。动态发现 THYME_DIAG 为 `F:`；全卷复制 6 个文件、16,934,939 bytes，源/副本逐文件大小和 SHA-256 匹配，复制错误 0。pstore 目录为空，C18 console/pmsg 未取得；`oops.raw` 与 C15–C17 完全同哈希，属于历史残留；Standalone dmesg 仅代表诊断系统自身。
+- 当前只读主机状态：ADB/Fastboot 均未枚举，Windows 仍挂载 THYME_DIAG FAT32 卷 `F:`，设备处于 Standalone USB 诊断模式。PixelOS 尚未恢复；没有再次启动 C18。
 - Bootloader 仍解锁。未写入 persist、modemst、EFS/NV、misc/BCB、校准或身份分区；本轮未清除 userdata/metadata，也未进行任何 Candidate 后续刷写。
 
 ## 最新 C17 实机证据
@@ -42,7 +43,7 @@
 - C18 保留 C17 其余修复和硬件栈；无 SELinux 扩权、无 Vulkan 库替换、无 userdata/metadata 擦除。
 - 构建目录：work/stage_h_thyme_os4_candidate_18_native_adreno_run1/images/。写入镜像：super.img 7,684,274,964 bytes，SHA-256 EEA7DD2378DDF84BF1BAF0DC86445025AFDAED3E0CE20DE75654D11D0AA35132；vbmeta_system.img 131,072 bytes，SHA-256 932CFBE646D588AF3B61C3A8D075C2AAD37C5DC6F4906C5200D6B6BEFF65DE73。
 - EROFS 检查通过；从 super 提取的 system_a.img 与 C18 system 镜像逐字节一致；vbmeta_system system descriptor 匹配新 root digest，product/system_ext descriptors 继承 C17；LP 布局与 C17 一致。Python 编译、PowerShell AST 和刷写 Dry-Run 通过。
-- Observer 属性快照已补充 persist.graphics.egl、ro.hardware.egl、ro.hardware.vulkan、ro.board.platform。C18 已启动一次但未获得 ADB 或设备 pstore；native Adreno 路由是否生效、EGLConfig 是否变化均未验证。当前阻塞优先是已知 Standalone 镜像被 Bootloader 拒绝加载。
+- Observer 属性快照已补充 persist.graphics.egl、ro.hardware.egl、ro.hardware.vulkan、ro.board.platform。C18 已启动一次但未获得 ADB 或 C18 Android pstore；native Adreno 路由是否生效、EGLConfig 是否变化均未验证。A 槽状态恢复后 Standalone 能正常加载，但导出显示本轮 pstore 为空，故 C18 启动阶段和故障原因仍未知。
 
 ## 公开诊断证据
 
@@ -50,10 +51,10 @@
 - 首批归档包含 8 个 Standalone 导出目录和 6 个 host-observation 目录，共 118 个原始文件、140,935,707 字节；逐文件大小和 SHA-256 已验证，凭据模式排除数为 0，缺失 allowlist 目录为 0。
 - 本地原始证据未修改。完整 ROM/固件、系统与 userdata/metadata 分区镜像、misc/校准/设备身份分区备份不公开。
 - 公开同步脚本位于公开仓库 scripts/sync_raw_startup_evidence.ps1，并由 scripts/sync_from_local.ps1 调用；新的 Standalone/观察目录仍须明确加入 allowlist。
-- 原始证据已推送到 Public 仓库 main，提交 3147a6fd8c0ff1d8c46f1cc49a510d0d0a3790c5；匿名 API 确认 public，4 个跨 Candidate 原始文件 HTTP 200 且远端 SHA-256 与本地清单一致。
+- 原始证据 C13–C17 已推送到 Public 仓库 main，提交 3147a6fd8c0ff1d8c46f1cc49a510d0d0a3790c5；C18 新证据待本轮增量提交。此前匿名 API 确认仓库 Public，4 个跨 Candidate 原始文件 HTTP 200 且远端 SHA-256 与本地清单一致。
 - C18 报告、构建清单、构建/受限刷写/启动门控脚本、属性观察器更新、README 和状态日志已公开；报告/清单均匿名 HTTP 200。C18 增量提交 d9a56e34b63b27c07b3c04a5d0fdebcf68ea948e；该提交不含 ROM/分区镜像。
 ## 下一步
 
-1. 历史实测解释了当前 Standalone `fastboot boot` `Load Error`：A 槽 `slot-unbootable=yes` 时曾出现相同错误；`fastboot set_active a` 重置槽状态后 RAM 诊断镜像成功加载。该记录解释取证阻塞，不解释 C18 本身的启动故障。
-2. `fastboot set_active a` 会改变持久 A/B boot-control 元数据。本轮尚未执行，需先取得用户对此项状态修改的明确授权；授权后只重置 A 槽并立即启动 Standalone RAM 诊断，导出后不自动启动 Android。
-3. 在取得 C18 pstore 前，不构建 C19，也不凭黑屏修改 EGL/HWC/Gralloc 或扩大 SELinux 权限。当前设备保持 A 槽 Bootloader Fastboot；不清数据、不切 B 槽、不回锁。
+1. 本轮已按用户限定授权执行一次 `fastboot set_active a`，解除 A 槽 unbootable 标记并恢复 retry=7；随后 Standalone RAM 启动成功。此 boot-control 变更已完成，不扩大到 B 槽或其他操作。
+2. Standalone 全卷已备份并校验，但没有 C18 Android pstore；现有 `oops.raw` 是 C15–C17 历史残留。C18 启动阶段、Adreno/EGLConfig 和图形服务结果仍未知。
+3. 先解决首次启动 Android 日志未留存的问题，再决定 C18 复验或后续修复；当前无证据构建 C19。设备最近状态为 Standalone USB 诊断卷，PixelOS 未恢复；未清数据、未修改其他分区、未回锁。

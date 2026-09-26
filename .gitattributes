@@ -1,2 +1,4 @@
 * text=auto eol=lf
 evidence/** -text
+evidence/RAW_EVIDENCE_MANIFEST.csv -text whitespace=cr-at-eol
+evidence/RAW_EVIDENCE_EXCLUSIONS.csv -text whitespace=cr-at-eol

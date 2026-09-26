@@ -13255,3 +13255,15 @@
 - 尚未验证：是否经用户授权执行 `fastboot set_active a` 后，当前 Standalone 镜像能再次加载；C18 pstore、EGL 后端及 SurfaceFlinger 状态。
 - 待处理：`fastboot set_active a` 改变持久 A/B boot-control 元数据，尚未执行；须先获得用户明确授权。若授权，严格只对当前 A 槽执行一次，紧接着使用 `fastboot boot` 进入 Standalone 全卷取证，不自动启动 Android。
 - 替代：细化上一条“定点检查 Standalone Load Error”的计划；不改变 C18 启动原因未知的判断。
+
+## 2026-09-26 22:17｜恢复 C18 Standalone 取证并完成诊断卷全量备份
+
+- 状态：按用户授权恢复 A 槽 bootability 并成功 RAM 临时启动 Standalone；完整诊断卷已复制和校验。没有重启 C18 或写入其他持久分区。
+- 改动/结论：执行前确认 `product=thyme`、A 槽、unlocked=yes、非 userspace Fastboot；保存的 A 槽状态为 unbootable=yes、successful=no、retry=0。仅执行一次 `fastboot set_active a`，返回 OKAY；执行后 unbootable=no、retry=7。紧接着使用既有 Standalone 镜像 `fastboot boot` 成功。动态识别 `THYME_DIAG` 为 F:，复制全部可访问目录和 6 个文件（16,934,939 bytes），保留空 pstore 目录和系统生成文件；源/副本逐文件长度与 SHA-256 一致，复制错误 0。
+- 原因：A 槽 unbootable 状态与历史 C5 的 Standalone Load Error 同现，阻止 C18 故障后读取日志；用户授权只修复当前 A 槽 boot-control 并立即 RAM 启动诊断。
+- 涉及文件：`work/reports/20260926_C18_NATIVE_ADRENO/standalone/slot_state_reset_20260926_221652.txt`；完整副本 `work/reports/20260926_C18_NATIVE_ADRENO/standalone/run_20260926_221653/`；`work/reports/20260926_CANDIDATE18_NATIVE_ADRENO/REPORT.md`；本状态文件；公开证据同步白名单。
+- 验证：set_active 前后 Fastboot getvar 的 A 槽状态与记录一致；Standalone `fastboot boot` exit=0、Booting OKAY，卷由标签动态发现。6 个文件共 16,934,939 bytes；manifest SHA-256 与本地副本核验匹配，脚本复制错误为 0。pstore 目录为空，Standalone 对 `/sys/fs/pstore` 记录数为 0。`oops.raw` 为 16 MiB，SHA-256 与 C15–C17 历史副本相同，判为旧残留；`dmesg_diag_boot.txt` 为 Standalone 自身内核日志。C18 observer 时间线中 Fastboot 于启动命令返回约 34 秒后消失、约 69 秒后重现，ADB 未上线。
+- 尚未验证：C18 是否进入 Android First/Second Stage、native Adreno 路由运行值、EGLConfig/SurfaceFlinger/Vulkan 行为、具体自动返回 Fastboot 的原因。空 pstore 不能证明设备没有进入 Init，只能说明此次 Standalone 未找到持久 pstore 记录。
+- 安全边界：未重复启动 C18、未写入 Candidate 分区、未清除 userdata/metadata、未修改 misc/BCB 其他字段、未切换 B 槽、未回锁。未恢复 PixelOS；最近主机只读状态为 ADB/Fastboot 均未枚举、`THYME_DIAG` FAT32 卷挂载为 F:。Bootloader 最近一次核验仍 unlocked=yes。
+- 待处理：公开同步本轮 C18 Standalone 全量原始卷副本、C18 observer 时间线和前两次失败 RAM 尝试时间线；定点改进首次 Android 启动日志留存后，再决定 C18 复验或构建后续版本。没有足够 C18 Android 日志时不构建 C19，也不猜测图形根因。
+- 替代：替代 22:03 记录中的“仍需授权 set_active a”与 22:00 记录中的“当前处于 Fastboot”；两项状态变更已在本条授权范围内完成。保留旧记录作为当时真实状态。
