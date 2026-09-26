@@ -38,20 +38,37 @@ if (-not (Test-Path -LiteralPath $FastbootExe -PathType Leaf)) {
     throw "Local Fastboot executable missing: $FastbootExe"
 }
 
-function Get-FastbootVar([string]$Name) {
-    $Output = & $FastbootExe -s $ExpectedSerial getvar $Name 2>&1 | Out-String
-    $ExitCode = $LASTEXITCODE
-    if ($ExitCode -ne 0) { throw "fastboot getvar $Name failed: $Output" }
-    $Pattern = "(?m)^\s*(?:\(bootloader\)\s*)?$([regex]::Escape($Name)):\s*(?<value>[^\r\n]+?)\s*$"
-    if ($Output -match $Pattern) { return $Matches['value'].Trim() }
-    throw "Could not read Fastboot variable '$Name': $Output"
+function Invoke-Fastboot([string[]]$Arguments) {
+    $StartInfo = New-Object System.Diagnostics.ProcessStartInfo
+    $StartInfo.FileName = $FastbootExe
+    $StartInfo.Arguments = [string]::Join(' ', $Arguments)
+    $StartInfo.UseShellExecute = $false
+    $StartInfo.RedirectStandardOutput = $true
+    $StartInfo.RedirectStandardError = $true
+    $StartInfo.CreateNoWindow = $true
+    $Process = New-Object System.Diagnostics.Process
+    $Process.StartInfo = $StartInfo
+    if (-not $Process.Start()) { throw "Failed to start Fastboot: $FastbootExe" }
+    $StdoutTask = $Process.StandardOutput.ReadToEndAsync()
+    $StderrTask = $Process.StandardError.ReadToEndAsync()
+    $Process.WaitForExit()
+    $Output = @($StdoutTask.Result, $StderrTask.Result) -join [Environment]::NewLine
+    return [pscustomobject]@{ ExitCode = $Process.ExitCode; Output = $Output.Trim() }
 }
 
-$Devices = & $FastbootExe devices -l 2>&1 | Out-String
-if ($LASTEXITCODE -ne 0) {
-    throw "Expected bootloader Fastboot device $ExpectedSerial is not connected: $Devices"
+function Get-FastbootVar([string]$Name) {
+    $Result = Invoke-Fastboot @('-s', $ExpectedSerial, 'getvar', $Name)
+    if ($Result.ExitCode -ne 0) { throw "fastboot getvar $Name failed: $($Result.Output)" }
+    $Pattern = "(?m)^\s*(?:\(bootloader\)\s*)?$([regex]::Escape($Name)):\s*(?<value>[^\r\n]+?)\s*$"
+    if ($Result.Output -match $Pattern) { return $Matches['value'].Trim() }
+    throw "Could not read Fastboot variable '$Name': $($Result.Output)"
 }
-$ListedDevices = @([regex]::Matches($Devices, '(?m)^\s*(\S+)\s+fastboot\b') | ForEach-Object { $_.Groups[1].Value })
+
+$DeviceResult = Invoke-Fastboot @('devices', '-l')
+if ($DeviceResult.ExitCode -ne 0) {
+    throw "Expected bootloader Fastboot device $ExpectedSerial is not connected: $($DeviceResult.Output)"
+}
+$ListedDevices = @([regex]::Matches($DeviceResult.Output, '(?m)^\s*(\S+)\s+fastboot\b') | ForEach-Object { $_.Groups[1].Value })
 if ($ListedDevices.Count -ne 1 -or $ListedDevices[0] -ne $ExpectedSerial) {
     throw "Expected exactly one Fastboot device $ExpectedSerial; found: $($ListedDevices -join ', ')."
 }
@@ -79,8 +96,9 @@ $Now = [DateTimeOffset]::UtcNow.ToString('o')
 $StartLine = '"{0}","command_start","fastboot -s {1} reboot","","product={2};slot={3};unlocked={4};is-userspace={5}"' -f $Now,$ExpectedSerial,$Product,$Slot,$Unlocked,$IsUserspace
 Add-Content -LiteralPath $Timeline -Value $StartLine -Encoding utf8
 Write-Host "[$Now] Issuing the one authorized Fastboot reboot. Keep watching the phone."
-$Output = & $FastbootExe -s $ExpectedSerial reboot 2>&1 | Out-String
-$ExitCode = $LASTEXITCODE
+$RebootResult = Invoke-Fastboot @('-s', $ExpectedSerial, 'reboot')
+$Output = $RebootResult.Output
+$ExitCode = $RebootResult.ExitCode
 $End = [DateTimeOffset]::UtcNow.ToString('o')
 $SafeOutput = $Output.Replace('"', '""').Replace("`r", ' ').Replace("`n", ' | ')
 $EndLine = '"{0}","command_finished","fastboot -s {1} reboot",{2},"{3}"' -f $End,$ExpectedSerial,$ExitCode,$SafeOutput

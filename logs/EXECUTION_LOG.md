@@ -13162,3 +13162,16 @@
 - 安全边界：本轮未调用 `fastboot reboot`、`fastboot boot`、任何刷写/擦除命令；没有修改设备分区、恢复 PixelOS 或清除数据。
 - 待处理：等待用户现场启动确认；确认后启动正式 C17 observer、等待 ARMED，再执行一次 C17 受控启动。
 - 替代：更新 19:50 记录中“设备物理模式未知”的现状；本轮已重新确认 Bootloader Fastboot。
+
+## 2026-09-26 20:44｜C17 受控复验与图形阶段现场取证
+
+- 状态：C17 受控启动、Standalone RAM 只读取证和日志分析完成；未刷写持久分区、擦除数据或恢复 PixelOS。
+- 改动/结论：观察器以 C17-retest 标签 ARMED 后执行一次 fastboot reboot，命令退出码 0。主机记录 USB/Fastboot 离线，约 148 秒后设备重新进入 Fastboot；用户确认是手动按键返回。ADB 未上线。C17 pstore 证明正常 Android first/second stage、动态 SELinux policy 编译与 enforcing、APEX Bootstrap 和 /data 挂载成功。hal_graphics_allocator_default -> ion_device 的 open/read AVC 均未在本轮日志中出现；SurfaceFlinger 仍有 24 次 EGLConfig abort，另有一次 graphicsengine 在 Vulkan vkEnumeratePhysicalDevices+4 SIGSEGV。未证明 ANGLE 实际加载或进入 bootanimation/设置向导/桌面；未构建 C18。
+- 启动器兼容性补充：首轮预检调用被 PowerShell 将 Fastboot getvar 的成功 stderr 输出当成终止错误；当时未发送 reboot。启动脚本改用 .NET ProcessStartInfo 捕获退出码/stdout/stderr，随后 Dry-Run 与唯一一次实际 reboot 均成功。
+- 原因：验证 C17 新增的 allocator open 权限，并取得此前缺少的 Android 用户空间启动阶段证据。
+- 涉及文件：tools/observe_candidate13_readonly.py、tools/start_candidate13_observed_boot.ps1、tools/salvage_c13_diag.py；报告 work/reports/20260926_CANDIDATE17_RETEST/REPORT.md；主机观察目录 work/reports/20260925_CANDIDATE13_STORAGE_SAFETY_AND_FIRST_FAILURE/observations/C17_revalidation/run_20260926_202822/；Standalone 原始副本 work/reports/20260926_CANDIDATE17_RETEST/standalone/run_20260926_203340/；本状态文件。
+- 验证：启动时间线与用户现场反馈相符。Standalone 镜像经预检后 fastboot boot 成功（RAM 临时启动）；诊断卷全部 7 个可访问文件复制，源与副本长度和 SHA-256 逐项一致，复制错误 0；主机再次独立比较均匹配。日志分析确认 metadata encryption key 可用、/data F2FS mount 成功、keymaster earlyBootEnded 完成；oops.raw 与旧 C14–C16 内容同哈希，不作为新 panic。
+- 尚未验证：allocator HAL 是否完整执行所有调用；ANGLE/EGL backend 实际选择；EGLConfig 与 gralloc/HWC 格式根因；Vulkan SIGSEGV 与 EGL abort 因果；是否能进入 HyperOS 界面。
+- 安全边界：仅一次普通 Candidate reboot 和一次 Standalone RAM 临时启动；未写入持久分区，未清除 userdata/metadata，未触及 misc/BCB、persist、modemst、EFS/NV、校准及设备身份分区，未回锁。最近查询设备仍在 THYME_DIAG USB Mass Storage，ADB/Fastboot 未枚举；PixelOS 未恢复。
+- 待处理：定点调查 ANGLE/EGL/Gralloc/HWC 配置选择和 Vulkan 枚举崩溃，形成有证据支持的最小修复后再决定 C18；将脱敏报告及状态增量同步到公开仓库。
+- 替代：替代此前状态中“C17 启动尚未得到有效用户空间证据、设备当前模式未知”的判断；本轮已确认 Android Second Stage 与图形阶段运行，设备当前则处于 Standalone USB 诊断模式。

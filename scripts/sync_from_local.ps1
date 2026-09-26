@@ -68,6 +68,7 @@ $Allowlist = @(
     @{ Source='work/reports/20260926_CANDIDATE15_FIRST_BOOT_AND_CANDIDATE16_GRAPHICS_ALLOCATOR_FIX.md'; Destination='reports/candidate16/20260926_CANDIDATE15_FIRST_BOOT_AND_CANDIDATE16_GRAPHICS_ALLOCATOR_FIX.md' }
     @{ Source='work/reports/20260926_CANDIDATE16_FAILURE_AND_CANDIDATE17_BUILD_FLASH.md'; Destination='reports/candidate17/20260926_CANDIDATE16_FAILURE_AND_CANDIDATE17_BUILD_FLASH.md' }
     @{ Source='work/reports/20260926_CANDIDATE17_FIRST_BOOT/REPORT.md'; Destination='reports/candidate17/20260926_CANDIDATE17_FIRST_BOOT_REPORT.md' }
+    @{ Source='work/reports/20260926_CANDIDATE17_RETEST/REPORT.md'; Destination='reports/candidate17/20260926_CANDIDATE17_RETEST_REPORT.md' }
     @{ Source='work/reports/20260926_CANDIDATE13_NETBPFLOAD_EVIDENCE_EXCERPT.txt'; Destination='reports/boot-logs/candidate13_netbpfload_failure_excerpt.txt' }
     @{ Source='@STORAGE_SAFETY_REPORT'; Destination='reports/candidate13/20260925_CANDIDATE13_STORAGE_SAFETY_AND_FIRST_FAILURE.md' }
     @{ Source='work/reports/20260924_CANDIDATE10_WARMDTB_LOG_SALVAGE/pstore/console-ramoops-0'; Destination='reports/boot-logs/candidate10_console-ramoops.txt' }
