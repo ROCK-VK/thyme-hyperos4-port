@@ -13150,3 +13150,15 @@
 - 尚未验证：GitHub Desktop UI 本轮未打开确认；不影响公共 HTTPS 与 main 读取验证。
 - 待处理：将本条同步记录及其状态更新再推送一次；后续候选资料继续按明确白名单增量发布。
 - 替代：更新 C17 首启取证记录中“公开同步待完成”的待办。
+
+## 2026-09-26 20:22｜C17 有效复验准备与 USB 时间线补强
+
+- 状态：主机侧观察器修订、静态检查和短时只读自检完成；未刷写、未启动设备。
+- 改动/结论：`observe_candidate13_readonly.py` 增加 Windows PnP USB 在场查询，并异步采样，避免约 4 秒的 PnP 枚举耗时阻塞 ADB/Fastboot 每秒采样。时间线、JSONL 事件和 ARMED 元数据包含 USB 状态；`start_candidate13_observed_boot.ps1` 要求 C17 标签、USB present、ADB absent、Fastboot fastboot，并复核 Fastboot 设备唯一性后才允许执行显式 `-Execute` 的单次 reboot。
+- 原因：C17 上次启动没有预置 observer；需区分 USB 枚举、ADB 与 Fastboot 状态变化并把启动命令时间与本轮现场关联。
+- 涉及文件：`tools/observe_candidate13_readonly.py`、`tools/start_candidate13_observed_boot.ps1`、`日志/项目当前状态.md`；只读自检产物位于系统 Temp 的 `thyme_c17_observer_smoke`。
+- 验证：Python 语法解析通过；PowerShell 启动脚本 AST 解析通过；30 秒只读 observer 自检生成全新时间戳目录，并记录 `C17-observer-smoke`、USB PnP `present`（`Android Bootloader Interface`）、ADB `absent`、Fastboot `fastboot`。当次只读设备复核为唯一 `[REDACTED_DEVICE_ID]`、`product=thyme`、A 槽、已解锁、非 userspace Fastboot。
+- 尚未验证：下一次真实 C17 observer/启动时间线、ION open AVC、EGLConfig、ANGLE/Vulkan、SurfaceFlinger 和界面阶段。
+- 安全边界：本轮未调用 `fastboot reboot`、`fastboot boot`、任何刷写/擦除命令；没有修改设备分区、恢复 PixelOS 或清除数据。
+- 待处理：等待用户现场启动确认；确认后启动正式 C17 observer、等待 ARMED，再执行一次 C17 受控启动。
+- 替代：更新 19:50 记录中“设备物理模式未知”的现状；本轮已重新确认 Bootloader Fastboot。

@@ -24,8 +24,11 @@ if (-not (Test-Path -LiteralPath $ArmedPath -PathType Leaf)) {
     throw 'Observer has not completed its first poll; start it and wait for [ARMED].'
 }
 $Armed = Get-Content -LiteralPath $ArmedPath -Raw | ConvertFrom-Json
-if ($Armed.serial -ne $ExpectedSerial -or $Armed.fastboot_state -ne 'fastboot' -or $Armed.adb_state -ne 'absent') {
-    throw "Observer armed for an unexpected state: serial=$($Armed.serial), adb=$($Armed.adb_state), fastboot=$($Armed.fastboot_state)."
+if ($Armed.candidate -notmatch '^C17(?:[-_]|$)') {
+    throw "Observer candidate label must identify C17; got '$($Armed.candidate)'."
+}
+if ($Armed.serial -ne $ExpectedSerial -or $Armed.usb_pnp_state -ne 'present' -or $Armed.fastboot_state -ne 'fastboot' -or $Armed.adb_state -ne 'absent') {
+    throw "Observer armed for an unexpected state: serial=$($Armed.serial), USB=$($Armed.usb_pnp_state), adb=$($Armed.adb_state), fastboot=$($Armed.fastboot_state)."
 }
 $ArmedAt = [DateTimeOffset]::Parse($Armed.armed_utc).ToUniversalTime()
 if (([DateTimeOffset]::UtcNow - $ArmedAt).TotalMinutes -gt 10 -or $ArmedAt -gt [DateTimeOffset]::UtcNow.AddMinutes(1)) {
@@ -45,8 +48,12 @@ function Get-FastbootVar([string]$Name) {
 }
 
 $Devices = & $FastbootExe devices -l 2>&1 | Out-String
-if ($LASTEXITCODE -ne 0 -or $Devices -notmatch "(?m)^\s*$([regex]::Escape($ExpectedSerial))\s+fastboot\b") {
+if ($LASTEXITCODE -ne 0) {
     throw "Expected bootloader Fastboot device $ExpectedSerial is not connected: $Devices"
+}
+$ListedDevices = @([regex]::Matches($Devices, '(?m)^\s*(\S+)\s+fastboot\b') | ForEach-Object { $_.Groups[1].Value })
+if ($ListedDevices.Count -ne 1 -or $ListedDevices[0] -ne $ExpectedSerial) {
+    throw "Expected exactly one Fastboot device $ExpectedSerial; found: $($ListedDevices -join ', ')."
 }
 $Product = Get-FastbootVar 'product'
 $Slot = Get-FastbootVar 'current-slot'

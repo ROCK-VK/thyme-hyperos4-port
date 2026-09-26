@@ -2,10 +2,10 @@
 """Read-only host observer for a separately authorized Android boot.
 
 This tool never reboots, boots, flashes, erases, or writes to the device. It
-polls ADB/Fastboot discovery, streams ADB logcat while ADB is online, and saves
-read-only startup snapshots, and tries to copy readable pstore files as soon as
-ADB becomes available. Start it before the separately authorized startup
-command and stop it with Ctrl-C after the observation window.
+polls Windows USB PnP plus ADB/Fastboot discovery, streams ADB logcat while ADB
+is online, and saves read-only startup snapshots and readable pstore files.
+Start it before the separately authorized startup command and stop it with
+Ctrl-C after the observation window.
 """
 
 from __future__ import annotations
@@ -84,6 +84,47 @@ def run_readonly_bytes(command: list[str], timeout: float = 8.0) -> subprocess.C
         timeout=timeout,
         check=False,
     )
+
+
+def query_windows_usb_state(serial: str) -> tuple[str, str, float]:
+    """Read Windows PnP presence for this phone without changing device state."""
+    if os.name != "nt":
+        return "unsupported", "Windows PnP query is only available on Windows", 0.0
+    if not re.fullmatch(r"[A-Za-z0-9-]+", serial):
+        return "query_error", "serial contains unsupported characters", 0.0
+    powershell = os.environ.get("SystemRoot", r"C:\Windows") + r"\System32\WindowsPowerShell\v1.0\powershell.exe"
+    script = r"""
+$ErrorActionPreference = 'Stop'
+$serial = '__SERIAL__'
+$matches = @(Get-PnpDevice -PresentOnly | Where-Object { $_.InstanceId -match [regex]::Escape($serial) } | Select-Object Status, Class, FriendlyName, InstanceId)
+if ($matches.Count -eq 0) { @{ state = 'absent'; devices = @() } | ConvertTo-Json -Compress -Depth 4 }
+else { @{ state = 'present'; devices = $matches } | ConvertTo-Json -Compress -Depth 4 }
+""".replace("__SERIAL__", serial)
+    started = time.monotonic()
+    try:
+        result = subprocess.run(
+            [powershell, "-NoLogo", "-NoProfile", "-NonInteractive", "-Command", script],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=10.0,
+            check=False,
+        )
+        elapsed_ms = round((time.monotonic() - started) * 1000, 1)
+        output = (result.stdout + result.stderr).strip()
+        if result.returncode != 0:
+            return "query_error", output or f"PowerShell exit {result.returncode}", elapsed_ms
+        try:
+            payload = json.loads(result.stdout)
+        except json.JSONDecodeError:
+            return "query_error", output or "PowerShell returned invalid JSON", elapsed_ms
+        state = payload.get("state")
+        if state not in {"present", "absent"}:
+            return "query_error", output or "PowerShell returned no PnP state", elapsed_ms
+        return state, json.dumps(payload, ensure_ascii=False, separators=(",", ":")), elapsed_ms
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        return "query_error", repr(exc), round((time.monotonic() - started) * 1000, 1)
 
 
 def matching_state(output: str, serial: str, expected_state: str) -> str:
@@ -235,7 +276,7 @@ def main() -> int:
     events_path = run_dir / "usb_adb_fastboot_timeline.csv"
     logcat_path = run_dir / "logcat_all_monotonic.txt"
     logcat_error_path = run_dir / "logcat_client_stderr.txt"
-    previous = (None, None)
+    previous = (None, None, None)
     next_snapshot = 0.0
     snapshot_index = 0
     pstore_capture_index = 0
@@ -245,12 +286,17 @@ def main() -> int:
     snapshot_future: Future[None] | None = None
     logcat_stdout = logcat_path.open("ab")
     logcat_stderr = logcat_error_path.open("ab")
+    usb_pnp_state, usb_pnp_output, usb_query_ms = "query_pending", "initial PnP query pending", ""
+    usb_executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="c17-usb-pnp")
+    usb_future: Future[tuple[str, str, float]] | None = None
+    next_usb_query = 0.0
 
     try:
         with events_path.open("w", encoding="utf-8", newline="") as stream:
             writer = csv.writer(stream)
             writer.writerow((
                 "sample_started_utc", "sample_finished_utc", "elapsed_seconds",
+                "usb_pnp_state", "usb_query_ms", "usb_pnp_output",
                 "adb_state", "fastboot_state", "adb_query_ms", "fastboot_query_ms",
                 "adb_output", "fastboot_output",
             ))
@@ -264,6 +310,15 @@ def main() -> int:
                     except Exception as exc:
                         print(f"[WARN] Read-only snapshot failed: {exc!r}", flush=True)
                     snapshot_future = None
+                if usb_future is not None and usb_future.done():
+                    try:
+                        usb_pnp_state, usb_pnp_output, usb_query_ms = usb_future.result()
+                    except Exception as exc:
+                        usb_pnp_state, usb_pnp_output, usb_query_ms = "query_error", repr(exc), ""
+                    usb_future = None
+                if usb_future is None and sample_started >= next_usb_query:
+                    usb_future = usb_executor.submit(query_windows_usb_state, SERIAL)
+                    next_usb_query = sample_started + 1.0
                 try:
                     adb_query_started = time.monotonic()
                     adb = run_readonly([str(ADB), "devices", "-l"])
@@ -286,22 +341,30 @@ def main() -> int:
                 sample_finished = time.monotonic()
                 sample_finished_utc = utc_now()
                 elapsed = sample_finished - started
-                state_changed = (adb_state, fastboot_state) != previous
-                adb_became_online = adb_state in ADB_SHELL_STATES and previous[0] not in ADB_SHELL_STATES
-                adb_entered_recovery = adb_state == "recovery" and previous[0] != "recovery"
-                adb_entered_sideload = adb_state == "sideload" and previous[0] != "sideload"
+                state_changed = (usb_pnp_state, adb_state, fastboot_state) != previous
+                adb_became_online = adb_state in ADB_SHELL_STATES and previous[1] not in ADB_SHELL_STATES
+                adb_entered_recovery = adb_state == "recovery" and previous[1] != "recovery"
+                adb_entered_sideload = adb_state == "sideload" and previous[1] != "sideload"
                 writer.writerow((
                     sample_started_utc, sample_finished_utc, f"{elapsed:.3f}",
+                    usb_pnp_state, usb_query_ms, usb_pnp_output,
                     adb_state, fastboot_state, adb_query_ms, fastboot_query_ms,
                     adb_output, fastboot_output,
                 ))
                 stream.flush()
-                if not armed_written:
+                if (
+                    not armed_written
+                    and usb_pnp_state == "present"
+                    and adb_state == "absent"
+                    and fastboot_state == "fastboot"
+                ):
                     armed = {
                         "candidate": args.candidate,
                         "armed_utc": sample_finished_utc,
                         "elapsed_seconds": round(elapsed, 3),
                         "serial": SERIAL,
+                        "usb_pnp_state": usb_pnp_state,
+                        "usb_pnp_output": usb_pnp_output,
                         "adb_state": adb_state,
                         "fastboot_state": fastboot_state,
                         "run_dir": str(run_dir),
@@ -311,26 +374,32 @@ def main() -> int:
                     )
                     append_host_event(
                         host_events_path, "observer_armed", elapsed_seconds=round(elapsed, 3),
-                        candidate=args.candidate, adb_state=adb_state, fastboot_state=fastboot_state,
+                        candidate=args.candidate, usb_pnp_state=usb_pnp_state,
+                        adb_state=adb_state, fastboot_state=fastboot_state,
                     )
                     print(
-                        f"[ARMED] ADB={adb_state}; Fastboot={fastboot_state}; "
+                        f"[ARMED] USB={usb_pnp_state}; ADB={adb_state}; Fastboot={fastboot_state}; "
                         f"UTC={sample_finished_utc}; run={run_dir}", flush=True,
                     )
                     armed_written = True
                 if state_changed:
-                    print(f"[{elapsed:7.1f}s] ADB={adb_state}; Fastboot={fastboot_state}", flush=True)
-                    if previous[0] != adb_state:
+                    print(f"[{elapsed:7.1f}s] USB={usb_pnp_state}; ADB={adb_state}; Fastboot={fastboot_state}", flush=True)
+                    if previous[0] != usb_pnp_state:
+                        append_host_event(
+                            host_events_path, "usb_pnp_state_change", elapsed_seconds=round(elapsed, 3),
+                            state=usb_pnp_state, output=usb_pnp_output,
+                        )
+                    if previous[1] != adb_state:
                         append_host_event(
                             host_events_path, "adb_state_change", elapsed_seconds=round(elapsed, 3),
                             state=adb_state, output=adb_output,
                         )
-                    if previous[1] != fastboot_state:
+                    if previous[2] != fastboot_state:
                         append_host_event(
                             host_events_path, "fastboot_state_change", elapsed_seconds=round(elapsed, 3),
                             state=fastboot_state, output=fastboot_output,
                         )
-                    previous = (adb_state, fastboot_state)
+                    previous = (usb_pnp_state, adb_state, fastboot_state)
                 if adb_entered_recovery:
                     print("[STOP CONDITION] ADB reports Recovery. Do not confirm wipe; keep the phone and cable in place while passive capture continues.", flush=True)
                 elif adb_entered_sideload:
@@ -396,6 +465,9 @@ def main() -> int:
         if snapshot_future is not None:
             snapshot_future.cancel()
         snapshot_executor.shutdown(wait=False, cancel_futures=True)
+        if usb_future is not None:
+            usb_future.cancel()
+        usb_executor.shutdown(wait=False, cancel_futures=True)
         logcat_stdout.close()
         logcat_stderr.close()
 

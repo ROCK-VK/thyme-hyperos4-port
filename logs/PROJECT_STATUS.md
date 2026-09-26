@@ -11,7 +11,8 @@
 - 最近一次持久分区刷写为 C17：仅 `vbmeta_system_a` 与 `super`；其余引导分区仍为 C13 基线。C17 后未再写分区、擦除数据或恢复 PixelOS。
 - 用户报告 C17 启动时小米 Logo 持续亮屏，随后手动进入 Fastboot；该次启动没有主机 observer/USB 时间线，归属依据是 C17 为最后刷入版本与用户报告。
 - 故障后依据既有授权执行 Standalone RAM 只读取证。Host 成功核验设备曾处于 Bootloader Fastboot（thyme、A 槽、已解锁、非 userspace Fastboot），随后 `fastboot boot` Standalone 成功，没有持久分区写入。
-- Standalone 导出后，主机未枚举 ADB、Fastboot 或 THYME_DIAG 卷；设备当前物理模式未知。最后一次确认的持久镜像状态仍是 C17。
+- Standalone 导出后当时主机未枚举 ADB、Fastboot 或 THYME_DIAG 卷；本轮已重新确认设备当前位于 Bootloader Fastboot：唯一设备 `[REDACTED_DEVICE_ID]`，`product=thyme`、A 槽、`unlocked=yes`、`is-userspace=no`，Windows PnP 为 Android Bootloader Interface，ADB 未连接。未发出重启命令。
+- 只读启动观察器现记录 Windows USB PnP、ADB、Fastboot 时间线；候选标签需为 C17，只有 USB 在场、ADB absent、Bootloader Fastboot 时才生成 ARMED 记录。30 秒只读自检通过；自检目录在系统 Temp，不是本轮 Candidate 实验记录。
 - 未擦除 userdata/metadata；不应因本次图形故障重清数据。Bootloader 保持解锁。
 - PixelOS A0′ 未恢复，不可报告为在线健康系统。
 
@@ -34,6 +35,7 @@
 
 - 不执行 Bootloader 回锁；不改 `persist`、`modemst`、EFS/NV、无线电校准或设备身份分区。
 - 先让主机重新识别 Bootloader Fastboot；若 Standalone 画面/模式仍在，需用户手动操作并告知，不发不明确的模式切换命令。
-- 下一次不刷写、不清数据：设备可见且用户准备观察后，先以 C17 标签启动只读 observer，确认 ARMED，再由用户现场确认后受控启动当前 C17。观察 ADB、logcat、pstore；若未上线且用户返回 Fastboot，再用既有 Standalone 流程取证。
+- 下一步不刷写、不清数据：等用户现场确认后，以 `C17-retest` 标签启动只读 observer；确认新时间戳目录及 `[ARMED] USB=present; ADB=absent; Fastboot=fastboot` 后，再执行一次受控 Fastboot reboot。用户尚未给出本次启动确认，因此当前没有启动 Candidate。
+- 实际 C17 观察中，ADB 上线后立即持续保存完整 logcat，并采集属性、`/proc/cmdline`、内核版本、dmesg、服务状态及可读 pstore；若失败且用户返回 Fastboot，按既有授权完整导出 Standalone 诊断卷后再分析。
 - 在取得更明确启动证据前，不构建 C18、不扩展 SELinux 权限、不修改 EGL/ANGLE/HAL。
 - GitHub Public 仓库已同步 C16/C17 脚本、构建/首启报告、README 与净化状态/执行记录；C17 内容提交 `6e7d325` 已推送并通过匿名仓库页、README、新报告 HTTP 200 验证。原始 pstore/oops、镜像及设备备份未公开。
