@@ -66,7 +66,7 @@ ln -s ../bin usr/bin
 ln -s ../bin usr/sbin
 
 # Copy busybox static
-cp /mnt/e/RVK/10S_OS4/work/bin/busybox.static bin/busybox
+cp /path/to/thyme-os4-local/work/bin/busybox.static bin/busybox
 chmod 755 bin/busybox
 
 # Create symlinks for all applets

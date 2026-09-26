@@ -106,8 +106,8 @@ for i, blob in enumerate(fdt_blobs):
     
     # Decompile to DTS
     cmd_decomp = ["wsl", "dtc", "-I", "dtb", "-O", "dts", 
-                  f"/mnt/e/RVK/10S_OS4/work/scratch_c10_warm_dtb/fdt{i}_orig.dtb", 
-                  "-o", f"/mnt/e/RVK/10S_OS4/work/scratch_c10_warm_dtb/fdt{i}_orig.dts"]
+                  f"/path/to/thyme-os4-local/work/scratch_c10_warm_dtb/fdt{i}_orig.dtb",
+                  "-o", f"/path/to/thyme-os4-local/work/scratch_c10_warm_dtb/fdt{i}_orig.dts"]
     subprocess.run(cmd_decomp, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
     
     dts_text = out_dts.read_text(encoding="utf-8")
@@ -121,8 +121,8 @@ for i, blob in enumerate(fdt_blobs):
     
     # Recompile to DTB
     cmd_comp = ["wsl", "dtc", "-I", "dts", "-O", "dtb", 
-                f"/mnt/e/RVK/10S_OS4/work/scratch_c10_warm_dtb/fdt{i}_mod.dts", 
-                "-o", f"/mnt/e/RVK/10S_OS4/work/scratch_c10_warm_dtb/fdt{i}_mod.dtb"]
+                f"/path/to/thyme-os4-local/work/scratch_c10_warm_dtb/fdt{i}_mod.dts",
+                "-o", f"/path/to/thyme-os4-local/work/scratch_c10_warm_dtb/fdt{i}_mod.dtb"]
     subprocess.run(cmd_comp, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
     
     mod_blob = out_dtb.read_bytes()

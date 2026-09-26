@@ -10,6 +10,7 @@
 - 用户观察到小米 Logo 与黑屏循环两次后手动进入 Fastboot。现有日志没有确定循环原因。
 - 随后 PixelOS A0′ 六项恢复镜像已写回，设备保持 Fastboot；这次恢复后的 PixelOS 启动健康状态尚未验证。
 - 当前最重要的工程目标仍是找到 C13 越过 APEX bootstrap 后的真实阻塞，尽快进入 HyperOS 4 启动画面。主机侧策略验证不能表述为 SELinux HAL 权限已通过真机验收。
+- 下一次实验仍使用原版 C13；已准备先 arm 观察器、时间戳记录 Fastboot/ADB 变化和屏幕观察、失败后再导出 pstore 的流程。尚未获得新的启动错误。
 
 最新快照：[项目当前状态](logs/PROJECT_STATUS.md)。演变过程见[执行记录](logs/EXECUTION_LOG.md)。
 
@@ -49,18 +50,19 @@ scripts/           带明确文件白名单的本地增量同步脚本
 
 1. [当前项目状态](logs/PROJECT_STATUS.md)
 2. [C13 清数据首启日志摘要](reports/candidate13/20260926_c13_clean_data_firstboot.md)
-3. [C13 Recovery 分析](reports/candidate13/20260925_CANDIDATE13_RECOVERY_ANALYSIS.md)
-4. [K40 三方移植分析](reports/k40/20260918_K40_THREE_WAY_PORT_REVERSE_ENGINEERING_1.md)
-5. Candidate 历史报告和 `reports/boot-logs/` 中对应的原始 console/pmsg 记录
+3. [C13 Second Stage 取证准备](reports/candidate13/20260926_CANDIDATE13_SECOND_STAGE_CAPTURE_PREP.md)
+4. [C13 Recovery 分析](reports/candidate13/20260925_CANDIDATE13_RECOVERY_ANALYSIS.md)
+5. [K40 三方移植分析](reports/k40/20260918_K40_THREE_WAY_PORT_REVERSE_ENGINEERING_1.md)
+6. Candidate 历史报告和 `reports/boot-logs/` 中对应的原始 console/pmsg 记录
 
 ## 脚本与构建
 
-`tools/` 中保留了 C9–C13 的部分构建/预检流程、C13 SELinux 审核、首次启动只读观察器、Standalone 日志导出工具和 PixelOS A0′ 恢复脚本。脚本用于展示真实工程过程；它们依赖本机 WSL 环境、外部 ROM 输入和原工程中的暂存资产。本仓库没有完整输入镜像，**不能仅凭 clone 一键复现完整 ROM 构建**。脚本来源及设备操作分类见 [`tools/README.md`](tools/README.md)。
+`tools/` 中保留了 C9–C13 的部分构建/预检流程、C13 SELinux 审核、首次启动只读观察器、时间戳启动助手、Standalone 日志导出工具和 PixelOS A0′ 恢复脚本。启动、刷写和 `fastboot boot` 辅助脚本都需要各自的授权；脚本本身不构成设备操作许可。它们依赖本机 WSL 环境、外部 ROM 输入和原工程中的暂存资产。本仓库没有完整输入镜像，**不能仅凭 clone 一键复现完整 ROM 构建**。脚本来源及设备操作分类见 [`tools/README.md`](tools/README.md)。
 
 后续更新公开副本时，先审核允许发布的本地变更，再运行显式白名单同步器：
 
 ```powershell
-$env:THYME_OS4_SOURCE = 'D:\path\to\10S_OS4'
+$env:THYME_OS4_SOURCE = 'D:\projects\thyme-os4-local'
 .\scripts\sync_from_local.ps1 -SourceRoot $env:THYME_OS4_SOURCE
 git status --short
 git diff --stat

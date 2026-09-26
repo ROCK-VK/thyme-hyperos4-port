@@ -13,6 +13,8 @@ from __future__ import annotations
 import argparse
 import csv
 import hashlib
+import json
+import os
 import re
 import subprocess
 import sys
@@ -53,6 +55,14 @@ ADB_SHELL_STATES = {"device", "recovery"}
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="milliseconds")
+
+
+def append_host_event(path: Path, event: str, **fields: object) -> None:
+    record = {"host_utc": utc_now(), "event": event, **fields}
+    with path.open("a", encoding="utf-8", newline="\n") as stream:
+        stream.write(json.dumps(record, ensure_ascii=False, sort_keys=True) + "\n")
+        stream.flush()
+        os.fsync(stream.fileno())
 
 
 def run_readonly(command: list[str], timeout: float = 4.0) -> subprocess.CompletedProcess[str]:
@@ -155,7 +165,7 @@ def capture_pstore_from_adb(run_dir: Path, index: int) -> None:
     """
     capture_dir = run_dir / "adb_pstore" / f"capture_{index:02d}"
     capture_dir.mkdir(parents=True, exist_ok=False)
-    status_lines = [f"host_utc={utc_now()}", f"serial={SERIAL}", "remote_path=/sys/fs/pstore"]
+    status_lines = [f"capture_started_utc={utc_now()}", f"serial={SERIAL}", "remote_path=/sys/fs/pstore"]
     listing = run_readonly([str(ADB), "-s", SERIAL, "shell", "ls", "-1", "/sys/fs/pstore"], timeout=6.0)
     status_lines.append(f"list_exit={listing.returncode}")
     if listing.stdout:
@@ -184,6 +194,7 @@ def capture_pstore_from_adb(run_dir: Path, index: int) -> None:
             digest = hashlib.sha256(result.stdout).hexdigest()
             manifest_lines.append(f"{digest}  {len(result.stdout)}  {name}")
 
+    status_lines.append(f"capture_finished_utc={utc_now()}")
     (capture_dir / "capture_status.txt").write_text("\n".join(status_lines) + "\n", encoding="utf-8")
     (capture_dir / "SHA256SUMS.txt").write_text("\n".join(manifest_lines) + ("\n" if manifest_lines else ""), encoding="utf-8")
 
@@ -200,19 +211,34 @@ def main() -> int:
         return 2
 
     run_dir = create_run_dir(args.output_base)
-    print(f"[READY] Read-only observer output: {run_dir}")
-    print("[READY] This process never invokes a device-changing ADB/Fastboot operation.")
-    print("[INFO] Start the separately authorized boot only after the user is ready to observe the phone.")
-    print("[INFO] If Recovery appears, do not confirm any wipe prompt; passive host capture will continue.")
+    started = time.monotonic()
+    started_wall = utc_now()
+    metadata = {
+        "candidate": "C13-original",
+        "observer_started_utc": started_wall,
+        "serial": SERIAL,
+        "observation_seconds": args.seconds,
+        "run_dir": str(run_dir),
+        "host_timezone": datetime.now().astimezone().tzname(),
+    }
+    (run_dir / "run_metadata.json").write_text(
+        json.dumps(metadata, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    host_events_path = run_dir / "host_events.jsonl"
+    append_host_event(host_events_path, "observer_started", candidate="C13-original", serial=SERIAL)
+    print(f"[INIT] Observer output: {run_dir}")
+    print("[INIT] Read-only observer; it never boots, reboots, flashes, erases, or writes to the device.")
+    print("[INFO] Wait for [ARMED] before the separately authorized startup command.")
+    print("[INFO] If Recovery appears, do not confirm a wipe prompt; passive capture continues.")
 
     events_path = run_dir / "usb_adb_fastboot_timeline.csv"
     logcat_path = run_dir / "logcat_all_monotonic.txt"
     logcat_error_path = run_dir / "logcat_client_stderr.txt"
     previous = (None, None)
-    started = time.monotonic()
     next_snapshot = 0.0
     snapshot_index = 0
     pstore_capture_index = 0
+    armed_written = False
     logcat_process: subprocess.Popen[bytes] | None = None
     snapshot_executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="c13-readonly-snapshot")
     snapshot_future: Future[None] | None = None
@@ -222,9 +248,15 @@ def main() -> int:
     try:
         with events_path.open("w", encoding="utf-8", newline="") as stream:
             writer = csv.writer(stream)
-            writer.writerow(("host_utc", "elapsed_seconds", "adb_state", "fastboot_state", "adb_output", "fastboot_output"))
+            writer.writerow((
+                "sample_started_utc", "sample_finished_utc", "elapsed_seconds",
+                "adb_state", "fastboot_state", "adb_query_ms", "fastboot_query_ms",
+                "adb_output", "fastboot_output",
+            ))
+            stream.flush()
             while time.monotonic() - started < args.seconds:
-                elapsed = time.monotonic() - started
+                sample_started = time.monotonic()
+                sample_started_utc = utc_now()
                 if snapshot_future is not None and snapshot_future.done():
                     try:
                         snapshot_future.result()
@@ -232,26 +264,71 @@ def main() -> int:
                         print(f"[WARN] Read-only snapshot failed: {exc!r}", flush=True)
                     snapshot_future = None
                 try:
+                    adb_query_started = time.monotonic()
                     adb = run_readonly([str(ADB), "devices", "-l"])
+                    adb_query_ms = round((time.monotonic() - adb_query_started) * 1000, 1)
                     adb_state = matching_state(adb.stdout, SERIAL, "device")
                     adb_output = (adb.stdout + adb.stderr).strip().replace("\r", " ").replace("\n", " | ")
                 except (OSError, subprocess.TimeoutExpired) as exc:
+                    adb_query_ms = round((time.monotonic() - adb_query_started) * 1000, 1)
                     adb_state, adb_output = "query_error", repr(exc)
                 try:
+                    fastboot_query_started = time.monotonic()
                     fastboot = run_readonly([str(FASTBOOT), "devices", "-l"])
+                    fastboot_query_ms = round((time.monotonic() - fastboot_query_started) * 1000, 1)
                     fastboot_state = matching_state(fastboot.stdout, SERIAL, "fastboot")
                     fastboot_output = (fastboot.stdout + fastboot.stderr).strip().replace("\r", " ").replace("\n", " | ")
                 except (OSError, subprocess.TimeoutExpired) as exc:
+                    fastboot_query_ms = round((time.monotonic() - fastboot_query_started) * 1000, 1)
                     fastboot_state, fastboot_output = "query_error", repr(exc)
 
+                sample_finished = time.monotonic()
+                sample_finished_utc = utc_now()
+                elapsed = sample_finished - started
                 state_changed = (adb_state, fastboot_state) != previous
                 adb_became_online = adb_state in ADB_SHELL_STATES and previous[0] not in ADB_SHELL_STATES
                 adb_entered_recovery = adb_state == "recovery" and previous[0] != "recovery"
                 adb_entered_sideload = adb_state == "sideload" and previous[0] != "sideload"
-                writer.writerow((utc_now(), f"{elapsed:.3f}", adb_state, fastboot_state, adb_output, fastboot_output))
+                writer.writerow((
+                    sample_started_utc, sample_finished_utc, f"{elapsed:.3f}",
+                    adb_state, fastboot_state, adb_query_ms, fastboot_query_ms,
+                    adb_output, fastboot_output,
+                ))
                 stream.flush()
+                if not armed_written:
+                    armed = {
+                        "candidate": "C13-original",
+                        "armed_utc": sample_finished_utc,
+                        "elapsed_seconds": round(elapsed, 3),
+                        "serial": SERIAL,
+                        "adb_state": adb_state,
+                        "fastboot_state": fastboot_state,
+                        "run_dir": str(run_dir),
+                    }
+                    (run_dir / "observer_armed.json").write_text(
+                        json.dumps(armed, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+                    )
+                    append_host_event(
+                        host_events_path, "observer_armed", elapsed_seconds=round(elapsed, 3),
+                        adb_state=adb_state, fastboot_state=fastboot_state,
+                    )
+                    print(
+                        f"[ARMED] ADB={adb_state}; Fastboot={fastboot_state}; "
+                        f"UTC={sample_finished_utc}; run={run_dir}", flush=True,
+                    )
+                    armed_written = True
                 if state_changed:
                     print(f"[{elapsed:7.1f}s] ADB={adb_state}; Fastboot={fastboot_state}", flush=True)
+                    if previous[0] != adb_state:
+                        append_host_event(
+                            host_events_path, "adb_state_change", elapsed_seconds=round(elapsed, 3),
+                            state=adb_state, output=adb_output,
+                        )
+                    if previous[1] != fastboot_state:
+                        append_host_event(
+                            host_events_path, "fastboot_state_change", elapsed_seconds=round(elapsed, 3),
+                            state=fastboot_state, output=fastboot_output,
+                        )
                     previous = (adb_state, fastboot_state)
                 if adb_entered_recovery:
                     print("[STOP CONDITION] ADB reports Recovery. Do not confirm wipe; keep the phone and cable in place while passive capture continues.", flush=True)
@@ -260,16 +337,37 @@ def main() -> int:
 
                 if adb_state in ADB_SHELL_STATES:
                     if logcat_process is None or logcat_process.poll() is not None:
+                        logcat_started_utc = utc_now()
                         logcat_process = subprocess.Popen(
                             [str(ADB), "-s", SERIAL, "logcat", "-b", "all", "-v", "monotonic"],
                             stdout=logcat_stdout,
                             stderr=logcat_stderr,
                         )
+                        append_host_event(
+                            host_events_path, "logcat_stream_started", elapsed_seconds=round(time.monotonic() - started, 3),
+                            host_pid=logcat_process.pid, state=adb_state, started_utc=logcat_started_utc,
+                        )
                     if adb_became_online or adb_entered_recovery:
                         pstore_capture_index += 1
+                        append_host_event(
+                            host_events_path, "adb_pstore_capture_started",
+                            elapsed_seconds=round(time.monotonic() - started, 3), state=adb_state,
+                            capture_index=pstore_capture_index,
+                        )
                         try:
                             capture_pstore_from_adb(run_dir, pstore_capture_index)
+                            append_host_event(
+                                host_events_path, "adb_pstore_capture_finished",
+                                elapsed_seconds=round(time.monotonic() - started, 3), state=adb_state,
+                                capture_index=pstore_capture_index,
+                                directory=f"adb_pstore/capture_{pstore_capture_index:02d}",
+                            )
                         except (OSError, subprocess.TimeoutExpired) as exc:
+                            append_host_event(
+                                host_events_path, "adb_pstore_capture_failed",
+                                elapsed_seconds=round(time.monotonic() - started, 3), state=adb_state,
+                                capture_index=pstore_capture_index, error=repr(exc),
+                            )
                             print(f"[WARN] Read-only ADB pstore capture failed: {exc!r}", flush=True)
                     if elapsed >= next_snapshot and snapshot_future is None:
                         snapshot_index += 1
@@ -278,11 +376,16 @@ def main() -> int:
                         )
                         next_snapshot = elapsed + (5.0 if snapshot_index < 12 else 15.0)
 
-                time.sleep(1.0)
+                time.sleep(max(0.0, 1.0 - (time.monotonic() - sample_started)))
     except KeyboardInterrupt:
         print("\n[STOP] Local observer stopped by Ctrl-C; no device reboot or write was issued.")
+        append_host_event(host_events_path, "observer_stopped_by_user", elapsed_seconds=round(time.monotonic() - started, 3))
     finally:
         if logcat_process is not None and logcat_process.poll() is None:
+            append_host_event(
+                host_events_path, "logcat_stream_stopping", elapsed_seconds=round(time.monotonic() - started, 3),
+                host_pid=logcat_process.pid,
+            )
             logcat_process.terminate()
             try:
                 logcat_process.wait(timeout=3.0)
@@ -295,6 +398,8 @@ def main() -> int:
         logcat_stdout.close()
         logcat_stderr.close()
 
+    if time.monotonic() - started >= args.seconds:
+        append_host_event(host_events_path, "observer_window_completed", elapsed_seconds=round(time.monotonic() - started, 3))
     print(f"[DONE] Evidence saved under {run_dir}")
     return 0
 

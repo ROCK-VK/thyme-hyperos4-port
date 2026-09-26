@@ -36,7 +36,7 @@ if sys.platform == "win32":
         pass
 
 ROOT = Path("[LOCAL_PROJECT_ROOT]")
-WSL_ROOT = "/mnt/e/RVK/10S_OS4"
+WSL_ROOT = "/path/to/thyme-os4-local"
 C9_DIR = ROOT / "work/stage_c_thyme_os4_candidate_9_init_fatal_panic/images"
 C8_DIR = ROOT / "work/stage_c_thyme_os4_candidate_8_init_fatal_panic/images"
 A0_DIR = ROOT / "work/restore_pixelos_a0_prime/images"

@@ -19,7 +19,7 @@ wsl_images = {
     "mi_ext": "[LOCAL_WSL_USER]/thyme_xiaomi15_os4_first_boot_candidate_1/super/avb_images/mi_ext.img",
 }
 
-stage_dir = "/mnt/e/RVK/10S_OS4/work/audit_c8_property_contexts"
+stage_dir = "/path/to/thyme-os4-local/work/audit_c8_property_contexts"
 shutil.rmtree(stage_dir, ignore_errors=True)
 os.makedirs(stage_dir, exist_ok=True)
 

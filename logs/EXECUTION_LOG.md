@@ -3707,7 +3707,7 @@
 ## 2026-09-12 00:33｜extract.erofs 帮助探针仍受 WSL 拒绝
 
 - 状态：失败后暂停；未修改业务代码、镜像、设备或 WSL 配置。
-- 改动/结论：按审核 GO 精确执行一次 wsl -d Ubuntu -- bash -lc '/mnt/e/RVK/10S_OS4/tools/erofs-utils/wsl/extract.erofs --help 2>&1 | grep -E -- ""--extract|-i|--image|-o|--outdir|-T""'。命令退出码为 -1；筛选输出乱码中包含 Wsl/Service/E_ACCESSDENIED，没有得到可用参数行。报告保存在 work/reports/20260912_erofs_help_probe.md（17 行）。
+- 改动/结论：按审核 GO 精确执行一次 wsl -d Ubuntu -- bash -lc '/path/to/thyme-os4-local/tools/erofs-utils/wsl/extract.erofs --help 2>&1 | grep -E -- ""--extract|-i|--image|-o|--outdir|-T""'。命令退出码为 -1；筛选输出乱码中包含 Wsl/Service/E_ACCESSDENIED，没有得到可用参数行。报告保存在 work/reports/20260912_erofs_help_probe.md（17 行）。
 - 原因：当前 Codex 执行边界仍无法让该 WSL 子命令访问服务；此前 Ubuntu 最小探针成功不代表 erofs 子进程访问一定成功。
 - 涉及文件：新增/更新 work/reports/20260912_erofs_help_probe.md、日志/项目当前状态.md；无业务文件改动。
 - 验证：PowerShell 工作集约 83.5→84.6 MB，私有提交量约 27.6→28.5 MB；未发现 WSL/WSLHost/Python/ADB/Fastboot 残留。没有读取镜像、创建提取目录、运行 -x、Python/编译或调用设备。
@@ -10023,7 +10023,7 @@
 
 - 状态：已完成（host-only；等待用户整轮授权）。
 - 改动/结论：新增 `work/stage_c_thyme_os4_first_device_experiment_1/EXPERIMENT_APPLICATION.md` 与 `SHA256SUMS.txt`。明确实际写入 `super`（全局）、`boot_a`、`vendor_boot_a`、`dtbo_a`、`vbmeta_a`、`vbmeta_system_a`；不写 B 槽、firmware、persist、modemst、fsg、fsc。记录了候选文件大小和 SHA256、官方 A13 回退资产/命令、观察阶段和停止条件。
-- 验证：boot SHA 与冻结候选一致；DTBO SHA 与脚本指定的 `/mnt/e/RVK/10S_OS4/work/payload_pixel/dtbo.img` 一致；top vbmeta 的 boot/dtbo/vendor_boot descriptor 与 AVB-footer original payload 尺寸对应。vendor_boot 最终分区为 100663296 bytes，boot 为 201326592 bytes。
+- 验证：boot SHA 与冻结候选一致；DTBO SHA 与脚本指定的 `/path/to/thyme-os4-local/work/payload_pixel/dtbo.img` 一致；top vbmeta 的 boot/dtbo/vendor_boot descriptor 与 AVB-footer original payload 尺寸对应。vendor_boot 最终分区为 100663296 bytes，boot 为 201326592 bytes。
 - vendor_boot 根因：冻结 original payload [REDACTED_DEVICE_ID] bytes，新 payload [REDACTED_DEVICE_ID] bytes；DTB 1424196 bytes、header v3/2112、地址和 cmdline 不变；ramdisk 解包后只有 `first_stage_ramdisk/system/etc/fstab.qcom` 内容差分。原 cpio 解压约 [REDACTED_DEVICE_ID] bytes、新 cpio [REDACTED_DEVICE_ID] bytes，内容体量近似相同；新路径使用 `cpio newc + lz4 -l`，原供应体压缩 provenance 不足以证明同 compression level，因此 4.4 MB 增长归因于 ramdisk 重新打包/压缩流，不写成 fstab 文本单独增长。
 - 关键风险：候选 `super` 的 liblp 表只有 A 槽六个逻辑分区，B 槽逻辑分区为空；写 global super 不是可由切换 B 槽恢复的实验。开发 AVB 为 algorithm `NONE`、flags `2`、无生产签名，新 vendor/odm FEC roots `0`；host verify 不等于 bootloader 接受。
 - 设备边界：复用的 2026-09-19 设备证据为 thyme/A/unlocked，但本轮没有重新连接，fresh preflight 仍是写前硬门禁。当前 Windows 可用 RAM 11.67 GiB、Commit 35.32/64.22 GiB、C/D/E 可用约 99.24/101.11/178.78 GiB；未触及资源红线。
@@ -12931,3 +12931,14 @@
 - 尚未验证：PixelOS 当前能否正常启动、`sys.boot_completed`、加密 `/data` 挂载及 ADB。
 - 待处理：需单独授权后才能首次启动 PixelOS 并验证健康基线。
 - 替代：替代当前状态文件中“设备仍处于 Standalone UMS”的旧快照；该旧记录作为历史保留。
+
+## 2026-09-26 10:36｜C13 Second Stage 取证流程加固
+
+- 状态：主机侧调查、工具修改与静态验证完成；没有执行设备启动、刷写、擦除或 Standalone RAM 引导。
+- 改动/结论：C13 `console-ramoops-0` 仍只有一个可见启动实例并结束于 3.749615 秒；没有 APEX Bootstrap 后的明确 fatal。日志限流不证明 aconfigd 崩溃；console 结尾也不证明重启发生在该时刻。现有内核配置 `ramoops_memreserve=4M`、`record_size=0` 没有独立 dmesg crash-record；`mtdoops` 因实际日志分区 16 MiB 超过内核源码 8 MiB 上限而不可用。`oops.raw` 含历史混合内容，不能用作本次根因证据。尚未定位下一处阻塞。
+- 原因：上一轮观察器未证明在启动命令前进入轮询，ADB 未上线时也没有屏幕事件时间标记；要让下一次原版 C13 实验先启动采集并同步记录主机、Fastboot/ADB、人工观察时点。
+- 涉及文件：`tools/observe_candidate13_readonly.py`（首次完整采样后写 arm 标记、UTC host events 和状态转换）；新增 `tools/start_candidate13_observed_boot.ps1`（要求新鲜 Fastboot arm 状态，默认 Dry-Run，`-Execute` 才下发一次 reboot）；新增 `tools/record_candidate13_event.ps1`（人工屏幕事件时间戳）；`tools/salvage_c13_diag.py`（默认仅校验 Standalone 镜像，RAM 引导需显式开关，要求唯一 THYME_DIAG 卷及 Standalone 文件标记，并在导出旁说明 dmesg 来源）；`work/reports/20260926_CANDIDATE13_SECOND_STAGE_CAPTURE_PREP.md`；本状态文件。
+- 验证：C13 刷写脚本默认 Dry-Run 对六项实际镜像的字节数和 SHA-256 全部通过，计划仅含六个既定分区且不重启；Standalone 文件大小及 SHA-256 与预期一致。Python 语法/帮助入口检查和 PowerShell Parser 静态检查通过。只读设备查询仍为 Fastboot、thyme、A 槽、unlocked=yes、非 userspace Fastboot；ADB 未枚举。
+- 尚未验证：更新后的观察器未连接设备实跑；C13 Second Stage 后续真实错误、Keymaster/Gatekeeper/ION/QSEECom/vold 与 `/data` 结果仍未知；恢复后的 PixelOS 尚未启动验证。当前设备实际处于 Fastboot，不能称 PixelOS 健康在线。
+- 待处理：下一实验使用原版 C13，不用 C13.1、不重建 super、不重复擦除 `userdata`/`metadata`。请求 C13 六分区刷写授权；刷后保持 Fastboot并另行请求首次启动授权。失败后若要执行 Standalone RAM 启动/只读导出，需取得对应单独授权。公开安全增量同步完成后交付 Commit URL。
+- 替代：替代此前“恢复后 PixelOS 待单独启动验证”作为当前下一实验目标；不改变旧结论，也不把 C13 未定位的阻塞写成已知根因。

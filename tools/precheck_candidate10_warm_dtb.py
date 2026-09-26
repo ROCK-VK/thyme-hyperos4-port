@@ -83,8 +83,8 @@ try:
         
         # Decompile with dtc
         cmd = ["wsl", "dtc", "-I", "dtb", "-O", "dts", 
-               f"/mnt/e/RVK/10S_OS4/work/scratch_c10_warm_dtb/precheck_fdt{i}.dtb", 
-               "-o", f"/mnt/e/RVK/10S_OS4/work/scratch_c10_warm_dtb/precheck_fdt{i}.dts"]
+               f"/path/to/thyme-os4-local/work/scratch_c10_warm_dtb/precheck_fdt{i}.dtb",
+               "-o", f"/path/to/thyme-os4-local/work/scratch_c10_warm_dtb/precheck_fdt{i}.dts"]
         subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
         
         dts_text = dts_file.read_text(encoding="utf-8")

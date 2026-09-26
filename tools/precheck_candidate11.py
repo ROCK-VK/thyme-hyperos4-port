@@ -14,7 +14,7 @@ import hashlib
 from pathlib import Path
 
 ROOT = Path("[LOCAL_PROJECT_ROOT]")
-WSL_ROOT = "/mnt/e/RVK/10S_OS4"
+WSL_ROOT = "/path/to/thyme-os4-local"
 sys.path.append(str(ROOT / "tools/bootimg"))
 from avbtool import Avb, ImageHandler, AvbHashtreeDescriptor
 

@@ -34,6 +34,8 @@ $Allowlist = @(
     @{ Source='tools/build_standalone_diag.py'; Destination='tools/build_standalone_diag.py' }
     @{ Source='tools/flash_candidate13.ps1'; Destination='tools/flash_candidate13.ps1' }
     @{ Source='tools/observe_candidate13_readonly.py'; Destination='tools/observe_candidate13_readonly.py' }
+    @{ Source='tools/record_candidate13_event.ps1'; Destination='tools/record_candidate13_event.ps1' }
+    @{ Source='tools/start_candidate13_observed_boot.ps1'; Destination='tools/start_candidate13_observed_boot.ps1' }
     @{ Source='tools/patch_candidate_fs_configs.py'; Destination='tools/patch_candidate_fs_configs.py' }
     @{ Source='tools/precheck_candidate9.py'; Destination='tools/precheck_candidate9.py' }
     @{ Source='tools/precheck_candidate10_warm_dtb.py'; Destination='tools/precheck_candidate10_warm_dtb.py' }
@@ -52,6 +54,7 @@ $Allowlist = @(
     @{ Source='work/reports/20260924_THYME_OS4_CANDIDATE9_RUN_AND_NEXT_BLOCKERS.md'; Destination='reports/20260924_THYME_OS4_CANDIDATE9_RUN_AND_NEXT_BLOCKERS.md' }
     @{ Source='work/reports/20260925_CANDIDATE13_RECOVERY_ANALYSIS.md'; Destination='reports/candidate13/20260925_CANDIDATE13_RECOVERY_ANALYSIS.md' }
     @{ Source='work/reports/20260925_CANDIDATE13_ROOT_CAUSE_AND_NEXT_EXPERIMENT.md'; Destination='reports/candidate13/20260925_CANDIDATE13_ROOT_CAUSE_AND_NEXT_EXPERIMENT.md' }
+    @{ Source='work/reports/20260926_CANDIDATE13_SECOND_STAGE_CAPTURE_PREP.md'; Destination='reports/candidate13/20260926_CANDIDATE13_SECOND_STAGE_CAPTURE_PREP.md' }
     @{ Source='@STORAGE_SAFETY_REPORT'; Destination='reports/candidate13/20260925_CANDIDATE13_STORAGE_SAFETY_AND_FIRST_FAILURE.md' }
     @{ Source='work/reports/20260924_CANDIDATE10_WARMDTB_LOG_SALVAGE/pstore/console-ramoops-0'; Destination='reports/boot-logs/candidate10_console-ramoops.txt' }
     @{ Source='work/reports/20260924_CANDIDATE11_LOG_SALVAGE/pstore/console-ramoops-0'; Destination='reports/boot-logs/candidate11_console-ramoops.txt' }
@@ -78,6 +81,8 @@ function Resolve-AllowlistedSource([string]$RelativeSource) {
 function ConvertTo-PublicText([string]$Text) {
     $Text = [regex]::Replace($Text, '(?i)\b[A-Z]:\\(?:[^\\\r\n]+\\)*10S_OS4', '[LOCAL_PROJECT_ROOT]')
     $Text = [regex]::Replace($Text, '(?i)\b[A-Z]:/(?:[^/\r\n]+/)*10S_OS4', '[LOCAL_PROJECT_ROOT]')
+    $Text = [regex]::Replace($Text, '(?i)/mnt/[a-z]/RVK/10S_OS4', '/path/to/thyme-os4-local')
+    $Text = [regex]::Replace($Text, '(?m)^([^\r\n]*?/path/to/thyme-os4-local[^\r\n]*?)[ \t]+\r?$', '$1')
     $Text = [regex]::Replace($Text, '(?i)/root/[^/\s]+', '[LOCAL_WSL_USER]')
     $Text = [regex]::Replace($Text, '(?i)\b[A-Z]:\\Users\\[^\s"''<>|]+', '[LOCAL_USER_PATH]')
     $Text = [regex]::Replace($Text, '(?i)\b[DE]:\\[^\s"''<>|]+', '[LOCAL_PATH]')

@@ -2,11 +2,11 @@
 
 ## 当前阶段
 
-- 最新设备快照（2026-09-26 00:39）：PixelOS A0′ 六项恢复镜像已经按顺序写入；只读 Fastboot 查询返回唯一设备 `[REDACTED_DEVICE_ID]`、`product=thyme`、`current-slot=a`、`unlocked=yes`、`is-userspace=no`，ADB 未枚举。未启动，因此 PixelOS 当前健康状态尚未验证。
+- 最新设备快照（2026-09-26，本轮只读查询）：唯一设备 `[REDACTED_DEVICE_ID]` 在 Bootloader Fastboot；`product=thyme`、`current-slot=a`、`unlocked=yes`、`is-userspace=no`，ADB 未枚举。最近记录的 PixelOS A0′ 六镜像恢复写入成功，但恢复后的 PixelOS 尚未正常启动验证。
 
 - 当前里程碑：原版 C13 六目标刷写、经授权的 `userdata`/`metadata` 擦除和一次首次启动均已完成。用户看到 Logo/黑屏循环两次并手动进入 Fastboot。随后 Standalone RAM 取证取得 C13 的单个可见启动记录：first-stage mount、动态 SELinux policy compile、enforcing second stage、APEX bootstrap 均有进展；日志止于启动约 3.75 秒，未覆盖 vold、HAL 或 `/data` 后续阶段。C13 尚未达到 ADB、启动动画或桌面可验证状态。
 - 项目目标：以 Xiaomi 15（dada）HyperOS 4 / Android 17 用户空间为供体，适配小米 10S（thyme）原生硬件，尽快推进至正常 Android 启动、启动动画或设置界面。用户表示没有需保留的个人数据；任何 userdata/metadata 清除仍须单独明确授权。禁止修改 persist、无线电校准、EFS/NV、设备身份数据或回锁 Bootloader。
-- 当前下一步：PixelOS A0′ 六项恢复镜像已于 2026-09-26 00:39 重刷完成，设备保持 Bootloader Fastboot。当前没有启动验证；需单独授权后才可启动 PixelOS。Candidate 13.1 未使用，本轮没有重建镜像。
+- 当前下一步：原版 C13 六镜像的当前大小与 SHA-256 已通过既有刷写脚本默认 Dry-Run 核对；下一实验使用原版 C13，不使用 C13.1，不重建 `super`，不重复擦除 `userdata`/`metadata`。需先取得 C13 六分区刷写授权；刷后留在 Fastboot，首次 Android 启动另行授权。若失败需 Standalone RAM 取证，再单独授权 RAM 启动。
 
 ## 当前有效技术状态
 
@@ -16,6 +16,8 @@
 - Candidate 10-WarmDtb 的 `qcom,force-warm-reboot` 与 Standalone Diag 取证链仍保留；温复位不保证每类故障都留下完整 pstore。
 - Candidate 12 实机证明 `/dev/ion` 运行时标签为 `ion_device:s0`，泛型 `device:s0` 拒绝归零；Keymaster/Gatekeeper 对 `ion_device` 的访问拒绝和 `QSEECom_start_app failed` 当时仍存在。
 - Candidate 13 在 `system_ext_sepolicy.cil` 增加 `hal_keymaster`、`hal_gatekeeper` 对 `ion_device:chr_file` 的权限。旧数据状态下的保存实例进入 Recovery；2026-09-26 清数据首启的新 pstore 证明 C13 已进入正常 first-stage/second-stage，检测到 precompiled hash 不匹配后编译 SELinux policy 并在 enforcing 下继续。该日志未覆盖 Keymaster/Gatekeeper 启动，故两条规则的具体 HAL AVC 效果仍未验证。
+- 2026-09-26 第二阶段取证准备：C13 pstore 仅有一个可见 console 启动记录并止于 3.749615 秒；没有 APEX Bootstrap 之后的真实错误，不能将日志尾部视为重启时间。内核 `record_size=0`，未保存独立 dmesg crash record；Standalone `oops.raw` 含历史混合内容，不归属本轮。详见 `work/reports/20260926_CANDIDATE13_SECOND_STAGE_CAPTURE_PREP.md`。
+- 下一次观察流程已准备：`tools/observe_candidate13_readonly.py` 完成首次 ADB/Fastboot 采样后才写 `observer_armed.json`；`tools/start_candidate13_observed_boot.ps1` 要求新鲜 Fastboot arm 记录并默认 Dry-Run；`tools/record_candidate13_event.ps1` 记录人工屏幕事件 UTC 时间；`tools/salvage_c13_diag.py` 默认只作主机哈希 Dry-Run，RAM 临时启动需单独传入显式执行开关及用户授权，并要求唯一 `THYME_DIAG` 卷及 Standalone 标记文件。本轮没有运行这些设备操作入口。
 
 ## Candidate 13 本轮刷写结果
 
@@ -127,8 +129,5 @@
 ## 下一步
 
 1. 当前设备为 PixelOS A0′ 六项恢复镜像已写回后的 Bootloader Fastboot；未自动重启。PixelOS 本次恢复后的正常启动尚未验证，首次启动需另行授权。
-2. 后续 C13 技术工作围绕 3.75 秒后未记录阶段与 Logo/黑屏循环获取真实错误；Keymaster/Gatekeeper/ION/QSEECom、vold、`/data`、启动动画或桌面仍未验证。不要重复清除数据。
-
-## 公开资料仓库
-
-- 精选项目资料已于 2026-09-26 发布至 [ROCK-VK/thyme-hyperos4-port](https://github.com/ROCK-VK/thyme-hyperos4-port)。仓库只包含审核过的文档、脚本、补丁和日志，不包含完整 ROM、镜像、设备分区备份或密钥数据；后续增量更新使用仓库内的显式白名单同步脚本。
+2. 本轮用户要求在恢复后创建独立公开 GitHub 仓库；公开仓库内容应只来自显式筛选的文本资料、脚本、补丁和报告，不包括完整 ROM、镜像、分区备份或密钥数据。
+3. 后续 C13 技术工作围绕 3.75 秒后未记录阶段与 Logo/黑屏循环获取真实错误；Keymaster/Gatekeeper/ION/QSEECom、vold、`/data`、启动动画或桌面仍未验证。不要重复清除数据。
