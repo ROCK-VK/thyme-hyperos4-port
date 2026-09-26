@@ -1,0 +1,11 @@
+Sanitized excerpt from C13 console-ramoops-0; raw console and pmsg remain local.
+
+[   15.958] NetBpfLoad: Android 25Q2 requires kernel 5.4.
+[   25.911] init: powerctl_shutdown_time_ms:9947:2
+[   25.911] reboot: Restarting system with command 'bpfloader-failed'
+[   25.924] Forcing a warm reset of the system
+
+The same console records normal first-stage and second-stage init, dynamic
+SELinux policy compilation, APEX bootstrap, and a vold /data mount before this
+shutdown. The excerpt intentionally omits device identifiers and raw pmsg
+contents.

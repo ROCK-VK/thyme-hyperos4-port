@@ -12964,3 +12964,15 @@
 - 尚未验证：本次 C13 尚未启动；C13 Second Stage 后续错误、SELinux HAL/Ion AVC、Keymaster/Gatekeeper、QSEECom、vold、`/data`、启动动画/桌面均未取得新结果。用户数据分区未在本轮触碰。
 - 待处理：保持 Fastboot，等待用户单独授权首次启动。启动前先运行只读观察器并等 `[ARMED]`，再执行一次 `fastboot reboot`；失败后 Standalone RAM 启动及只读导出需单独授权。不得自动重启或恢复 PixelOS。
 - 替代：更新此前“等待 C13 六分区刷写授权”的待办；新状态为“刷写成功、等待首次启动授权”。
+
+## 2026-09-26 13:20｜C13 netbpfload 故障定位与 Candidate 14 构建
+
+- 状态：主机侧故障分析、最小诊断修复构建及刷写准备已完成；本轮没有执行新的设备命令。
+- 改动/结论：新一轮 C13 console-ramoops 显示正常 first-stage、动态 SELinux policy 编译、enforcing second-stage、APEX bootstrap、vold 挂载 F2FS /data 及 fscrypt system/DE/CE 密钥初始化活动。随后 NetBpfLoad 明确报告 Android 25Q2 要求内核 5.4；init 在 25.911 秒请求 bpfloader-failed 重启，25.924 秒进入 warm reset。它是目前有直接日志支持的启动阻塞。用户观察到的 Logo/黑屏循环与该重启链相符；本轮日志未显示 Recovery。
+- 改动/结论：在独立 C14 目录构建最小 BPF bootstrap bypass，只改 system/etc/init/netbpfload.rc 与 system_ext/etc/init/hyper_bpfloader.rc。跳过 bpfloader、netd1shot、hyper_bpfloader 启动触发，设置 bpf.progs_loaded=1 并启动 netd。C13 SELinux、Enforcing、APEX、fstab、内核及数据加密配置不变；可能失去本次启动所需的 BPF 网络程序，C14 仅用于跨越已证实重启点并获取后续启动结果。
+- 原因：C13 前次可见 pstore 只到 APEX bootstrap；本次完整 Standalone 导出提供了真正后续故障点，因此改为针对明确 netbpfload 重启做最小诊断变体。
+- 涉及文件：tools/build_candidate14_bpf_bootstrap_bypass.py；tools/flash_candidate14_bpf_bootstrap_bypass.ps1；work/stage_d_thyme_os4_candidate_14_bpf_bootstrap_bypass_run5/images/BUILD_MANIFEST.json；work/reports/20260926_CANDIDATE13_NETBPFLOAD_FAILURE_AND_C14_BUILD.md；work/reports/20260926_CANDIDATE13_NETBPFLOAD_EVIDENCE_EXCERPT.txt；日志/项目当前状态.md。
+- 验证：C14 system、system_ext 的 fsck.erofs 通过；最终 EROFS 回读确认两个触发段修改及原 C13 ION 规则保留。vbmeta_system hashtree 描述符与新 system/system_ext 镜像对应；Android sparse super 头和 lpdump 动态分区元数据检查通过。刷写脚本 PowerShell 解析通过，默认 Dry-Run 核对 vbmeta_system.img 与 super.img 的大小和 SHA-256 通过，且没有查询或写入设备。构建脚本 Python 语法检查通过。super SHA-256：112A0EB7FE6D13CD70848453528466219ADE18E3749D15F934854033E20B8093；vbmeta_system SHA-256：5347D67BEADC9A0F8DCE49B3C76DA3F34E3E60805F3974ED895990724740D744。
+- 尚未验证：C14 未刷写或启动；bpfloader 是否不再触发重启、后续 Keymaster/Gatekeeper HAL 与 ion_device AVC、QSEECom、启动动画/桌面均未验证。pmsg 中密钥初始化活动不等于完整用户数据解锁。设备在 Standalone 导出后没有被主机枚举到，当前物理模式未知；PixelOS 没有恢复或在线验证。
+- 待处理：先取得 C14 写入授权，再做 Fastboot 只读身份/槽位/解锁预检；仅顺序写 vbmeta_system_a、super 并保持 Fastboot。首次启动和新的 Standalone RAM 诊断各按单独授权边界执行。不得再次擦除 userdata/metadata，除非另获明确授权。
+- 替代：替代 2026-09-26 10:36 取证准备记录中“尚未定位 APEX bootstrap 后启动故障”的当前判断；此前旧数据状态下的 Recovery 记录仍为独立历史事件，不被本次正常启动日志推翻。

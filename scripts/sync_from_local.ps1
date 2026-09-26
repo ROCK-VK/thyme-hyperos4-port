@@ -31,8 +31,10 @@ $Allowlist = @(
     @{ Source='tools/build_candidate12.py'; Destination='tools/build_candidate12.py' }
     @{ Source='tools/build_candidate13.py'; Destination='tools/build_candidate13.py' }
     @{ Source='tools/build_candidate13_1_data_guard.py'; Destination='tools/build_candidate13_1_data_guard.py' }
+    @{ Source='tools/build_candidate14_bpf_bootstrap_bypass.py'; Destination='tools/build_candidate14_bpf_bootstrap_bypass.py' }
     @{ Source='tools/build_standalone_diag.py'; Destination='tools/build_standalone_diag.py' }
     @{ Source='tools/flash_candidate13.ps1'; Destination='tools/flash_candidate13.ps1' }
+    @{ Source='tools/flash_candidate14_bpf_bootstrap_bypass.ps1'; Destination='tools/flash_candidate14_bpf_bootstrap_bypass.ps1' }
     @{ Source='tools/observe_candidate13_readonly.py'; Destination='tools/observe_candidate13_readonly.py' }
     @{ Source='tools/record_candidate13_event.ps1'; Destination='tools/record_candidate13_event.ps1' }
     @{ Source='tools/start_candidate13_observed_boot.ps1'; Destination='tools/start_candidate13_observed_boot.ps1' }
@@ -55,6 +57,8 @@ $Allowlist = @(
     @{ Source='work/reports/20260925_CANDIDATE13_RECOVERY_ANALYSIS.md'; Destination='reports/candidate13/20260925_CANDIDATE13_RECOVERY_ANALYSIS.md' }
     @{ Source='work/reports/20260925_CANDIDATE13_ROOT_CAUSE_AND_NEXT_EXPERIMENT.md'; Destination='reports/candidate13/20260925_CANDIDATE13_ROOT_CAUSE_AND_NEXT_EXPERIMENT.md' }
     @{ Source='work/reports/20260926_CANDIDATE13_SECOND_STAGE_CAPTURE_PREP.md'; Destination='reports/candidate13/20260926_CANDIDATE13_SECOND_STAGE_CAPTURE_PREP.md' }
+    @{ Source='work/reports/20260926_CANDIDATE13_NETBPFLOAD_FAILURE_AND_C14_BUILD.md'; Destination='reports/candidate13/20260926_CANDIDATE13_NETBPFLOAD_FAILURE_AND_C14_BUILD.md' }
+    @{ Source='work/reports/20260926_CANDIDATE13_NETBPFLOAD_EVIDENCE_EXCERPT.txt'; Destination='reports/boot-logs/candidate13_netbpfload_failure_excerpt.txt' }
     @{ Source='@STORAGE_SAFETY_REPORT'; Destination='reports/candidate13/20260925_CANDIDATE13_STORAGE_SAFETY_AND_FIRST_FAILURE.md' }
     @{ Source='work/reports/20260924_CANDIDATE10_WARMDTB_LOG_SALVAGE/pstore/console-ramoops-0'; Destination='reports/boot-logs/candidate10_console-ramoops.txt' }
     @{ Source='work/reports/20260924_CANDIDATE11_LOG_SALVAGE/pstore/console-ramoops-0'; Destination='reports/boot-logs/candidate11_console-ramoops.txt' }

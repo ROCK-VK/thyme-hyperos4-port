@@ -6,13 +6,14 @@
 
 ## 当前状态（2026-09-26）
 
-- Candidate 13 清除旧 `userdata`、`metadata` 后，pstore 记录了 first-stage mount、动态 SELinux policy 编译、enforcing second-stage init 和 APEX bootstrap。该记录约在启动 3.75 秒处结束；Keymaster、Gatekeeper、vold、`/data`、ADB 和桌面均未得到验证。
-- 用户观察到小米 Logo 与黑屏循环两次后手动进入 Fastboot。现有日志没有确定循环原因。
-- 2026-09-26 已按授权再次刷写原版 C13 六项镜像，设备保持 Fastboot 等待单独启动授权；本次未再次清除 `userdata`/`metadata`。PixelOS A0′ 的历史健康启动记录不代表当前系统状态。
-- 当前最重要的工程目标仍是找到 C13 越过 APEX bootstrap 后的真实阻塞，尽快进入 HyperOS 4 启动画面。主机侧策略验证不能表述为 SELinux HAL 权限已通过真机验收。
-- 下一次实验仍使用原版 C13；已准备先 arm 观察器、时间戳记录 Fastboot/ADB 变化和屏幕观察、失败后再导出 pstore 的流程。尚未获得新的启动错误。
+- 本轮新保存的 C13 console-ramoops 证明系统进入 enforcing second stage、完成 APEX bootstrap、挂载 F2FS /data 并开始 fscrypt 密钥初始化；约 15.96 秒 NetBpfLoad 报 Android 25Q2 要求内核 5.4，随后 init 明确以 bpfloader-failed 请求暖重启。
+- 这为用户观察到的 Xiaomi Logo/黑屏循环提供了直接启动证据；本轮日志没有证明进入 Recovery，也没有取得实时 ADB logcat。
+- C13 SELinux 的 ion_device 规则尚未完成 Keymaster/Gatekeeper HAL 阶段实机验收；fscrypt 活动也不等价于确认所有密钥服务长期健康或进入桌面。
+- Candidate 14 已在主机侧完成最小 BPF bootstrap 绕过构建和静态检查，保留 C13 内核、SELinux Enforcing、APEX、fstab 和加密配置。它尚未刷写或启动，且不加载供体 BPF 程序，网络功能可能不完整。
+- C14 下一次仅计划写入 vbmeta_system_a 与 super，不再次清除 userdata/metadata；刷写与首次启动仍须分别获得用户授权。
+- Standalone 导出后主机未枚举到 ADB、Fastboot 或 THYME_DIAG 卷；当前设备物理模式未经重新确认。PixelOS A0′ 未在本轮恢复或验证为在线健康系统。
 
-最新快照：[项目当前状态](logs/PROJECT_STATUS.md)。演变过程见[执行记录](logs/EXECUTION_LOG.md)。
+最新分析与构建状态见 [C13 netbpfload 故障和 C14 构建报告](reports/candidate13/20260926_CANDIDATE13_NETBPFLOAD_FAILURE_AND_C14_BUILD.md) 及 [项目当前状态](logs/PROJECT_STATUS.md)。
 
 ## 设备与来源
 
@@ -49,11 +50,11 @@ scripts/           带明确文件白名单的本地增量同步脚本
 建议阅读顺序：
 
 1. [当前项目状态](logs/PROJECT_STATUS.md)
-2. [C13 清数据首启日志摘要](reports/candidate13/20260926_c13_clean_data_firstboot.md)
-3. [C13 Second Stage 取证准备](reports/candidate13/20260926_CANDIDATE13_SECOND_STAGE_CAPTURE_PREP.md)
-4. [C13 Recovery 分析](reports/candidate13/20260925_CANDIDATE13_RECOVERY_ANALYSIS.md)
-5. [K40 三方移植分析](reports/k40/20260918_K40_THREE_WAY_PORT_REVERSE_ENGINEERING_1.md)
-6. Candidate 历史报告和 `reports/boot-logs/` 中对应的原始 console/pmsg 记录
+2. [C13 netbpfload 故障与 C14 构建](reports/candidate13/20260926_CANDIDATE13_NETBPFLOAD_FAILURE_AND_C14_BUILD.md)
+3. [C13 首次启动证据摘要](reports/boot-logs/candidate13_netbpfload_failure_excerpt.txt)
+4. [C13 Second Stage 取证准备](reports/candidate13/20260926_CANDIDATE13_SECOND_STAGE_CAPTURE_PREP.md)
+5. [C13 Recovery 分析](reports/candidate13/20260925_CANDIDATE13_RECOVERY_ANALYSIS.md)
+6. [K40 三方移植分析](reports/k40/20260918_K40_THREE_WAY_PORT_REVERSE_ENGINEERING_1.md)
 
 ## 脚本与构建
 

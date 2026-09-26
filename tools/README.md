@@ -33,3 +33,5 @@ Device serials and private host paths are sanitized in the public copies. Set th
 ## Runtime requirements
 
 The original workflow used Windows 11, WSL Ubuntu, local Android platform-tools, and project-specific extraction/AVB/LP/EROFS/SELinux tools. Exact versions and required local inputs vary by script. No third-party executable distributions or full ROMs are included.
+
+- tools/flash_candidate14_bpf_bootstrap_bypass.ps1 — may write only vbmeta_system_a and super; it defaults to Dry-Run, checks the expected unlocked thyme A-slot bootloader, does not clear data, and does not reboot. The C14 images are local build outputs and are not included in this repository.
