@@ -12953,3 +12953,14 @@
 - 尚未验证：GitHub Desktop UI 本轮未打开确认；本地仓库 `origin` 与 GitHub main 已同步。
 - 待处理：等待本轮用户单独批准原版 C13 六分区刷写；刷后保持 Fastboot，启动和故障后 Standalone RAM 诊断各需独立授权。
 - 替代：无。
+
+## 2026-09-26 10:55｜原版 C13 六分区再次刷写完成
+
+- 状态：按用户本轮明确授权完成六项写入；设备保持 Bootloader Fastboot，未启动。
+- 改动/结论：`vbmeta_a`、`vbmeta_system_a`、`boot_a`、`vendor_boot_a`、`dtbo_a`、`super` 对应原版 C13 镜像全部返回 Fastboot 成功。`super` sparse 10/10 段写入完成，用时 198.262 秒。Fastboot 显示 `skip copying super image avb footer due to sparse image` 提示，但脚本退出码 0，所有段均返回 OKAY。
+- 原因：用户授权在 C13 清数据首启取证准备后进行一次原版 C13 六分区刷写；本轮没有授权或要求重复清除 `userdata`/`metadata`。
+- 涉及文件：`tools/flash_candidate13.ps1`；`work/stage_c_thyme_os4_candidate_13_treble_ion_fix/images/`；本状态文件。
+- 验证：执行前只读 Fastboot 预检为 serial `[REDACTED_DEVICE_ID]`、`product=thyme`、A 槽、`unlocked=yes`、`is-userspace=no`。脚本对六个实际镜像大小及 SHA-256 全部核对通过。刷后只读复查设备仍为 `[REDACTED_DEVICE_ID] fastboot`、thyme、A 槽、Bootloader 解锁、非 userspace Fastboot。
+- 尚未验证：本次 C13 尚未启动；C13 Second Stage 后续错误、SELinux HAL/Ion AVC、Keymaster/Gatekeeper、QSEECom、vold、`/data`、启动动画/桌面均未取得新结果。用户数据分区未在本轮触碰。
+- 待处理：保持 Fastboot，等待用户单独授权首次启动。启动前先运行只读观察器并等 `[ARMED]`，再执行一次 `fastboot reboot`；失败后 Standalone RAM 启动及只读导出需单独授权。不得自动重启或恢复 PixelOS。
+- 替代：更新此前“等待 C13 六分区刷写授权”的待办；新状态为“刷写成功、等待首次启动授权”。

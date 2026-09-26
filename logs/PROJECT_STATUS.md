@@ -2,11 +2,11 @@
 
 ## 当前阶段
 
-- 最新设备快照（2026-09-26，本轮只读查询）：唯一设备 `[REDACTED_DEVICE_ID]` 在 Bootloader Fastboot；`product=thyme`、`current-slot=a`、`unlocked=yes`、`is-userspace=no`，ADB 未枚举。最近记录的 PixelOS A0′ 六镜像恢复写入成功，但恢复后的 PixelOS 尚未正常启动验证。
+- 最新设备快照（2026-09-26 10:55）：按授权重新刷写原版 C13 六项镜像后，唯一设备 `[REDACTED_DEVICE_ID]` 仍在 Bootloader Fastboot；`product=thyme`、`current-slot=a`、`unlocked=yes`、`is-userspace=no`，ADB 未枚举。没有执行启动。
 
-- 当前里程碑：原版 C13 六目标刷写、经授权的 `userdata`/`metadata` 擦除和一次首次启动均已完成。用户看到 Logo/黑屏循环两次并手动进入 Fastboot。随后 Standalone RAM 取证取得 C13 的单个可见启动记录：first-stage mount、动态 SELinux policy compile、enforcing second stage、APEX bootstrap 均有进展；日志止于启动约 3.75 秒，未覆盖 vold、HAL 或 `/data` 后续阶段。C13 尚未达到 ADB、启动动画或桌面可验证状态。
+- 当前里程碑：此前 C13 清数据实验和一次启动已完成，用户观察到 Logo/黑屏循环；Standalone pstore 证明 C13 曾进入 Second Stage 与 APEX Bootstrap，但未捕获后续错误。原版 C13 已按本轮授权再次刷入六项目标，当前留在 Fastboot 等待首次启动单独授权。
 - 项目目标：以 Xiaomi 15（dada）HyperOS 4 / Android 17 用户空间为供体，适配小米 10S（thyme）原生硬件，尽快推进至正常 Android 启动、启动动画或设置界面。用户表示没有需保留的个人数据；任何 userdata/metadata 清除仍须单独明确授权。禁止修改 persist、无线电校准、EFS/NV、设备身份数据或回锁 Bootloader。
-- 当前下一步：原版 C13 六镜像的当前大小与 SHA-256 已通过既有刷写脚本默认 Dry-Run 核对；下一实验使用原版 C13，不使用 C13.1，不重建 `super`，不重复擦除 `userdata`/`metadata`。需先取得 C13 六分区刷写授权；刷后留在 Fastboot，首次 Android 启动另行授权。若失败需 Standalone RAM 取证，再单独授权 RAM 启动。
+- 当前下一步：本轮原版 C13 六分区刷写已完成，未擦除 `userdata`/`metadata`，未写其他分区，也未重启。现在等待用户单独授权首次 Android 启动；获准后先启动观察器并等 `[ARMED]`，再下发一次启动命令。若失败且需要 Standalone RAM 取证，需按限定范围单独授权。
 
 ## 当前有效技术状态
 
@@ -21,6 +21,8 @@
 - 公开资料已增量同步到 `https://github.com/ROCK-VK/thyme-hyperos4-port`：Second Stage 取证报告、状态/执行记录及采集脚本已发布；公开副本中的本机路径与设备序列号经脱敏。
 
 ## Candidate 13 本轮刷写结果
+
+- 2026-09-26 按用户本轮授权，原版 C13 的 `vbmeta_a`、`vbmeta_system_a`、`boot_a`、`vendor_boot_a`、`dtbo_a`、`super` 全部再次刷写成功。六项大小及 SHA-256 在执行脚本中全部通过；`super` sparse 10/10 段成功，Fastboot 总写入时间 198.262 秒。设备保持 Fastboot。此次未擦除 userdata/metadata、未重启、未写其他分区；具体见执行记录。
 
 - 2026-09-26 00:12 按授权刷写原版 `vbmeta_a`、`vbmeta_system_a`、`boot_a`、`vendor_boot_a`、`dtbo_a`、`super`，全部成功；`super` 10/10 sparse 段成功，Fastboot 提示 `skip copying super image avb footer due to sparse image` 但命令退出成功。随后只执行一次 `fastboot erase userdata` 和一次 `fastboot erase metadata`，两项均返回 `OKAY`，未运行 `format`。没有回锁或写入其他分区。
 - 用户随后授权一次 C13 首启，之后取得 pstore；实际启动阶段见“Candidate 13 清数据对照首启”。Candidate 13.1/14 均未刷写，未重建镜像。

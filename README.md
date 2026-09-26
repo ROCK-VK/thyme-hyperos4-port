@@ -8,7 +8,7 @@
 
 - Candidate 13 清除旧 `userdata`、`metadata` 后，pstore 记录了 first-stage mount、动态 SELinux policy 编译、enforcing second-stage init 和 APEX bootstrap。该记录约在启动 3.75 秒处结束；Keymaster、Gatekeeper、vold、`/data`、ADB 和桌面均未得到验证。
 - 用户观察到小米 Logo 与黑屏循环两次后手动进入 Fastboot。现有日志没有确定循环原因。
-- 随后 PixelOS A0′ 六项恢复镜像已写回，设备保持 Fastboot；这次恢复后的 PixelOS 启动健康状态尚未验证。
+- 2026-09-26 已按授权再次刷写原版 C13 六项镜像，设备保持 Fastboot 等待单独启动授权；本次未再次清除 `userdata`/`metadata`。PixelOS A0′ 的历史健康启动记录不代表当前系统状态。
 - 当前最重要的工程目标仍是找到 C13 越过 APEX bootstrap 后的真实阻塞，尽快进入 HyperOS 4 启动画面。主机侧策略验证不能表述为 SELinux HAL 权限已通过真机验收。
 - 下一次实验仍使用原版 C13；已准备先 arm 观察器、时间戳记录 Fastboot/ADB 变化和屏幕观察、失败后再导出 pstore 的流程。尚未获得新的启动错误。
 
