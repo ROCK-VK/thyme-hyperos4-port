@@ -1,0 +1,9 @@
+{
+  "candidate": "C16",
+  "armed_utc": "2026-09-26T11:11:30.202+00:00",
+  "elapsed_seconds": 0.069,
+  "serial": "1384e684",
+  "adb_state": "absent",
+  "fastboot_state": "fastboot",
+  "run_dir": "work\\reports\\20260926_CANDIDATE16_FIRST_BOOT\\observations\\run_20260926_191130"
+}

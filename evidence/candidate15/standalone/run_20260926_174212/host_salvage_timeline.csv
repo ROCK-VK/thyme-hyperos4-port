@@ -1,0 +1,9 @@
+host_utc,event,details_json
+2026-09-26T09:42:12.381+00:00,salvage_script_started,"{""image_bytes"": 201326592, ""image_sha256"": ""8A5803F09CBCB11056D8356F8D235C3C4450846244FA1B4033ABAAACB213E98B""}"
+2026-09-26T09:42:12.382+00:00,fastboot_wait_started,"{""serial"": ""1384e684""}"
+2026-09-26T09:42:12.583+00:00,fastboot_preflight_passed,"{""current_slot"": ""a"", ""is_userspace"": ""no"", ""product"": ""thyme"", ""serial"": ""1384e684"", ""unlocked"": ""yes""}"
+2026-09-26T09:42:12.584+00:00,fastboot_boot_started,"{""command"": ""fastboot boot standalone_diag_boot.img""}"
+2026-09-26T09:42:17.971+00:00,fastboot_boot_finished,"{""exit_code"": 0, ""stderr"": ""Sending 'boot.img' (196608 KB)                     OKAY [  5.072s]\nBooting                                            OKAY [  0.222s]\nFinished. Total time: 5.354s\n"", ""stdout"": """"}"
+2026-09-26T09:42:27.470+00:00,diag_volume_found,"{""volume"": ""F:\\""}"
+2026-09-26T09:42:27.471+00:00,copy_started,"{""volume"": ""F:\\""}"
+2026-09-26T09:42:28.000+00:00,copy_finished,"{""file_count"": 6, ""files"": [""diag_status.log"", ""dmesg_diag_boot.txt"", ""oops.raw"", ""oops.raw.sha256"", ""pstore/pmsg-ramoops-0"", ""pstore/console-ramoops-0""]}"

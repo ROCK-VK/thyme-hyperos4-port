@@ -13175,3 +13175,13 @@
 - 安全边界：仅一次普通 Candidate reboot 和一次 Standalone RAM 临时启动；未写入持久分区，未清除 userdata/metadata，未触及 misc/BCB、persist、modemst、EFS/NV、校准及设备身份分区，未回锁。最近查询设备仍在 THYME_DIAG USB Mass Storage，ADB/Fastboot 未枚举；PixelOS 未恢复。
 - 待处理：定点调查 ANGLE/EGL/Gralloc/HWC 配置选择和 Vulkan 枚举崩溃，形成有证据支持的最小修复后再决定 C18；将脱敏报告及状态增量同步到公开仓库。
 - 替代：替代此前状态中“C17 启动尚未得到有效用户空间证据、设备当前模式未知”的判断；本轮已确认 Android Second Stage 与图形阶段运行，设备当前则处于 Standalone USB 诊断模式。
+## 2026-09-26 21:00｜C13–C17 原始启动诊断证据公开同步规则
+
+- 状态：按用户明确授权扩展公开范围；C13–C17 原始诊断与观察文件已归档至现有公开仓库，原始本地文件保留未修改。
+- 改动/结论：公开同步器新增明确目录白名单的 raw evidence 流程，由主同步脚本调用。它对原始文件按字节复制、逐文件比对大小/SHA-256、生成发布清单；凭据特征、分区/固件镜像名和超 100 MiB 文件会排除并记录。公开证据分 Candidate/时间存放；C13 的旧观察目录缺少 Candidate 元数据，标为 unlabeled。
+- 原因：用户授权独立技术审核需要的完整 C13–C17 Standalone 日志及 USB/ADB/Fastboot 主机观察记录公开，并明确废止“raw pstore/oops 只保存在本机”的旧限制。
+- 涉及文件：公开仓库 scripts/sync_from_local.ps1、scripts/sync_raw_startup_evidence.ps1、.gitattributes、README.md、evidence/README.md、evidence/RAW_EVIDENCE_MANIFEST.csv、evidence/RAW_EVIDENCE_EXCLUSIONS.csv 及 evidence/candidate13–candidate17/；本地项目当前状态与本执行记录。
+- 验证：8 个 Standalone 导出目录和 6 个 host-observation 目录共 118 个原始文件、140,935,707 字节；allowlist 目录缺失数为 0；文件复制前后的大小和 SHA-256 全部匹配；目标文件的 Git 属性为 text unset，确保 Git 不转换原始换行。针对 PEM 私钥、常见访问令牌、Bearer token 和密码赋值的高置信模式扫描未命中，凭据排除为 0。原始 pstore、oops 和日志内容未脱敏或改写；公开原始文件可能含设备标识、CPUID、主机路径，用户明确授权保留。
+- 尚未验证：GitHub 推送及匿名远程读取尚待本条目所述发布提交完成后确认。
+- 待处理：提交并推送上述公开增量；确认 main SHA 与匿名访问后将远程结果记录在交付。
+- 替代：替代此前状态/报告中“C13–C17 原始 pstore/oops 仅本地保存、不公开”的当前发布规则；历史记录保留其当时事实，不回写历史。

@@ -132,3 +132,4 @@ foreach ($Entry in $Allowlist) {
 }
 [pscustomobject]@{Copied=$Copied; Missing=$Missing; Destination=$DestinationRoot} | ConvertTo-Json -Depth 4
 if ($Missing.Count -gt 0) { Write-Warning ('Allowlisted source files absent: ' + ($Missing -join ', ')) }
+& (Join-Path $PSScriptRoot 'sync_raw_startup_evidence.ps1') -SourceRoot $SourceRoot -DestinationRoot $DestinationRoot

@@ -1,0 +1,2 @@
+host_utc,event,message
+"2026-09-26T04:23:36.7713795+00:00","operator_action","User observed Xiaomi logo lit, then black screen, then logo again in a loop; user manually entered bootloader Fastboot."

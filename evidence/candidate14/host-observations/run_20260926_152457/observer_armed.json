@@ -1,0 +1,9 @@
+{
+  "candidate": "C14-run5",
+  "armed_utc": "2026-09-26T07:24:57.151+00:00",
+  "elapsed_seconds": 0.076,
+  "serial": "1384e684",
+  "adb_state": "absent",
+  "fastboot_state": "fastboot",
+  "run_dir": "E:\\RVK\\10S_OS4\\work\\reports\\20260925_CANDIDATE13_STORAGE_SAFETY_AND_FIRST_FAILURE\\observations\\candidate14\\run_20260926_152457"
+}

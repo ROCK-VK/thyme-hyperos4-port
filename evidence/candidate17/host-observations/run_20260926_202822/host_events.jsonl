@@ -1,0 +1,11 @@
+{"candidate": "C17-retest", "event": "observer_started", "host_utc": "2026-09-26T12:28:22.714+00:00", "serial": "1384e684"}
+{"elapsed_seconds": 0.077, "event": "usb_pnp_state_change", "host_utc": "2026-09-26T12:28:22.791+00:00", "output": "initial PnP query pending", "state": "query_pending"}
+{"elapsed_seconds": 0.077, "event": "adb_state_change", "host_utc": "2026-09-26T12:28:22.792+00:00", "output": "List of devices attached", "state": "absent"}
+{"elapsed_seconds": 0.077, "event": "fastboot_state_change", "host_utc": "2026-09-26T12:28:22.793+00:00", "output": "1384e684               fastboot", "state": "fastboot"}
+{"adb_state": "absent", "candidate": "C17-retest", "elapsed_seconds": 4.071, "event": "observer_armed", "fastboot_state": "fastboot", "host_utc": "2026-09-26T12:28:26.786+00:00", "usb_pnp_state": "present"}
+{"elapsed_seconds": 4.071, "event": "usb_pnp_state_change", "host_utc": "2026-09-26T12:28:26.787+00:00", "output": "{\"state\":\"present\",\"devices\":[{\"Status\":\"OK\",\"Class\":\"AndroidUsbDeviceClass\",\"FriendlyName\":\"Android Bootloader Interface\",\"InstanceId\":\"USB\\\\VID_18D1&PID_D00D\\\\1384E684\"}]}", "state": "present"}
+{"elapsed_seconds": 99.097, "event": "fastboot_state_change", "host_utc": "2026-09-26T12:30:01.811+00:00", "output": "", "state": "absent"}
+{"elapsed_seconds": 104.103, "event": "usb_pnp_state_change", "host_utc": "2026-09-26T12:30:06.817+00:00", "output": "{\"state\":\"absent\",\"devices\":[]}", "state": "absent"}
+{"elapsed_seconds": 247.162, "event": "fastboot_state_change", "host_utc": "2026-09-26T12:32:29.876+00:00", "output": "1384e684               fastboot", "state": "fastboot"}
+{"elapsed_seconds": 252.148, "event": "usb_pnp_state_change", "host_utc": "2026-09-26T12:32:34.862+00:00", "output": "{\"state\":\"present\",\"devices\":[{\"Status\":\"OK\",\"Class\":\"AndroidUsbDeviceClass\",\"FriendlyName\":\"Android Bootloader Interface\",\"InstanceId\":\"USB\\\\VID_18D1&PID_D00D\\\\1384E684\"}]}", "state": "present"}
+{"details": "Stopped after host Fastboot reappeared and user reported manual return; no ADB became available.", "event": "observer_stopped_for_standalone", "host_utc": "2026-09-26T12:33:34.366+00:00"}

@@ -1,0 +1,9 @@
+{
+  "candidate": "C13-original",
+  "armed_utc": "2026-09-26T04:21:56.399+00:00",
+  "elapsed_seconds": 0.117,
+  "serial": "1384e684",
+  "adb_state": "absent",
+  "fastboot_state": "fastboot",
+  "run_dir": "E:\\RVK\\10S_OS4\\work\\reports\\20260925_CANDIDATE13_STORAGE_SAFETY_AND_FIRST_FAILURE\\observations\\run_20260926_122156"
+}

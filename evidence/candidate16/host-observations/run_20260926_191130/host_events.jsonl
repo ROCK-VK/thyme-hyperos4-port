@@ -1,0 +1,6 @@
+{"candidate": "C16", "event": "observer_started", "host_utc": "2026-09-26T11:11:30.133+00:00", "serial": "1384e684"}
+{"adb_state": "absent", "candidate": "C16", "elapsed_seconds": 0.069, "event": "observer_armed", "fastboot_state": "fastboot", "host_utc": "2026-09-26T11:11:30.204+00:00"}
+{"elapsed_seconds": 0.069, "event": "adb_state_change", "host_utc": "2026-09-26T11:11:30.205+00:00", "output": "List of devices attached", "state": "absent"}
+{"elapsed_seconds": 0.069, "event": "fastboot_state_change", "host_utc": "2026-09-26T11:11:30.206+00:00", "output": "1384e684               fastboot", "state": "fastboot"}
+{"elapsed_seconds": 47.091, "event": "fastboot_state_change", "host_utc": "2026-09-26T11:12:17.223+00:00", "output": "????????????           fastboot", "state": "absent"}
+{"elapsed_seconds": 228.135, "event": "fastboot_state_change", "host_utc": "2026-09-26T11:15:18.268+00:00", "output": "1384e684               fastboot", "state": "fastboot"}

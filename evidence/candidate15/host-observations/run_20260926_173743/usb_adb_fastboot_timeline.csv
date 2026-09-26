@@ -1,0 +1,233 @@
+sample_started_utc,sample_finished_utc,elapsed_seconds,adb_state,fastboot_state,adb_query_ms,fastboot_query_ms,adb_output,fastboot_output
+2026-09-26T09:37:43.632+00:00,2026-09-26T09:37:43.700+00:00,0.071,absent,fastboot,35.1,32.7,List of devices attached,1384e684               fastboot
+2026-09-26T09:37:44.632+00:00,2026-09-26T09:37:44.694+00:00,1.065,absent,fastboot,31.9,29.7,List of devices attached,1384e684               fastboot
+2026-09-26T09:37:45.632+00:00,2026-09-26T09:37:45.691+00:00,2.062,absent,fastboot,30.5,28.4,List of devices attached,1384e684               fastboot
+2026-09-26T09:37:46.633+00:00,2026-09-26T09:37:46.693+00:00,3.064,absent,fastboot,31.2,28.8,List of devices attached,1384e684               fastboot
+2026-09-26T09:37:47.633+00:00,2026-09-26T09:37:47.691+00:00,4.062,absent,fastboot,29.9,27.9,List of devices attached,1384e684               fastboot
+2026-09-26T09:37:48.633+00:00,2026-09-26T09:37:48.692+00:00,5.063,absent,fastboot,29.7,29.7,List of devices attached,1384e684               fastboot
+2026-09-26T09:37:49.633+00:00,2026-09-26T09:37:49.694+00:00,6.065,absent,fastboot,30.8,29.3,List of devices attached,1384e684               fastboot
+2026-09-26T09:37:50.634+00:00,2026-09-26T09:37:50.693+00:00,7.064,absent,fastboot,30.4,28.9,List of devices attached,1384e684               fastboot
+2026-09-26T09:37:51.634+00:00,2026-09-26T09:37:51.694+00:00,8.065,absent,fastboot,31.1,28.9,List of devices attached,1384e684               fastboot
+2026-09-26T09:37:52.634+00:00,2026-09-26T09:37:52.693+00:00,9.064,absent,fastboot,30.1,28.1,List of devices attached,1384e684               fastboot
+2026-09-26T09:37:53.635+00:00,2026-09-26T09:37:53.695+00:00,10.066,absent,fastboot,29.8,29.9,List of devices attached,1384e684               fastboot
+2026-09-26T09:37:54.635+00:00,2026-09-26T09:37:54.692+00:00,11.063,absent,fastboot,29.4,28.2,List of devices attached,1384e684               fastboot
+2026-09-26T09:37:55.635+00:00,2026-09-26T09:37:55.696+00:00,12.067,absent,fastboot,33.1,28.2,List of devices attached,1384e684               fastboot
+2026-09-26T09:37:56.636+00:00,2026-09-26T09:37:56.696+00:00,13.067,absent,fastboot,31.4,29.5,List of devices attached,1384e684               fastboot
+2026-09-26T09:37:57.636+00:00,2026-09-26T09:37:57.706+00:00,14.077,absent,absent,41.5,28.5,List of devices attached,
+2026-09-26T09:37:58.636+00:00,2026-09-26T09:37:58.694+00:00,15.065,absent,absent,30.3,27.1,List of devices attached,
+2026-09-26T09:37:59.636+00:00,2026-09-26T09:37:59.694+00:00,16.065,absent,absent,29.6,28.3,List of devices attached,
+2026-09-26T09:38:00.637+00:00,2026-09-26T09:38:00.695+00:00,17.066,absent,absent,31.0,27.2,List of devices attached,
+2026-09-26T09:38:01.637+00:00,2026-09-26T09:38:01.694+00:00,18.065,absent,absent,30.0,26.6,List of devices attached,
+2026-09-26T09:38:02.638+00:00,2026-09-26T09:38:02.696+00:00,19.067,absent,absent,30.5,28.0,List of devices attached,
+2026-09-26T09:38:03.638+00:00,2026-09-26T09:38:03.696+00:00,20.067,absent,absent,29.3,28.8,List of devices attached,
+2026-09-26T09:38:04.638+00:00,2026-09-26T09:38:04.696+00:00,21.067,absent,absent,30.7,26.9,List of devices attached,
+2026-09-26T09:38:05.639+00:00,2026-09-26T09:38:05.697+00:00,22.068,absent,absent,29.4,29.1,List of devices attached,
+2026-09-26T09:38:06.639+00:00,2026-09-26T09:38:06.696+00:00,23.067,absent,absent,30.0,27.2,List of devices attached,
+2026-09-26T09:38:07.639+00:00,2026-09-26T09:38:07.698+00:00,24.069,absent,absent,32.4,26.5,List of devices attached,
+2026-09-26T09:38:08.639+00:00,2026-09-26T09:38:08.699+00:00,25.070,absent,absent,31.4,28.4,List of devices attached,
+2026-09-26T09:38:09.640+00:00,2026-09-26T09:38:09.699+00:00,26.070,absent,absent,31.1,28.3,List of devices attached,
+2026-09-26T09:38:10.640+00:00,2026-09-26T09:38:10.698+00:00,27.069,absent,absent,30.8,27.4,List of devices attached,
+2026-09-26T09:38:11.640+00:00,2026-09-26T09:38:11.697+00:00,28.068,absent,absent,30.0,27.2,List of devices attached,
+2026-09-26T09:38:12.640+00:00,2026-09-26T09:38:12.699+00:00,29.070,absent,absent,31.5,27.5,List of devices attached,
+2026-09-26T09:38:13.640+00:00,2026-09-26T09:38:13.700+00:00,30.071,absent,absent,31.3,28.1,List of devices attached,
+2026-09-26T09:38:14.641+00:00,2026-09-26T09:38:14.700+00:00,31.071,absent,absent,31.1,27.9,List of devices attached,
+2026-09-26T09:38:15.641+00:00,2026-09-26T09:38:15.699+00:00,32.070,absent,absent,31.3,27.3,List of devices attached,
+2026-09-26T09:38:16.641+00:00,2026-09-26T09:38:16.700+00:00,33.071,absent,absent,30.7,28.3,List of devices attached,
+2026-09-26T09:38:17.641+00:00,2026-09-26T09:38:17.699+00:00,34.070,absent,absent,30.3,27.5,List of devices attached,
+2026-09-26T09:38:18.642+00:00,2026-09-26T09:38:18.701+00:00,35.072,absent,absent,30.7,28.2,List of devices attached,
+2026-09-26T09:38:19.642+00:00,2026-09-26T09:38:19.704+00:00,36.075,absent,absent,31.1,30.1,List of devices attached,
+2026-09-26T09:38:20.643+00:00,2026-09-26T09:38:20.703+00:00,37.074,absent,absent,31.0,28.7,List of devices attached,
+2026-09-26T09:38:21.643+00:00,2026-09-26T09:38:21.701+00:00,38.072,absent,absent,30.6,27.6,List of devices attached,
+2026-09-26T09:38:22.644+00:00,2026-09-26T09:38:22.703+00:00,39.074,absent,absent,30.3,29.3,List of devices attached,
+2026-09-26T09:38:23.644+00:00,2026-09-26T09:38:23.702+00:00,40.073,absent,absent,30.1,28.0,List of devices attached,
+2026-09-26T09:38:24.644+00:00,2026-09-26T09:38:24.702+00:00,41.073,absent,absent,31.4,27.0,List of devices attached,
+2026-09-26T09:38:25.644+00:00,2026-09-26T09:38:25.703+00:00,42.074,absent,absent,31.1,27.1,List of devices attached,
+2026-09-26T09:38:26.645+00:00,2026-09-26T09:38:26.702+00:00,43.073,absent,absent,29.1,27.9,List of devices attached,
+2026-09-26T09:38:27.645+00:00,2026-09-26T09:38:27.702+00:00,44.073,absent,absent,29.4,27.5,List of devices attached,
+2026-09-26T09:38:28.645+00:00,2026-09-26T09:38:28.703+00:00,45.074,absent,absent,29.3,28.5,List of devices attached,
+2026-09-26T09:38:29.646+00:00,2026-09-26T09:38:29.704+00:00,46.075,absent,absent,29.9,28.0,List of devices attached,
+2026-09-26T09:38:30.646+00:00,2026-09-26T09:38:30.705+00:00,47.076,absent,absent,30.7,27.8,List of devices attached,
+2026-09-26T09:38:31.646+00:00,2026-09-26T09:38:31.703+00:00,48.074,absent,absent,29.1,27.2,List of devices attached,
+2026-09-26T09:38:32.647+00:00,2026-09-26T09:38:32.706+00:00,49.077,absent,absent,31.4,27.4,List of devices attached,
+2026-09-26T09:38:33.647+00:00,2026-09-26T09:38:33.706+00:00,50.077,absent,absent,31.0,27.9,List of devices attached,
+2026-09-26T09:38:34.648+00:00,2026-09-26T09:38:34.710+00:00,51.081,absent,absent,32.6,30.2,List of devices attached,
+2026-09-26T09:38:35.648+00:00,2026-09-26T09:38:35.707+00:00,52.078,absent,absent,31.6,27.6,List of devices attached,
+2026-09-26T09:38:36.648+00:00,2026-09-26T09:38:36.707+00:00,53.078,absent,absent,30.6,28.5,List of devices attached,
+2026-09-26T09:38:37.649+00:00,2026-09-26T09:38:37.706+00:00,54.077,absent,absent,30.3,27.1,List of devices attached,
+2026-09-26T09:38:38.649+00:00,2026-09-26T09:38:38.707+00:00,55.078,absent,absent,29.7,28.4,List of devices attached,
+2026-09-26T09:38:39.649+00:00,2026-09-26T09:38:39.708+00:00,56.079,absent,absent,30.6,28.1,List of devices attached,
+2026-09-26T09:38:40.650+00:00,2026-09-26T09:38:40.709+00:00,57.080,absent,absent,29.1,29.5,List of devices attached,
+2026-09-26T09:38:41.650+00:00,2026-09-26T09:38:41.712+00:00,58.083,absent,absent,33.6,28.3,List of devices attached,
+2026-09-26T09:38:42.651+00:00,2026-09-26T09:38:42.709+00:00,59.080,absent,absent,30.1,27.4,List of devices attached,
+2026-09-26T09:38:43.651+00:00,2026-09-26T09:38:43.707+00:00,60.078,absent,absent,29.0,26.5,List of devices attached,
+2026-09-26T09:38:44.652+00:00,2026-09-26T09:38:44.711+00:00,61.082,absent,absent,31.3,28.2,List of devices attached,
+2026-09-26T09:38:45.652+00:00,2026-09-26T09:38:45.709+00:00,62.080,absent,absent,30.0,27.6,List of devices attached,
+2026-09-26T09:38:46.652+00:00,2026-09-26T09:38:46.712+00:00,63.083,absent,absent,30.6,29.4,List of devices attached,
+2026-09-26T09:38:47.652+00:00,2026-09-26T09:38:47.709+00:00,64.080,absent,absent,30.4,26.7,List of devices attached,
+2026-09-26T09:38:48.653+00:00,2026-09-26T09:38:48.712+00:00,65.083,absent,absent,31.1,28.2,List of devices attached,
+2026-09-26T09:38:49.653+00:00,2026-09-26T09:38:49.713+00:00,66.084,absent,absent,31.7,27.7,List of devices attached,
+2026-09-26T09:38:50.653+00:00,2026-09-26T09:38:50.712+00:00,67.083,absent,absent,31.5,27.2,List of devices attached,
+2026-09-26T09:38:51.654+00:00,2026-09-26T09:38:51.712+00:00,68.083,absent,absent,30.9,27.2,List of devices attached,
+2026-09-26T09:38:52.654+00:00,2026-09-26T09:38:52.715+00:00,69.086,absent,absent,31.2,29.3,List of devices attached,
+2026-09-26T09:38:53.654+00:00,2026-09-26T09:38:53.714+00:00,70.084,absent,absent,31.0,28.1,List of devices attached,
+2026-09-26T09:38:54.655+00:00,2026-09-26T09:38:54.715+00:00,71.086,absent,absent,30.7,29.1,List of devices attached,
+2026-09-26T09:38:55.655+00:00,2026-09-26T09:38:55.713+00:00,72.084,absent,absent,30.6,27.1,List of devices attached,
+2026-09-26T09:38:56.655+00:00,2026-09-26T09:38:56.712+00:00,73.083,absent,absent,29.6,26.7,List of devices attached,
+2026-09-26T09:38:57.655+00:00,2026-09-26T09:38:57.715+00:00,74.086,absent,absent,30.2,29.3,List of devices attached,
+2026-09-26T09:38:58.656+00:00,2026-09-26T09:38:58.714+00:00,75.085,absent,absent,29.2,28.4,List of devices attached,
+2026-09-26T09:38:59.656+00:00,2026-09-26T09:38:59.714+00:00,76.085,absent,absent,29.6,28.6,List of devices attached,
+2026-09-26T09:39:00.657+00:00,2026-09-26T09:39:00.713+00:00,77.084,absent,absent,29.4,26.6,List of devices attached,
+2026-09-26T09:39:01.657+00:00,2026-09-26T09:39:01.715+00:00,78.086,absent,absent,30.6,27.3,List of devices attached,
+2026-09-26T09:39:02.657+00:00,2026-09-26T09:39:02.716+00:00,79.087,absent,absent,29.2,29.7,List of devices attached,
+2026-09-26T09:39:03.657+00:00,2026-09-26T09:39:03.716+00:00,80.087,absent,absent,30.5,27.7,List of devices attached,
+2026-09-26T09:39:04.657+00:00,2026-09-26T09:39:04.715+00:00,81.086,absent,absent,29.5,27.6,List of devices attached,
+2026-09-26T09:39:05.658+00:00,2026-09-26T09:39:05.715+00:00,82.086,absent,absent,30.5,26.9,List of devices attached,
+2026-09-26T09:39:06.658+00:00,2026-09-26T09:39:06.719+00:00,83.090,absent,absent,32.1,28.7,List of devices attached,
+2026-09-26T09:39:07.658+00:00,2026-09-26T09:39:07.717+00:00,84.088,absent,absent,31.3,27.8,List of devices attached,
+2026-09-26T09:39:08.658+00:00,2026-09-26T09:39:08.715+00:00,85.086,absent,absent,30.3,26.7,List of devices attached,
+2026-09-26T09:39:09.658+00:00,2026-09-26T09:39:09.716+00:00,86.087,absent,absent,30.9,27.0,List of devices attached,
+2026-09-26T09:39:10.659+00:00,2026-09-26T09:39:10.719+00:00,87.090,absent,absent,31.5,28.6,List of devices attached,
+2026-09-26T09:39:11.659+00:00,2026-09-26T09:39:11.717+00:00,88.088,absent,absent,31.2,26.6,List of devices attached,
+2026-09-26T09:39:12.660+00:00,2026-09-26T09:39:12.717+00:00,89.087,absent,absent,28.7,27.9,List of devices attached,
+2026-09-26T09:39:13.660+00:00,2026-09-26T09:39:13.717+00:00,90.088,absent,absent,30.4,26.2,List of devices attached,
+2026-09-26T09:39:14.661+00:00,2026-09-26T09:39:14.719+00:00,91.090,absent,absent,31.0,27.6,List of devices attached,
+2026-09-26T09:39:15.661+00:00,2026-09-26T09:39:15.721+00:00,92.092,absent,absent,31.6,28.5,List of devices attached,
+2026-09-26T09:39:16.661+00:00,2026-09-26T09:39:16.721+00:00,93.092,absent,absent,30.5,28.9,List of devices attached,
+2026-09-26T09:39:17.661+00:00,2026-09-26T09:39:17.720+00:00,94.091,absent,absent,29.8,28.4,List of devices attached,
+2026-09-26T09:39:18.662+00:00,2026-09-26T09:39:18.721+00:00,95.092,absent,absent,31.6,27.6,List of devices attached,
+2026-09-26T09:39:19.662+00:00,2026-09-26T09:39:19.719+00:00,96.090,absent,absent,29.9,27.3,List of devices attached,
+2026-09-26T09:39:20.662+00:00,2026-09-26T09:39:20.719+00:00,97.090,absent,absent,29.4,28.0,List of devices attached,
+2026-09-26T09:39:21.662+00:00,2026-09-26T09:39:21.718+00:00,98.089,absent,absent,30.3,26.4,List of devices attached,
+2026-09-26T09:39:22.662+00:00,2026-09-26T09:39:22.720+00:00,99.091,absent,absent,30.4,27.8,List of devices attached,
+2026-09-26T09:39:23.662+00:00,2026-09-26T09:39:23.720+00:00,100.091,absent,absent,29.2,28.7,List of devices attached,
+2026-09-26T09:39:24.663+00:00,2026-09-26T09:39:24.722+00:00,101.093,absent,absent,31.6,27.5,List of devices attached,
+2026-09-26T09:39:25.663+00:00,2026-09-26T09:39:25.720+00:00,102.091,absent,absent,29.6,27.7,List of devices attached,
+2026-09-26T09:39:26.663+00:00,2026-09-26T09:39:26.724+00:00,103.095,absent,absent,31.9,28.7,List of devices attached,
+2026-09-26T09:39:27.664+00:00,2026-09-26T09:39:27.721+00:00,104.092,absent,absent,29.3,27.6,List of devices attached,
+2026-09-26T09:39:28.664+00:00,2026-09-26T09:39:28.721+00:00,105.092,absent,absent,30.4,26.5,List of devices attached,
+2026-09-26T09:39:29.664+00:00,2026-09-26T09:39:29.723+00:00,106.094,absent,absent,31.8,26.6,List of devices attached,
+2026-09-26T09:39:30.665+00:00,2026-09-26T09:39:30.722+00:00,107.093,absent,absent,29.6,27.2,List of devices attached,
+2026-09-26T09:39:31.665+00:00,2026-09-26T09:39:31.720+00:00,108.091,absent,absent,29.5,25.9,List of devices attached,
+2026-09-26T09:39:32.665+00:00,2026-09-26T09:39:32.723+00:00,109.094,absent,absent,29.8,27.9,List of devices attached,
+2026-09-26T09:39:33.665+00:00,2026-09-26T09:39:33.722+00:00,110.093,absent,absent,30.5,26.4,List of devices attached,
+2026-09-26T09:39:34.665+00:00,2026-09-26T09:39:34.723+00:00,111.094,absent,absent,30.9,27.2,List of devices attached,
+2026-09-26T09:39:35.666+00:00,2026-09-26T09:39:35.726+00:00,112.097,absent,absent,31.6,28.0,List of devices attached,
+2026-09-26T09:39:36.667+00:00,2026-09-26T09:39:36.724+00:00,113.095,absent,absent,29.8,27.2,List of devices attached,
+2026-09-26T09:39:37.667+00:00,2026-09-26T09:39:37.724+00:00,114.095,absent,absent,30.4,26.7,List of devices attached,
+2026-09-26T09:39:38.667+00:00,2026-09-26T09:39:38.725+00:00,115.096,absent,absent,30.2,27.5,List of devices attached,
+2026-09-26T09:39:39.667+00:00,2026-09-26T09:39:39.727+00:00,116.098,absent,absent,31.0,28.7,List of devices attached,
+2026-09-26T09:39:40.667+00:00,2026-09-26T09:39:40.726+00:00,117.097,absent,absent,30.6,28.6,List of devices attached,
+2026-09-26T09:39:41.667+00:00,2026-09-26T09:39:41.724+00:00,118.095,absent,absent,29.8,27.1,List of devices attached,
+2026-09-26T09:39:42.667+00:00,2026-09-26T09:39:42.728+00:00,119.099,absent,absent,31.7,29.1,List of devices attached,
+2026-09-26T09:39:43.668+00:00,2026-09-26T09:39:43.725+00:00,120.096,absent,absent,29.9,27.6,List of devices attached,
+2026-09-26T09:39:44.669+00:00,2026-09-26T09:39:44.726+00:00,121.097,absent,absent,30.3,27.1,List of devices attached,
+2026-09-26T09:39:45.669+00:00,2026-09-26T09:39:45.726+00:00,122.097,absent,absent,29.7,27.3,List of devices attached,
+2026-09-26T09:39:46.669+00:00,2026-09-26T09:39:46.727+00:00,123.098,absent,absent,29.6,27.8,List of devices attached,
+2026-09-26T09:39:47.670+00:00,2026-09-26T09:39:47.727+00:00,124.098,absent,absent,29.9,27.2,List of devices attached,
+2026-09-26T09:39:48.670+00:00,2026-09-26T09:39:48.729+00:00,125.100,absent,absent,30.5,28.6,List of devices attached,
+2026-09-26T09:39:49.670+00:00,2026-09-26T09:39:49.734+00:00,126.105,absent,absent,32.6,31.2,List of devices attached,
+2026-09-26T09:39:50.671+00:00,2026-09-26T09:39:50.728+00:00,127.099,absent,absent,29.5,27.6,List of devices attached,
+2026-09-26T09:39:51.671+00:00,2026-09-26T09:39:51.730+00:00,128.101,absent,absent,30.5,28.3,List of devices attached,
+2026-09-26T09:39:52.671+00:00,2026-09-26T09:39:52.731+00:00,129.102,absent,absent,30.6,28.9,List of devices attached,
+2026-09-26T09:39:53.671+00:00,2026-09-26T09:39:53.731+00:00,130.102,absent,absent,30.7,28.9,List of devices attached,
+2026-09-26T09:39:54.671+00:00,2026-09-26T09:39:54.731+00:00,131.102,absent,absent,31.8,27.8,List of devices attached,
+2026-09-26T09:39:55.671+00:00,2026-09-26T09:39:55.729+00:00,132.100,absent,absent,29.8,27.9,List of devices attached,
+2026-09-26T09:39:56.672+00:00,2026-09-26T09:39:56.730+00:00,133.101,absent,absent,30.9,27.3,List of devices attached,
+2026-09-26T09:39:57.672+00:00,2026-09-26T09:39:57.730+00:00,134.101,absent,absent,30.0,28.0,List of devices attached,
+2026-09-26T09:39:58.672+00:00,2026-09-26T09:39:58.732+00:00,135.103,absent,absent,30.7,28.9,List of devices attached,
+2026-09-26T09:39:59.673+00:00,2026-09-26T09:39:59.730+00:00,136.101,absent,absent,29.8,27.8,List of devices attached,
+2026-09-26T09:40:00.673+00:00,2026-09-26T09:40:00.733+00:00,137.104,absent,absent,31.8,28.4,List of devices attached,
+2026-09-26T09:40:01.673+00:00,2026-09-26T09:40:01.730+00:00,138.101,absent,absent,29.4,27.7,List of devices attached,
+2026-09-26T09:40:02.673+00:00,2026-09-26T09:40:02.731+00:00,139.102,absent,absent,31.1,26.5,List of devices attached,
+2026-09-26T09:40:03.673+00:00,2026-09-26T09:40:03.732+00:00,140.103,absent,absent,31.3,27.5,List of devices attached,
+2026-09-26T09:40:04.674+00:00,2026-09-26T09:40:04.731+00:00,141.102,absent,absent,29.1,28.4,List of devices attached,
+2026-09-26T09:40:05.674+00:00,2026-09-26T09:40:05.733+00:00,142.104,absent,absent,31.1,28.1,List of devices attached,
+2026-09-26T09:40:06.674+00:00,2026-09-26T09:40:06.733+00:00,143.104,absent,absent,31.0,28.1,List of devices attached,
+2026-09-26T09:40:07.674+00:00,2026-09-26T09:40:07.733+00:00,144.104,absent,absent,31.4,27.0,List of devices attached,
+2026-09-26T09:40:08.675+00:00,2026-09-26T09:40:08.733+00:00,145.104,absent,absent,30.6,27.5,List of devices attached,
+2026-09-26T09:40:09.675+00:00,2026-09-26T09:40:09.735+00:00,146.106,absent,absent,31.7,28.2,List of devices attached,
+2026-09-26T09:40:10.675+00:00,2026-09-26T09:40:10.733+00:00,147.104,absent,absent,31.0,26.8,List of devices attached,
+2026-09-26T09:40:11.676+00:00,2026-09-26T09:40:11.732+00:00,148.103,absent,absent,29.5,26.9,List of devices attached,
+2026-09-26T09:40:12.676+00:00,2026-09-26T09:40:12.735+00:00,149.106,absent,absent,31.1,28.5,List of devices attached,
+2026-09-26T09:40:13.676+00:00,2026-09-26T09:40:13.734+00:00,150.105,absent,absent,30.2,27.9,List of devices attached,
+2026-09-26T09:40:14.676+00:00,2026-09-26T09:40:14.735+00:00,151.106,absent,absent,32.2,26.5,List of devices attached,
+2026-09-26T09:40:15.677+00:00,2026-09-26T09:40:15.734+00:00,152.105,absent,absent,29.9,27.5,List of devices attached,
+2026-09-26T09:40:16.677+00:00,2026-09-26T09:40:16.734+00:00,153.105,absent,absent,30.7,26.9,List of devices attached,
+2026-09-26T09:40:17.677+00:00,2026-09-26T09:40:17.733+00:00,154.103,absent,absent,29.0,26.5,List of devices attached,
+2026-09-26T09:40:18.677+00:00,2026-09-26T09:40:18.784+00:00,155.155,absent,absent,61.3,45.1,List of devices attached,
+2026-09-26T09:40:19.678+00:00,2026-09-26T09:40:19.738+00:00,156.109,absent,absent,32.3,27.7,List of devices attached,
+2026-09-26T09:40:20.678+00:00,2026-09-26T09:40:20.739+00:00,157.110,absent,absent,32.0,28.5,List of devices attached,
+2026-09-26T09:40:21.679+00:00,2026-09-26T09:40:21.740+00:00,158.111,absent,absent,31.8,29.3,List of devices attached,
+2026-09-26T09:40:22.679+00:00,2026-09-26T09:40:22.737+00:00,159.108,absent,absent,30.5,28.2,List of devices attached,
+2026-09-26T09:40:23.679+00:00,2026-09-26T09:40:23.737+00:00,160.108,absent,absent,30.2,27.8,List of devices attached,
+2026-09-26T09:40:24.679+00:00,2026-09-26T09:40:24.739+00:00,161.110,absent,absent,31.0,28.1,List of devices attached,
+2026-09-26T09:40:25.680+00:00,2026-09-26T09:40:25.737+00:00,162.108,absent,absent,29.6,27.8,List of devices attached,
+2026-09-26T09:40:26.680+00:00,2026-09-26T09:40:26.737+00:00,163.108,absent,absent,30.5,26.3,List of devices attached,
+2026-09-26T09:40:27.680+00:00,2026-09-26T09:40:27.741+00:00,164.112,absent,absent,31.7,28.7,List of devices attached,
+2026-09-26T09:40:28.681+00:00,2026-09-26T09:40:28.738+00:00,165.109,absent,absent,29.7,27.2,List of devices attached,
+2026-09-26T09:40:29.681+00:00,2026-09-26T09:40:29.740+00:00,166.111,absent,absent,31.3,27.7,List of devices attached,
+2026-09-26T09:40:30.681+00:00,2026-09-26T09:40:30.739+00:00,167.110,absent,absent,30.3,27.7,List of devices attached,
+2026-09-26T09:40:31.682+00:00,2026-09-26T09:40:31.738+00:00,168.109,absent,absent,29.5,27.3,List of devices attached,
+2026-09-26T09:40:32.682+00:00,2026-09-26T09:40:32.740+00:00,169.111,absent,absent,29.6,28.3,List of devices attached,
+2026-09-26T09:40:33.682+00:00,2026-09-26T09:40:33.739+00:00,170.110,absent,absent,30.5,26.9,List of devices attached,
+2026-09-26T09:40:34.682+00:00,2026-09-26T09:40:34.744+00:00,171.115,absent,absent,32.2,29.3,List of devices attached,
+2026-09-26T09:40:35.683+00:00,2026-09-26T09:40:35.741+00:00,172.112,absent,absent,31.1,26.8,List of devices attached,
+2026-09-26T09:40:36.683+00:00,2026-09-26T09:40:36.743+00:00,173.114,absent,absent,31.1,28.4,List of devices attached,
+2026-09-26T09:40:37.683+00:00,2026-09-26T09:40:37.744+00:00,174.115,absent,absent,30.7,29.6,List of devices attached,
+2026-09-26T09:40:38.684+00:00,2026-09-26T09:40:38.744+00:00,175.115,absent,absent,30.5,29.4,List of devices attached,
+2026-09-26T09:40:39.684+00:00,2026-09-26T09:40:39.742+00:00,176.113,absent,absent,30.9,26.9,List of devices attached,
+2026-09-26T09:40:40.685+00:00,2026-09-26T09:40:40.742+00:00,177.113,absent,absent,30.2,26.7,List of devices attached,
+2026-09-26T09:40:41.685+00:00,2026-09-26T09:40:41.742+00:00,178.113,absent,absent,30.1,27.4,List of devices attached,
+2026-09-26T09:40:42.685+00:00,2026-09-26T09:40:42.744+00:00,179.115,absent,absent,30.6,28.1,List of devices attached,
+2026-09-26T09:40:43.685+00:00,2026-09-26T09:40:43.746+00:00,180.117,absent,fastboot,30.6,30.2,List of devices attached,1384e684               fastboot
+2026-09-26T09:40:44.686+00:00,2026-09-26T09:40:44.746+00:00,181.117,absent,fastboot,30.3,29.7,List of devices attached,1384e684               fastboot
+2026-09-26T09:40:45.686+00:00,2026-09-26T09:40:45.745+00:00,182.116,absent,fastboot,29.6,29.7,List of devices attached,1384e684               fastboot
+2026-09-26T09:40:46.686+00:00,2026-09-26T09:40:46.752+00:00,183.123,absent,fastboot,34.7,31.7,List of devices attached,1384e684               fastboot
+2026-09-26T09:40:47.686+00:00,2026-09-26T09:40:47.748+00:00,184.119,absent,fastboot,32.0,29.6,List of devices attached,1384e684               fastboot
+2026-09-26T09:40:48.686+00:00,2026-09-26T09:40:48.746+00:00,185.117,absent,fastboot,29.8,29.4,List of devices attached,1384e684               fastboot
+2026-09-26T09:40:49.686+00:00,2026-09-26T09:40:49.756+00:00,186.127,absent,fastboot,31.6,37.3,List of devices attached,1384e684               fastboot
+2026-09-26T09:40:50.687+00:00,2026-09-26T09:40:50.747+00:00,187.118,absent,fastboot,30.7,29.6,List of devices attached,1384e684               fastboot
+2026-09-26T09:40:51.687+00:00,2026-09-26T09:40:51.748+00:00,188.119,absent,fastboot,31.2,30.3,List of devices attached,1384e684               fastboot
+2026-09-26T09:40:52.687+00:00,2026-09-26T09:40:52.750+00:00,189.121,absent,fastboot,30.5,32.1,List of devices attached,1384e684               fastboot
+2026-09-26T09:40:53.687+00:00,2026-09-26T09:40:53.749+00:00,190.120,absent,fastboot,31.5,29.6,List of devices attached,1384e684               fastboot
+2026-09-26T09:40:54.688+00:00,2026-09-26T09:40:54.761+00:00,191.132,absent,fastboot,43.8,29.5,List of devices attached,1384e684               fastboot
+2026-09-26T09:40:55.688+00:00,2026-09-26T09:40:55.757+00:00,192.128,absent,fastboot,37.8,31.2,List of devices attached,1384e684               fastboot
+2026-09-26T09:40:56.688+00:00,2026-09-26T09:40:56.763+00:00,193.134,absent,fastboot,46.1,28.8,List of devices attached,1384e684               fastboot
+2026-09-26T09:40:57.689+00:00,2026-09-26T09:40:57.751+00:00,194.122,absent,fastboot,32.5,30.0,List of devices attached,1384e684               fastboot
+2026-09-26T09:40:58.689+00:00,2026-09-26T09:40:58.752+00:00,195.123,absent,fastboot,32.0,31.0,List of devices attached,1384e684               fastboot
+2026-09-26T09:40:59.690+00:00,2026-09-26T09:40:59.764+00:00,196.135,absent,fastboot,31.0,42.9,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:00.690+00:00,2026-09-26T09:41:00.750+00:00,197.121,absent,fastboot,30.6,29.8,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:01.690+00:00,2026-09-26T09:41:01.754+00:00,198.125,absent,fastboot,31.9,32.5,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:02.690+00:00,2026-09-26T09:41:02.753+00:00,199.124,absent,fastboot,32.3,30.4,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:03.690+00:00,2026-09-26T09:41:03.751+00:00,200.122,absent,fastboot,31.2,29.3,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:04.691+00:00,2026-09-26T09:41:04.752+00:00,201.123,absent,fastboot,31.8,29.4,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:05.691+00:00,2026-09-26T09:41:05.751+00:00,202.122,absent,fastboot,31.4,28.7,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:06.691+00:00,2026-09-26T09:41:06.764+00:00,203.135,absent,fastboot,41.5,30.9,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:07.692+00:00,2026-09-26T09:41:07.752+00:00,204.123,absent,fastboot,30.9,29.5,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:08.692+00:00,2026-09-26T09:41:08.759+00:00,205.130,absent,fastboot,38.1,28.4,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:09.693+00:00,2026-09-26T09:41:09.751+00:00,206.122,absent,fastboot,30.3,28.2,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:10.693+00:00,2026-09-26T09:41:10.755+00:00,207.126,absent,fastboot,30.1,31.5,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:11.693+00:00,2026-09-26T09:41:11.751+00:00,208.122,absent,fastboot,29.8,28.2,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:12.693+00:00,2026-09-26T09:41:12.753+00:00,209.124,absent,fastboot,30.0,29.7,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:13.694+00:00,2026-09-26T09:41:13.753+00:00,210.124,absent,fastboot,30.7,28.7,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:14.694+00:00,2026-09-26T09:41:14.762+00:00,211.133,absent,fastboot,38.7,29.5,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:15.694+00:00,2026-09-26T09:41:15.770+00:00,212.141,absent,fastboot,38.3,37.1,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:16.694+00:00,2026-09-26T09:41:16.758+00:00,213.129,absent,fastboot,32.9,30.9,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:17.694+00:00,2026-09-26T09:41:17.764+00:00,214.135,absent,fastboot,34.6,34.5,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:18.695+00:00,2026-09-26T09:41:18.756+00:00,215.127,absent,fastboot,30.8,30.8,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:19.695+00:00,2026-09-26T09:41:19.757+00:00,216.128,absent,fastboot,32.0,29.7,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:20.695+00:00,2026-09-26T09:41:20.760+00:00,217.131,absent,fastboot,32.3,32.2,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:21.696+00:00,2026-09-26T09:41:21.760+00:00,218.131,absent,fastboot,33.9,29.9,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:22.696+00:00,2026-09-26T09:41:22.761+00:00,219.132,absent,fastboot,32.6,32.4,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:23.697+00:00,2026-09-26T09:41:23.764+00:00,220.135,absent,fastboot,34.9,32.0,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:24.697+00:00,2026-09-26T09:41:24.758+00:00,221.129,absent,fastboot,31.7,29.4,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:25.697+00:00,2026-09-26T09:41:25.763+00:00,222.134,absent,fastboot,35.2,30.5,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:26.697+00:00,2026-09-26T09:41:26.761+00:00,223.132,absent,fastboot,32.6,30.5,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:27.698+00:00,2026-09-26T09:41:27.766+00:00,224.137,absent,fastboot,38.2,29.8,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:28.698+00:00,2026-09-26T09:41:28.775+00:00,225.146,absent,fastboot,45.4,31.2,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:29.699+00:00,2026-09-26T09:41:29.762+00:00,226.133,absent,fastboot,32.6,30.8,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:30.699+00:00,2026-09-26T09:41:30.764+00:00,227.135,absent,fastboot,32.9,32.3,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:31.699+00:00,2026-09-26T09:41:31.770+00:00,228.141,absent,fastboot,36.5,34.0,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:32.700+00:00,2026-09-26T09:41:32.765+00:00,229.136,absent,fastboot,32.7,32.5,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:33.700+00:00,2026-09-26T09:41:33.779+00:00,230.150,absent,fastboot,46.4,32.4,List of devices attached,1384e684               fastboot
+2026-09-26T09:41:34.700+00:00,2026-09-26T09:41:34.764+00:00,231.135,absent,fastboot,33.2,30.3,List of devices attached,1384e684               fastboot

@@ -1,0 +1,8 @@
+Independent re-verification: PASS
+Host UTC: 2026-09-26T11:19:20.3062785+00:00
+Dynamically detected volume label: THYME_DIAG
+Mounted drive during verification: F:
+Source file count: 8
+Manifest file count: 8
+Every source and host copy byte count and SHA-256 matched.
+Source and manifest file sets matched exactly.

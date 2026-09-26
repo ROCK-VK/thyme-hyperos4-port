@@ -1,0 +1,3 @@
+Source: the unique host volume labeled THYME_DIAG, exposed by the Standalone RAM diagnostic environment.
+dmesg_diag_boot.txt is the Standalone diagnostic kernel log, not the preceding Candidate 13 kernel log.
+Export started (UTC): 2026-09-26T04:24:13.683+00:00

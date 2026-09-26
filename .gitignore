@@ -49,3 +49,4 @@ __pycache__/
 *.log.tmp
 Thumbs.db
 .DS_Store
+!evidence/**/oops.raw
