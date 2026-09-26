@@ -62,11 +62,12 @@
 - C13–C17 首批归档包含 8 个 Standalone 导出目录和 6 个 host-observation 目录，共 118 个原始文件、140,935,707 字节；逐文件大小和 SHA-256 已验证，凭据模式排除数为 0，缺失 allowlist 目录为 0。
 - 本地原始证据未修改。完整 ROM/固件、系统与 userdata/metadata 分区镜像、misc/校准/设备身份分区备份不公开。
 - 公开同步脚本位于公开仓库 scripts/sync_raw_startup_evidence.ps1，并由 scripts/sync_from_local.ps1 调用；新的 Standalone/观察目录仍须明确加入 allowlist。
-- C13–C18 原始证据已推送到 Public 仓库 main；C19 原始 Standalone 与主机观察文件本轮已完成本地核验，待增量公开同步。
-- C19 本地副本包含 THYME_DIAG 原卷全部 8 个文件及主机观察记录；现已复制到公开仓库工作树，19 个文件逐项大小与 SHA-256 匹配，排除清单为空。GitHub 远端推送与匿名访问校验正在收尾。
-- 公共仓库：`https://github.com/ROCK-VK/thyme-hyperos4-port`。C19 同步完成前，远端最新已知提交仍为 `0dbd63b71c5c0a0c6b7bbcfe9e66c799ee69c396`。
+- 用户已授权将完整原始启动诊断日志同步至现有 Public 仓库；公开同步脚本采用显式 Candidate allowlist，并排除凭据模式、完整 ROM/分区镜像和超限文件。本地原始取证副本保持不变。
+- C13–C19 原始诊断证据已推送到 `main`。当前 manifest 共 175 个文件、196,072,496 bytes；C19 增量为 19 个文件、18,758,650 bytes，源与公开副本逐项长度/SHA-256 匹配；排除清单为空。
+- 匿名 GitHub API 确认仓库 Public、`main` 存在。C19 证据提交为 `c6511dc54eda62ad77ac8f568ed1823429dc9b89`。匿名下载 README、C19 报告、原始清单成功；C19 pmsg 下载为 758,682 bytes，SHA-256 与本地一致。
+- 公共仓库：`https://github.com/ROCK-VK/thyme-hyperos4-port`。完整系统/固件、分区镜像及 userdata/metadata 备份未上传。
 
 ## 下一步
 
 - 下一轮若继续图形主线，优先评估“持久属性就绪后显式选择 ANGLE”的定点路由实验，同时保留 RGBX=2 和现有 C13–C19 启动修复。实际 libEGL 含 ANGLE/system-driver 路由逻辑，ANGLE 库存在，但本轮没有 ANGLE 真机加载证据；Vulkan SIGSEGV 与 EGL abort 的因果仍未知。
-- C19 已有完整的 host observer 与 Standalone 全量证据，已授权增量同步。不要重复启动 C19，不清除 userdata/metadata；下一版构建/刷写需先给出具体候选差异与目标分区，刷后保持 Fastboot，新 Candidate 启动前等待用户现场确认。
+- C19 host observer、Standalone 全量证据和报告已公开。不要重复启动 C19，不清除 userdata/metadata；下一版构建/刷写需先给出具体候选差异与目标分区，刷后保持 Fastboot，新 Candidate 启动前等待用户现场确认。

@@ -41,3 +41,7 @@ C19 已证明启动链到达 Android 第二阶段和图形服务初始化，且 
 下一轮优先做一个有诊断价值的驱动路由实验：在持久属性加载完成后显式选择 Android 17 libEGL 支持的 ANGLE 路径，同时保留 RGBX=2 与 C18/C19 其余修复。C19 实际 system 中存在 ANGLE 库，实际 `libEGL` 包含 ANGLE 与 system driver 路由逻辑，但还没有真机 ANGLE 加载证据；ANGLE 路径也可能触及已观察到的 Vulkan 枚举崩溃。因此应把它作为可证伪的下一次实验，不宣称为已确定修复。C20 是否构建和刷写应在形成具体候选方案后按项目授权流程执行。
 
 当前设备经只读预检为 `[REDACTED_DEVICE_ID]`、`product=thyme`、A 槽、Bootloader unlocked、非 userspace Fastboot。PixelOS 未恢复；没有本轮之后的新系统启动或分区写入。
+
+## 公开证据
+
+C19 Standalone 导出与主机观察记录已按用户授权公开于 `evidence/candidate19/`。增量 19 个文件、18,758,650 bytes；逐项大小与 SHA-256 校验通过，凭据/策略排除 0。C19 pmsg 公开文件为 758,682 bytes，SHA-256 `ACDD5DB289EE5D66CED38D0D3C6DBC740DC3849177882D35545ACB99D3F83C30`，匿名下载校验一致。公开证据提交：[`c6511dc`](https://github.com/ROCK-VK/thyme-hyperos4-port/commit/c6511dc54eda62ad77ac8f568ed1823429dc9b89)。

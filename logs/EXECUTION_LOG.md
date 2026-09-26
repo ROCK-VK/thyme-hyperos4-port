@@ -13372,3 +13372,14 @@
 - 尚未验证：ANGLE/Adreno 的实际运行时 EGL 后端；Vulkan 枚举崩溃是否导致 EGLConfig 失败；启动动画及其后的界面。
 - 待处理：完成公开仓库 commit/push 与匿名访问校验；下一轮可评估持久属性加载后显式 ANGLE 路由的定点实验。不要重复启动 C19 或无理由清除 userdata/metadata。
 - 替代：替代当前状态文件中“C19 尚未首次启动”的旧状态；旧执行记录保留当时事实。
+## 2026-09-27 00:58｜C19 原始证据公开同步与匿名校验
+
+- 状态：C19 实机报告、Standalone 全量导出和主机观察记录已推送至 Public 仓库；匿名访问校验通过。
+- 改动/结论：新增 `evidence/candidate19/` 原始诊断与观察记录；C13–C19 manifest 共 175 个文件、196,072,496 bytes。C19 增量 19 个文件、18,758,650 bytes；原始卷 8 个文件未修改。
+- 原因：执行用户对完整原始启动诊断日志公开同步的明确授权，保留可供独立审核的完整证据及哈希来源。
+- 涉及文件：公开仓库 `evidence/candidate19/`、`evidence/RAW_EVIDENCE_MANIFEST.csv`、`scripts/sync_raw_startup_evidence.ps1`、`reports/candidate19/REPORT.md`、`logs/PROJECT_STATUS.md`、`logs/EXECUTION_LOG.md`；本地报告及项目日志。
+- 验证：源导出 manifest 8 项大小/SHA-256 匹配，错误 0；公开 C19 19 项与本地来源逐项匹配，凭据/策略排除 0，缺失 allowlist 目录 0。匿名 GitHub API 返回 Public/main；匿名 README、C19 报告和 manifest 返回 HTTP 200；公开 pmsg 为 758,682 bytes，SHA-256 `ACDD5DB289EE5D66CED38D0D3C6DBC740DC3849177882D35545ACB99D3F83C30`，与本地一致。C19 证据提交 `c6511dc54eda62ad77ac8f568ed1823429dc9b89` 已推送。
+- 尚未验证：ANGLE/Adreno 实际 EGL 后端、Vulkan SIGSEGV 与 EGLConfig abort 的因果、HyperOS 动画及后续界面。
+- 安全边界：没有新启动、刷写、擦除、RAM boot、BCB/misc 修改或恢复 PixelOS；完整 ROM、固件和分区镜像未上传。最近只读 Fastboot 预检确认设备为 thyme/A/unlocked/非 userspace。
+- 待处理：若继续图形启动主线，评估在持久属性就绪后显式 ANGLE 路由的最小实验；保留 RGBX=2 并观察其是否实际加载及 EGLConfig 是否改变。
+- 替代：本条将上一条“GitHub 推送待完成”状态更新为已公开并匿名校验。
