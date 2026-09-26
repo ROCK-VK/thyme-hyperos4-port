@@ -50,7 +50,7 @@ C13 的 system_ext_sepolicy.cil 两条 ion_device allow、C13 的数据挂载配
 
 ## 构建与静态检查
 
-本次从 C13 系统树在独立工作目录重建了 system、system_ext、vbmeta_system 与 sparse super；C13 的 boot.img、vendor_boot.img、dtbo.img、vbmeta.img 原样复制。原 C13 构建资产没有覆盖。
+本次在独立工作目录重建了 system、system_ext、vbmeta_system 与 sparse super。system 内容取自 C7 system SAR，system_ext 来自 C13；C13 的 boot.img、vendor_boot.img、dtbo.img、vbmeta.img 原样复制。原 C13 构建资产没有覆盖。
 
 - fsck.erofs 检查两份新 EROFS 成功。
 - 从最终 EROFS 回读确认两个 BPF init 触发段已按预期变化，C13 两条 ION SELinux 规则仍在。
@@ -69,4 +69,13 @@ Candidate 14 六项镜像清单位于 work/stage_d_thyme_os4_candidate_14_bpf_bo
 
 脚本不包含 userdata/metadata 擦除、其他分区写入、解锁/回锁或重启。刷写仍需用户单独授权；刷完保持 Fastboot，首次启动还需另行明确授权。
 
-本轮 Standalone 导出结束后，最新主机枚举未发现 ADB、Fastboot 或 THYME_DIAG 卷，因此当前设备物理模式尚未重新确认。PixelOS A0′ 没有在本轮恢复，也没有正常启动验证；不可称其当前在线或健康。
+
+## C14 上机前最终基线核对（2026-09-26）
+
+从当前 C13 `super.img`（SHA-256 `8AFEFDDBCA2357D003DEF055418CC08A832B91EA08EDCB40DEECBEBD42FA2252`）转换为临时 raw 后，仅提取 `system_a` 做 AVB 描述符比对。该实际 system_a 描述符与 C7 system SAR 的 image_size（958,156,800）、salt 和 root digest（`a6a98047552927db5ed160a23f98d1ba455b7b74128dca7c8c1e0f2eeefb58dc`）完全一致。因此 C14 使用的 C7 system 内容基线与当前 C13 super 内实际 system 内容一致，run5 无需重建。
+
+另发现 C13 同目录 `vbmeta_system.img` 的 `system` 描述符（958,091,264 字节，root digest `0535596ddbc758b471ee96bcbdb0fee76d84ecbc3ab7d3fc936e3bf5fcb34ff5`）与 C13 super 内 system_a 描述符不匹配。按本地 AVB 工具常量，C13 `vbmeta_system` flags=2 表示 `VERIFICATION_DISABLED`，顶层 `vbmeta` flags=3；因此记录该旧元数据差异，但不把它误报成 C7 system 内容不一致或本轮启动根因。C14 新 vbmeta_system 的 `system` / `system_ext` 描述符分别与 run5 新建镜像匹配，product 描述符沿用；super LP 元数据包含 system_a、system_ext_a、product_a、vendor_a、odm_a、mi_ext_a。
+
+最终 EROFS 回读仍确认 BPF bypass 改动和 C13 两条 ion_device allow 规则；两份 EROFS 的 fsck.erofs 检查通过。受限刷写脚本语法检查及默认 Dry-Run 均通过，且只计划顺序写 `vbmeta_system_a` 与 `super`。两项镜像大小、SHA-256 以本报告前表为准。本轮未刷写、重启、擦除或恢复 PixelOS。
+
+本轮最新只读设备状态：Bootloader Fastboot、product=thyme、A 槽、unlocked=yes、is-userspace=no；ADB 未枚举。PixelOS A0′ 未恢复或启动验证。当前等待用户明确授权 C14 两分区刷写；刷后保持 Fastboot，首次启动需独立授权。

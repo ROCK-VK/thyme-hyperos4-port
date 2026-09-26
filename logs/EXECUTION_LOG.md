@@ -12987,3 +12987,14 @@
 - 尚未验证：本地 GitHub Desktop UI 未打开确认；不影响远程匿名读取和 main 分支推送验证。
 - 待处理：等待用户授权 C14 的 vbmeta_system_a 与 super 两项写入；刷完保持 Fastboot，首次启动另行授权。
 - 替代：无。
+
+## 2026-09-26 15:12｜Candidate 14 system 基线与上机前预检
+
+- 状态：主机侧最终预检完成；未修改 C14 镜像，未刷写、启动、擦除或恢复设备。
+- 改动/结论：此前基于 C13 外层 `vbmeta_system` 描述符差异而称 run5 system 来源不匹配，结论过早，现已纠正。当前 C13 sparse super 的 SHA-256 为 `8AFEFDDBCA2357D003DEF055418CC08A832B91EA08EDCB40DEECBEBD42FA2252`；从该 super 提取的实际 system_a 描述符与 C7 system SAR 的 image_size=958156800、salt 和 root digest=`a6a98047552927db5ed160a23f98d1ba455b7b74128dca7c8c1e0f2eeefb58dc` 完全一致。故 C14 run5 的 C7 system 内容基线与当前 C13 实际 system 内容相同，无需重建。C13 自身 vbmeta_system 的 system 描述符为 image_size=958091264、root digest=`0535596ddbc758b471ee96bcbdb0fee76d84ecbc3ab7d3fc936e3bf5fcb34ff5`，与实际 super 描述符不同；本地 AVB 常量确认 flags=2 为 VERIFICATION_DISABLED，顶层 vbmeta flags=3。将其记录为 C13 旧元数据差异，不将其误判为 C7 来源不一致。C14 新 vbmeta_system 的 system/system_ext 描述符与 run5 输出镜像匹配。
+- 原因：完成 C14 上机前对 C7 system 来源、C13 当前 super、AVB/LP 和刷写范围的最终针对性核验。
+- 涉及文件：`work/reports/20260926_CANDIDATE13_NETBPFLOAD_FAILURE_AND_C14_BUILD.md`；`日志/项目当前状态.md`；本记录；临时提取目录 `[LOCAL_WSL_USER]/c14_c13_system_source_20260926_run6/`（不含于公开仓库）。
+- 验证：C14 run5 最终 EROFS 的 fsck 检查、BPF init 触发和两条 ion_device allow 回读通过；super lpdump 显示 system_a、system_ext_a、product_a、vendor_a、odm_a、mi_ext_a；PowerShell 刷写脚本解析通过。默认 Dry-Run 对 vbmeta_system.img（131072 字节，SHA-256 `5347D67BEADC9A0F8DCE49B3C76DA3F34E3E60805F3974ED895990724740D744`）和 super.img（7684274964 字节，SHA-256 `112A0EB7FE6D13CD70848453528466219ADE18E3749D15F934854033E20B8093`）校验通过，计划仅写 `vbmeta_system_a`、`super`，无擦除、重启、回锁或其他分区写入。只读 Fastboot 为 serial `[REDACTED_DEVICE_ID]`、product=thyme、slot=a、unlocked=yes、is-userspace=no；ADB 未枚举。
+- 尚未验证：C14 未刷写/启动；是否绕过 bpfloader-failed、后续 Android 启动阶段及 SELinux HAL 实际效果均未知。PixelOS A0′ 未恢复或启动验证。
+- 待处理：等待用户明确授权 C14 两分区顺序刷写；写入后保持 Fastboot。首次启动及故障后 Standalone RAM 取证分别遵守独立授权边界。
+- 替代：纠正本轮早先“C7 system 来源与 C13 实际 system 不一致、run5 不可用”的临时判断；实际 C13 super 的 system 描述符证明两者匹配。
