@@ -60,7 +60,7 @@ Android 17 AOSP EGL Loader 以 `persist.graphics.egl`、硬件 EGL 属性选择�
 
 此轮 THYME_DIAG 的 `pstore/` 目录为空；Standalone 报告 `/sys/fs/pstore` 已挂载，但没有可复制记录（0 records）。因此本轮没有取得 C18 的 console-ramoops、pmsg 或其他 Android pstore 记录。`oops.raw` 为 16 MiB，SHA-256 `7D1E254BBEB4803D79FDF96F673EF4DC9C7D0EAE68DF3019C2384B3439E4BB66`，与 C15–C17 的旧副本一致，判为历史残留，不能归属 C18。`dmesg_diag_boot.txt` 是 Standalone 自身内核日志；其中 pstore 无记录和 mtdoops 容量提示不能当作 C18 Android 的错误。
 
-Standalone 启动及导出时间线位于上述目录的 `host_salvage_timeline.csv`；C18 首启的 USB/ADB/Fastboot 时间线位于 `observations/run_20260926_215459/`。首启时 Fastboot 在启动命令返回后约 34 秒消失、约 69 秒重新出现，ADB 未上线。最新主机只读查询显示 ADB/Fastboot 均未枚举，Windows 已识别 `THYME_DIAG` FAT32 卷 `F:`，设备仍处于 Standalone USB 诊断模式。
+Standalone 启动及导出时间线位于上述目录的 `host_salvage_timeline.csv`；C18 首启的 USB/ADB/Fastboot 时间线位于 `observations/run_20260926_215459/`。首启时 Fastboot 在启动命令返回后约 34 秒消失、约 69 秒重新出现，ADB 未上线。导出完成时 Windows 识别到 `THYME_DIAG` FAT32 卷 `F:`。之后用户手动将手机切回 Bootloader Fastboot。约 22:40（UTC+8）的只读复核显示唯一设备 `[REDACTED_DEVICE_ID]`、`product=thyme`、`current-slot=a`、`unlocked=yes`、`is-userspace=no`、`slot-unbootable:a=no`、`slot-successful:a=no`、`slot-retry-count:a=7`；ADB 离线。该模式变化来自用户手动操作，不是 Standalone 自动重启的证据。
 
 **结论边界：** A 槽不可启动状态造成的 Standalone `Load Error` 取证阻塞已解除；这只恢复了 RAM 诊断入口，没有解释 C18 为什么回到 Fastboot。由于没有任何能归属 C18 Android 的 pstore 或 ADB 日志，First/Second Stage、Adreno 路由、EGLConfig、SurfaceFlinger、Vulkan、panic 或 init fatal 均仍未知。当前没有足够证据构建 C19 或将 C18 归因于图形栈。未重启 C18、未刷写/擦除任何分区、未恢复 PixelOS、未改 misc/BCB 或切换 B 槽；Bootloader 未回锁。
 

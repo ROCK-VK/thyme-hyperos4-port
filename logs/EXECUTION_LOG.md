@@ -13278,3 +13278,14 @@
 - 安全边界：仅提交诊断证据、报告、状态、清单及同步白名单；没有进行新的设备状态改变。设备最近只读状态仍为 Standalone THYME_DIAG USB Mass Storage，ADB/Fastboot 未枚举；PixelOS 未恢复。
 - 待处理：将本条公开结果状态同步到仓库；为下一轮先补足首次 Android 启动日志留存，再决定是否复验 C18 或构建后续修复版。
 - 替代：更新 22:17 条目中“公开同步待完成”的后续状态；该条目保留其记录时点的真实进展。
+## 2026-09-26 22:41｜用户手动返回 Bootloader Fastboot 后的只读状态确认
+
+- 状态：Standalone 诊断卷已导出；用户随后说明并确认由其手动将手机切回 Fastboot。Codex 只读复核当前设备状态，没有再次改变设备状态。
+- 改动/结论：约 22:40（UTC+8）Fastboot 查询为唯一设备 `[REDACTED_DEVICE_ID]`、`product=thyme`、`current-slot=a`、`unlocked=yes`、`is-userspace=no`、`slot-unbootable:a=no`、`slot-successful:a=no`、`slot-retry-count:a=7`；ADB 离线。此前导出时的 F: THYME_DIAG 卷状态已结束。设备从 Standalone 到 Fastboot 的模式变化是用户手动操作，不应归因于诊断系统自动重启。
+- 原因：将最新用户说明纳入当前状态，避免把模式切换误记为 Standalone 行为。
+- 涉及文件：`work/reports/20260926_CANDIDATE18_NATIVE_ADRENO/REPORT.md`、`日志/项目当前状态.md`、本执行记录。
+- 验证：通过 `fastboot devices` 和只读 `getvar` 查询确认设备、槽位、解锁及 A 槽 bootability 状态；未运行任何写入、擦除、reboot 或 RAM boot 命令。
+- 尚未验证：C18 Android 启动阶段及失败根因仍未知；Standalone 导出无本轮 console/pmsg，`oops.raw` 为旧残留。
+- 安全边界：没有刷写、重启、RAM 启动、擦除、BCB/misc 写入、切换槽位或恢复 PixelOS。
+- 待处理：将此设备状态澄清同步至公开报告和项目状态；下一步仍先解决 Android 首次失败日志留存，再决定 C18 复验。
+- 替代：修正 22:25 记录中“设备最近状态仍为 Standalone USB Mass Storage”的后续设备状态；该旧条目保留其当时查询结果。

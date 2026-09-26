@@ -10,7 +10,7 @@
 - C18 观察器运行目录：`work/reports/20260926_CANDIDATE18_NATIVE_ADRENO/observations/run_20260926_215459/`。记录显示启动命令于 21:55:33（UTC+8）返回成功，Fastboot 约 34 秒后消失、约 69 秒后重新出现。
 - 取证初期两次 Standalone RAM 启动被 Bootloader 拒绝：`Failed to load/authenticate boot image: Load Error`。按本轮明确授权保存预状态并只执行一次 `fastboot set_active a`：A 槽 `slot-unbootable` 从 yes 变为 no，`slot-retry-count` 从 0 恢复为 7；设备仍为 `product=thyme`、A 槽、unlocked=yes、非 userspace Fastboot。随后既有 Standalone RAM 镜像启动成功。
 - 成功导出目录：`work/reports/20260926_C18_NATIVE_ADRENO/standalone/run_20260926_221653/`。动态发现 THYME_DIAG 为 `F:`；全卷复制 6 个文件、16,934,939 bytes，源/副本逐文件大小和 SHA-256 匹配，复制错误 0。pstore 目录为空，C18 console/pmsg 未取得；`oops.raw` 与 C15–C17 完全同哈希，属于历史残留；Standalone dmesg 仅代表诊断系统自身。
-- 当前只读主机状态：ADB/Fastboot 均未枚举，Windows 仍挂载 THYME_DIAG FAT32 卷 `F:`，设备处于 Standalone USB 诊断模式。PixelOS 尚未恢复；没有再次启动 C18。
+- 全卷导出完成时 Windows 挂载 THYME_DIAG FAT32 卷 `F:`。之后用户手动切回 Bootloader Fastboot；约 22:40（UTC+8）的只读复核为唯一设备 `[REDACTED_DEVICE_ID]`、product=thyme、A 槽、unlocked=yes、is-userspace=no、A 槽 unbootable=no/successful=no/retry=7，ADB 离线。PixelOS 尚未恢复；没有再次启动 C18。
 - Bootloader 仍解锁。未写入 persist、modemst、EFS/NV、misc/BCB、校准或身份分区；本轮未清除 userdata/metadata，也未进行任何 Candidate 后续刷写。
 
 ## 最新 C17 实机证据
@@ -58,4 +58,4 @@
 
 1. 本轮已按用户限定授权执行一次 `fastboot set_active a`，解除 A 槽 unbootable 标记并恢复 retry=7；随后 Standalone RAM 启动成功。此 boot-control 变更已完成，不扩大到 B 槽或其他操作。
 2. Standalone 全卷已备份并校验，但没有 C18 Android pstore；现有 `oops.raw` 是 C15–C17 历史残留。C18 启动阶段、Adreno/EGLConfig 和图形服务结果仍未知。
-3. 先解决首次启动 Android 日志未留存的问题，再决定 C18 复验或后续修复；当前无证据构建 C19。设备最近状态为 Standalone USB 诊断卷，PixelOS 未恢复；未清数据、未修改其他分区、未回锁。
+3. 先解决首次启动 Android 日志未留存的问题，再决定 C18 复验或后续修复；当前无证据构建 C19。设备最近状态为 A 槽 Bootloader Fastboot（用户手动切入），PixelOS 未恢复；未清数据、未修改其他分区、未回锁。
