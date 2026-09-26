@@ -6,11 +6,11 @@
 
 ## 当前设备与刷写版本
 
-- C18 已顺序刷写 `super`、`vbmeta_system_a`；super 10/10 sparse 块全部 OKAY（206.216 秒），vbmeta_system_a 发送/写入 OKAY（13.321 秒）。刷后只读状态：唯一序列号 [REDACTED_DEVICE_ID]、product=thyme、A 槽、unlocked=yes、is-userspace=no；Bootloader Fastboot 在线，ADB 不在线，无活动 Fastboot 写入进程。
-- C17 首启复验已执行一次受控 Fastboot reboot。观察器记录命令成功、USB/Fastboot 离线，约 148 秒后 Fastboot 重新出现；用户确认是手动返回 Fastboot。
-- 本轮未 reboot、擦除 userdata/metadata、启动 Standalone、恢复 PixelOS 或写入其他分区；手机保持 Fastboot，C18 尚未首次启动。
-- Bootloader 仍保持解锁。未写 persist、modemst、EFS/NV、misc/BCB、校准或设备身份分区；未执行回锁。
-- C17 后未再次擦除 userdata/metadata。C17 本轮确认 metadata 加密状态可用，/data F2FS 挂载成功。
+- C18 已刷写到 `super`、`vbmeta_system_a` 并执行一次首次启动。用户观察到小米 Logo 亮约十几秒后黑屏，随后设备自动返回 Fastboot；未看到 HyperOS 启动画面、设置向导或桌面。ADB 未上线，Android 日志未取得。
+- C18 观察器运行目录：`work/reports/20260926_CANDIDATE18_NATIVE_ADRENO/observations/run_20260926_215459/`。记录显示启动命令于 21:55:33（UTC+8）返回成功，Fastboot 约 34 秒后消失、约 69 秒后重新出现。
+- 随后的两次 Standalone RAM 启动均在镜像传输后被 Bootloader 拒绝：`Failed to load/authenticate boot image: Load Error`。本地镜像仍通过原大小与 SHA-256 检查；未出现 THYME_DIAG 卷，故没有 C18 pstore/Standalone 文件副本。尝试记录在 `work/reports/20260926_C18_NATIVE_ADRENO/standalone/run_20260926_215725/` 与 `run_20260926_220042/`。
+- 最新只读 Fastboot 状态：设备 `[REDACTED_DEVICE_ID]`、product=thyme、A 槽、unlocked=yes、is-userspace=no；`slot-unbootable:a=yes`、`slot-successful:a=no`、`slot-retry-count:a=0`。这些槽位标志没有启动前基线，原因未知。当前未恢复 PixelOS。
+- Bootloader 仍解锁。未写入 persist、modemst、EFS/NV、misc/BCB、校准或身份分区；本轮未清除 userdata/metadata，也未进行任何 Candidate 后续刷写。
 
 ## 最新 C17 实机证据
 
@@ -42,7 +42,7 @@
 - C18 保留 C17 其余修复和硬件栈；无 SELinux 扩权、无 Vulkan 库替换、无 userdata/metadata 擦除。
 - 构建目录：work/stage_h_thyme_os4_candidate_18_native_adreno_run1/images/。写入镜像：super.img 7,684,274,964 bytes，SHA-256 EEA7DD2378DDF84BF1BAF0DC86445025AFDAED3E0CE20DE75654D11D0AA35132；vbmeta_system.img 131,072 bytes，SHA-256 932CFBE646D588AF3B61C3A8D075C2AAD37C5DC6F4906C5200D6B6BEFF65DE73。
 - EROFS 检查通过；从 super 提取的 system_a.img 与 C18 system 镜像逐字节一致；vbmeta_system system descriptor 匹配新 root digest，product/system_ext descriptors 继承 C17；LP 布局与 C17 一致。Python 编译、PowerShell AST 和刷写 Dry-Run 通过。
-- Observer 属性快照已补充 persist.graphics.egl、ro.hardware.egl、ro.hardware.vulkan、ro.board.platform。C18 已刷写但尚无真机启动验证；启动前须先运行 C18 observer 并 ARMED，再等用户现场确认。
+- Observer 属性快照已补充 persist.graphics.egl、ro.hardware.egl、ro.hardware.vulkan、ro.board.platform。C18 已启动一次但未获得 ADB 或设备 pstore；native Adreno 路由是否生效、EGLConfig 是否变化均未验证。当前阻塞优先是已知 Standalone 镜像被 Bootloader 拒绝加载。
 
 ## 公开诊断证据
 
@@ -54,7 +54,6 @@
 - C18 报告、构建清单、构建/受限刷写/启动门控脚本、属性观察器更新、README 和状态日志已公开；报告/清单均匿名 HTTP 200。C18 增量提交 d9a56e34b63b27c07b3c04a5d0fdebcf68ea948e；该提交不含 ROM/分区镜像。
 ## 下一步
 
-1. 手机当前保持 C18 Bootloader Fastboot；不要自动 reboot。
-2. 请用户准备现场观察；启动前运行 C18 标签 observer 并确认 ARMED，等用户明确确认后只 reboot 一次。
-3. 验收 C18 runtime persist.graphics.egl=adreno、SurfaceFlinger EGLConfig 结果、ANGLE/Adreno 初始化及启动界面；将独立 Vulkan SIGSEGV 单独记录。
-4. 若 EGLConfig 仍失败，使用新日志中实际 EGLConfig/HWC/Gralloc 证据定点修复；不得无证据扩大 SELinux 权限或替换整套 GPU 栈。
+1. 历史实测解释了当前 Standalone `fastboot boot` `Load Error`：A 槽 `slot-unbootable=yes` 时曾出现相同错误；`fastboot set_active a` 重置槽状态后 RAM 诊断镜像成功加载。该记录解释取证阻塞，不解释 C18 本身的启动故障。
+2. `fastboot set_active a` 会改变持久 A/B boot-control 元数据。本轮尚未执行，需先取得用户对此项状态修改的明确授权；授权后只重置 A 槽并立即启动 Standalone RAM 诊断，导出后不自动启动 Android。
+3. 在取得 C18 pstore 前，不构建 C19，也不凭黑屏修改 EGL/HWC/Gralloc 或扩大 SELinux 权限。当前设备保持 A 槽 Bootloader Fastboot；不清数据、不切 B 槽、不回锁。
