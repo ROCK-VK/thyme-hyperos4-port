@@ -13,7 +13,7 @@
 - C14 下一次仅计划写入 vbmeta_system_a 与 super，不再次清除 userdata/metadata；刷写与首次启动仍须分别获得用户授权。
 - Standalone 导出后主机未枚举到 ADB、Fastboot 或 THYME_DIAG 卷；当前设备物理模式未经重新确认。PixelOS A0′ 未在本轮恢复或验证为在线健康系统。
 
-最新分析与构建状态见 [C13 netbpfload 故障和 C14 构建报告](reports/candidate13/20260926_CANDIDATE13_NETBPFLOAD_FAILURE_AND_C14_BUILD.md) 及 [项目当前状态](logs/PROJECT_STATUS.md)。
+最新分析与构建状态见 [C13 netbpfload 故障和 C14 构建报告](reports/candidate13/20260926_CANDIDATE13_NETBPFLOAD_FAILURE_AND_C14_BUILD.md)、[项目当前状态](logs/PROJECT_STATUS.md) 和按时间追加的 [执行记录](logs/EXECUTION_LOG.md)。
 
 ## 设备与来源
 
