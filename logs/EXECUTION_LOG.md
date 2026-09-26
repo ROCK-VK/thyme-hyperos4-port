@@ -13185,3 +13185,13 @@
 - 尚未验证：GitHub 推送及匿名远程读取尚待本条目所述发布提交完成后确认。
 - 待处理：提交并推送上述公开增量；确认 main SHA 与匿名访问后将远程结果记录在交付。
 - 替代：替代此前状态/报告中“C13–C17 原始 pstore/oops 仅本地保存、不公开”的当前发布规则；历史记录保留其当时事实，不回写历史。
+## 2026-09-26 21:05｜C13–C17 诊断证据公开推送与远程校验
+
+- 状态：原始启动诊断证据已推送至现有 GitHub Public 仓库并完成匿名访问验证。
+- 改动/结论：提交 3147a6fd8c0ff1d8c46f1cc49a510d0d0a3790c5 发布 C13–C17 的 118 个原始文件，共 140,935,707 字节；覆盖 8 个 Standalone 导出目录、6 个 host-observation 目录、校验清单及索引。完整 ROM、固件包、分区镜像和 userdata/metadata/misc/校准身份分区备份未加入。
+- 原因：落实用户对独立技术审核和公开同步规则的明确授权。
+- 涉及文件：现有仓库 evidence/candidate13/ 至 evidence/candidate17/、evidence/RAW_EVIDENCE_MANIFEST.csv、evidence/README.md、scripts/sync_raw_startup_evidence.ps1、README.md 和 .gitattributes。
+- 验证：远端 main 为 3147a6fd8c0ff1d8c46f1cc49a510d0d0a3790c5；GitHub API 返回 visibility=public、private=false。匿名读取 C13 console、C14 pmsg、C17 oops.raw 与 C17 USB 时间线均返回 HTTP 200，4 项远端 SHA-256 与本地 manifest 一致。公开副本排查到的私钥 PEM、常见访问 token、Bearer token、密码赋值模式均无命中；排除数为 0。118 项本地副本源/目标大小和 SHA-256 全匹配。
+- 尚未验证：公开网页 UI 的人工浏览体验；不影响 API、匿名 raw 下载和远端 main 校验。
+- 待处理：今后每次 Standalone 完整备份完成后，将对应新导出和观察目录加入 raw evidence allowlist，完成凭据扫描、字节校验后随里程碑推送。
+- 替代：结清 21:00 记录中的“远端推送待确认”状态；旧的 raw pstore/oops 仅本地发布限制已废止。

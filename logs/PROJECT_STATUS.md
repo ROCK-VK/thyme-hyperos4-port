@@ -40,6 +40,7 @@
 - 首批归档包含 8 个 Standalone 导出目录和 6 个 host-observation 目录，共 118 个原始文件、140,935,707 字节；逐文件大小和 SHA-256 已验证，凭据模式排除数为 0，缺失 allowlist 目录为 0。
 - 本地原始证据未修改。完整 ROM/固件、系统与 userdata/metadata 分区镜像、misc/校准/设备身份分区备份不公开。
 - 公开同步脚本位于公开仓库 scripts/sync_raw_startup_evidence.ps1，并由 scripts/sync_from_local.ps1 调用；新的 Standalone/观察目录仍须明确加入 allowlist。
+- 原始证据已推送到 Public 仓库 main，提交 3147a6fd8c0ff1d8c46f1cc49a510d0d0a3790c5；匿名 API 确认 public，4 个跨 Candidate 原始文件 HTTP 200 且远端 SHA-256 与本地清单一致。
 ## 下一步
 
 1. 暂不重复启动 C17，也不盲目构建 C18。
