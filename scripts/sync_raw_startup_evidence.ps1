@@ -49,6 +49,12 @@ $ExcludedRows = @()
 $MissingDirectories = @()
 $TotalBytes = [int64]0
 
+function Normalize-GeneratedCsvLineEndings([string]$Path) {
+    $Text = [IO.File]::ReadAllText($Path)
+    $Text = $Text.Replace("`r`n", "`n")
+    [IO.File]::WriteAllText($Path, $Text, [Text.UTF8Encoding]::new($false))
+}
+
 foreach ($Entry in $RawDirectoryAllowlist) {
     $SourcePath = Join-Path $SourceRoot ($Entry.Source -replace '/', '\')
     if (-not (Test-Path -LiteralPath $SourcePath -PathType Container)) {
@@ -120,12 +126,14 @@ foreach ($Entry in $RawDirectoryAllowlist) {
 New-Item -ItemType Directory -Path $EvidenceRoot -Force | Out-Null
 $ManifestPath = Join-Path $EvidenceRoot 'RAW_EVIDENCE_MANIFEST.csv'
 $ManifestRows | Export-Csv -LiteralPath $ManifestPath -NoTypeInformation -Encoding utf8
+Normalize-GeneratedCsvLineEndings $ManifestPath
 $ExclusionsPath = Join-Path $EvidenceRoot 'RAW_EVIDENCE_EXCLUSIONS.csv'
 if ($ExcludedRows.Count -gt 0) {
     $ExcludedRows | Export-Csv -LiteralPath $ExclusionsPath -NoTypeInformation -Encoding utf8
 } else {
     [IO.File]::WriteAllText($ExclusionsPath, "Candidate,Source,Reason" + [Environment]::NewLine, [Text.UTF8Encoding]::new($false))
 }
+Normalize-GeneratedCsvLineEndings $ExclusionsPath
 
 [pscustomobject]@{
     RawFilesCopied = $ManifestRows.Count

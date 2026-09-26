@@ -13267,3 +13267,14 @@
 - 安全边界：未重复启动 C18、未写入 Candidate 分区、未清除 userdata/metadata、未修改 misc/BCB 其他字段、未切换 B 槽、未回锁。未恢复 PixelOS；最近主机只读状态为 ADB/Fastboot 均未枚举、`THYME_DIAG` FAT32 卷挂载为 F:。Bootloader 最近一次核验仍 unlocked=yes。
 - 待处理：公开同步本轮 C18 Standalone 全量原始卷副本、C18 observer 时间线和前两次失败 RAM 尝试时间线；定点改进首次 Android 启动日志留存后，再决定 C18 复验或构建后续版本。没有足够 C18 Android 日志时不构建 C19，也不猜测图形根因。
 - 替代：替代 22:03 记录中的“仍需授权 set_active a”与 22:00 记录中的“当前处于 Fastboot”；两项状态变更已在本条授权范围内完成。保留旧记录作为当时真实状态。
+## 2026-09-26 22:25｜C18 完整诊断证据公开同步与匿名校验
+
+- 状态：C18 原始诊断卷副本、首启观察记录、失败 RAM 启动记录及更新后的项目报告已推送至现有 Public 仓库；本地原始导出未修改。
+- 改动/结论：公开仓库 `evidence/candidate18/` 收录 18 个文件（16,985,194 bytes），包括完整 THYME_DIAG 目录副本、空 pstore 状态证据、Standalone dmesg/oops、两次失败 RAM 时间线、成功导出时间线和 C18 首启 USB/ADB/Fastboot 观察文件。C13–C18 目前合计 136 个原始文件、157,920,901 bytes；本轮同步器未排除凭据或策略命中文件，所有允许目录均存在。
+- 原因：落实用户已授权的完整原始启动诊断证据公开规则，便于独立技术审核。
+- 涉及文件：公开仓库 `evidence/candidate18/`、`evidence/RAW_EVIDENCE_MANIFEST.csv`、`evidence/README.md`、`scripts/sync_raw_startup_evidence.ps1`、`reports/candidate18/20260926_CANDIDATE18_NATIVE_ADRENO_REPORT.md`、`logs/PROJECT_STATUS.md`、`logs/EXECUTION_LOG.md`。
+- 验证：Commit `73fcce153ec54fbcbb06bb713baf7a8ddc780897` 已位于远端 main。匿名 GitHub API 确认 `visibility=public`、默认分支 `main`；从 raw.githubusercontent.com 下载 C18 manifest 指定的 18 项，逐项比对实际字节数与 SHA-256，失配数 0。公开 C18 目录无超过 100 MiB 文件；不包含 ROM/分区镜像。后续当前状态和执行记录同步在本记录完成后提交。
+- 尚未验证：C18 Android 真实启动阶段、Adreno/EGLConfig、SurfaceFlinger/Vulkan 和自动返回 Fastboot 的具体原因；没有有效 C18 Android pstore/ADB 日志。
+- 安全边界：仅提交诊断证据、报告、状态、清单及同步白名单；没有进行新的设备状态改变。设备最近只读状态仍为 Standalone THYME_DIAG USB Mass Storage，ADB/Fastboot 未枚举；PixelOS 未恢复。
+- 待处理：将本条公开结果状态同步到仓库；为下一轮先补足首次 Android 启动日志留存，再决定是否复验 C18 或构建后续修复版。
+- 替代：更新 22:17 条目中“公开同步待完成”的后续状态；该条目保留其记录时点的真实进展。

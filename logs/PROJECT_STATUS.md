@@ -48,10 +48,11 @@
 ## 公开诊断证据
 
 - 用户于 2026-09-26 明确授权将 C13–C17 已保存的 Standalone 原始日志和主机观察记录上传到现有 Public GitHub 仓库；旧的“raw pstore/oops 只留本地”限制已被此授权替代。
-- 首批归档包含 8 个 Standalone 导出目录和 6 个 host-observation 目录，共 118 个原始文件、140,935,707 字节；逐文件大小和 SHA-256 已验证，凭据模式排除数为 0，缺失 allowlist 目录为 0。
+- C13–C17 首批归档包含 8 个 Standalone 导出目录和 6 个 host-observation 目录，共 118 个原始文件、140,935,707 字节；逐文件大小和 SHA-256 已验证，凭据模式排除数为 0，缺失 allowlist 目录为 0。
 - 本地原始证据未修改。完整 ROM/固件、系统与 userdata/metadata 分区镜像、misc/校准/设备身份分区备份不公开。
 - 公开同步脚本位于公开仓库 scripts/sync_raw_startup_evidence.ps1，并由 scripts/sync_from_local.ps1 调用；新的 Standalone/观察目录仍须明确加入 allowlist。
-- 原始证据 C13–C17 已推送到 Public 仓库 main，提交 3147a6fd8c0ff1d8c46f1cc49a510d0d0a3790c5；C18 新证据待本轮增量提交。此前匿名 API 确认仓库 Public，4 个跨 Candidate 原始文件 HTTP 200 且远端 SHA-256 与本地清单一致。
+- C13–C18 原始证据已推送到 Public 仓库 main；本轮 C18 增量提交 `73fcce153ec54fbcbb06bb713baf7a8ddc780897`，新增 18 个文件、16,985,194 bytes。当前 C13–C18 合计 136 个原始文件、157,920,901 bytes；凭据/策略排除数 0、缺失目录 0。
+- 匿名 API 确认仓库 Public、默认分支 main；C18 的 18 个公开文件均下载核验，大小及 SHA-256 与远端 manifest 全部匹配。此前 C13–C17 公开验证仍记录于提交 `3147a6fd8c0ff1d8c46f1cc49a510d0d0a3790c5`。
 - C18 报告、构建清单、构建/受限刷写/启动门控脚本、属性观察器更新、README 和状态日志已公开；报告/清单均匿名 HTTP 200。C18 增量提交 d9a56e34b63b27c07b3c04a5d0fdebcf68ea948e；该提交不含 ROM/分区镜像。
 ## 下一步
 
