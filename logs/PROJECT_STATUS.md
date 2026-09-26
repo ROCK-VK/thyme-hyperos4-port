@@ -18,6 +18,7 @@
 - Candidate 13 在 `system_ext_sepolicy.cil` 增加 `hal_keymaster`、`hal_gatekeeper` 对 `ion_device:chr_file` 的权限。旧数据状态下的保存实例进入 Recovery；2026-09-26 清数据首启的新 pstore 证明 C13 已进入正常 first-stage/second-stage，检测到 precompiled hash 不匹配后编译 SELinux policy 并在 enforcing 下继续。该日志未覆盖 Keymaster/Gatekeeper 启动，故两条规则的具体 HAL AVC 效果仍未验证。
 - 2026-09-26 第二阶段取证准备：C13 pstore 仅有一个可见 console 启动记录并止于 3.749615 秒；没有 APEX Bootstrap 之后的真实错误，不能将日志尾部视为重启时间。内核 `record_size=0`，未保存独立 dmesg crash record；Standalone `oops.raw` 含历史混合内容，不归属本轮。详见 `work/reports/20260926_CANDIDATE13_SECOND_STAGE_CAPTURE_PREP.md`。
 - 下一次观察流程已准备：`tools/observe_candidate13_readonly.py` 完成首次 ADB/Fastboot 采样后才写 `observer_armed.json`；`tools/start_candidate13_observed_boot.ps1` 要求新鲜 Fastboot arm 记录并默认 Dry-Run；`tools/record_candidate13_event.ps1` 记录人工屏幕事件 UTC 时间；`tools/salvage_c13_diag.py` 默认只作主机哈希 Dry-Run，RAM 临时启动需单独传入显式执行开关及用户授权，并要求唯一 `THYME_DIAG` 卷及 Standalone 标记文件。本轮没有运行这些设备操作入口。
+- 公开资料已增量同步到 `https://github.com/ROCK-VK/thyme-hyperos4-port`：Second Stage 取证报告、状态/执行记录及采集脚本已发布；公开副本中的本机路径与设备序列号经脱敏。
 
 ## Candidate 13 本轮刷写结果
 

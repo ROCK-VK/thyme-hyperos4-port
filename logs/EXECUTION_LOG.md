@@ -12942,3 +12942,14 @@
 - 尚未验证：更新后的观察器未连接设备实跑；C13 Second Stage 后续真实错误、Keymaster/Gatekeeper/ION/QSEECom/vold 与 `/data` 结果仍未知；恢复后的 PixelOS 尚未启动验证。当前设备实际处于 Fastboot，不能称 PixelOS 健康在线。
 - 待处理：下一实验使用原版 C13，不用 C13.1、不重建 super、不重复擦除 `userdata`/`metadata`。请求 C13 六分区刷写授权；刷后保持 Fastboot并另行请求首次启动授权。失败后若要执行 Standalone RAM 启动/只读导出，需取得对应单独授权。公开安全增量同步完成后交付 Commit URL。
 - 替代：替代此前“恢复后 PixelOS 待单独启动验证”作为当前下一实验目标；不改变旧结论，也不把 C13 未定位的阻塞写成已知根因。
+
+## 2026-09-26 10:46｜公开仓库增量同步与外部验证
+
+- 状态：公开资料已推送并通过匿名访问验证；未触碰设备。
+- 改动/结论：同步 Second Stage 取证报告、当前状态/执行记录、观察器和启动/人工事件/Standalone 导出辅助工具。更新公开同步器以脱敏 WSL 本机路径；公开副本 23 个变更文件均小于 100 MiB，敏感路径、设备序列号、Token 与长设备 ID 扫描无命中。
+- 原因：本轮要求将适合公开的增量同步到项目 GitHub。
+- 涉及文件：`[LOCAL_PATH]
+- 验证：提交 `92257fd30799b372e376972a7b1022952a4e0480` 已推送；匿名仓库页、README、新报告、项目状态、执行记录和四个采集工具的 raw URL 均返回 HTTP 200；GitHub API 显示 `visibility=public`、`private=false`、默认分支 `main`。
+- 尚未验证：GitHub Desktop UI 本轮未打开确认；本地仓库 `origin` 与 GitHub main 已同步。
+- 待处理：等待本轮用户单独批准原版 C13 六分区刷写；刷后保持 Fastboot，启动和故障后 Standalone RAM 诊断各需独立授权。
+- 替代：无。
