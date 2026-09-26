@@ -53,4 +53,4 @@
 ## 公开仓库
 
 - GitHub：<https://github.com/ROCK-VK/thyme-hyperos4-port>
-- 本轮 C14/C15 净化资料待增量同步；完整 ROM、镜像、原始 pstore/pmsg、oops 和设备备份不公开。
+- C14/C15 净化报告、构建/刷写脚本及当前状态已同步至公开 main；首个 C14/C15 内容提交为 `c0af6b80e36368ed2b0f8d79e38acdc102cc05ae`。完整 ROM、镜像、原始 pstore/pmsg、oops 和设备备份不公开。
