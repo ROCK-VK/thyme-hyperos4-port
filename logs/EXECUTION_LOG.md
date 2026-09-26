@@ -13085,3 +13085,14 @@
 - 尚未验证：GitHub Desktop UI 本轮未打开确认；不影响公开 HTTPS 与 main 推送验证。
 - 待处理：等待用户授权 C16 仅 vbmeta_system_a 和 super 两项顺序刷写；刷完保持 Fastboot，首次启动另行授权。
 - 替代：将本轮较早记录中的“公开同步待处理”更新为已完成；C16 仍仅有主机侧构建验证。
+## 2026-09-26 18:55｜Candidate 16 两分区刷写完成，保持 Fastboot
+
+- 状态：按用户本轮明确授权完成 C16 两项指定分区写入；设备保持 Bootloader Fastboot，未启动。
+- 改动/结论：只写入 vbmeta_system_a 与 super。vbmeta_system_a Fastboot 发送/写入均返回 OKAY；super sparse 1/10 至 10/10 全部 OKAY，Fastboot 总耗时约 201.374 秒。刷后只读确认设备仍为 thyme、A 槽、Bootloader 解锁、非 userspace Fastboot；ADB 未在线。
+- 原因：用户授权验证 C16 对 C14/C15 重复图形分配器 ion_device read AVC 的定点修复；写入范围按 C16 既有脚本限制。
+- 涉及文件：tools/flash_candidate16_graphics_allocator_ion.ps1；work/stage_f_thyme_os4_candidate_16_graphics_allocator_ion_run1/images/；日志/项目当前状态.md；本记录。
+- 验证：刷前脚本核验 vbmeta_system.img 131,072 字节、SHA-256 24AA0C2971ECA3E2B88F01DBB4E7285834A30AA20498713712DEF8333BC8AAEC；super.img 7,684,274,964 字节、SHA-256 888988A0D9E5307F751B718D573032A14DE4B80A2F47223FB34D5BC8EFEFC6C8。两个分区写入均成功，super 10/10 sparse 段全部成功。Fastboot 对 sparse super 提示跳过复制 AVB footer，本轮所有写入仍返回成功。刷后设备状态复核通过。
+- 尚未验证：C16 首次启动；图形分配器 AVC 是否消失；ANGLE 是否实际加载；SurfaceFlinger EGLConfig、HyperOS 启动画面、设置向导或桌面状态。
+- 安全边界：未写入其他分区；未擦除 userdata/metadata；未重启；未回锁 Bootloader；未恢复 PixelOS。
+- 待处理：用户现场确认后，先启动只读观察器并确认为 C16/ARMED，再执行一次启动。故障后按长期授权的 Standalone 流程完整复制诊断卷，再分析。
+- 替代：更新 C16“主机已构建、待刷写”的状态；现在已刷写但仍未启动。

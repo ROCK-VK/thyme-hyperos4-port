@@ -11,7 +11,7 @@
 - C14 还记录一次 MIUI graphicsengine Vulkan 调用空指针崩溃及多次 netd fatal；其根因和是否阻止 Android 完成启动尚未确认。当前没有把它们写成确定根因。
 - C15 已实际启动并进入 Android first/second stage、SELinux enforcing、APEX Bootstrap 和 /data 挂载；用户观察到小米 Logo 常亮后手动回到 Fastboot。没有 ADB、启动动画、设置向导或桌面验收。
 - C15 仍重复出现 SurfaceFlinger no suitable EGLConfig found；C14/C15 均记录图形分配器读取 ion_device 被 SELinux 拒绝。ANGLE 是否在 C15 实际被选中尚未从 pstore 证明。
-- C16 已在主机侧构建，仅新增图形分配器对 ion_device 的 read 权限，保留 C14 BPF 绕过、C15 ANGLE 属性和 C13 Keymaster/Gatekeeper 规则。静态验证与刷写 Dry-Run 通过；尚未刷写或启动，准备范围仅 vbmeta_system_a、super。C15 pstore 显示 /data 挂载成功，下一轮不需要清除 userdata/metadata。设备处于 Bootloader Fastboot、A 槽且解锁；PixelOS A0′ 未恢复或验证在线。
+- C16 已按授权刷写 vbmeta_system_a、super，当前保持 Bootloader Fastboot，等待用户现场确认首次启动。实际启动结果尚未取得。
 
 最新结果见 [C15 首启与 C16 图形权限修复报告](reports/candidate16/20260926_CANDIDATE15_FIRST_BOOT_AND_CANDIDATE16_GRAPHICS_ALLOCATOR_FIX.md)、[C14 启动故障与 C15 EGL 方案](reports/candidate15/20260926_CANDIDATE14_FAILURE_AND_CANDIDATE15_EGL_PLAN.md)、[项目当前状态](logs/PROJECT_STATUS.md) 和按时间追加的 [执行记录](logs/EXECUTION_LOG.md)。
 
@@ -35,7 +35,7 @@ K40 对照资料显示，成功包的 vendor_boot ramdisk 与原包不同，并�
 - **C13.1**：主机侧构建过数据挂载保护变体，尚未实机验证；不是当前已验证版本。
 - **C14**：绕过已证实与 Android 25Q2/kernel 4.19 不兼容的 BPF loader 重启门控；真机 pstore 证实越过该点，随后发现 SurfaceFlinger EGLConfig abort。
 - **C15**：保留 C14 绕过并增加 ANGLE EGL 选择属性；实机进入 second stage 和 /data 挂载，但仍有 SurfaceFlinger EGLConfig abort，未进入启动动画。
-- **C16**：依据 C14/C15 重复出现的 graphics allocator ion_device read AVC，新增一条最小策略允许；主机验证完成，尚未上机。
+- **C16**：依据 C14/C15 重复出现的 graphics allocator ion_device read AVC 增加一条最小策略允许；主机验证完成且两分区已刷写，首次启动待现场确认。
 
 具体阶段和证据等级以项目状态文件及 Candidate 报告为准，旧报告的“计划/待验证”不会自动成为当前结论。
 
