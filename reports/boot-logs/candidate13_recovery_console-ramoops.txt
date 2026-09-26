@@ -1,5 +1,5 @@
 [    0.000000] Booting Linux on physical CPU 0x0000000000 [0x51df805e]
-[    0.000000] Linux version 4.19.325-perf-g45b9b954f074 (root@Rock-Laptop) (Android ([REDACTED_DEVICE_ID], +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349), LLD 21.0.0 (/mnt/disks/build-disk/src/googleplex-android/llvm-r563880-release/out/llvm-project/llvm 5e96669f06077099aa41290cdb4c5e6fa0f59349)) #1 SMP PREEMPT Tue Sep 22 15:06:57 CST 2026
+[    0.000000] Linux version 4.19.325-perf-g45b9b954f074 (root@Rock-Laptop) (Android (13989888, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349), LLD 21.0.0 (/mnt/disks/build-disk/src/googleplex-android/llvm-r563880-release/out/llvm-project/llvm 5e96669f06077099aa41290cdb4c5e6fa0f59349)) #1 SMP PREEMPT Tue Sep 22 15:06:57 CST 2026
 [    0.000000] random: crng init done
 [    0.000000] Machine model: Qualcomm Technologies, Inc. xiaomi thyme
 [    0.000000] ramoops: msm_reserve_ramoops_memory addr=[REDACTED_DEVICE_ID],size=400000
@@ -172,10 +172,10 @@
 [    0.338988] DMA: preallocated 256 KiB pool for atomic allocations
 [    0.339307] DMA: preallocated 256 KiB pool for atomic allocations
 [    0.339521] exit: IPA_USB init success!
-[    0.343012] platform [REDACTED_DEVICE_ID].qseecom: assigned reserved memory node qseecom_region
+[    0.343012] platform 82400000.qseecom: assigned reserved memory node qseecom_region
 [    0.345768] platform soc:qcom,ipa_fws: assigned reserved memory node pil_ipa_gsi_region
 [    0.345812] platform soc:qcom,ipa_uc: assigned reserved memory node pil_ipa_fw_region
-[    0.346191] platform [REDACTED_DEVICE_ID].qcom,lpass: assigned reserved memory node pil_adsp_region
+[    0.346191] platform 17300000.qcom,lpass: assigned reserved memory node pil_adsp_region
 [    0.346271] platform 8300000.qcom,turing: assigned reserved memory node pil_cdsp_region
 [    0.346320] platform aab0000.qcom,venus: assigned reserved memory node pil_video_region
 [    0.346403] platform 188101c.qcom,spss: assigned reserved memory node pil_spss_region
@@ -275,9 +275,9 @@
 [    0.485119] arm-smmu 3da0000.kgsl-smmu: 	stream matching with 6 register groups
 [    0.486453] register_client_adhoc:find path.src 161 dest 627
 [    0.486639] register_client_adhoc:Client handle 1 apps_smmu
-[    0.486705] arm-smmu [REDACTED_DEVICE_ID].apps-smmu: 	non-coherent table walk
-[    0.486713] arm-smmu [REDACTED_DEVICE_ID].apps-smmu: 	(IDR0.CTTW overridden by FW configuration)
-[    0.486719] arm-smmu [REDACTED_DEVICE_ID].apps-smmu: 	stream matching with 87 register groups
+[    0.486705] arm-smmu 15000000.apps-smmu: 	non-coherent table walk
+[    0.486713] arm-smmu 15000000.apps-smmu: 	(IDR0.CTTW overridden by FW configuration)
+[    0.486719] arm-smmu 15000000.apps-smmu: 	stream matching with 87 register groups
 [    0.487435] register_client_adhoc:find path.src 161 dest 627
 [    0.487613] register_client_adhoc:Client handle 2 apps_smmu
 [    0.487726] register_client_adhoc:find path.src 161 dest 627
@@ -285,7 +285,7 @@
 [    0.488011] qsmmuv500-tbu [REDACTED_DEVICE_ID].mnoc_hf_0_tbu: Linked as a consumer to regulator.70
 [    0.488046] register_client_adhoc:find path.src 22 dest 773
 [    0.488129] register_client_adhoc:Client handle 4 mnoc_hf_0_tbu
-[    0.488239] qsmmuv500-tbu [REDACTED_DEVICE_ID].mnoc_hf_1_tbu: Linked as a consumer to regulator.71
+[    0.488239] qsmmuv500-tbu 15191000.mnoc_hf_1_tbu: Linked as a consumer to regulator.71
 [    0.488267] register_client_adhoc:find path.src 22 dest 773
 [    0.488348] register_client_adhoc:Client handle 5 mnoc_hf_1_tbu
 [    0.488455] register_client_adhoc:find path.src 154 dest 10070
@@ -363,19 +363,19 @@
 [    0.598383] register_client_adhoc:find path.src 1 dest 676
 [    0.598457] register_client_adhoc:find path.src 143 dest 777
 [    0.598480] register_client_adhoc:Client handle 12 ipa
-[    0.599245] ipa 1e00000.qcom,ipa:ipa_smmu_ap: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    0.599245] ipa 1e00000.qcom,ipa:ipa_smmu_ap: Linked as a consumer to 15000000.apps-smmu
 [    0.603076] iommu: Adding device 1e00000.qcom,ipa:ipa_smmu_ap to group 0
-[    0.603296] ipa 1e00000.qcom,ipa:ipa_smmu_wlan: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    0.603296] ipa 1e00000.qcom,ipa:ipa_smmu_wlan: Linked as a consumer to 15000000.apps-smmu
 [    0.607548] iommu: Adding device 1e00000.qcom,ipa:ipa_smmu_wlan to group 1
-[    0.607875] ipa 1e00000.qcom,ipa:ipa_smmu_uc: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    0.607875] ipa 1e00000.qcom,ipa:ipa_smmu_uc: Linked as a consumer to 15000000.apps-smmu
 [    0.612190] iommu: Adding device 1e00000.qcom,ipa:ipa_smmu_uc to group 2
-[    0.612434] ipa 1e00000.qcom,ipa:ipa_smmu_11ad: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    0.612434] ipa 1e00000.qcom,ipa:ipa_smmu_11ad: Linked as a consumer to 15000000.apps-smmu
 [    0.616651] iommu: Adding device 1e00000.qcom,ipa:ipa_smmu_11ad to group 3
-[    0.617696] devfreq-qcom-fw [REDACTED_DEVICE_ID].qcom,devfreq-l3:qcom,cpu0-cpu-l3-lat: Devfreq QCOM Firmware dev registered.
-[    0.617752] devfreq-qcom-fw [REDACTED_DEVICE_ID].qcom,devfreq-l3:qcom,cpu4-cpu-l3-lat: Devfreq QCOM Firmware dev registered.
-[    0.617791] devfreq-qcom-fw [REDACTED_DEVICE_ID].qcom,devfreq-l3:qcom,cpu7-cpu-l3-lat: Devfreq QCOM Firmware dev registered.
-[    0.617829] devfreq-qcom-fw [REDACTED_DEVICE_ID].qcom,devfreq-l3:qcom,cdsp-cdsp-l3-lat: Devfreq QCOM Firmware dev registered.
-[    0.617835] devfreq-qcom-fw [REDACTED_DEVICE_ID].qcom,devfreq-l3: Devfreq QCOM Firmware parent dev inited.
+[    0.617696] devfreq-qcom-fw 18590000.qcom,devfreq-l3:qcom,cpu0-cpu-l3-lat: Devfreq QCOM Firmware dev registered.
+[    0.617752] devfreq-qcom-fw 18590000.qcom,devfreq-l3:qcom,cpu4-cpu-l3-lat: Devfreq QCOM Firmware dev registered.
+[    0.617791] devfreq-qcom-fw 18590000.qcom,devfreq-l3:qcom,cpu7-cpu-l3-lat: Devfreq QCOM Firmware dev registered.
+[    0.617829] devfreq-qcom-fw 18590000.qcom,devfreq-l3:qcom,cdsp-cdsp-l3-lat: Devfreq QCOM Firmware dev registered.
+[    0.617835] devfreq-qcom-fw 18590000.qcom,devfreq-l3: Devfreq QCOM Firmware parent dev inited.
 [    0.618388] SDAM base=0xb100 size=128 registered successfully
 [    0.618472] Advanced Linux Sound Architecture Driver Initialized.
 [    0.618787] Bluetooth: Core ver 2.22
@@ -409,11 +409,11 @@
 [    0.620676] register_client_adhoc:find path.src 22 dest 512
 [    0.620765] register_client_adhoc:find path.src 23 dest 512
 [    0.620829] register_client_adhoc:Client handle 15 bus-proxy-client
-[    0.621119] qupv3_geni_se 9c0000.qcom,qupv3_0_geni_se: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    0.621119] qupv3_geni_se 9c0000.qcom,qupv3_0_geni_se: Linked as a consumer to 15000000.apps-smmu
 [    0.625778] iommu: Adding device 9c0000.qcom,qupv3_0_geni_se to group 4
-[    0.626061] qupv3_geni_se ac0000.qcom,qupv3_1_geni_se: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    0.626061] qupv3_geni_se ac0000.qcom,qupv3_1_geni_se: Linked as a consumer to 15000000.apps-smmu
 [    0.630755] iommu: Adding device ac0000.qcom,qupv3_1_geni_se to group 5
-[    0.631016] qupv3_geni_se 8c0000.qcom,qupv3_2_geni_se: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    0.631016] qupv3_geni_se 8c0000.qcom,qupv3_2_geni_se: Linked as a consumer to 15000000.apps-smmu
 [    0.635347] iommu: Adding device 8c0000.qcom,qupv3_2_geni_se to group 6
 [    0.635591] gdsc ad07004.qcom,gdsc: Linked as a consumer to regulator.31
 [    0.635677] register_client_adhoc:find path.src 1 dest 589
@@ -519,11 +519,11 @@
 [    0.782367] Virtual Services transport driver for OKL4 Axons
 [    0.787034] !!! bcm_tty_init  to go
 [    0.787088] !!! platform_driver_register  sspbbd bcm_gps_tty misc_register ret is 0
-[    0.787980] gpi_dma 900000.qcom,gpi-dma: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    0.787980] gpi_dma 900000.qcom,gpi-dma: Linked as a consumer to 15000000.apps-smmu
 [    0.788256] iommu: Adding device 900000.qcom,gpi-dma to group 7
-[    0.788567] gpi_dma a00000.qcom,gpi-dma: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    0.788567] gpi_dma a00000.qcom,gpi-dma: Linked as a consumer to 15000000.apps-smmu
 [    0.788777] iommu: Adding device a00000.qcom,gpi-dma to group 8
-[    0.788985] gpi_dma 800000.qcom,gpi-dma: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    0.788985] gpi_dma 800000.qcom,gpi-dma: Linked as a consumer to 15000000.apps-smmu
 [    0.789174] iommu: Adding device 800000.qcom,gpi-dma to group 9
 [    0.790308] register_client_adhoc:find path.src 125 dest 512
 [    0.790510] register_client_adhoc:Client handle 30 scm_pas
@@ -533,8 +533,8 @@
 [    0.790605] minidump-id not found for ipa_uc
 [    0.790614] subsys-pil-tz soc:qcom,ipa_uc: for ipa_uc segments only will be dumped.
 [    0.790624] subsys-pil-tz soc:qcom,ipa_uc: for md_ipa_uc segments only will be dumped.
-[    0.790691] subsys-pil-tz [REDACTED_DEVICE_ID].qcom,lpass: Linked as a consumer to regulator.20
-[    0.790701] subsys-pil-tz [REDACTED_DEVICE_ID].qcom,lpass: Linked as a consumer to regulator.12
+[    0.790691] subsys-pil-tz 17300000.qcom,lpass: Linked as a consumer to regulator.20
+[    0.790701] subsys-pil-tz 17300000.qcom,lpass: Linked as a consumer to regulator.12
 [    0.790706] minidump-id not found for adsp
 [    0.790893] subsys-pil-tz 8300000.qcom,turing: Linked as a consumer to regulator.4
 [    0.790910] register_client_adhoc:find path.src 154 dest 10070
@@ -571,7 +571,7 @@
 [    0.801767] zram: Added device: zram0
 [    0.802422] QSEECOM: qseecom_init_control: qseecom.qsee_version = 0x1402000
 [    0.802487] QSEECOM: qseecom_retrieve_ce_data: Device does not support PFE
-[    0.804418] qce 1de0000.qcedev: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    0.804418] qce 1de0000.qcedev: Linked as a consumer to 15000000.apps-smmu
 [    0.804674] iommu: Adding device 1de0000.qcedev to group 10
 [    0.804810] register_client_adhoc:find path.src 125 dest 512
 [    0.804997] register_client_adhoc:Client handle 34 qcedev-noc
@@ -580,11 +580,11 @@
 [    0.805429] sps:BAM 0x0000000001dc4000 is registered.
 [    0.805489] sps:BAM 0x0000000001dc4000 (va:0x00000000cb697791) enabled: ver:0x27, number of pipes:16
 [    0.805656] QCE50: qce_sps_init:  QTI MSM CE-BAM at 0x0000000001dc4000 irq 39
-[    0.805925] qce 1de0000.qcedev:qcom_cedev_ns_cb: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    0.805925] qce 1de0000.qcedev:qcom_cedev_ns_cb: Linked as a consumer to 15000000.apps-smmu
 [    0.806194] iommu: Adding device 1de0000.qcedev:qcom_cedev_ns_cb to group 11
-[    0.806385] qce 1de0000.qcedev:qcom_cedev_s_cb: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    0.806385] qce 1de0000.qcedev:qcom_cedev_s_cb: Linked as a consumer to 15000000.apps-smmu
 [    0.807172] iommu: Adding device 1de0000.qcedev:qcom_cedev_s_cb to group 12
-[    0.807475] qcrypto 1de0000.qcrypto: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    0.807475] qcrypto 1de0000.qcrypto: Linked as a consumer to 15000000.apps-smmu
 [    0.807689] iommu: Adding device 1de0000.qcrypto to group 13
 [    0.807777] register_client_adhoc:find path.src 125 dest 512
 [    0.807887] register_client_adhoc:Client handle 35 qcrypto-noc
@@ -661,11 +661,11 @@
 [    0.820805] cnss2 [REDACTED_DEVICE_ID].qcom,cnss-qca6390: Linked as a consumer to regulator.51
 [    0.820848] cnss2 [REDACTED_DEVICE_ID].qcom,cnss-qca6390: Linked as a consumer to regulator.8
 [    0.820877] cnss2 [REDACTED_DEVICE_ID].qcom,cnss-qca6390: Linked as a consumer to regulator.36
-[    0.821090] msm-dwc3 a600000.ssusb: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    0.821090] msm-dwc3 a600000.ssusb: Linked as a consumer to 15000000.apps-smmu
 [    0.821334] iommu: Adding device a600000.ssusb to group 14
 [    0.821434] msm-dwc3 a600000.ssusb: Linked as a consumer to regulator.68
 [    0.821936] dwc3 a600000.dwc3: Failed to get clk 'ref': -2
-[    0.821998] dwc3 a600000.dwc3: changing max_speed on rev [REDACTED_DEVICE_ID]
+[    0.821998] dwc3 a600000.dwc3: changing max_speed on rev 00000000
 [    0.822417] register_client_adhoc:find path.src 61 dest 512
 [    0.822587] register_client_adhoc:find path.src 61 dest 676
 [    0.822699] register_client_adhoc:find path.src 1 dest 583
@@ -1059,11 +1059,11 @@
 [    0.993209] pci 0000:00:00.0:   bridge window [io  0x1000-0x1fff]
 [    0.993234] pci 0000:00:00.0:   bridge window [mem 0x60300000-0x604fffff]
 [    0.993253] pci 0000:00:00.0:   bridge window [mem 0x60500000-0x606fffff 64bit pref]
-[    0.993564] pci-msm-rc 0000:00:00.0: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    0.993564] pci-msm-rc 0000:00:00.0: Linked as a consumer to 15000000.apps-smmu
 [    0.994046] iommu: Adding device 0000:00:00.0 to group 15
 [    0.994660] aw8697_haptic_f0_calibration f0_cali_lra=6
 [    0.995098] msm_pcie_enumerate: PCIe: RC0: has already been enumerated.
-[    0.995260] cnss_pci 0000:01:00.0: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    0.995260] cnss_pci 0000:01:00.0: Linked as a consumer to 15000000.apps-smmu
 [    0.998589] input: aw8697_haptic as /devices/platform/soc/a8c000.i2c/i2c-2/2-005a/input/input3
 [    0.999358] i2c_geni a94000.i2c: Bus frequency is set to 400000Hz
 [    1.000781] i2c_geni 884000.i2c: Bus frequency is set to 400000Hz
@@ -1081,14 +1081,14 @@
 [    1.004536] rc rc0: lirc_dev: driver ir-spi registered at minor = 0, no receiver, raw IR transmitter
 [    1.004572] msm_cvp:  err: Failed to create debugfs for msm_cvp
 [    1.005300] msm_cvp:  err: Failed to create debugfs for msm_cvp
-[    1.005843] msm_cvp_v4l2 ab00000.qcom,cvp:cvp_non_secure_cb: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.005843] msm_cvp_v4l2 ab00000.qcom,cvp:cvp_non_secure_cb: Linked as a consumer to 15000000.apps-smmu
 [    1.006145] iommu: Adding device ab00000.qcom,cvp:cvp_non_secure_cb to group 17
-[    1.006547] msm_cvp_v4l2 ab00000.qcom,cvp:cvp_secure_nonpixel_cb: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.006547] msm_cvp_v4l2 ab00000.qcom,cvp:cvp_secure_nonpixel_cb: Linked as a consumer to 15000000.apps-smmu
 [    1.007992] iommu: Adding device ab00000.qcom,cvp:cvp_secure_nonpixel_cb to group 18
-[    1.008344] msm_cvp_v4l2 ab00000.qcom,cvp:cvp_secure_pixel_cb: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.008344] msm_cvp_v4l2 ab00000.qcom,cvp:cvp_secure_pixel_cb: Linked as a consumer to 15000000.apps-smmu
 [    1.009024] iommu: Adding device ab00000.qcom,cvp:cvp_secure_pixel_cb to group 19
 [    1.009206] platform ab00000.qcom,cvp:qcom,msm-cvp,mem_cdsp: assigned reserved memory node cdsp_region
-[    1.010037] msm_npu 9900000.qcom,msm_npu: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.010037] msm_npu 9900000.qcom,msm_npu: Linked as a consumer to 15000000.apps-smmu
 [    1.010440] iommu: Adding device 9900000.qcom,msm_npu to group 20
 [    1.010626] NPU_INFO: npu_probe: 2505 unable to get qfprom_physical resource
 [    1.010698] msm_npu 9900000.qcom,msm_npu: Linked as a consumer to regulator.85
@@ -1167,8 +1167,8 @@
 [    1.073283] [bq2597x-STANDALONE]:bq2597x_psy_register:bq2597x-standalone power supply register successfully
 [    1.073462] [bq2597x-STANDALONE]:bq2597x_charger_probe:bq2597x probe successfully, Part Num:6
 [    1.073462] !
-[    1.079255] msm_lmh_dcvs [REDACTED_DEVICE_ID].qcom,cpufreq-hw:qcom,limits-dcvs: Linked as a consumer to regulator.22
-[    1.079459] msm_lmh_dcvs [REDACTED_DEVICE_ID].qcom,cpufreq-hw:qcom,limits-dcvs: Linked as a consumer to regulator.14
+[    1.079255] msm_lmh_dcvs 18591000.qcom,cpufreq-hw:qcom,limits-dcvs: Linked as a consumer to regulator.22
+[    1.079459] msm_lmh_dcvs 18591000.qcom,cpufreq-hw:qcom,limits-dcvs: Linked as a consumer to regulator.14
 [    1.080364] device-mapper: uevent: version 1.0.3
 [    1.080500] device-mapper: ioctl: 4.39.0-ioctl (2018-04-03) initialised: [REDACTED_EMAIL]
 [    1.081025] bt_power_populate_dt_pinfo: wl-reset-gpio not provided in devicetree
@@ -1238,7 +1238,7 @@
 [    1.096958] [ds28e16] Read_RomID: RomID = 9f,f8,f3,2c,13,f0,04,21
 [    1.096964] [ds28e16] set_sched_affinity_to_all: Setting cpu affinity to all valid cpus failed(-22) in set_sched_affinity_to_all.
 [    1.097686] usbcore: registered new interface driver snd-usb-audio
-[    1.097853] uaudio-qmi soc:usb_audio_qmi_dev: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.097853] uaudio-qmi soc:usb_audio_qmi_dev: Linked as a consumer to 15000000.apps-smmu
 [    1.097906] iommu: Adding device soc:usb_audio_qmi_dev to group 21
 [    1.101430] [CSPL] Initializing misc device
 [    1.104675] cs35l41 1-0040: cs35l41 i2c probe start
@@ -1261,14 +1261,14 @@
 [    1.240599] kona-pinctrl f000000.pinctrl: invalid function func2 in map table
 [    1.240657] kona-pinctrl f000000.pinctrl: invalid function func2 in map table
 [    1.240669] kona-pinctrl f000000.pinctrl: invalid function func2 in map table
-[    1.267652] msm_vidc:   err : [REDACTED_DEVICE_ID]: .....: no device Registered
-[    1.268643] msm_vidc_v4l2 aa00000.qcom,vidc:non_secure_cb: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.267652] msm_vidc:   err : ffffffff: .....: no device Registered
+[    1.268643] msm_vidc_v4l2 aa00000.qcom,vidc:non_secure_cb: Linked as a consumer to 15000000.apps-smmu
 [    1.268816] iommu: Adding device aa00000.qcom,vidc:non_secure_cb to group 22
-[    1.269177] msm_vidc_v4l2 aa00000.qcom,vidc:secure_non_pixel_cb: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.269177] msm_vidc_v4l2 aa00000.qcom,vidc:secure_non_pixel_cb: Linked as a consumer to 15000000.apps-smmu
 [    1.269699] iommu: Adding device aa00000.qcom,vidc:secure_non_pixel_cb to group 23
-[    1.270074] msm_vidc_v4l2 aa00000.qcom,vidc:secure_bitstream_cb: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.270074] msm_vidc_v4l2 aa00000.qcom,vidc:secure_bitstream_cb: Linked as a consumer to 15000000.apps-smmu
 [    1.270403] iommu: Adding device aa00000.qcom,vidc:secure_bitstream_cb to group 24
-[    1.270767] msm_vidc_v4l2 aa00000.qcom,vidc:secure_pixel_cb: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.270767] msm_vidc_v4l2 aa00000.qcom,vidc:secure_pixel_cb: Linked as a consumer to 15000000.apps-smmu
 [    1.271090] iommu: Adding device aa00000.qcom,vidc:secure_pixel_cb to group 25
 [    1.272068] register_client_adhoc:find path.src 1 dest 590
 [    1.272311] register_client_adhoc:Client handle 52 disp_rsc_reg
@@ -1336,11 +1336,11 @@
 [    1.278702] msm_drm ae00000.qcom,mdss_mdp: bound af20000.qcom,sde_rscc (ops sde_rsc_comp_ops)
 [    1.278723] [drm] mapped mdp address space @000000006db3fc61
 [    1.279093] [drm:_sde_kms_hw_init_blocks:3649] sde hardware revision:0x60000000
-[    1.280513] msmdrm_smmu ae00000.qcom,mdss_mdp:qcom,smmu_sde_unsec_cb: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.280513] msmdrm_smmu ae00000.qcom,mdss_mdp:qcom,smmu_sde_unsec_cb: Linked as a consumer to 15000000.apps-smmu
 [    1.280667] iommu: Adding device ae00000.qcom,mdss_mdp:qcom,smmu_sde_unsec_cb to group 26
 [    1.280796] [drm] probing device qcom,smmu_sde_unsec
 [    1.280804] [drm] Created domain mdp_ns, secure=0
-[    1.281711] msmdrm_smmu ae00000.qcom,mdss_mdp:qcom,smmu_sde_sec_cb: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.281711] msmdrm_smmu ae00000.qcom,mdss_mdp:qcom,smmu_sde_sec_cb: Linked as a consumer to 15000000.apps-smmu
 [    1.282095] iommu: Adding device ae00000.qcom,mdss_mdp:qcom,smmu_sde_sec_cb to group 27
 [    1.282226] [drm] probing device qcom,smmu_sde_sec
 [    1.282233] [drm] Created domain mdp_s, secure=1
@@ -1349,7 +1349,7 @@
 [    1.284987] [drm:sde_connector_register_esd_irq:3123] register esd irq success
 [    1.287993] [drm] Supports vblank timestamp caching Rev 2 (21.10.2013).
 [    1.287999] [drm] No driver support for vblank timestamp query.
-[    1.288256] [drm] Initialized msm_drm 1.3.0 [REDACTED_DEVICE_ID] for ae00000.qcom,mdss_mdp on minor 0
+[    1.288256] [drm] Initialized msm_drm 1.3.0 20130625 for ae00000.qcom,mdss_mdp on minor 0
 [    1.288293] [drm] cont_splash enabled in 1 of 1 display(s)
 [    1.302569] rmnet_perf_init(): initializing rmnet_perf
 [    1.302579] rmnet_perf_config_notify_cb(): rmnet_perf netdevice register, name = lo
@@ -1359,17 +1359,17 @@
 [    1.302602] rmnet_perf_config_notify_cb(): rmnet_perf netdevice register, name = ifb1
 [    1.302611] rmnet_shs_module_init(): Starting rmnet SHS module
 [    1.303484] synx: registered bind ops for cam_sync
-[    1.303948] msm_cam_smmu soc:qcom,cam_smmu:msm_cam_smmu_ife: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.303948] msm_cam_smmu soc:qcom,cam_smmu:msm_cam_smmu_ife: Linked as a consumer to 15000000.apps-smmu
 [    1.304224] iommu: Adding device soc:qcom,cam_smmu:msm_cam_smmu_ife to group 28
-[    1.304598] msm_cam_smmu soc:qcom,cam_smmu:msm_cam_smmu_jpeg: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.304598] msm_cam_smmu soc:qcom,cam_smmu:msm_cam_smmu_jpeg: Linked as a consumer to 15000000.apps-smmu
 [    1.304756] iommu: Adding device soc:qcom,cam_smmu:msm_cam_smmu_jpeg to group 29
 [    1.304926] platform soc:qcom,cam_smmu:msm_cam_icp_fw: assigned reserved memory node pil_camera_region
-[    1.305367] msm_cam_smmu soc:qcom,cam_smmu:msm_cam_smmu_icp: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.305367] msm_cam_smmu soc:qcom,cam_smmu:msm_cam_smmu_icp: Linked as a consumer to 15000000.apps-smmu
 [    1.305671] iommu: Adding device soc:qcom,cam_smmu:msm_cam_smmu_icp to group 30
 [    1.305816] CAM_INFO: CAM-SMMU: cam_smmu_get_memory_regions_info: 3591 [icp] : Discard region specified [0xdff00000 0xe0200000] in [0x17600000 0xfef00000]
-[    1.306068] msm_cam_smmu soc:qcom,cam_smmu:msm_cam_smmu_cpas_cdm: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.306068] msm_cam_smmu soc:qcom,cam_smmu:msm_cam_smmu_cpas_cdm: Linked as a consumer to 15000000.apps-smmu
 [    1.306257] iommu: Adding device soc:qcom,cam_smmu:msm_cam_smmu_cpas_cdm to group 31
-[    1.306826] msm_cam_smmu soc:qcom,cam_smmu:msm_cam_smmu_fd: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.306826] msm_cam_smmu soc:qcom,cam_smmu:msm_cam_smmu_fd: Linked as a consumer to 15000000.apps-smmu
 [    1.306986] iommu: Adding device soc:qcom,cam_smmu:msm_cam_smmu_fd to group 32
 [    1.307739] cam-cpas ac40000.qcom,cam-cpas: Linked as a consumer to regulator.83
 [    1.309747] register_client_adhoc:find path.src 1 dest 589
@@ -1507,7 +1507,7 @@
 [    1.640639] power_supply idt: driver failed to report `otg_state' property: -22
 [    1.664445] msm-dwc3 a600000.ssusb: Linked as a consumer to regulator.68
 [    1.665096] dwc3 a600000.dwc3: Failed to get clk 'ref': -2
-[    1.665196] dwc3 a600000.dwc3: changing max_speed on rev [REDACTED_DEVICE_ID]
+[    1.665196] dwc3 a600000.dwc3: changing max_speed on rev 00000000
 [    1.665829] usb_bam_init: setting SPS_BAM_SMMU_EN flag with (a704000.qcom,usbbam)
 [    1.665912] sps:BAM 0x000000000a704000 is registered.
 [    1.666083] register_client_adhoc:find path.src 61 dest 512
@@ -1560,7 +1560,7 @@
 [    1.755787] QPNP SMB5 probed successfully
 [    1.770682] msm-dwc3 a600000.ssusb: Linked as a consumer to regulator.68
 [    1.771224] dwc3 a600000.dwc3: Failed to get clk 'ref': -2
-[    1.771291] dwc3 a600000.dwc3: changing max_speed on rev [REDACTED_DEVICE_ID]
+[    1.771291] dwc3 a600000.dwc3: changing max_speed on rev 00000000
 [    1.771836] usb_bam_init: setting SPS_BAM_SMMU_EN flag with (a704000.qcom,usbbam)
 [    1.771910] sps:BAM 0x000000000a704000 is registered.
 [    1.772060] register_client_adhoc:find path.src 61 dest 512
@@ -1604,7 +1604,7 @@
 [    1.849268] idtp9220_set_enable_mode: enable:0
 [    1.849281] idtp9415 enable gpio val is :1
 [    1.849783] dwc3 a600000.dwc3: Failed to get clk 'ref': -2
-[    1.849849] dwc3 a600000.dwc3: changing max_speed on rev [REDACTED_DEVICE_ID]
+[    1.849849] dwc3 a600000.dwc3: changing max_speed on rev 00000000
 [    1.850370] usb_bam_init: setting SPS_BAM_SMMU_EN flag with (a704000.qcom,usbbam)
 [    1.850444] sps:BAM 0x000000000a704000 is registered.
 [    1.850584] register_client_adhoc:find path.src 61 dest 512
@@ -1626,36 +1626,36 @@
 [    1.855365] adsprpc: init_secure_vmid_list: secure VMID = 37
 [    1.855382] adsprpc: fastrpc_probe: service location enabled for avs/audio (audio_pdr_adsprpc)
 [    1.855390] adsprpc: fastrpc_probe: service location enabled for tms/servreg (sensors_pdr_adsprpc)
-[    1.855678] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb1: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.855678] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb1: Linked as a consumer to 15000000.apps-smmu
 [    1.855845] iommu: Adding device soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb1 to group 37
-[    1.856233] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb2: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.856233] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb2: Linked as a consumer to 15000000.apps-smmu
 [    1.856381] iommu: Adding device soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb2 to group 38
-[    1.856777] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb3: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.856777] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb3: Linked as a consumer to 15000000.apps-smmu
 [    1.856925] iommu: Adding device soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb3 to group 39
-[    1.857314] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb4: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.857314] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb4: Linked as a consumer to 15000000.apps-smmu
 [    1.857464] iommu: Adding device soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb4 to group 40
-[    1.857850] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb5: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.857850] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb5: Linked as a consumer to 15000000.apps-smmu
 [    1.857908] wireless_power_good_en:0
 [    1.858041] iommu: Adding device soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb5 to group 41
-[    1.858429] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb6: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.858429] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb6: Linked as a consumer to 15000000.apps-smmu
 [    1.858575] iommu: Adding device soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb6 to group 42
-[    1.858992] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb7: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.858992] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb7: Linked as a consumer to 15000000.apps-smmu
 [    1.859145] iommu: Adding device soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb7 to group 43
-[    1.859540] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb8: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.859540] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb8: Linked as a consumer to 15000000.apps-smmu
 [    1.859687] iommu: Adding device soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb8 to group 44
-[    1.860098] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb9: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.860098] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb9: Linked as a consumer to 15000000.apps-smmu
 [    1.860603] iommu: Adding device soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb9 to group 45
-[    1.861010] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb10: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.861010] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb10: Linked as a consumer to 15000000.apps-smmu
 [    1.861165] iommu: Adding device soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb10 to group 46
-[    1.861561] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb11: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.861561] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb11: Linked as a consumer to 15000000.apps-smmu
 [    1.861709] iommu: Adding device soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb11 to group 47
-[    1.862089] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb12: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.862089] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb12: Linked as a consumer to 15000000.apps-smmu
 [    1.862244] iommu: Adding device soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb12 to group 48
-[    1.862621] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb13: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.862621] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb13: Linked as a consumer to 15000000.apps-smmu
 [    1.862770] iommu: Adding device soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb13 to group 49
-[    1.863152] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb14: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.863152] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb14: Linked as a consumer to 15000000.apps-smmu
 [    1.863305] iommu: Adding device soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb14 to group 50
-[    1.863691] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb15: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.863691] fastrpc soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb15: Linked as a consumer to 15000000.apps-smmu
 [    1.863841] iommu: Adding device soc:qcom,msm_fastrpc:qcom,msm_fastrpc_compute_cb15 to group 51
 [    1.864638] wireless_power_good_en:0
 [    1.864705] adsprpc: fastrpc_device_init: SSR notifier registered for adsp
@@ -1664,7 +1664,7 @@
 [    1.864729] adsprpc: fastrpc_device_init: SSR notifier registered for cdsp
 [    1.865758] mtdoops: mtd0 is too large (limit is 8 MiB)
 [    1.866108] block2mtd: mtd0: [/dev/block/sda15] erase_size = 2048KiB [2097152]
-[    1.866227] ngd_msm_ctrl 3ac0000.slim: Linked as a consumer to [REDACTED_DEVICE_ID].apps-smmu
+[    1.866227] ngd_msm_ctrl 3ac0000.slim: Linked as a consumer to 15000000.apps-smmu
 [    1.866405] iommu: Adding device 3ac0000.slim to group 52
 [    1.868617] input: gpio-keys as /devices/platform/soc/soc:gpio_keys/input/input4
 [    1.869187] [GTP-INF][goodix_i2c_init:2044] Goodix driver init
@@ -1740,10 +1740,10 @@
 [    1.981554] [ FTS ] getFWdata: getFWdata starting ...
 [    1.981558] [ FTS ] getFWdata: Read FW from BIN file st_fts_j2s.ftb !
 [    1.981600] [ FTS ] getFWdata: Finished!
-[    1.981607] [ FTS ] parseBinFile: FILE SVN REV = [REDACTED_DEVICE_ID]
+[    1.981607] [ FTS ] parseBinFile: FILE SVN REV = 00003444
 [    1.981612] [ FTS ] parseBinFile: FILE Fw Version = 0124
-[    1.981617] [ FTS ] parseBinFile: FILE Config Project ID = [REDACTED_DEVICE_ID]
-[    1.981622] [ FTS ] parseBinFile: FILE Config Version = [REDACTED_DEVICE_ID]
+[    1.981617] [ FTS ] parseBinFile: FILE Config Project ID = 00000000
+[    1.981622] [ FTS ] parseBinFile: FILE Config Version = 00000008
 [    1.981627] [ FTS ] parseBinFile: File External Release =  
 [    1.981655] [ FTS ] parseBinFile: Initialize cx_ver to default value! 
 [    1.981663] [ FTS ] parseBinFile: CX Version = FFFF 
@@ -1765,7 +1765,7 @@
 [    2.027842] [ds28e16] verify_get_property: get RomID = 9f,f8,f3,2c,13,f0,04,21
 [    2.027848] FG: ds_romid_work: FG: romid prop is 9f f8 f3 2c 13 f0 04 21
 [    2.056768] [ FTS ] fts_enableInterrupt: Interrupt Enabled!
-[    2.056771] [ FTS ] fts_fw_update: Fw Update Finished! error = [REDACTED_DEVICE_ID]
+[    2.056771] [ FTS ] fts_fw_update: Fw Update Finished! error = 00000000
 [    2.056818] [mi-touch] xiaomitouch_register_modedata: 
 [    2.057739] [ FTS ] fts_status_event_handler: Mutual negative detect Force cal = 01 00 00 00 00 02
 [    2.058092] [ FTS ] fts_probe: Probe Finished

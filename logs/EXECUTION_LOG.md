@@ -13289,3 +13289,63 @@
 - 安全边界：没有刷写、重启、RAM 启动、擦除、BCB/misc 写入、切换槽位或恢复 PixelOS。
 - 待处理：将此设备状态澄清同步至公开报告和项目状态；下一步仍先解决 Android 首次失败日志留存，再决定 C18 复验。
 - 替代：修正 22:25 记录中“设备最近状态仍为 Standalone USB Mass Storage”的后续设备状态；该旧条目保留其当时查询结果。
+## 2026-09-26 23:14｜C18 A 槽状态对照复验准备
+
+- 状态：主机侧准备完成；等待用户现场确认后才可启动 C18。
+- 改动/结论：只读复核确认唯一设备 `[REDACTED_DEVICE_ID]` 仍为 `product=thyme`、A 槽、Bootloader 解锁、非 userspace Fastboot；A 槽 `unbootable=no`、`successful=no`、`retry=7`，ADB 离线。保存启动前原始预检于 `work/reports/20260926_CANDIDATE18_NATIVE_ADRENO/observations/c18_retest_20260926_231128/preflight_fastboot.txt`。为满足本次启动前后槽位对照，更新 C18 启动门控脚本，使它在命令前再次查询并落盘全部目标状态，且仅当 A 槽仍为 `no/no/7` 时允许继续。
+- 原因：C18 首次失败后记录到 A 槽 unbootable，但缺少同一轮启动前完整状态；本次重测需区分系统故障与 boot-control 状态变化。
+- 涉及文件：`tools/start_candidate18_observed_boot.ps1`、`work/reports/20260926_CANDIDATE18_NATIVE_ADRENO/observations/c18_retest_20260926_231128/preflight_fastboot.txt`、`日志/项目当前状态.md`。
+- 验证：脚本 PowerShell AST 解析通过；设备只读 getvar 与 `fastboot devices -l` 核对通过。主机未发现 observer、恢复监听或 fastboot 写入进程（仅 Android adb server）。
+- 尚未验证：observer 尚未启动；C18 本轮尚未启动；启动前脚本运行时的 A/B 快照和 Android 行为待用户现场确认后验证。
+- 安全边界：本轮没有执行 `fastboot reboot`、RAM boot、分区刷写、擦除、`set_active`、PixelOS 恢复或其他设备状态修改。
+- 待处理：等待用户确认正在观察后，启动 observer 至 `[ARMED]`，再执行一次 `fastboot reboot`。若再次回到 Fastboot，立即只读记录启动后 A 槽三项状态；不重复 `set_active a`。
+- 替代：更新 2026-09-26 22:41 记录中的“先解决日志留存再决定 C18 复验”下一步；C18 失败根因仍未知。
+
+## 2026-09-27 00:04｜C18 原生 Adreno 受控复验取得图形阶段日志
+
+- 状态：C18 复验及 Standalone 全量只读取证完成；C18 EGLConfig 阻塞得到再次确认，未刷写新镜像。
+- 改动/结论：观察器以 `C18-native-adreno` ARMED 后执行一次 `fastboot reboot`。ADB 未上线；用户看到小米 Logo 常亮并手动切回 Fastboot。console/pmsg 证明 C18 进入 Android First/Second Stage、动态策略/APEX、vold/Keymaster 与 `/data` 初始化。SurfaceFlinger 有 61 次 `no suitable EGLConfig found`（`format: 1`）；graphicsengine 在 `vkEnumeratePhysicalDevices+4` 另有一次 SIGSEGV，因果未证。未出现 `ion_device` AVC。日志中的 `Android META-EGL` 不能辨认 Adreno/ANGLE 后端；C18 运行时驱动映射仍未知。
+- 原因：复验 C18 原生 Adreno EGL 路由是否改变此前稳定复现的 SurfaceFlinger EGLConfig 错误，并补齐 C18 Android pstore。
+- 涉及文件：报告 `work/reports/20260926_C18_NATIVE_ADRENO/C18_RETEST_REPORT.md`；Standalone 全量原始副本 `work/reports/20260926_C18_NATIVE_ADRENO/standalone/run_20260926_234120/`；observer 目录 `work/reports/20260926_CANDIDATE18_NATIVE_ADRENO/observations/c18_retest_20260926_231128/run_20260926_233356/`；状态文件。
+- 验证：原始卷 8 文件、19,305,370 bytes；FILE_MANIFEST 全部逐项长度和 SHA-256 匹配，验证错误 0。pmsg 有 8,395 条时间戳记录（约 316.715 秒）；console 一个 Linux 启动头，First/Second Stage 各有记录，末尾 uptime 321.675839 秒，无 Kernel panic。观察器记录 reboot 返回成功、约 348 秒后 Fastboot 重现；用户确认手动切回。只读设备复核仍为唯一 thyme、A 槽、unlocked=yes、非 userspace Fastboot，retry 7→6，`unbootable=no/successful=no`。
+- 仅分析，未修改业务代码。根据错误中 `format:1` 与 Android PixelFormat 规范，记录一个待验证的接口假说：RGBA_8888 EGL native visual/config 兼容性。决定下一候选仅测试 `ro.surface_flinger.default_composition_pixel_format=2`（RGBX_8888），保留 C18 其他配置；这不是已确认根因。
+- 尚未验证：Adreno EGL/GLES 实际加载映射、EGL configs 返回列表、RGBX_8888 是否被目标 HWC/Gralloc 支持、SurfaceFlinger 是否能成功初始化、bootanimation/桌面。
+- 安全边界：本轮无分区写入/擦除、无 `set_active`、无 BCB/misc 修改、无恢复 PixelOS；Bootloader 未回锁。2026-09-27 最新只读 Fastboot 状态为 A 槽 retry=6。
+- 待处理：增量公开本轮 C18 原始取证；主机侧构建并检查 C19 RGBX 实验。若刷写，限 `super` 与 `vbmeta_system_a`，结束保持 Fastboot；首次启动等待用户在场确认。不清除 userdata/metadata。
+- 替代：替代本文件 2026-09-26 22:17 / 22:25 及 23:14 条目中“C18 pstore 为空、启动阶段未知、尚无图形故障证据”的当前判断；这些旧条目保留其记录时点的事实。
+
+## 2026-09-27 00:05｜准备 C19 RGBX EGLConfig 实验构建与操作门控
+
+- 状态：主机侧脚本修改完成并通过语法检查；C19 尚未构建、刷写或启动。
+- 改动/结论：新增 `tools/build_candidate19_rgbx_egl.py`、`tools/flash_candidate19_rgbx_egl.ps1`、`tools/start_candidate19_observed_boot.ps1`。C19 从 C18 的 system tree 派生，仅在 `system/build.prop` 添加 `ro.surface_flinger.default_composition_pixel_format=2`；预定写入目标严格限制为 `super` 与 `vbmeta_system_a`。启动门控要求 C19 新鲜 ARMED、thyme/A/unlocked/bootloader fastboot，且 A 槽状态与当前 `no/no/retry=6` 基线一致；刷写脚本不含设备启动调用。
+- 原因：C18 的真实 abort 参数是 `format:1`（RGBA_8888）。Android 17 SurfaceFlinger 提供默认合成像素格式属性，RGBX_8888=2 是最小、可回退的格式兼容性实验；当前尚无配置枚举数据支持更宽泛的图形驱动替换。
+- 涉及文件：上述 3 个工具脚本；C18 现有镜像和工作树只作输入，不覆盖。
+- 验证：Python AST、2 个 PowerShell 脚本 AST 均通过；对 C18 system、供体 vendor/product 与 C17 system_ext 的已缓存 build.prop 定点检查没有发现该属性已有赋值。刷写脚本目标清单为 `super`、`vbmeta_system_a`；未包含 erase/format/lock/reboot 命令。
+- 尚未验证：C19 构建、EROFS、AVB/LP、镜像 SHA-256、HWC/Gralloc 对 RGBX_8888 的运行时兼容性及 SurfaceFlinger 实际行为。
+- 安全边界：本条仅主机文件新增与静态语法检查；未连接设备执行写入、reboot、RAM boot 或擦除。
+- 待处理：继续执行 C19 主机侧构建和与实际改动相关的必要检查；成功后按本轮授权刷写 `super` 与 `vbmeta_system_a`，保持 Fastboot 并等待用户首次启动确认。
+- 替代：无；C18 原始镜像、pstore 与历史记录均保留。
+
+## 2026-09-27 00:06｜修复 C19 构建器的 WSL 输出编码中断
+
+- 状态：首次构建在 WSL 复制/修改 C19 暂存 system tree 后，于主机打印 WSL 警告时遇到 GBK `UnicodeEncodeError` 中断；尚未生成 system、vbmeta_system 或 super 镜像。暂存树已保留。
+- 改动/结论：构建器增加安全终端输出编码回退及 `--resume`，允许验证并继续已完成的暂存树，不覆盖 C18 或 C19 已存在输入。暂存 `system/build.prop` 可读回唯一 `ro.surface_flinger.default_composition_pixel_format=2`。
+- 原因：WSL 在该 Windows 控制台返回含替换字符的 stderr，Python 默认 GBK stdout 编码无法打印；该问题与 EROFS/AVB 构建无关。
+- 涉及文件：`tools/build_candidate19_rgbx_egl.py`；WSL 暂存目录 `[LOCAL_WSL_USER]/c19_rgbx_egl_20260927_run1/system_tree/`。
+- 验证：修正后 Python AST 通过；WSL 中属性只出现一次。首次失败没有产生候选镜像或设备操作。
+- 尚未验证：恢复构建的 EROFS、AVB/LP 和最终六项镜像；本次中断后续任务将从保留暂存继续。
+- 安全边界：没有刷写、启动、RAM boot、数据清除或 Bootloader 状态修改；C18 输入未改。
+- 待处理：运行 `python tools/build_candidate19_rgbx_egl.py --resume` 并完成镜像检查。
+- 替代：替代 00:05 条目中“构建尚未开始”的进度表述；脚本与阶段输出现已部分生成。
+
+## 2026-09-27 00:20｜C19 RGBX 构建、静态检查与两分区刷写完成
+
+- 状态：Candidate 19 已完成主机构建及目标分区刷写，手机保持 Bootloader Fastboot，尚未首次启动。
+- 改动/结论：C19 基于 C18 native Adreno，只在 `system/build.prop` 设置 `ro.surface_flinger.default_composition_pixel_format=2`（RGBX_8888）。构建器成功生成最终 EROFS、更新 `vbmeta_system` system hashtree descriptor、按既有逻辑分区组合构建 super，并生成六镜像 `BUILD_MANIFEST.json`。按授权只写入 `super` 与 `vbmeta_system_a`。
+- 原因：C18 的 61 次 SurfaceFlinger `no suitable EGLConfig found` 均记录 `format:1`（RGBA_8888）；C19 测试替代默认合成格式是否能匹配现有 EGL 配置。此实验尚未证明真实根因。
+- 涉及文件：`tools/build_candidate19_rgbx_egl.py`、`tools/flash_candidate19_rgbx_egl.ps1`、`tools/start_candidate19_observed_boot.ps1`、`work/stage_i_thyme_os4_candidate_19_rgbx_egl_run1/images/BUILD_MANIFEST.json`、`work/reports/20260927_CANDIDATE19_RGBX_EGL/REPORT.md`、`日志/项目当前状态.md`。
+- 验证：构建命令 exit 0；最终 EROFS fsck 与属性回读成功；system descriptor 匹配新 system，product/system_ext descriptor 与 C18 一致，LP A 槽布局检查通过；Python AST、PowerShell AST、刷写 Dry-Run 均通过。执行前再次核对 super/vbmeta_system 大小和 SHA-256。Fastboot 预检确认唯一设备、`product=thyme`、A 槽、`unlocked=yes`、`is-userspace=no`、A 槽 unbootable=no。super 十个 sparse chunk 全部完成且写入命令成功，随后 vbmeta_system_a 写入成功。刷后只读查询仍显示 Fastboot、thyme/A/unlocked、A 槽状态 `unbootable=no/successful=no/retry=6`。
+- 尚未验证：C19 尚未启动；RGBX 是否被 SurfaceFlinger、EGL/HWC/Gralloc 接受，是否能出现 HyperOS 启动画面/设置向导/桌面，均待实机。
+- 安全边界：没有 reboot/fastboot boot、userdata/metadata 擦除、其他分区写入、misc/BCB 修改、槽位切换、硬件 persist/modemst/EFS/NV 修改或 Bootloader 回锁；没有恢复 PixelOS。
+- 待处理：用户现场确认后启动 C19 Observer 并等待 ARMED，再执行一次受控首次启动；优先捕获 logcat 与实时状态，失败时保存完整 Standalone 诊断卷。
+- 替代：替代 00:05/00:06 中“C19 尚未构建/待构建”的当前状态；对应记录保留其当时进度。

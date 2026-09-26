@@ -43,7 +43,7 @@ $Images = [ordered]@{
     "dtbo_a" = @{
         Path = "[LOCAL_PROJECT_ROOT]\work\restore_pixelos_a0_prime\images\dtbo.img"
         ExpectedSha256 = "50E1AC0EDCBD333778217AA6FE8D972F6FF85ADD0DAE8A015A6642C2172DD886"
-        ExpectedBytes  = [REDACTED_DEVICE_ID]
+        ExpectedBytes  = 33554432
         Description    = "PixelOS 12-entry DTBO (Entry 10 contains j2s panel match Fragment 58)"
     }
     "vbmeta_a" = @{

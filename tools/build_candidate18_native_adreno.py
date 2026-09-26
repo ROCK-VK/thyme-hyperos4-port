@@ -28,7 +28,7 @@ if ROOT.drive:
     WSL_ROOT = f"/mnt/{ROOT.drive[0].lower()}/{ROOT.as_posix()[3:]}"
 else:
     WSL_ROOT = ROOT.as_posix()
-WSL_BUILD_ROOT = "/path/to/thyme-os4-build"
+WSL_BUILD_ROOT = "[LOCAL_WSL_USER]
 WSL_C1_BASE = f"{WSL_BUILD_ROOT}/thyme_xiaomi15_os4_first_boot_candidate_1"
 WSL_C15_STAGE = f"{WSL_BUILD_ROOT}/c15_angle_egl_20260926_run1"
 WSL_C17_STAGE = f"{WSL_BUILD_ROOT}/c17_graphics_allocator_open_20260926_run1"
@@ -268,7 +268,7 @@ set -euo pipefail
   --block-size 4096 --alignment {ALIGNMENT} --virtual-ab --sparse --super-name super \\
   --group qti_dynamic_partitions_a:{DEVICE_SIZE} --group qti_dynamic_partitions_b:{DEVICE_SIZE} \\
   --partition mi_ext_a:readonly:202375168:qti_dynamic_partitions_a --partition mi_ext_b:none:0:qti_dynamic_partitions_b \\
-  --partition odm_a:readonly:[REDACTED_DEVICE_ID]:qti_dynamic_partitions_a --partition odm_b:none:0:qti_dynamic_partitions_b \\
+  --partition odm_a:readonly:36700160:qti_dynamic_partitions_a --partition odm_b:none:0:qti_dynamic_partitions_b \\
   --partition product_a:readonly:4387241984:qti_dynamic_partitions_a --partition product_b:none:0:qti_dynamic_partitions_b \\
   --partition system_a:readonly:{SYSTEM_PARTITION_SIZE}:qti_dynamic_partitions_a --partition system_b:none:0:qti_dynamic_partitions_b \\
   --partition system_ext_a:readonly:{SYSTEM_EXT_PARTITION_SIZE}:qti_dynamic_partitions_a --partition system_ext_b:none:0:qti_dynamic_partitions_b \\

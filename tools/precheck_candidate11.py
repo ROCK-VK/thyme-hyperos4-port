@@ -137,7 +137,7 @@ print(f"  [PASS] Standalone Diag boot image ready: {DIAG_BOOT.stat().st_size:,} 
 expected_pixel = {
     "boot.img": 201326592,
     "vendor_boot.img": 100663296,
-    "dtbo.img": [REDACTED_DEVICE_ID],
+    "dtbo.img": 33554432,
     "vbmeta.img": 8192,
     "vbmeta_system.img": 4096,
     "super.img": 6469630544,

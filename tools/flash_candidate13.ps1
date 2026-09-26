@@ -18,7 +18,7 @@ $Images = @(
     [pscustomobject]@{ Partition = 'vbmeta_system_a'; File = 'vbmeta_system.img'; Bytes = 131072;     Sha256 = 'BF4155CD99F125B8CAD26490FD2F3412EA4389F090CE56F36FAA2BF2A759C633'; DisableVerification = $false }
     [pscustomobject]@{ Partition = 'boot_a';          File = 'boot.img';          Bytes = 201326592;  Sha256 = 'E5A016056D5C93C7A886980A7C062617EC44DC06A48417D7DD0F4476708A6368'; DisableVerification = $false }
     [pscustomobject]@{ Partition = 'vendor_boot_a';   File = 'vendor_boot.img';   Bytes = 100663296;  Sha256 = '02333B82BA936F1BAAB1ECAB744632C70F8FC16688A206C7041EF319F112A137'; DisableVerification = $false }
-    [pscustomobject]@{ Partition = 'dtbo_a';          File = 'dtbo.img';          Bytes = [REDACTED_DEVICE_ID];   Sha256 = '50E1AC0EDCBD333778217AA6FE8D972F6FF85ADD0DAE8A015A6642C2172DD886'; DisableVerification = $false }
+    [pscustomobject]@{ Partition = 'dtbo_a';          File = 'dtbo.img';          Bytes = 33554432;   Sha256 = '50E1AC0EDCBD333778217AA6FE8D972F6FF85ADD0DAE8A015A6642C2172DD886'; DisableVerification = $false }
     [pscustomobject]@{ Partition = 'super';           File = 'super.img';         Bytes = 7684274964; Sha256 = '8AFEFDDBCA2357D003DEF055418CC08A832B91EA08EDCB40DEECBEBD42FA2252'; DisableVerification = $false }
 )
 

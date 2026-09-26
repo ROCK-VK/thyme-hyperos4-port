@@ -1,0 +1,61 @@
+{
+  "candidate": "Candidate 19 RGBX EGLConfig compatibility experiment",
+  "base": "Candidate 18 native Adreno EGL selection",
+  "changes": [
+    "system/build.prop: set ro.surface_flinger.default_composition_pixel_format=2 (RGBX_8888); C18 logs repeatedly aborted at format 1 (RGBA_8888)."
+  ],
+  "retained_from_c18": [
+    "C14 BPF bootstrap bypass.",
+    "C13 Keymaster/Gatekeeper ion_device rules.",
+    "C17 graphics allocator ion_device open/read rule.",
+    "C18 persist.graphics.egl=adreno route and post-persistent-properties override.",
+    "C18 system_ext policy, fstab/data encryption path, and thyme kernel/vendor hardware stack.",
+    "No SELinux expansion, Vulkan/GPU library replacement, or userdata/metadata wipe."
+  ],
+  "flash_scope_prepared": [
+    "super",
+    "vbmeta_system_a"
+  ],
+  "evidence_basis": [
+    "C18 pmsg recorded 61 SurfaceFlinger no suitable EGLConfig aborts, all with format: 1.",
+    "Android PixelFormat defines RGBA_8888 as 1 and RGBX_8888 as 2.",
+    "Android 17 exposes ro.surface_flinger.default_composition_pixel_format; absent means RGBA_8888 by default."
+  ],
+  "limits": [
+    "C19 tests whether RGBX_8888 matches an EGL config; the C18 logs do not enumerate the driver config list or prove which EGL backend was mapped.",
+    "Changing the default composition pixel format may affect HWC/Gralloc composition; it is a targeted and reversible display experiment, not a confirmed root-cause fix.",
+    "No boot, vendor_boot, dtbo, vbmeta, system_ext policy, kernel, data, or hardware identity partition changes.",
+    "Build is host-only; separate flash script writes only super and vbmeta_system_a and never reboots."
+  ],
+  "checks": [
+    "C18 source manifest and image sizes verified; C19 property read back from final EROFS; EROFS fsck passed.",
+    "C19 system hashtree descriptor matches the built system; product/system_ext descriptors match C18.",
+    "LP dump has the expected active A logical partitions and C18 geometry."
+  ],
+  "images": {
+    "boot.img": {
+      "bytes": 201326592,
+      "sha256": "E5A016056D5C93C7A886980A7C062617EC44DC06A48417D7DD0F4476708A6368"
+    },
+    "vendor_boot.img": {
+      "bytes": 100663296,
+      "sha256": "02333B82BA936F1BAAB1ECAB744632C70F8FC16688A206C7041EF319F112A137"
+    },
+    "dtbo.img": {
+      "bytes": 33554432,
+      "sha256": "50E1AC0EDCBD333778217AA6FE8D972F6FF85ADD0DAE8A015A6642C2172DD886"
+    },
+    "vbmeta.img": {
+      "bytes": 131072,
+      "sha256": "013335BCA9B312E0BEFF737D30903A9B0A1EF829BA19A7BD5802BF83C04F40E9"
+    },
+    "vbmeta_system.img": {
+      "bytes": 131072,
+      "sha256": "1E75E1733BBDFE4CF43D898120F202A5761168CD021B0A160784667EFFB5E652"
+    },
+    "super.img": {
+      "bytes": 7684274964,
+      "sha256": "436B4322842C649C674C9B76AE057894EE0B2AC74EB74A0098FD278CC3E634DD"
+    }
+  }
+}

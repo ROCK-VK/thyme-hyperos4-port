@@ -17,7 +17,7 @@
 
 ### 1. 三个 FDT 的定位与设备配置对应关系
 
-从 Candidate 9 `vendor_boot.img` 偏移 `[REDACTED_DEVICE_ID]` 处解析出 3 个有效 FDT 切片：
+从 Candidate 9 `vendor_boot.img` 偏移 `23347200` 处解析出 3 个有效 FDT 切片：
 
 | FDT 序号 | 原始容量 | 修改后容量 | 增量 | SoC 模型（Root Model） | 适用场景与修改必要性 |
 | :---: | :---: | :---: | :---: | :---: | :--- |

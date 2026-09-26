@@ -59,7 +59,7 @@ for name in unchanged_assets:
 # 2. Extract and modify 3 FDTs from Candidate 9 vendor_boot.img
 c9_vendor_boot = C9_DIR / "vendor_boot.img"
 with open(c9_vendor_boot, "rb") as f:
-    orig_payload = f.read([REDACTED_DEVICE_ID])
+    orig_payload = f.read(29163520)
 
 # Verify v3 header
 hdr = orig_payload[:2112]
@@ -67,7 +67,7 @@ magic, ver, page_sz, k_addr, rd_addr, rd_sz = struct.unpack('<8sIIIII', hdr[:28]
 assert magic == b'VNDRBOOT', "Magic mismatch!"
 assert ver == 3, "Version mismatch!"
 assert page_sz == 4096, "Page size mismatch!"
-assert rd_sz == [REDACTED_DEVICE_ID], f"Ramdisk size unexpected: {rd_sz}"
+assert rd_sz == 23340130, f"Ramdisk size unexpected: {rd_sz}"
 
 cmdline_bytes = hdr[28:28+2048]
 orig_cmdline = cmdline_bytes.split(b"\x00")[0].decode("utf-8").strip()
@@ -82,7 +82,7 @@ assert dtb_addr == 0x1f00000, f"DTB addr unexpected: {hex(dtb_addr)}"
 
 # Read 3 FDT slices
 fdt_sizes = [477098, 477094, 470004]
-dtb_start = [REDACTED_DEVICE_ID]
+dtb_start = 23347200
 raw_dtb = orig_payload[dtb_start : dtb_start + dtb_sz]
 
 fdt_blobs = [
@@ -138,7 +138,7 @@ new_dtb_size = len(new_dtb_blob)
 print(f"\n[DTB BUNDLE] New DTB concatenated size: {new_dtb_size} bytes (delta: +{new_dtb_size - dtb_sz})")
 
 # Check page alignment boundary
-# DTB starts at [REDACTED_DEVICE_ID]. Next page boundary is [REDACTED_DEVICE_ID] (1425408 bytes allocated for DTB).
+# DTB starts at 23347200. Next page boundary is 24772608 (1425408 bytes allocated for DTB).
 assert new_dtb_size <= 1425408, f"New DTB size {new_dtb_size} exceeds allocated page boundary 1425408!"
 dtb_padding = b"\x00" * (1425408 - new_dtb_size)
 
@@ -148,17 +148,17 @@ new_hdr_tail = struct.pack('<I16sIIQ', tags_addr, name, hdr_sz, new_dtb_size, dt
 new_hdr = orig_payload[:2076] + new_hdr_tail + orig_payload[2112:4096]
 assert len(new_hdr) == 4096, f"Header size mismatch: {len(new_hdr)}"
 
-# Ramdisk chunk (4096 to [REDACTED_DEVICE_ID])
-ramdisk_chunk = orig_payload[4096:[REDACTED_DEVICE_ID]]
-assert len(ramdisk_chunk) == [REDACTED_DEVICE_ID], f"Ramdisk chunk size mismatch: {len(ramdisk_chunk)}"
+# Ramdisk chunk (4096 to 23347200)
+ramdisk_chunk = orig_payload[4096:23347200]
+assert len(ramdisk_chunk) == 23343104, f"Ramdisk chunk size mismatch: {len(ramdisk_chunk)}"
 
-# Trailing data chunk ([REDACTED_DEVICE_ID] to [REDACTED_DEVICE_ID])
-trailing_chunk = orig_payload[[REDACTED_DEVICE_ID]:[REDACTED_DEVICE_ID]]
+# Trailing data chunk (24772608 to 29163520)
+trailing_chunk = orig_payload[24772608:29163520]
 assert len(trailing_chunk) == 4390912, f"Trailing chunk size mismatch: {len(trailing_chunk)}"
 
 # Assemble new unpadded vendor_boot payload
 new_payload = new_hdr + ramdisk_chunk + new_dtb_blob + dtb_padding + trailing_chunk
-assert len(new_payload) == [REDACTED_DEVICE_ID], f"New payload size mismatch: {len(new_payload)} != [REDACTED_DEVICE_ID]"
+assert len(new_payload) == 29163520, f"New payload size mismatch: {len(new_payload)} != 29163520"
 print(f"[ASSEMBLY] New unpadded vendor_boot payload assembled: {len(new_payload)} bytes")
 
 # Write unpadded vendor_boot

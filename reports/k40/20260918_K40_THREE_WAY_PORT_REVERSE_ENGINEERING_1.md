@@ -160,7 +160,7 @@ P4 是一次性、有限范围的输入盘点：只检查已知目录的顶层/�
 本切片第一次在不展开低层分区的前提下读取 donor 的真实用户空间镜像。机器可读表为 `[LOCAL_PROJECT_ROOT]/work/reports/20260918_K40_DONOR_SELECTIVE_CONTENT_SLICE_1.md`。
 
 - payload manifest 确认 `system/system_ext/product/mi_ext/mi_product/system_dlkm/vendor_dlkm` 七个名字均存在；使用 `payload-dumper-go -c 1 -no-verify -p ...`，没有提取 boot/vendor/vendor_boot/dtbo/firmware。
-- 七个输出均为 EROFS，`+0x400=[REDACTED_DEVICE_ID]`。system 为 `976527360` bytes，system_ext 为 `823607296`，product 为 `4334202880`，mi_ext 为 `170819584`，mi_product 为 `348160`，system_dlkm 为 `[REDACTED_DEVICE_ID]`，vendor_dlkm 为 `[REDACTED_DEVICE_ID]`。
+- 七个输出均为 EROFS，`+0x400=[REDACTED_DEVICE_ID]`。system 为 `976527360` bytes，system_ext 为 `823607296`，product 为 `4334202880`，mi_ext 为 `170819584`，mi_product 为 `348160`，system_dlkm 为 `15294464`，vendor_dlkm 为 `88461312`。
 - donor system/system_ext/product 的高层 identity 与已保存的 K40 port `missi/miproduct/OS4` 声明有重合；这是有效的 donor 交叉线索，不是逐文件 provenance。donor 的 mi_ext/mi_product/system_dlkm/vendor_dlkm 形状也被直接观察到，但 K40 port 的无独立 entry 不能据此标为 `REMOVED` 或合并。
 - donor system_dlkm/vendor_dlkm 的模块身份为 Xiaomi15/dada、6.6 Android15；它们不是 exact-thyme owner，thyme 面保持 `REBUILD_FOR_THYME`。system/product/system_ext 继续是受限 `DONOR_USERSPACE`，MIEXT/MI product 继续 `REIMPLEMENT_FOR_THYME`。
 - 本切片没有 `PORTER_REBUILT`、`REMOVED` 或 runtime 成功证据；继续保持 `REVERSE_ENGINEERING / IMAGE_READY=false / DEVICE_WRITE_STOP`，不生成 candidate、不刷写手机。

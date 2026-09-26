@@ -1,0 +1,35 @@
+C18 preboot Fastboot state; read-only queries only
+host_local=2026-09-26T23:34:12.5997796+08:00
+host_utc=2026-09-26T15:34:12.5997126+00:00
+candidate=C18-native-adreno
+serial=1384e684
+product=thyme
+current_slot=a
+unlocked=yes
+is_userspace=no
+slot_unbootable_a=no
+slot_successful_a=no
+slot_retry_count_a=7
+
+--- raw Fastboot query transcript ---
+--- fastboot -s 1384e684 getvar product; started_utc=2026-09-26T15:34:12.2801276+00:00; exit=0 ---
+product: thyme
+Finished. Total time: 0.005s
+--- fastboot -s 1384e684 getvar current-slot; started_utc=2026-09-26T15:34:12.3461153+00:00; exit=0 ---
+current-slot: a
+Finished. Total time: 0.004s
+--- fastboot -s 1384e684 getvar unlocked; started_utc=2026-09-26T15:34:12.3884405+00:00; exit=0 ---
+unlocked: yes
+Finished. Total time: 0.001s
+--- fastboot -s 1384e684 getvar is-userspace; started_utc=2026-09-26T15:34:12.4267879+00:00; exit=0 ---
+is-userspace: no
+Finished. Total time: 0.002s
+--- fastboot -s 1384e684 getvar slot-unbootable:a; started_utc=2026-09-26T15:34:12.4665066+00:00; exit=0 ---
+slot-unbootable:a: no
+Finished. Total time: 0.003s
+--- fastboot -s 1384e684 getvar slot-successful:a; started_utc=2026-09-26T15:34:12.5209601+00:00; exit=0 ---
+slot-successful:a: no
+Finished. Total time: 0.003s
+--- fastboot -s 1384e684 getvar slot-retry-count:a; started_utc=2026-09-26T15:34:12.5609572+00:00; exit=0 ---
+slot-retry-count:a: 7
+Finished. Total time: 0.003s

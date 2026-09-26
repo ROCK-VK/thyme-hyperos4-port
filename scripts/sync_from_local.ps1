@@ -44,6 +44,9 @@ $Allowlist = @(
     @{ Source='tools/flash_candidate16_graphics_allocator_ion.ps1'; Destination='tools/flash_candidate16_graphics_allocator_ion.ps1' }
     @{ Source='tools/flash_candidate17_graphics_allocator_open.ps1'; Destination='tools/flash_candidate17_graphics_allocator_open.ps1' }
     @{ Source='tools/flash_candidate18_native_adreno.ps1'; Destination='tools/flash_candidate18_native_adreno.ps1' }
+    @{ Source='tools/build_candidate19_rgbx_egl.py'; Destination='tools/build_candidate19_rgbx_egl.py' }
+    @{ Source='tools/flash_candidate19_rgbx_egl.ps1'; Destination='tools/flash_candidate19_rgbx_egl.ps1' }
+    @{ Source='tools/start_candidate19_observed_boot.ps1'; Destination='tools/start_candidate19_observed_boot.ps1' }
     @{ Source='tools/observe_candidate13_readonly.py'; Destination='tools/observe_candidate13_readonly.py' }
     @{ Source='tools/record_candidate13_event.ps1'; Destination='tools/record_candidate13_event.ps1' }
     @{ Source='tools/start_candidate13_observed_boot.ps1'; Destination='tools/start_candidate13_observed_boot.ps1' }
@@ -74,7 +77,10 @@ $Allowlist = @(
     @{ Source='work/reports/20260926_CANDIDATE17_FIRST_BOOT/REPORT.md'; Destination='reports/candidate17/20260926_CANDIDATE17_FIRST_BOOT_REPORT.md' }
     @{ Source='work/reports/20260926_CANDIDATE17_RETEST/REPORT.md'; Destination='reports/candidate17/20260926_CANDIDATE17_RETEST_REPORT.md' }
     @{ Source='work/reports/20260926_CANDIDATE18_NATIVE_ADRENO/REPORT.md'; Destination='reports/candidate18/20260926_CANDIDATE18_NATIVE_ADRENO_REPORT.md' }
+    @{ Source='work/reports/20260926_C18_NATIVE_ADRENO/C18_RETEST_REPORT.md'; Destination='reports/candidate18/C18_RETEST_REPORT.md' }
     @{ Source='work/stage_h_thyme_os4_candidate_18_native_adreno_run1/images/BUILD_MANIFEST.json'; Destination='reports/candidate18/BUILD_MANIFEST.json' }
+    @{ Source='work/reports/20260927_CANDIDATE19_RGBX_EGL/REPORT.md'; Destination='reports/candidate19/REPORT.md' }
+    @{ Source='work/stage_i_thyme_os4_candidate_19_rgbx_egl_run1/images/BUILD_MANIFEST.json'; Destination='reports/candidate19/BUILD_MANIFEST.json' }
     @{ Source='work/reports/20260926_CANDIDATE13_NETBPFLOAD_EVIDENCE_EXCERPT.txt'; Destination='reports/boot-logs/candidate13_netbpfload_failure_excerpt.txt' }
     @{ Source='@STORAGE_SAFETY_REPORT'; Destination='reports/candidate13/20260925_CANDIDATE13_STORAGE_SAFETY_AND_FIRST_FAILURE.md' }
     @{ Source='work/reports/20260924_CANDIDATE10_WARMDTB_LOG_SALVAGE/pstore/console-ramoops-0'; Destination='reports/boot-logs/candidate10_console-ramoops.txt' }

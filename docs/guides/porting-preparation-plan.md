@@ -14,7 +14,7 @@
 - 先核验用户正在下载的包，不再以寻找其他供体为当前首要任务。
 
 ### Google Drive PixelOS参考包（根据用户截图）
-- 参考包已下载到`[LOCAL_PROJECT_ROOT]\pixel参考`。原始ZIP没有保留，但已经解出`PixelOS_thyme-17.0-[REDACTED_DEVICE_ID]-1750/payload.bin`（2,887,935,611字节）、OTA元数据和全部独立镜像；`.md5sum`仍在，因此可以校验独立文件与payload，无法验证缺失的原始ZIP。
+- 参考包已下载到`[LOCAL_PROJECT_ROOT]\pixel参考`。原始ZIP没有保留，但已经解出`PixelOS_thyme-17.0-20260820-1750/payload.bin`（2,887,935,611字节）、OTA元数据和全部独立镜像；`.md5sum`仍在，因此可以校验独立文件与payload，无法验证缺失的原始ZIP。
 - `zip`用于查看可启动的Android17 thyme系统结构；单独镜像用于对照boot/vendor_boot/dtbo和动态分区。`super_empty.img`体积很小，保留作为动态分区元数据模板参考。
 - 已保存到`[LOCAL_PROJECT_ROOT]\pixel参考`，与17U供体和天空包分目录；独立镜像SHA-256已记录在当前状态日志。payload已提取并已核对system/vendor/product属性。
 - 不直接刷这些镜像；先读取头信息、AVB、fstab、分区和启动参数。PixelOS不是HyperOS系统供体。
@@ -51,7 +51,7 @@
 ## 三、用户资料评估
 
 ### APTKernel
-- [指定发布](https://github.com/AstideLabs/android_kernel_xiaomi_sm8250/releases/tag/v20260821-[REDACTED_DEVICE_ID])：[REDACTED_DEVICE_ID] / [REDACTED_DEVICE_ID]，明确列出thyme。
+- [指定发布](https://github.com/AstideLabs/android_kernel_xiaomi_sm8250/releases/tag/v20260821-[REDACTED_DEVICE_ID])：20260821 / [REDACTED_DEVICE_ID]，明确列出thyme。
 - 发布区分MIUI与AOSP，区分ReSukiSU-SuSFS与NoKernelSU。
 - [当前README](https://github.com/AstideLabs/android_kernel_xiaomi_sm8250)把thyme对应为小米10S，声明Android 11–17适配方向、EROFS、BPF/clone3/Binder回移。
 - 有价值：作为10S Android 17内核候选，以及研究所需内核补丁的来源。

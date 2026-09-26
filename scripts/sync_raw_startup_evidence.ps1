@@ -29,6 +29,8 @@ $RawDirectoryAllowlist = @(
     @{ Candidate='C18'; Source='work/reports/20260926_C18_NATIVE_ADRENO/standalone/run_20260926_220042'; Destination='candidate18/standalone/failed_attempt_220042' }
     @{ Candidate='C18'; Source='work/reports/20260926_C18_NATIVE_ADRENO/standalone/run_20260926_221653'; Destination='candidate18/standalone/run_20260926_221653' }
     @{ Candidate='C18'; Source='work/reports/20260926_CANDIDATE18_NATIVE_ADRENO/observations/run_20260926_215459'; Destination='candidate18/host-observations/run_20260926_215459' }
+    @{ Candidate='C18'; Source='work/reports/20260926_C18_NATIVE_ADRENO/standalone/run_20260926_234120'; Destination='candidate18/standalone/retest_run_20260926_234120' }
+    @{ Candidate='C18'; Source='work/reports/20260926_CANDIDATE18_NATIVE_ADRENO/observations/c18_retest_20260926_231128/run_20260926_233356'; Destination='candidate18/host-observations/retest_run_20260926_233356' }
 )
 
 $CredentialPatterns = @(

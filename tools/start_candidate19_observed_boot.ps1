@@ -10,20 +10,20 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $Root = Split-Path -Parent $PSScriptRoot
 $FastbootExe = Join-Path $Root 'tools\platform-tools\fastboot.exe'
-$ObservationRoot = Join-Path $Root 'work\reports\20260926_CANDIDATE18_NATIVE_ADRENO\observations'
+$ObservationRoot = Join-Path $Root 'work\reports\20260927_CANDIDATE19_RGBX_EGL\observations'
 $ResolvedRunDir = (Resolve-Path -LiteralPath $RunDir).Path
 $ResolvedObservationRoot = (Resolve-Path -LiteralPath $ObservationRoot -ErrorAction Stop).Path
 $ObservationPrefix = $ResolvedObservationRoot.TrimEnd([IO.Path]::DirectorySeparatorChar, [IO.Path]::AltDirectorySeparatorChar) + [IO.Path]::DirectorySeparatorChar
 if (-not $ResolvedRunDir.StartsWith($ObservationPrefix, [StringComparison]::OrdinalIgnoreCase)) {
-    throw 'RunDir must be inside the C18 observation directory.'
+    throw 'RunDir must be inside the C19 observation directory.'
 }
 $ArmedPath = Join-Path $ResolvedRunDir 'observer_armed.json'
 if (-not (Test-Path -LiteralPath $ArmedPath -PathType Leaf)) { throw "Observer has not created observer_armed.json: $ArmedPath" }
 $Armed = Get-Content -LiteralPath $ArmedPath -Raw | ConvertFrom-Json
-if ($Armed.candidate -ne 'C18-native-adreno' -or $Armed.serial -ne $Serial -or
+if ($Armed.candidate -ne 'C19-rgbx-format' -or $Armed.serial -ne $Serial -or
     $Armed.usb_pnp_state -ne 'present' -or $Armed.adb_state -ne 'absent' -or
     $Armed.fastboot_state -ne 'fastboot') {
-    throw 'Observer ARMED record does not match C18-native-adreno and the expected Fastboot device.'
+    throw 'Observer ARMED record does not match C19-rgbx-format and the expected Fastboot device.'
 }
 $ArmedTime = [DateTimeOffset]::Parse($Armed.armed_utc).ToUniversalTime()
 if (([DateTimeOffset]::UtcNow - $ArmedTime).TotalMinutes -gt 10 -or $ArmedTime -gt [DateTimeOffset]::UtcNow.AddMinutes(1)) {
@@ -57,18 +57,18 @@ $SlotRetryCount = Get-FastbootVar 'slot-retry-count:a'
 if ($Product -ne 'thyme' -or $Slot -ne 'a' -or $Unlocked -ne 'yes' -or $Userspace -ne 'no') {
     throw "Target preflight mismatch: product=$Product slot=$Slot unlocked=$Unlocked is-userspace=$Userspace."
 }
-if ($SlotUnbootable -ne 'no' -or $SlotSuccessful -ne 'no' -or $SlotRetryCount -ne '7') {
-    throw "A-slot boot-control state changed from the prepared baseline: unbootable=$SlotUnbootable successful=$SlotSuccessful retry=$SlotRetryCount. No reboot issued."
+if ($SlotUnbootable -ne 'no' -or $SlotSuccessful -ne 'no' -or $SlotRetryCount -ne '6') {
+    throw "A-slot boot-control state differs from C19 prepared baseline: unbootable=$SlotUnbootable successful=$SlotSuccessful retry=$SlotRetryCount. No reboot issued."
 }
 
 $PrebootUtc = [DateTimeOffset]::UtcNow.ToString('o')
 $PrebootLocal = [DateTimeOffset]::Now.ToString('o')
 $PrebootPath = Join-Path $ResolvedRunDir 'fastboot_preboot_state.txt'
 $PrebootLines = @(
-    'C18 preboot Fastboot state; read-only queries only',
+    'C19 preboot Fastboot state; read-only queries only',
     "host_local=$PrebootLocal",
     "host_utc=$PrebootUtc",
-    "candidate=C18-native-adreno",
+    'candidate=C19-rgbx-format',
     "serial=$Serial",
     "product=$Product",
     "current_slot=$Slot",
@@ -86,7 +86,7 @@ $EventsPath = Join-Path $ResolvedRunDir 'host_events.jsonl'
 $BootControlEvent = [ordered]@{
     host_utc = $PrebootUtc
     event = 'fastboot_preboot_state'
-    candidate = 'C18-native-adreno'
+    candidate = 'C19-rgbx-format'
     serial = $Serial
     current_slot = $Slot
     slot_unbootable_a = $SlotUnbootable
@@ -94,24 +94,21 @@ $BootControlEvent = [ordered]@{
     slot_retry_count_a = [int]$SlotRetryCount
     source_file = 'fastboot_preboot_state.txt'
 }
-$BootControlEventJson = $BootControlEvent | ConvertTo-Json -Compress
-[IO.File]::AppendAllText($EventsPath, ($BootControlEventJson + "`n"), [Text.UTF8Encoding]::new($false))
+[IO.File]::AppendAllText($EventsPath, (($BootControlEvent | ConvertTo-Json -Compress) + "`n"), [Text.UTF8Encoding]::new($false))
 
-Write-Host "PASS observer ARMED for C18-native-adreno at $($Armed.armed_utc)"
+Write-Host "PASS observer ARMED for C19-rgbx-format at $($Armed.armed_utc)"
 Write-Host "PASS device $Serial product=$Product slot=$Slot unlocked=$Unlocked is-userspace=$Userspace; A unbootable=$SlotUnbootable successful=$SlotSuccessful retry=$SlotRetryCount"
 Write-Host "PASS raw preboot state saved: $PrebootPath"
 if (-not $Execute) {
-    Write-Host 'DRY-RUN complete. No reboot issued. The user must confirm they are watching before -Execute.' -ForegroundColor Yellow
+    Write-Host 'DRY-RUN complete. No reboot issued. The user must confirm they are watching before the C19 first boot.' -ForegroundColor Yellow
     return
 }
-if (-not $UserWatchingConfirmed) { throw 'The user must explicitly confirm they are watching before the C18 first boot.' }
-$Event = [ordered]@{ host_utc = [DateTimeOffset]::UtcNow.ToString('o'); event = 'candidate_boot_command'; candidate = 'C18-native-adreno'; command = 'fastboot reboot'; serial = $Serial }
-$EventJson = $Event | ConvertTo-Json -Compress
-[IO.File]::AppendAllText($EventsPath, ($EventJson + "`n"), [Text.UTF8Encoding]::new($false))
+if (-not $UserWatchingConfirmed) { throw 'The user must explicitly confirm they are watching before the C19 first boot.' }
+$Event = [ordered]@{ host_utc = [DateTimeOffset]::UtcNow.ToString('o'); event = 'candidate_boot_command'; candidate = 'C19-rgbx-format'; command = 'fastboot reboot'; serial = $Serial }
+[IO.File]::AppendAllText($EventsPath, (($Event | ConvertTo-Json -Compress) + "`n"), [Text.UTF8Encoding]::new($false))
 & $FastbootExe -s $Serial reboot
 $ExitCode = $LASTEXITCODE
-$ReturnEvent = [ordered]@{ host_utc = [DateTimeOffset]::UtcNow.ToString('o'); event = 'candidate_boot_command_returned'; candidate = 'C18-native-adreno'; exit_code = $ExitCode }
-$ReturnEventJson = $ReturnEvent | ConvertTo-Json -Compress
-[IO.File]::AppendAllText($EventsPath, ($ReturnEventJson + "`n"), [Text.UTF8Encoding]::new($false))
+$ReturnEvent = [ordered]@{ host_utc = [DateTimeOffset]::UtcNow.ToString('o'); event = 'candidate_boot_command_returned'; candidate = 'C19-rgbx-format'; exit_code = $ExitCode }
+[IO.File]::AppendAllText($EventsPath, (($ReturnEvent | ConvertTo-Json -Compress) + "`n"), [Text.UTF8Encoding]::new($false))
 if ($ExitCode -ne 0) { throw "fastboot reboot failed ($ExitCode); see $EventsPath" }
-Write-Host 'C18 fastboot reboot command returned. Observer should continue running; do not reboot again.' -ForegroundColor Green
+Write-Host 'C19 fastboot reboot command returned. Observer should continue running; do not reboot again.' -ForegroundColor Green

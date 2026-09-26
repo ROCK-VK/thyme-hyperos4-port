@@ -318,7 +318,7 @@ def main() -> int:
     lpmake = TOOLS + "/android-tools-static/linux/android-tools-static/lpmake"
     parts = [
         "--partition mi_ext_a:readonly:202375168:qti_dynamic_partitions_a --partition mi_ext_b:none:0:qti_dynamic_partitions_b",
-        "--partition odm_a:readonly:[REDACTED_DEVICE_ID]:qti_dynamic_partitions_a --partition odm_b:none:0:qti_dynamic_partitions_b",
+        "--partition odm_a:readonly:36700160:qti_dynamic_partitions_a --partition odm_b:none:0:qti_dynamic_partitions_b",
         "--partition product_a:readonly:4387241984:qti_dynamic_partitions_a --partition product_b:none:0:qti_dynamic_partitions_b",
         "--partition system_a:readonly:1092616192:qti_dynamic_partitions_a --partition system_b:none:0:qti_dynamic_partitions_b",
         "--partition system_ext_a:readonly:942669824:qti_dynamic_partitions_a --partition system_ext_b:none:0:qti_dynamic_partitions_b",

@@ -6,14 +6,12 @@
 
 ## 当前设备与刷写版本
 
-- C18 已刷写到 `super`、`vbmeta_system_a` 并执行一次首次启动。用户观察到小米 Logo 亮约十几秒后黑屏，随后设备自动返回 Fastboot；未看到 HyperOS 启动画面、设置向导或桌面。ADB 未上线，Android 日志未取得。
-- C18 观察器运行目录：`work/reports/20260926_CANDIDATE18_NATIVE_ADRENO/observations/run_20260926_215459/`。记录显示启动命令于 21:55:33（UTC+8）返回成功，Fastboot 约 34 秒后消失、约 69 秒后重新出现。
-- 取证初期两次 Standalone RAM 启动被 Bootloader 拒绝：`Failed to load/authenticate boot image: Load Error`。按本轮明确授权保存预状态并只执行一次 `fastboot set_active a`：A 槽 `slot-unbootable` 从 yes 变为 no，`slot-retry-count` 从 0 恢复为 7；设备仍为 `product=thyme`、A 槽、unlocked=yes、非 userspace Fastboot。随后既有 Standalone RAM 镜像启动成功。
-- 成功导出目录：`work/reports/20260926_C18_NATIVE_ADRENO/standalone/run_20260926_221653/`。动态发现 THYME_DIAG 为 `F:`；全卷复制 6 个文件、16,934,939 bytes，源/副本逐文件大小和 SHA-256 匹配，复制错误 0。pstore 目录为空，C18 console/pmsg 未取得；`oops.raw` 与 C15–C17 完全同哈希，属于历史残留；Standalone dmesg 仅代表诊断系统自身。
-- 全卷导出完成时 Windows 挂载 THYME_DIAG FAT32 卷 `F:`。之后用户手动切回 Bootloader Fastboot；约 22:40（UTC+8）的只读复核为唯一设备 `[REDACTED_DEVICE_ID]`、product=thyme、A 槽、unlocked=yes、is-userspace=no、A 槽 unbootable=no/successful=no/retry=7，ADB 离线。PixelOS 尚未恢复；没有再次启动 C18。
-- Bootloader 仍解锁。未写入 persist、modemst、EFS/NV、misc/BCB、校准或身份分区；本轮未清除 userdata/metadata，也未进行任何 Candidate 后续刷写。
+- 当前 Candidate 19 RGBX 实验镜像已写入 `super` 和 `vbmeta_system_a`；C18 的 boot、vendor_boot、dtbo、vbmeta_a 及其他硬件底层保持不变。刷后没有重启，手机目前保持 Bootloader Fastboot。
+- 刷写后只读复核：唯一设备 `[REDACTED_DEVICE_ID]`、`product=thyme`、A 槽、unlocked=yes、is-userspace=no；A 槽 `unbootable=no/successful=no/retry=6`。没有执行清数据、切槽、misc/BCB 修改或回锁。
+- C19 尚未首次启动，当前图形效果待真机验证。下一步必须等用户现场确认后，先启动带 `C19-rgbx-format` 标签的观察器并确认 ARMED，再执行一次启动。
+- C18 上一轮已通过 pstore 证明进入 First/Second Stage、动态策略/APEX、vold/Keymaster 和 `/data` 初始化；SurfaceFlinger 有 61 次 `no suitable EGLConfig found`（`format: 1`），graphicsengine 另在 `vkEnumeratePhysicalDevices+4` SIGSEGV 一次，因果未证。实际 Adreno/ANGLE 库仍未由运行时映射证明。报告：`work/reports/20260926_C18_NATIVE_ADRENO/C18_RETEST_REPORT.md`；完整取证目录：`work/reports/20260926_C18_NATIVE_ADRENO/standalone/run_20260926_234120/`。
 
-## 最新 C17 实机证据
+## 历史 C17 实机证据
 
 报告：work/reports/20260926_CANDIDATE17_RETEST/REPORT.md。主机观察目录：work/reports/20260925_CANDIDATE13_STORAGE_SAFETY_AND_FIRST_FAILURE/observations/C17_revalidation/run_20260926_202822/。本轮 Standalone 完整副本：work/reports/20260926_CANDIDATE17_RETEST/standalone/run_20260926_203340/。
 
@@ -35,7 +33,7 @@
 - C16：graphics allocator 的 ion_device read AVC 消失，后续出现 open AVC。
 - C17：加入 allocator open 权限；本轮图形 allocator AVC 未复现，但 EGLConfig 阻塞仍在。
 
-## Candidate 18 当前构建
+## Candidate 18 构建及复验
 
 - 报告：work/reports/20260926_CANDIDATE18_NATIVE_ADRENO/REPORT.md。
 - C17 的实际 EGL 后端未确定：system build.prop 指向 ANGLE，实际 Android 17 libEGL 含相应路由，但 pmsg 没有 ANGLE 加载或实际 driver 身份记录。
@@ -43,7 +41,11 @@
 - C18 保留 C17 其余修复和硬件栈；无 SELinux 扩权、无 Vulkan 库替换、无 userdata/metadata 擦除。
 - 构建目录：work/stage_h_thyme_os4_candidate_18_native_adreno_run1/images/。写入镜像：super.img 7,684,274,964 bytes，SHA-256 EEA7DD2378DDF84BF1BAF0DC86445025AFDAED3E0CE20DE75654D11D0AA35132；vbmeta_system.img 131,072 bytes，SHA-256 932CFBE646D588AF3B61C3A8D075C2AAD37C5DC6F4906C5200D6B6BEFF65DE73。
 - EROFS 检查通过；从 super 提取的 system_a.img 与 C18 system 镜像逐字节一致；vbmeta_system system descriptor 匹配新 root digest，product/system_ext descriptors 继承 C17；LP 布局与 C17 一致。Python 编译、PowerShell AST 和刷写 Dry-Run 通过。
-- Observer 属性快照已补充 persist.graphics.egl、ro.hardware.egl、ro.hardware.vulkan、ro.board.platform。C18 已启动一次但未获得 ADB 或 C18 Android pstore；native Adreno 路由是否生效、EGLConfig 是否变化均未验证。A 槽状态恢复后 Standalone 能正常加载，但导出显示本轮 pstore 为空，故 C18 启动阶段和故障原因仍未知。
+- Observer 属性快照已补充 persist.graphics.egl、ro.hardware.egl、ro.hardware.vulkan、ro.board.platform。C18 复验确认进入图形用户空间并反复 EGLConfig abort；C18 native Adreno 实际加载路径仍未知。
+- C19 的唯一配置变化是 `system/build.prop` 的 `ro.surface_flinger.default_composition_pixel_format=2`（RGBX_8888），实验依据为 C18 的 EGLConfig 错误参数 `format: 1`；这只是可证伪的兼容性实验，不代表根因已确认。
+- C19 构建器 `tools/build_candidate19_rgbx_egl.py` 已成功生成六镜像清单。system EROFS 检查通过，属性已从最终镜像回读；vbmeta_system 的 system descriptor 与新 system 匹配，product/system_ext 描述符和 LP A 槽布局符合 C18 基线。首次构建曾因 Windows 终端编码中断，随后从保留暂存树成功恢复，未覆盖 C18 原件。
+- 刷写工具 `tools/flash_candidate19_rgbx_egl.ps1` 默认 Dry-Run，执行范围仅 `super`、`vbmeta_system_a`；`tools/start_candidate19_observed_boot.ps1` 要求新鲜的 C19 Observer ARMED、正确设备和用户现场确认。Python AST、PowerShell AST、Dry-Run 和最终写入镜像哈希检查均通过。
+- 本轮两分区刷写均成功：`super.img` 7,684,274,964 bytes，SHA-256 `436B4322842C649C674C9B76AE057894EE0B2AC74EB74A0098FD278CC3E634DD`；`vbmeta_system.img` 131,072 bytes，SHA-256 `1E75E1733BBDFE4CF43D898120F202A5761168CD021B0A160784667EFFB5E652`。super 十个 sparse chunk 全部返回 OKAY。未重启、未清 userdata/metadata。
 
 ## 公开诊断证据
 
@@ -53,9 +55,10 @@
 - 公开同步脚本位于公开仓库 scripts/sync_raw_startup_evidence.ps1，并由 scripts/sync_from_local.ps1 调用；新的 Standalone/观察目录仍须明确加入 allowlist。
 - C13–C18 原始证据已推送到 Public 仓库 main；本轮 C18 增量提交 `73fcce153ec54fbcbb06bb713baf7a8ddc780897`，新增 18 个文件、16,985,194 bytes。当前 C13–C18 合计 136 个原始文件、157,920,901 bytes；凭据/策略排除数 0、缺失目录 0。
 - 匿名 API 确认仓库 Public、默认分支 main；C18 的 18 个公开文件均下载核验，大小及 SHA-256 与远端 manifest 全部匹配。此前 C13–C17 公开验证仍记录于提交 `3147a6fd8c0ff1d8c46f1cc49a510d0d0a3790c5`。
-- C18 报告、构建清单、构建/受限刷写/启动门控脚本、属性观察器更新、README 和状态日志已公开；报告/清单均匿名 HTTP 200。C18 增量提交 d9a56e34b63b27c07b3c04a5d0fdebcf68ea948e；该提交不含 ROM/分区镜像。
+- C18 报告、构建清单、构建/受限刷写/启动门控脚本、属性观察器更新、README 和状态日志已公开；C18 初次实验公开提交为 `d9a56e34b63b27c07b3c04a5d0fdebcf68ea948e`，本次 retest 原始证据仍待增量发布。
+
 ## 下一步
 
-1. 本轮已按用户限定授权执行一次 `fastboot set_active a`，解除 A 槽 unbootable 标记并恢复 retry=7；随后 Standalone RAM 启动成功。此 boot-control 变更已完成，不扩大到 B 槽或其他操作。
-2. Standalone 全卷已备份并校验，但没有 C18 Android pstore；现有 `oops.raw` 是 C15–C17 历史残留。C18 启动阶段、Adreno/EGLConfig 和图形服务结果仍未知。
-3. 先解决首次启动 Android 日志未留存的问题，再决定 C18 复验或后续修复；当前无证据构建 C19。设备最近状态为 A 槽 Bootloader Fastboot（用户手动切入），PixelOS 未恢复；未清数据、未修改其他分区、未回锁。
+- 等用户确认在场后，以 `C19-rgbx-format` 启动只读观察器，确认 ARMED，再运行启动门控执行一次 `fastboot reboot`。
+- 观察 SurfaceFlinger 是否以 `format: 2` 重新选择 EGLConfig、EGL abort 是否消失，以及是否出现 bootanimation、设置向导或桌面；若失败，保留现场并完成 Standalone 全量取证后再分析。
+- 不清除 userdata/metadata。C18 的 EGLConfig 阻塞已明确，不复验 C17、不重建内核、不替换整套 GPU 栈，也不把 Vulkan SIGSEGV 的因果关系写成已证事实。

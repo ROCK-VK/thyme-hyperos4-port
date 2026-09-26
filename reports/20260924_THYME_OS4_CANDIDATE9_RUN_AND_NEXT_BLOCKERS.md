@@ -58,7 +58,7 @@ Candidate 9 经 AOSP `TrieBuilder` 检验为 0 冲突，实机运行全过程无
 ### D. 是否成功完成 PropertyInit？
 **答：是，100% 成功完成。**
 现场日志证实，系统越过属性前缀树构建，顺利进入属性加载与覆盖阶段：
-- `[ 3.057286] init: Overriding previous property 'vendor.mm.enable.qcom_parser':'[REDACTED_DEVICE_ID]' with new value '[REDACTED_DEVICE_ID]'`
+- `[ 3.057286] init: Overriding previous property 'vendor.mm.enable.qcom_parser':'16777215' with new value '12565751'`
 - `[ 3.057666] init: Couldn't load property file '/system_dlkm/etc/build.prop': open() failed...`
 - `[ 3.060610] init_hook_I: cust prop white key: persist.sys.timezone...`
 `PropertyInit()` 流程无任何阻断地圆满执行完毕。

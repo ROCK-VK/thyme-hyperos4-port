@@ -1,0 +1,11 @@
+{
+  "candidate": "C18-native-adreno",
+  "armed_utc": "2026-09-26T15:34:02.791+00:00",
+  "elapsed_seconds": 6.067,
+  "serial": "1384e684",
+  "usb_pnp_state": "present",
+  "usb_pnp_output": "{\"state\":\"present\",\"devices\":[{\"Status\":\"OK\",\"Class\":\"AndroidUsbDeviceClass\",\"FriendlyName\":\"Android Bootloader Interface\",\"InstanceId\":\"USB\\\\VID_18D1&PID_D00D\\\\1384E684\"}]}",
+  "adb_state": "absent",
+  "fastboot_state": "fastboot",
+  "run_dir": "work\\reports\\20260926_CANDIDATE18_NATIVE_ADRENO\\observations\\c18_retest_20260926_231128\\run_20260926_233356"
+}

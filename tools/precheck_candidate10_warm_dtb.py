@@ -47,7 +47,7 @@ try:
     assert vb_img.exists(), "vendor_boot.img missing!"
     
     with open(vb_img, "rb") as f:
-        payload = f.read([REDACTED_DEVICE_ID])
+        payload = f.read(29163520)
         
     hdr = payload[:2112]
     magic, ver, page_sz, k_addr, rd_addr, rd_sz = struct.unpack('<8sIIIII', hdr[:28])
@@ -64,7 +64,7 @@ try:
     assert dtb_sz == 1424301, f"Expected dtb_sz 1424301, got {dtb_sz}"
     
     # Extract concatenated DTB
-    dtb_blob = payload[[REDACTED_DEVICE_ID] : [REDACTED_DEVICE_ID] + dtb_sz]
+    dtb_blob = payload[23347200 : 23347200 + dtb_sz]
     fdt_sizes = [477133, 477129, 470039]
     fdt_offsets = [0, 477133, 477133 + 477129]
     
@@ -145,7 +145,7 @@ try:
     # 1. Size checks
     expected_sizes = {
         "boot.img": 201326592,
-        "dtbo.img": [REDACTED_DEVICE_ID],
+        "dtbo.img": 33554432,
         "super.img": 7684225812,
         "vbmeta.img": 131072,
         "vbmeta_system.img": 131072,
@@ -174,7 +174,7 @@ try:
     footer_vb, h_vb, desc_vb, size_vb = avb._parse_image(ImageHandler(str(C10_DIR / "vendor_boot.img")))
     
     assert h_vm.flags == 3, f"vbmeta flags unexpected: {h_vm.flags}"
-    assert footer_vb.original_image_size == [REDACTED_DEVICE_ID], f"vendor_boot original_image_size unexpected: {footer_vb.original_image_size}"
+    assert footer_vb.original_image_size == 29163520, f"vendor_boot original_image_size unexpected: {footer_vb.original_image_size}"
     
     # Check that vbmeta contains the exact hash descriptor of vendor_boot
     vb_desc = desc_vb[0]
