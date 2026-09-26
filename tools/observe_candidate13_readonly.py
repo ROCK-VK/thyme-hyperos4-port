@@ -27,7 +27,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 ADB = ROOT / "tools" / "platform-tools" / "adb.exe"
 FASTBOOT = ROOT / "tools" / "platform-tools" / "fastboot.exe"
-SERIAL = "[REDACTED_DEVICE_ID]"
+SERIAL = ""
 DEFAULT_BASE = ROOT / "work" / "reports" / "20260925_CANDIDATE13_STORAGE_SAFETY_AND_FIRST_FAILURE" / "observations"
 SNAPSHOT_PROPERTIES = (
     "ro.product.device",
@@ -44,6 +44,9 @@ SNAPSHOT_PROPERTIES = (
     "ro.boot.verifiedbootstate",
     "ro.boot.selinux",
     "persist.graphics.egl",
+    "debug.ld.app.surfaceflinger",
+    "debug.ld.app.graphicsengine",
+    "log.tag.linker",
     "ro.hardware.egl",
     "ro.hardware.vulkan",
     "ro.board.platform",
@@ -53,7 +56,7 @@ SNAPSHOT_PROPERTIES = (
     "ro.crypto.type",
     "vold.decrypt",
 )
-RELEVANT_SERVICE_TOKENS = ("vold", "keymaster", "gatekeeper", "zygote", "surfaceflinger", "bootanim")
+RELEVANT_SERVICE_TOKENS = ("vold", "keymaster", "gatekeeper", "zygote", "surfaceflinger", "graphicsengine", "bootanim")
 ADB_SHELL_STATES = {"device", "recovery"}
 
 
@@ -201,6 +204,34 @@ def snapshot(run_dir: Path, index: int, include_dmesg: bool) -> None:
                 if result.stderr:
                     stream.write("\n[stderr]\n" + result.stderr)
 
+    # Capture runtime graphics library mappings when shell access permits.
+    # Each PID gets its own immutable file so SurfaceFlinger restarts remain
+    # distinguishable. Permission failures are saved as evidence too.
+    for process_name in ("surfaceflinger", "graphicsengine"):
+        pid_result = run_readonly([str(ADB), "-s", SERIAL, "shell", "pidof", process_name], timeout=3.0)
+        pids = sorted(set(re.findall(r"\b[0-9]+\b", pid_result.stdout))) if pid_result.returncode == 0 else []
+        if not pids:
+            destination = run_dir / f"proc_maps_{process_name}_unavailable_{index:04d}.txt"
+            details = (
+                f"host_utc={utc_now()}\nprocess={process_name}\n"
+                f"pidof_exit={pid_result.returncode}\nstdout={pid_result.stdout}\nstderr={pid_result.stderr}\n"
+            )
+            destination.write_text(details, encoding="utf-8", newline="\n")
+            continue
+        for pid in pids:
+            destination = run_dir / f"proc_maps_{process_name}_{pid}.txt"
+            if destination.exists():
+                continue
+            result = run_readonly([str(ADB), "-s", SERIAL, "shell", "cat", f"/proc/{pid}/maps"], timeout=5.0)
+            with destination.open("x", encoding="utf-8", newline="\n") as maps_stream:
+                maps_stream.write(
+                    f"host_utc={utc_now()}\nprocess={process_name}\npid={pid}\n"
+                    f"exit={result.returncode}\n"
+                )
+                maps_stream.write(result.stdout)
+                if result.stderr:
+                    maps_stream.write("\n[stderr]\n" + result.stderr)
+
 
 def capture_pstore_from_adb(run_dir: Path, index: int) -> None:
     """Try to preserve pstore while ADB is available (including Recovery ADB).
@@ -245,11 +276,14 @@ def capture_pstore_from_adb(run_dir: Path, index: int) -> None:
 
 
 def main() -> int:
+    global SERIAL
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--serial", required=True, help="Target device serial; never stored as a public default.")
     parser.add_argument("--seconds", type=int, default=600, help="Observation window (default: 600 seconds).")
     parser.add_argument("--output-base", type=Path, default=DEFAULT_BASE, help="Parent directory for a new timestamped run folder.")
     parser.add_argument("--candidate", default="C13-original", help="Candidate label stored in the run metadata (default: C13-original).")
     args = parser.parse_args()
+    SERIAL = args.serial
     if args.seconds < 30 or args.seconds > 3600:
         parser.error("--seconds must be between 30 and 3600")
     if not ADB.is_file() or not FASTBOOT.is_file():

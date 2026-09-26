@@ -3711,7 +3711,7 @@
 - 原因：当前 Codex 执行边界仍无法让该 WSL 子命令访问服务；此前 Ubuntu 最小探针成功不代表 erofs 子进程访问一定成功。
 - 涉及文件：新增/更新 work/reports/20260912_erofs_help_probe.md、日志/项目当前状态.md；无业务文件改动。
 - 验证：PowerShell 工作集约 83.5→84.6 MB，私有提交量约 27.6→28.5 MB；未发现 WSL/WSLHost/Python/ADB/Fastboot 残留。没有读取镜像、创建提取目录、运行 -x、Python/编译或调用设备。
-- 尚未验证：xtract.erofs CLI 参数、layout=3 定点解码、XML/SHA 闭合和 C0 输入。
+- 尚未验证：extract.erofs CLI 参数、layout=3 定点解码、XML/SHA 闭合和 C0 输入。
 - 待处理：按审核要求立即停止，不重试 WSL/erofs、不改配置；等待审核窗口决定是否转由用户真实 Ubuntu/PowerShell 执行 A 路径。
 - 替代：细化 2026-09-12 00:29 “WSL 执行范围恢复”的结论；该结论仅适用于 WSL 列表和 Ubuntu 最小探针，不适用于本次 erofs 子命令。
 
@@ -12385,7 +12385,7 @@
 - 改动/结论：
   1. **严格遵循单变量原则重构 system.img**：
      - 采用经过验证的 system.rootlike.raw.erofs（958,156,800 字节，Root NID 58），恢复包含真实 /system 目录的 Android 17 First Stage Init 标准 SAR 拓扑；
-     - 零修改合同（Zero-Mutation Contract）：比对 /system 内部全部 4,493 个文件及软链接，与 Candidate 6 的扁平内容逐字节一致，uild.prop 0 差异，framework、app 与二进制 100% 保持原样；
+     - 零修改合同（Zero-Mutation Contract）：比对 /system 内部全部 4,493 个文件及软链接，与 Candidate 6 的扁平内容逐字节一致，build.prop 0 差异，framework、app 与二进制 100% 保持原样；
      - 根目录下恢复标准符号链接：/init -> /system/bin/init、/bin -> /system/bin、/etc -> /system/etc；
      - 根目录下建立真实空挂载点目录：/product、/system_ext、/vendor、/mi_ext、/metadata（各包含 0 子项），彻底消除 SwitchRoot 后的自引用死循环（-ELOOP）；
      - 注入 AVB hashtree footer（Extent 1,092,616,192 字节，Salt [REDACTED_DEVICE_ID]...，Algorithm NONE，Do-not-generate-fec）。
@@ -12415,7 +12415,7 @@
   - work/stage_c_thyme_os4_candidate_7_panic0/images/
   - 日志/项目当前状态.md
   - 日志/执行记录.md
-- 验证：uild_candidate7.py 构建退出码 0；precheck_candidate7.py 七大门禁静态验证全绿（Exit 0）；真机 ADB 在线检测全部通过。
+- 验证：build_candidate7.py 构建退出码 0；precheck_candidate7.py 七大门禁静态验证全绿（Exit 0）；真机 ADB 在线检测全部通过。
 - 尚未验证：实机刷入 Candidate 7 后的物理启动日志与行为。
 - 待处理：向用户提交《Candidate 7 标准 SAR 拓扑重构与静态门禁验证报告》，等待人工明确授权后再决定后续实机操作。
 - 替代：无（本条作为 Candidate 6 根因闭环后的资产就绪推进记录）。
@@ -13383,3 +13383,14 @@
 - 安全边界：没有新启动、刷写、擦除、RAM boot、BCB/misc 修改或恢复 PixelOS；完整 ROM、固件和分区镜像未上传。最近只读 Fastboot 预检确认设备为 thyme/A/unlocked/非 userspace。
 - 待处理：若继续图形启动主线，评估在持久属性就绪后显式 ANGLE 路由的最小实验；保留 RGBX=2 并观察其是否实际加载及 EGLConfig 是否改变。
 - 替代：本条将上一条“GitHub 推送待完成”状态更新为已公开并匿名校验。
+
+## 2026-09-27 01:48｜C20 ANGLE 路由诊断构建与两分区刷写
+
+- 状态：Candidate 20 已完成主机构建、针对性静态验证和授权范围内的两分区刷写；设备保持 Bootloader Fastboot，尚未首次启动。
+- 改动/结论：从 C19 RGBX=2 基线构建 C20；system 默认属性与 `/data` 持久属性加载后的 init 动作统一使用 `persist.graphics.egl=angle`，新增 SurfaceFlinger/graphicsengine 的 linker `dlopen`/`dlerror` 诊断属性，并更新只读观察器以采集属性和可读的图形进程 maps。未替换 GPU/Vulkan/HWC/Gralloc，未扩展 SELinux。
+- 原因：C19 证明 format=2 请求仍无法匹配 EGLConfig，但实际 ANGLE/Adreno 后端没有被运行日志确定；ANGLE 库已在 system 中存在，C19 的 Adreno init 覆盖与持久属性可能冲突。
+- 涉及文件：`tools/build_candidate20_angle_diag.py`、`tools/flash_candidate20_angle_diag.ps1`、`tools/start_candidate20_observed_boot.ps1`、`tools/observe_candidate13_readonly.py`、`reports/candidate20/REPORT.md`、`reports/candidate20/BUILD_MANIFEST.json`、项目状态与工具说明。
+- 验证：最终 EROFS 检查和属性/init 回读通过；system AVB 描述符、继承的 product/system_ext 描述符及 LP 布局核验通过；从 super 提取的 system 与构建镜像逐字节一致。`super` 7,684,274,964 bytes，SHA-256 `9DAE08D2288E1F590DD803FDBDA79230A64136B2C3F529AB82E0D0B8F7946334`，10 个 sparse 写入块全部 OKAY；`vbmeta_system_a` 131,072 bytes，SHA-256 `E45FCEEC95592764E23DB54114DC6235A4AA6057EA0BB5C5518F10135E85B662`，写入 OKAY。刷后仍为 thyme/A/unlocked/Bootloader Fastboot。
+- 尚未验证：C20 首次启动、ANGLE 实际加载、EGLConfig 结果、Vulkan 与 EGL 故障关系、HyperOS 启动画面或桌面。
+- 边界：没有 reboot、擦除、切槽、BCB/misc 操作、其他分区写入或 Bootloader 回锁；PixelOS 未恢复。
+- 待处理：等待用户确认在现场观察后，先 ARMED C20 observer，再进行一次首次启动。公开材料不包含设备序列号、ROM 或分区镜像。

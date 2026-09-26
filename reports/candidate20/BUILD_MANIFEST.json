@@ -1,0 +1,67 @@
+{
+  "candidate": "Candidate 20 ANGLE EGL route and runtime diagnostics",
+  "base": "Candidate 19 RGBX EGLConfig compatibility experiment",
+  "changes": [
+    "system/build.prop: change persist.graphics.egl from adreno to angle and add process-scoped linker diagnostics for surfaceflinger and graphicsengine.",
+    "system/etc/init/surfaceflinger.rc: reapply persist.graphics.egl=angle after persistent /data properties load, removing the conflicting C19 Adreno override.",
+    "Retain ro.surface_flinger.default_composition_pixel_format=2 (RGBX_8888) from C19."
+  ],
+  "retained_from_c19": [
+    "C14 BPF bootstrap bypass.",
+    "C13 Keymaster/Gatekeeper ion_device rules.",
+    "C17 graphics allocator ion_device open/read rule.",
+    "C19 RGBX composition format and all prior C13-C19 validated fixes.",
+    "C19 system_ext policy, fstab/data encryption path, and thyme kernel/vendor hardware stack.",
+    "System ANGLE libraries already present in the C19 system tree; no GPU, Vulkan, or vendor library is replaced.",
+    "No SELinux expansion, Vulkan/GPU library replacement, or userdata/metadata wipe."
+  ],
+  "flash_scope_prepared": [
+    "super",
+    "vbmeta_system_a"
+  ],
+  "evidence_basis": [
+    "C19 pmsg recorded 43 SurfaceFlinger no suitable EGLConfig aborts, all with format: 2; the RGBX request reached SurfaceFlinger but did not resolve the failure.",
+    "The C19 system libEGL binary contains ANGLE route selection and the fatal ANGLE-load failure string; the exact actual backend is not identified by prior pstore.",
+    "C19 has 64-bit system ANGLE EGL/GLES binaries. Its libEGL binary lacks the ALOGV success-path strings, so log.tag.libEGL=VERBOSE would not reliably add driver-path evidence.",
+    "C20 uses bionic per-process debug.ld.app.<process> linker tracing and log.tag.linker=DEBUG; trace availability depends on target process dumpability and is best-effort."
+  ],
+  "limits": [
+    "C20 tests explicit system ANGLE routing while preserving C19 RGBX=2; it is a targeted experiment, not a confirmed root-cause fix.",
+    "If ANGLE is requested and fails to load, the Android 17 loader has a fatal branch. If it loads but EGLConfig still fails, linker logs, pstore, and any available ADB process maps are needed to confirm the backend.",
+    "Per-process linker tracing can be suppressed for non-dumpable processes; absence of trace output alone does not prove no library was loaded.",
+    "This does not enumerate every EGLConfig or change the SurfaceFlinger request, HWC/Gralloc, Vulkan, or GPU libraries.",
+    "No boot, vendor_boot, dtbo, vbmeta, system_ext policy, kernel, data, or hardware identity partition changes.",
+    "Build is host-only; separate flash script writes only super and vbmeta_system_a and never reboots."
+  ],
+  "checks": [
+    "C19 source manifest and input image sizes/hashes checked; C20 ANGLE route, linker properties, RGBX=2, and matching init override are read back from final system image; EROFS fsck passed.",
+    "C20 system hashtree descriptor matches the built system; product/system_ext descriptors match C19.",
+    "LP dump has the expected active A logical partitions and C19 geometry."
+  ],
+  "images": {
+    "boot.img": {
+      "bytes": 201326592,
+      "sha256": "E5A016056D5C93C7A886980A7C062617EC44DC06A48417D7DD0F4476708A6368"
+    },
+    "vendor_boot.img": {
+      "bytes": 100663296,
+      "sha256": "02333B82BA936F1BAAB1ECAB744632C70F8FC16688A206C7041EF319F112A137"
+    },
+    "dtbo.img": {
+      "bytes": 33554432,
+      "sha256": "50E1AC0EDCBD333778217AA6FE8D972F6FF85ADD0DAE8A015A6642C2172DD886"
+    },
+    "vbmeta.img": {
+      "bytes": 131072,
+      "sha256": "013335BCA9B312E0BEFF737D30903A9B0A1EF829BA19A7BD5802BF83C04F40E9"
+    },
+    "vbmeta_system.img": {
+      "bytes": 131072,
+      "sha256": "E45FCEEC95592764E23DB54114DC6235A4AA6057EA0BB5C5518F10135E85B662"
+    },
+    "super.img": {
+      "bytes": 7684274964,
+      "sha256": "9DAE08D2288E1F590DD803FDBDA79230A64136B2C3F529AB82E0D0B8F7946334"
+    }
+  }
+}
