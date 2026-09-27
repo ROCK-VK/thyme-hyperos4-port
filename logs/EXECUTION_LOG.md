@@ -13416,3 +13416,15 @@
 - 安全边界：没有上传 ROM、固件、Candidate 镜像或设备分区镜像；没有执行设备操作。
 - 待处理：下轮先静态验证只读 init hook 可安全记录 EGL 运行时属性和图形进程 maps 摘要至 pmsg。
 - 替代：更新 09:56 记录中“远端提交待完成”的状态；启动结论不变。
+
+## 2026-09-27 11:03｜K40 Skia Vulkan 路由 C21 构建与两分区刷写
+
+- 状态：C21 主机构建、必要静态检查及授权范围内的指定分区刷写已完成；设备保持 Bootloader Fastboot，C21 尚未首次启动。
+- 改动/结论：定点对照缓存的 K40 OS4.0.0.8 Android 17 包后，确认 K40 未替换 system EGL/SurfaceFlinger/RenderEngine，直接相关配置是 product 选择 debug.renderengine.backend=skiavkthreaded、debug.renderengine.vulkan=true、debug.hwui.renderer=skiavk。C20 pmsg 已证明 thyme 当前进入 SkiaGL chooseEglConfig() 并对 format=2 失败；EGL 的 Android META-EGL 前端信息不显示底层 ANGLE/Adreno 身份。C21 从 C20 system tree 只新增三项 debug 路由属性，保留 ANGLE、RGBX 与既有修复。
+- 原因：重复切换 EGL 路由及 format 未解除 C20 的 fatal；K40 成功配置通过切换 SurfaceFlinger 至 SkiaVk 避开失败的 SkiaGL EGLConfig 初始化，是当前最有依据的启动推进方案。C20 graphicsengine Vulkan 枚举 SIGSEGV 是已知风险，但其与 SkiaVk RenderEngine 的关系未证。
+- 涉及文件：tools/build_candidate21_k40_vk_renderengine.py、tools/flash_candidate21_k40_vk_renderengine.ps1、tools/start_candidate21_observed_boot.ps1、tools/observe_candidate13_readonly.py、reports/candidate21/REPORT.md、reports/candidate21/BUILD_MANIFEST.json。
+- 验证：最终 EROFS fsck、路由属性回读、AVB descriptor 对照及 LP 布局通过；C20 继承的 boot/vendor_boot/dtbo/vbmeta 大小与 SHA-256 一致。C21 super.img 7,684,274,964 bytes，SHA-256 C8BF3F895639C648D947E201E9E12EFCB7CCA33B63B0EAA807AE4672939EC2DF，Fastboot 10/10 sparse 块成功；vbmeta_system.img 131,072 bytes，SHA-256 E3A2807CE59CFAF93BEF7E08EE45A1D055DE1264FFEA8F6E8EED06893892AC74，写入成功。刷前后只读状态为 thyme、A 槽、unlocked、非 userspace Fastboot；刷后 A 槽 unbootable=no/successful=no/retry=4。
+- 尚未验证：C21 尚未启动；SkiaVk 实际选择、thyme Vulkan 初始化、后续 SurfaceFlinger 错误及 HyperOS 启动画面或后续界面待首启验证。C21 绕开 EGLConfig 路径，不会提供 EGLConfig 数量/匹配结果。
+- 安全边界：只刷写 super 和 vbmeta_system_a；没有 reboot、userdata/metadata 清除、其他分区写入、切槽、BCB 修改、硬件身份分区操作或 Bootloader 回锁。
+- 待处理：等待用户在场确认后启动 C21 observer 至 ARMED，再进行一次受控首次启动。
+- 替代：C20 的 ANGLE linker 诊断没有给出实际后端，C21 改用 K40 已采用的 SkiaVk RenderEngine 路由；C20 实际 EGL 后端和底层 EGLConfig 筛选根因仍未知。

@@ -1,0 +1,62 @@
+{
+  "candidate": "Candidate 21 K40 Skia Vulkan RenderEngine profile",
+  "base": "Candidate 20 ANGLE EGL route and runtime diagnostics",
+  "changes": [
+    "system/build.prop: add K40 OS4's debug.renderengine.vulkan=true, debug.renderengine.backend=skiavkthreaded, and debug.hwui.renderer=skiavk.",
+    "Retain C20 persist.graphics.egl=angle and post-persistent-property ANGLE action, plus RGBX format=2."
+  ],
+  "retained_from_c20": [
+    "C13-C19 validated boot, policy, BPF, ION, storage, and data-encryption changes.",
+    "Thyme kernel, vendor, odm, product, vendor_boot, dtbo, and vbmeta images.",
+    "No K40 hardware-specific vendor library, HWC, gralloc, Vulkan binary, kernel, or device firmware copied.",
+    "No userdata/metadata wipe and no hardware-identity partition change."
+  ],
+  "evidence_basis": [
+    "C20 pmsg proves SurfaceFlinger instantiated SkiaGLRenderEngine and aborted in chooseEglConfig with format 2; EGL reported the generic Android META-EGL frontend and did not provide a concrete vendor driver identity.",
+    "The cached K40 Android 17 OS4.0.0.8 product build.prop selects debug.renderengine.backend=skiavkthreaded, debug.renderengine.vulkan=true, and debug.hwui.renderer=skiavk.",
+    "K40, Xiaomi 15 donor, and C20 system SurfaceFlinger/RenderEngine libraries are byte-identical; C20's SurfaceFlinger library contains the RenderEngine backend property and SkiaVk implementation strings.",
+    "The target's graphicsengine Vulkan pipeline-cache builder separately crashes at vkEnumeratePhysicalDevices after a null/failed Vulkan-instance path; that does not prove SurfaceFlinger SkiaVk fails, but is a concrete risk to test."
+  ],
+  "limits": [
+    "C21 uses K40's framework RenderEngine Vulkan route to bypass the failing EGLConfig path; it does not enumerate EGLConfig counts or repair the underlying EGL driver.",
+    "Only debug properties are set in system/build.prop. ro.hwui.use_vulkan=true is omitted because the thyme vendor property is explicitly empty and system properties have lower precedence than vendor/product properties; debug.hwui.renderer=skiavk is the direct HWUI override.",
+    "The K40 product profile is not proof that thyme's distinct Adreno/Vulkan vendor binaries initialize successfully.",
+    "C21 has not been booted on device until a separate onsite confirmation is given after flashing."
+  ],
+  "checks": [
+    "C20 manifest checked; inherited boot/vendor_boot/dtbo/vbmeta sizes and SHA-256 preserved.",
+    "Final system EROFS fsck passed and the three C21 routing properties plus the retained ANGLE/RGBX properties were read back from the built image.",
+    "vbmeta_system contains the new system hashtree descriptor while product/system_ext descriptors remain unchanged.",
+    "LP dump lists the expected active A logical partitions and the original geometry."
+  ],
+  "flash_scope_prepared": [
+    "super",
+    "vbmeta_system_a"
+  ],
+  "images": {
+    "boot.img": {
+      "bytes": 201326592,
+      "sha256": "E5A016056D5C93C7A886980A7C062617EC44DC06A48417D7DD0F4476708A6368"
+    },
+    "vendor_boot.img": {
+      "bytes": 100663296,
+      "sha256": "02333B82BA936F1BAAB1ECAB744632C70F8FC16688A206C7041EF319F112A137"
+    },
+    "dtbo.img": {
+      "bytes": 33554432,
+      "sha256": "50E1AC0EDCBD333778217AA6FE8D972F6FF85ADD0DAE8A015A6642C2172DD886"
+    },
+    "vbmeta.img": {
+      "bytes": 131072,
+      "sha256": "013335BCA9B312E0BEFF737D30903A9B0A1EF829BA19A7BD5802BF83C04F40E9"
+    },
+    "vbmeta_system.img": {
+      "bytes": 131072,
+      "sha256": "E3A2807CE59CFAF93BEF7E08EE45A1D055DE1264FFEA8F6E8EED06893892AC74"
+    },
+    "super.img": {
+      "bytes": 7684274964,
+      "sha256": "C8BF3F895639C648D947E201E9E12EFCB7CCA33B63B0EAA807AE4672939EC2DF"
+    }
+  }
+}

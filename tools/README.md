@@ -45,3 +45,10 @@ Device serials and private host paths are sanitized in the public copies. Supply
 ## Runtime requirements
 
 The original workflow used Windows 11, WSL Ubuntu, local Android platform-tools, and project-specific extraction/AVB/LP/EROFS/SELinux tools. Exact versions and required local inputs vary by script. No third-party executable distributions or full ROMs are included.
+
+## Candidate 21
+
+- build_candidate21_k40_vk_renderengine.py applies the K40 OS4 SkiaVk RenderEngine routing properties to the C20 system tree. Required ROM and build inputs are not included.
+- flash_candidate21_k40_vk_renderengine.ps1 defaults to Dry-Run. With an explicit Serial and Execute switch, it writes only super and vbmeta_system_a; it does not reboot or erase data.
+- start_candidate21_observed_boot.ps1 validates a fresh C21 observer ARMED record and explicit onsite confirmation before one Fastboot reboot.
+- The public C21 flash/start scripts require an explicit Serial parameter. Review all local inputs and device checks before use.
