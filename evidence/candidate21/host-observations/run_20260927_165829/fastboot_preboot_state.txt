@@ -1,0 +1,12 @@
+C21 preboot Fastboot state; read-only queries only
+host_local=2026-09-27T16:58:45.2792293+08:00
+host_utc=2026-09-27T08:58:45.2765392+00:00
+candidate=C21-k40-vk-renderengine
+serial=[REDACTED_DEVICE_ID]
+product=thyme
+current_slot=a
+unlocked=yes
+is_userspace=no
+slot_unbootable_a=no
+slot_successful_a=no
+slot_retry_count_a=4

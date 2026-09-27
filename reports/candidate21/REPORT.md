@@ -1,7 +1,7 @@
 # THYME-OS4 Candidate 21：K40 Skia Vulkan RenderEngine 路由
 
 日期：2026-09-27
-状态：主机构建与指定分区刷写完成；尚未首次启动，等待用户现场确认。
+状态：初稿记录了启动前构建/刷写准备；2026-09-27 首次实机启动及 Standalone 取证已完成，真实结果见文末“首次实机结果补充”。
 
 ## 结论
 
@@ -45,7 +45,8 @@ K40 与 thyme 的 vendor Adreno/Vulkan 二进制并不相同（例如缓存中 K
 - 构建脚本：[build_candidate21_k40_vk_renderengine.py](../../tools/build_candidate21_k40_vk_renderengine.py)
 - 刷写脚本：[flash_candidate21_k40_vk_renderengine.ps1](../../tools/flash_candidate21_k40_vk_renderengine.ps1)
 - 启动门控：[start_candidate21_observed_boot.ps1](../../tools/start_candidate21_observed_boot.ps1)
-- 清单及六镜像：[BUILD_MANIFEST.json](BUILD_MANIFEST.json)
+- 清单及六镜像：[BUILD_MANIFEST.json](../../../work/stage_k_thyme_os4_candidate_21_k40_vk_renderengine_run1/images/BUILD_MANIFEST.json)
+- 待刷镜像目录：`work/stage_k_thyme_os4_candidate_21_k40_vk_renderengine_run1/images/`
 
 主机检查通过：最终 system EROFS fsck 与属性回读成功；system AVB hashtree 更新，product/system_ext descriptors 保持不变；LP dump 显示预期 A 槽逻辑分区与原布局；C20 继承的 `boot/vendor_boot/dtbo/vbmeta` 大小和 SHA-256 一致。C21 manifest 记录全部六镜像大小及 SHA-256。
 
@@ -68,4 +69,18 @@ python tools/observe_candidate13_readonly.py --candidate C21-k40-vk-renderengine
 
 观察器出现 `[ARMED]` 后，再由启动门控脚本检查新鲜 ARMED、设备身份及 A 槽状态，执行一次 Fastboot reboot。ADB 一旦上线，观察器会采集完整 logcat、启动属性（包括三个 C21 renderer 属性）和图形进程 maps；失败时仍需按既有 Standalone 流程完整导出诊断卷后再分析。
 
-主要验收点：SurfaceFlinger 是否报告 threaded SkiaVK backend；是否进入 `bootanimation`、设置向导或桌面；SkiaVk/Vulkan 初始化是否失败；`graphicsengine` Vulkan 崩溃是否仍出现。C21 不会提供 EGLConfig 数量或过滤结果；如果 SkiaVk 路由无法启动，再按真实现场决定是否需要 EGL hook，而非预先改写图形二进制。
+主要验收点（启动前计划）：SurfaceFlinger 是否报告 threaded SkiaVK backend；是否进入 `bootanimation`、设置向导或桌面；SkiaVk/Vulkan 初始化是否失败；`graphicsengine` Vulkan 崩溃是否仍出现。
+
+## 首次实机结果补充（2026-09-27）
+
+本节更新上文“尚未启动”的当时状态；上文保留为启动前的实验设计记录。
+
+- 观察目录：[C21 主机观察记录](../../evidence/candidate21/host-observations/run_20260927_165829/)。观察器在 ARMED 后记录一次 C21 `fastboot reboot`，Fastboot 返回成功；ADB 未上线。USB/Fastboot 后续重新枚举，用户报告看到米标常亮并手动回到 Fastboot。
+- Standalone 全量副本：[C21 Standalone 取证副本](../../evidence/candidate21/standalone/run_20260927_170631/)。THYME_DIAG 中全部 8 个文件已复制到独立目录，保留相对路径；逐文件大小和 SHA-256 对照零错误。`dmesg_diag_boot.txt` 是 Standalone 自身日志，`oops.raw` 是 2026-06-17 历史现场，不归属 C21。
+- C21 pmsg 证明 First/Second Stage、APEX Bootstrap、`/data`、vold/密钥初始化推进。SurfaceFlinger 使用 SkiaVk 后约 80 次因 `Could not initialize Vulkan RenderEngine!` abort，栈位于 `SkiaVkRenderEngine::createContexts()+944`；本轮没有再出现 C20 的 `no suitable EGLConfig found`。未见 bootanimation、设置向导或桌面。
+- 首次 SurfaceFlinger fatal 前约 0.08 秒，`graphicsengine` 在 `/system/lib64/libvulkan.so` 的 `vkEnumeratePhysicalDevices+4` 发生空指针 SIGSEGV，调用者为 `MiVulkanPipelineCacheBuilder`。两者属于不同进程，现有时序不能证明因果。console 延伸约 417 秒，无 kernel panic；pmsg 延伸约 6 分 50 秒。
+- C21 实际使用的 vendor 输入来自 C1 `provider_images/vendor.img`。从实际输入只读提取的 `vulkan.adreno.so` 为 2,232,960 bytes、SHA-256 `7d78c17c97c2e49d2b0cbc9046f04fb8d77e928445ce9f58e9c12b74888186ae`。展开工作树中同名 1,900,664-byte 文件不是本次 C21 实际 Vulkan ICD，后续分析不再以它代表设备镜像。
+- 定点 ABI 对照发现：K40 Android 17 Vulkan ICD 使用 thyme C21 `libgsl.so` 未导出的 GSL API；K40 配套 `libgsl.so` 依赖系统已存在的 `libdmabufheap.so`。而直接替换同名 K40 `libgsl.so`、`libllvm-glnext.so`、`libadreno_utils.so` 会缺失原 thyme EGL/GLES 驱动依赖的符号。后续 C22 已按此依据构建隔离 SONAME 的 K40 Vulkan UMD 配套副本并刷入 `super`、`vbmeta_a`；其在 thyme 上的运行时兼容性仍待首次启动验证，详见 C22 报告。
+- 当前设备：Bootloader Fastboot，`product=thyme`、槽位 A、Bootloader 解锁、非 userspace Fastboot；A 槽当前 `unbootable=no`、retry-count=3。无 C22 刷写或启动发生；userdata/metadata 未清除。
+
+后续构建状态与实际 Candidate 以 `日志/项目当前状态.md` 和 `日志/执行记录.md` 为准。

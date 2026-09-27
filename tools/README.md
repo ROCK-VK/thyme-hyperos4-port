@@ -52,3 +52,10 @@ The original workflow used Windows 11, WSL Ubuntu, local Android platform-tools,
 - flash_candidate21_k40_vk_renderengine.ps1 defaults to Dry-Run. With an explicit Serial and Execute switch, it writes only super and vbmeta_system_a; it does not reboot or erase data.
 - start_candidate21_observed_boot.ps1 validates a fresh C21 observer ARMED record and explicit onsite confirmation before one Fastboot reboot.
 - The public C21 flash/start scripts require an explicit Serial parameter. Review all local inputs and device checks before use.
+
+## Candidate 22
+
+- `build_candidate22_k40_vulkan_umd.py` builds the C22 Vulkan UMD compatibility experiment from the local C21/vendor inputs; those ROM/build inputs are not included.
+- `flash_candidate22_k40_vulkan_umd.ps1` defaults to Dry-Run. Supply `-Serial` and `-Execute` to write only `super` and `vbmeta_a`; it does not reboot or erase data.
+- `start_candidate22_observed_boot.ps1` requires `-RunDir`, `-Serial`, `-Execute`, and `-UserWatchingConfirmed`; it verifies a fresh C22 observer ARMED record and device/slot state before one Fastboot reboot.
+- Public C22 scripts require the target serial explicitly rather than embedding a machine-specific default.

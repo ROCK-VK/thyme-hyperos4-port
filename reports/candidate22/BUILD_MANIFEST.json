@@ -1,0 +1,216 @@
+{
+  "candidate": "Candidate 22 K40 Android 17 Vulkan UMD ABI compatibility stack",
+  "base": "Candidate 21 K40 Skia Vulkan RenderEngine profile",
+  "changes": [
+    "Replace vendor_a's Vulkan ICD with the cached K40 OS4.0.0.8 Android 17 vulkan.adreno.so.",
+    "Add K40 Vulkan-only GSL, Adreno Utils, glnext, and qgl libraries; rename GSL/Adreno/glnext SONAMEs and patch only K40 Vulkan DT_NEEDED references.",
+    "Keep the original thyme/C1 libgsl.so, libadreno_utils.so, libllvm-glnext.so, EGL, GLES, Gralloc, HWC, kernel, and device-specific boot assets unchanged.",
+    "Regenerate the vendor AVB hashtree without FEC and replace only the vendor descriptor in root vbmeta.img; retain vbmeta_system.img."
+  ],
+  "evidence_basis": [
+    "C21 pmsg shows repeated SurfaceFlinger SkiaVk RenderEngine initialization fatal.",
+    "C21 actual provider vendor Vulkan ICD imports GSL APIs missing from its actual provider libgsl.so.",
+    "K40 Android 17 Vulkan ICD has a matching GSL/LLVM UMD set; same-name replacement would remove exports used by C21 EGL/GLES, so C22 isolates SONAMEs."
+  ],
+  "limits": [
+    "This is a host-built compatibility experiment; K40 Vulkan UMD operation on thyme Linux 4.19/KGSL is unverified.",
+    "The adjacent graphicsengine Vulkan crash is not claimed to be the SurfaceFlinger cause.",
+    "No SELinux, EGL routing, fstab, encryption, system, userdata, metadata, or bootloader change is included."
+  ],
+  "flash_scope_prepared": [
+    "super",
+    "vbmeta_a"
+  ],
+  "inherited_from_c21": [
+    "boot.img",
+    "vendor_boot.img",
+    "dtbo.img",
+    "vbmeta_system.img",
+    "system_a",
+    "system_ext_a",
+    "mi_ext_a",
+    "odm_a",
+    "product_a"
+  ],
+  "images": {
+    "boot.img": {
+      "bytes": 201326592,
+      "sha256": "E5A016056D5C93C7A886980A7C062617EC44DC06A48417D7DD0F4476708A6368"
+    },
+    "vendor_boot.img": {
+      "bytes": 100663296,
+      "sha256": "02333B82BA936F1BAAB1ECAB744632C70F8FC16688A206C7041EF319F112A137"
+    },
+    "dtbo.img": {
+      "bytes": 33554432,
+      "sha256": "50E1AC0EDCBD333778217AA6FE8D972F6FF85ADD0DAE8A015A6642C2172DD886"
+    },
+    "vbmeta.img": {
+      "bytes": 131072,
+      "sha256": "66A53C2EC38247193CC86B7F5DE887556864413D1142C3C1994645DE1E3BAB10"
+    },
+    "vbmeta_system.img": {
+      "bytes": 131072,
+      "sha256": "E3A2807CE59CFAF93BEF7E08EE45A1D055DE1264FFEA8F6E8EED06893892AC74"
+    },
+    "super.img": {
+      "bytes": 7701892056,
+      "sha256": "6145D602D17321EFF1AD55A7AC10B9314AF9E7C23C0BD60D681115CD54B1330D"
+    }
+  },
+  "vendor_input_and_patch": {
+    "c1_provider_vendor": {
+      "path": "[LOCAL_BUILD_ROOT]/thyme_xiaomi15_os4_first_boot_candidate_1/provider_images/vendor.img",
+      "source_bytes": 1510342656,
+      "source_sha256": "FE2EAC55990F468EC16D34D017ECB36B3B38E39590FA1EB8CB49D5A10406A993",
+      "ext4_bytes_before_avb": 1486426112
+    },
+    "k40_source_dir": "[LOCAL_BUILD_ROOT]/c22_k40_vulkan_migration_20260927/k40_graphics_deps",
+    "k40_libraries": {
+      "vulkan.adreno.so": {
+        "bytes": 4741416,
+        "sha256": "F7D5C94AF03895AFC72C6A03BB837C08E4B1515AEFAEF8CACB355F386A0E9DB8",
+        "needed": [
+          "libcutils.so",
+          "libz.so",
+          "libadreno_utils.so",
+          "libgsl.so",
+          "liblog.so",
+          "libllvm-glnext.so",
+          "libhardware.so",
+          "libbase.so",
+          "vendor.qti.hardware.display.mapper@2.0.so",
+          "android.hardware.graphics.mapper@2.0.so",
+          "vendor.qti.hardware.display.mapper@3.0.so",
+          "android.hardware.graphics.mapper@3.0.so",
+          "vendor.qti.hardware.display.mapperextensions@1.1.so",
+          "libhidlbase.so",
+          "libutils.so",
+          "libnativewindow.so",
+          "vendor.qti.hardware.display.mapper@4.0.so",
+          "android.hardware.graphics.mapper@4.0.so",
+          "libc++.so",
+          "libc.so",
+          "libm.so",
+          "libdl.so"
+        ]
+      },
+      "libgsl.so": {
+        "bytes": 2222224,
+        "sha256": "C27B422FFC76019A580C0BAEF0A4716C7E12457CE3FF5C8424B396F3DB4C6D4F",
+        "needed": [
+          "libcutils.so",
+          "liblog.so",
+          "libz.so",
+          "libsync.so",
+          "libdmabufheap.so",
+          "libc++.so",
+          "libc.so",
+          "libm.so",
+          "libdl.so"
+        ]
+      },
+      "libadreno_utils.so": {
+        "bytes": 97808,
+        "sha256": "75EE6738D71237A64482D3268D4F7E8F6FDB965707C719F0344FC73404236918",
+        "needed": [
+          "libgsl.so",
+          "liblog.so",
+          "libnativewindow.so",
+          "libc++.so",
+          "libc.so",
+          "libm.so",
+          "libdl.so"
+        ]
+      },
+      "libllvm-glnext.so": {
+        "bytes": 2196056,
+        "sha256": "E98A7CF1B77DB9BF9AA871D3F659DFA4A781743A0A7062073BD53F9664B71E8E",
+        "needed": [
+          "libgsl.so",
+          "liblog.so",
+          "libc++.so",
+          "libc.so",
+          "libm.so",
+          "libdl.so"
+        ]
+      },
+      "libllvm-qgl.so": {
+        "bytes": 22342032,
+        "sha256": "A6AC01CE5A8BC9C72653B98A8B7928C71304F11588E6034297143AAA841EF18E",
+        "needed": [
+          "libgsl.so",
+          "liblog.so",
+          "libc++.so",
+          "libc.so",
+          "libm.so",
+          "libdl.so"
+        ]
+      }
+    },
+    "vendor_additions": {
+      "/lib64/hw/vulkan.adreno.so": {
+        "bytes": 4960345,
+        "selinux": "u:object_r:same_process_hal_file:s0",
+        "uid": 0,
+        "gid": 0,
+        "mode": "0644"
+      },
+      "/lib64/libgsl_k40.so": {
+        "bytes": 2260121,
+        "selinux": "u:object_r:same_process_hal_file:s0",
+        "uid": 0,
+        "gid": 0,
+        "mode": "0644"
+      },
+      "/lib64/libadreno_utils_k40.so": {
+        "bytes": 200433,
+        "selinux": "u:object_r:same_process_hal_file:s0",
+        "uid": 0,
+        "gid": 0,
+        "mode": "0644"
+      },
+      "/lib64/libllvm-glnext_k40.so": {
+        "bytes": 2299809,
+        "selinux": "u:object_r:same_process_hal_file:s0",
+        "uid": 0,
+        "gid": 0,
+        "mode": "0644"
+      },
+      "/lib64/libllvm-qgl.so": {
+        "bytes": 22364457,
+        "selinux": "u:object_r:same_process_hal_file:s0",
+        "uid": 0,
+        "gid": 0,
+        "mode": "0644"
+      }
+    },
+    "vendor_ext4_check": "e2fsck -f -n passed before rebuilding the AVB hashtree footer",
+    "avb_vendor_footer": {
+      "partition_name": "vendor",
+      "partition_size": 1510998016,
+      "salt": "869fbe2b06434e545491b0977ea070676ec7307609884d646234d592793f777f",
+      "fec": "disabled to match the existing C21 root-vbmeta vendor descriptor"
+    }
+  },
+  "root_vbmeta_update": {
+    "base_flags": 3,
+    "base_rollback_index": 0,
+    "base_rollback_index_location": 0,
+    "release_string": "avbtool 1.3.0",
+    "vendor_before_root_digest": "b41125b2405a677340a2f7dad7f55473199c0fe3ff2a1cbb414e5aabfadf6591",
+    "vendor_after_root_digest": "743d0bfebb1dfd42ebf55d37321702a8529546396c72716676f28cc48987c857",
+    "vendor_image_size": 1486426112,
+    "vendor_tree_size": 11714560,
+    "vendor_fec_num_roots": 0,
+    "other_root_descriptors_unchanged": true
+  },
+  "lp_layout": {
+    "super_device_size": 9126805504,
+    "alignment": 1048576,
+    "vendor_a_size": 1510998016,
+    "layout_source": "Candidate 21 lpmake geometry; exact system_ext_a extracted from C21 super, unchanged logical inputs except vendor_a",
+    "lpdump": "[LOCAL_BUILD_ROOT]/c22_k40_vulkan_umd_20260927_run5/lpdump_c22.txt"
+  },
+  "note": "Candidate 22 is not flashed by the build script. The paired flash script only writes super and vbmeta_a and never reboots."
+}

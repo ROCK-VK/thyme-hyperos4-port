@@ -13428,3 +13428,25 @@
 - 安全边界：只刷写 super 和 vbmeta_system_a；没有 reboot、userdata/metadata 清除、其他分区写入、切槽、BCB 修改、硬件身份分区操作或 Bootloader 回锁。
 - 待处理：等待用户在场确认后启动 C21 observer 至 ARMED，再进行一次受控首次启动。
 - 替代：C20 的 ANGLE linker 诊断没有给出实际后端，C21 改用 K40 已采用的 SkiaVk RenderEngine 路由；C20 实际 EGL 后端和底层 EGLConfig 筛选根因仍未知。
+
+
+## 2026-09-27 17:48｜C21 Vulkan RenderEngine 故障取证
+
+- 状态：C21 首次启动和 Standalone 全量取证完成；未进入 HyperOS 启动画面。
+- 改动/结论：pmsg 证明 First/Second Stage、APEX Bootstrap、vold 与 `/data` 初始化推进。SurfaceFlinger 约 80 次以 `Could not initialize Vulkan RenderEngine!` 在 `SkiaVkRenderEngine::createContexts()` fatal；没有再看到 C20 的 EGLConfig fatal。另一个 `graphicsengine` 在 `vkEnumeratePhysicalDevices+4` 空指针崩溃，发生于首个 SurfaceFlinger fatal 前约 0.08 秒；因果未证。C21 实际 vendor Vulkan ICD 与展开工作树同名文件不同，后续 ABI 判断以实际 provider vendor 为准。
+- 原因：取得首次能够直接描述 SkiaVk RenderEngine 失败的用户空间日志；K40 Android 17 Vulkan ICD 需要 C21 `libgsl.so` 未导出的接口，直接同名覆盖还会破坏原 EGL/GLES 依赖。
+- 涉及文件：[C21 报告](../reports/candidate21/REPORT.md)、C21 host-observation 和 Standalone 文件树、`reports/candidate21/audit_umd_compat.py`。
+- 验证：本地 Standalone 原始导出 8 项与 THYME_DIAG 源清单大小/SHA-256 匹配。公开副本包括 19 个全部可访问 observer/Standalone 文件；按公开副本策略共替换序列号 72 处，本地原件不变；来源与发布版哈希记录在 `evidence/candidate21/PUBLIC_EVIDENCE_MANIFEST.csv`。
+- 尚未验证：SkiaVk 初始化失败的具体 Vulkan API/驱动运行时原因，以及 graphicsengine SIGSEGV 与 SurfaceFlinger fatal 的因果。
+- 待处理：以隔离 SONAME 的 K40 Android 17 Vulkan UMD 配套组构建 C22；保持用户数据和 thyme 原 EGL/GLES 栈。
+
+## 2026-09-27 18:18｜C22 构建并刷入受限分区
+
+- 状态：C22 主机构建、必要静态验证和两分区刷写完成；设备保持 Bootloader Fastboot，C22 尚未启动。
+- 改动/结论：仅在私有 vendor 构建副本替换 Vulkan ICD、增加隔离 SONAME 的 K40 GSL/Adreno Utils/LLVM 配套副本；原 thyme EGL/GLES、Gralloc/HWC、内核及设备启动栈保留。只更新 root vbmeta 的 vendor descriptor。
+- 涉及文件：[C22 报告](../reports/candidate22/REPORT.md)、构建清单、构建/刷写/启动门控脚本。
+- 验证：vendor `e2fsck -f -n`、AVB footer/hashtree、root-vbmeta descriptor 与 LP 布局检查通过。按限定范围刷写 `super`（10/10 sparse 块 `OKAY`）和 `vbmeta_a`（`OKAY`）；刷后只读状态为 `thyme`、A 槽、Bootloader unlocked、非 userspace Fastboot，A 槽 `unbootable=no`、retry=3。
+- 镜像：C22 `super.img` 7,701,892,056 bytes，SHA-256 `6145D602D17321EFF1AD55A7AC10B9314AF9E7C23C0BD60D681115CD54B1330D`；`vbmeta.img` 写入 `vbmeta_a`，131,072 bytes，SHA-256 `66A53C2EC38247193CC86B7F5DE887556864413D1142C3C1994645DE1E3BAB10`。
+- 尚未验证：K40 UMD 在 thyme 4.19/KGSL 上的加载与运行；SurfaceFlinger 是否越过 Vulkan RenderEngine fatal；是否到达 bootanimation/设置向导/桌面。
+- 安全边界：未启动、未擦除 userdata/metadata，未写其他分区，未修改 BCB/硬件身份分区，未回锁 Bootloader。
+- 待处理：用户现场确认后，先 ARMED C22 只读观察器，再执行一次受控首次启动；失败后先完整保存 Standalone 现场。

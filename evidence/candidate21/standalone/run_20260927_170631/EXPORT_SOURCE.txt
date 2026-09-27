@@ -1,0 +1,4 @@
+Source: the unique host volume labeled THYME_DIAG, exposed by the Standalone RAM diagnostic environment.
+dmesg_diag_boot.txt is the Standalone diagnostic kernel log, not the preceding C21-k40-vk-renderengine kernel log.
+Salvaged boot label: C21-k40-vk-renderengine.
+Export started (UTC): 2026-09-27T09:06:45.615+00:00
