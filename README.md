@@ -2,13 +2,14 @@
 
 **Xiaomi 15 (dada) HyperOS 4 / Android 17 移植至 Xiaomi Mi 10S (thyme)**
 
-这是一个实验性 Android 移植工程。当前首要目标是让小米 10S 越过 HyperOS 4 图形初始化并进入启动动画、设置向导或桌面。仓库保存可审核的脚本、补丁、项目日志与用户授权公开的 C13–C19 原始启动诊断证据；不提供 ROM 下载。
+这是一个实验性 Android 移植工程。当前首要目标是让小米 10S 越过 HyperOS 4 图形初始化并进入启动动画、设置向导或桌面。仓库保存可审核的脚本、补丁、项目日志与用户授权公开的 C13–C20 原始启动诊断证据；不提供 ROM 下载。
 
 ## 当前状态（2026-09-27）
 
-- **C20 已构建并刷写，尚未首次启动。** 仅将 `super` 和配套 `vbmeta_system_a` 写入 A 槽；设备保持 Bootloader Fastboot，等待用户现场确认后启动。未擦除 userdata/metadata，也未改动其他分区。
+- **C20 已完成一次受控启动尝试。** 仅将 `super` 和配套 `vbmeta_system_a` 写入 A 槽。pstore 证明 Second Stage、APEX 激活、vold 与 `/data` 初始化成功；SurfaceFlinger 仍有 47 次 format=2 EGLConfig abort，未见 HyperOS 启动画面。设备当前在用户手动进入的 Bootloader Fastboot；未擦除 userdata/metadata，也未改动其他分区。
 - C20 基于实机 C19，保留 RGBX_8888 (`ro.surface_flinger.default_composition_pixel_format=2`)；将 EGL 路由在默认属性与 `/data` 持久属性加载后的 init 动作中统一设为 ANGLE，移除冲突的 Adreno 覆盖。
-- 为 SurfaceFlinger 和 graphicsengine 增加进程级 linker `dlopen`/`dlerror` 诊断属性；ADB 可用时观察器另保存运行时属性和进程 maps。该诊断为 best-effort，仍待 C20 实机验证。
+- 为 SurfaceFlinger 和 graphicsengine 增加进程级 linker `dlopen`/`dlerror` 诊断属性；但本轮 pmsg 没有后端日志，ADB 未上线，实际 ANGLE/Adreno 选择仍未知。C20 的 ANGLE 路由没有解决 EGLConfig abort。
+- C20 同时出现一次 graphicsengine `vkEnumeratePhysicalDevices+4` SIGSEGV，约早于首条 EGL abort 0.48 秒；两者因果尚未证明。没有 bootanimation、设置向导、桌面或成功 `sys.boot_completed=1` 证据。
 - C19 已在真实启动中推进至 First/Second Stage、APEX Bootstrap、vold 与 `/data` 初始化；43 次 SurfaceFlinger `no suitable EGLConfig found` 均请求 format 2。graphicsengine Vulkan 枚举 SIGSEGV 与 EGLConfig 故障的因果关系尚未证明。
 - C14 的 BPF 启动绕过和 C16/C17 图形 allocator ION 权限修复已在后续实机记录中得到支持；目前没有启动动画、设置向导或桌面成功证据。
 
@@ -38,7 +39,7 @@ K40 对照资料显示，成功包的 vendor_boot ramdisk 与原包不同，并�
 - **C17**：依据 C16 的 open AVC 增加精确权限，已刷写 vbmeta_system_a 与 super。复验已确认进入 Second Stage，图形 allocator 的 open/read AVC 未复现；SurfaceFlinger EGLConfig abort 持续，尚未进入启动动画。
 - **C18**：保留 C17 启动链和修复，将 EGL 路由改为 thyme vendor 配置的 native Adreno；其后 C19/C20 实验继续探索运行时后端。
 - **C19**：保留 Adreno 路由并改为 RGBX_8888 EGL 请求；format=2 仍有 43 次 EGLConfig 失败。`reports/candidate19/REPORT.md` 与 `evidence/candidate19/` 保存报告和原始诊断证据。
-- **C20**：将 EGL 路由统一为 ANGLE，保留 RGBX=2，并加入 linker 诊断；已刷写 `super`、`vbmeta_system_a`，尚未启动，等候用户现场确认。
+- **C20**：将 EGL 路由统一为 ANGLE，保留 RGBX=2，并加入 linker 诊断；实机仍有 EGLConfig abort，实际 EGL 后端未知。完整 C20 原始证据见 [`evidence/candidate20/`](evidence/candidate20/) 和 [C20 报告](reports/candidate20/REPORT.md)。
 
 
 具体阶段和证据等级以项目状态文件及 Candidate 报告为准，旧报告的“计划/待验证”不会自动成为当前结论。
@@ -51,7 +52,7 @@ logs/              当前状态和按时间追加的执行记录
 tools/             精选构建、预检、刷写和诊断脚本
 patches/           可审阅的最小策略补丁
 reports/           K40 对照与 Candidate 分析报告
-evidence/          C13–C19 Standalone 原始诊断卷及 USB/ADB/Fastboot 主机观察记录
+evidence/          C13–C20 Standalone 原始诊断卷及 USB/ADB/Fastboot 主机观察记录
 scripts/           带明确文件白名单的本地增量同步脚本
 ```
 
@@ -69,16 +70,16 @@ scripts/           带明确文件白名单的本地增量同步脚本
 10. [C13 首次启动证据摘要](reports/boot-logs/candidate13_netbpfload_failure_excerpt.txt)
 11. [C13 Second Stage 取证准备](reports/candidate13/20260926_CANDIDATE13_SECOND_STAGE_CAPTURE_PREP.md)
 12. [K40 三方移植分析](reports/k40/20260918_K40_THREE_WAY_PORT_REVERSE_ENGINEERING_1.md)
-13. [C13–C19 原始启动诊断证据索引](evidence/README.md)
+13. [C13–C20 原始启动诊断证据索引](evidence/README.md)
 ## 脚本与构建
 
 `tools/` 中保留了历史 Candidate 构建/预检流程、C13 SELinux 审核、只读启动观察器、启动门控、Standalone 日志导出工具和 PixelOS A0′ 恢复脚本。C18–C20 构建脚本记录定点 EGL 路由实验；C20 将 ANGLE 路由与进程级 linker 诊断结合。C20 刷写脚本只写 `super`/`vbmeta_system_a`，启动脚本要求 observer ARMED 和用户在场确认。启动、刷写和 `fastboot boot` 辅助脚本都需要审阅其操作范围；脚本本身不构成设备操作许可。它们依赖本机 WSL 环境、外部 ROM 输入和原工程中的暂存资产。本仓库没有完整输入镜像，**不能仅凭 clone 一键复现完整 ROM 构建**。脚本来源及设备操作分类见 [`tools/README.md`](tools/README.md)。
 
-后续更新公开副本时，先审核允许发布的本地变更，再运行文本与原始诊断证据同步器。原始证据同步器只递归处理明确列入 allowlist 的 Standalone 导出和 host-observation 目录，复制原始字节并生成逐文件 SHA-256 清单；识别到凭据、分区/固件镜像名或超大文件时会排除并记录原因：
+后续更新公开副本时，先审核允许发布的本地变更，再运行文本与原始诊断证据同步器。原始证据同步器只递归处理明确列入 allowlist 的 Standalone 导出和 host-observation 目录，复制原始字节并生成逐文件 SHA-256 清单；可用 `-EvidenceCandidates C20` 只同步新增 Candidate，保留其他 Candidate 的 manifest 行而不重新遍历旧目录。识别到凭据、分区/固件镜像名或超大文件时会排除并记录原因：
 
 ```powershell
 $env:THYME_OS4_SOURCE = 'C:\path\to\thyme-os4-local'
-.\scripts\sync_from_local.ps1 -SourceRoot $env:THYME_OS4_SOURCE
+.\scripts\sync_from_local.ps1 -SourceRoot $env:THYME_OS4_SOURCE -EvidenceCandidates C20
 git status --short
 git diff --stat
 # 人工审查完整 diff 与暂存文件清单后，再 Commit 和 Push
@@ -88,7 +89,7 @@ git diff --stat
 
 ## 为什么不提供完整镜像
 
-小米 15 原包、K40 成功移植包、PixelOS、展开后的 Android 系统树以及 Candidate 构建镜像都可能包含专有固件、厂商 HAL、应用或其他第三方内容。它们不属于本公开仓库的分发范围。这里不提供完整 ROM 或固件分发。按用户授权，evidence/ 保存 C13–C19 Standalone 原始诊断日志和主机观察记录；misc、persist、modemst、EFS/NV、校准与设备身份分区备份，以及 userdata/metadata 分区镜像仍不公开。
+小米 15 原包、K40 成功移植包、PixelOS、展开后的 Android 系统树以及 Candidate 构建镜像都可能包含专有固件、厂商 HAL、应用或其他第三方内容。它们不属于本公开仓库的分发范围。这里不提供完整 ROM 或固件分发。按用户授权，evidence/ 保存 C13–C20 Standalone 原始诊断日志和主机观察记录；misc、persist、modemst、EFS/NV、校准与设备身份分区备份，以及 userdata/metadata 分区镜像仍不公开。
 
 仓库不附加统一开源许可证。项目代码与随附报告的权利状态应由各自作者/来源确定；不对小米固件、第三方 ROM 或厂商二进制授予任何许可证。
 

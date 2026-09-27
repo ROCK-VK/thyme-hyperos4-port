@@ -3,7 +3,8 @@ param(
     [Parameter(Mandatory = $true)]
     [string]$SourceRoot,
     [string]$DestinationRoot = (Split-Path -Parent $PSScriptRoot),
-    [switch]$SkipRawEvidence
+    [switch]$SkipRawEvidence,
+    [string[]]$EvidenceCandidates = @()
 )
 $ErrorActionPreference = 'Stop'
 $SourceRoot = (Resolve-Path -LiteralPath $SourceRoot).Path
@@ -148,5 +149,10 @@ foreach ($Entry in $Allowlist) {
 [pscustomobject]@{Copied=$Copied; Missing=$Missing; Destination=$DestinationRoot} | ConvertTo-Json -Depth 4
 if ($Missing.Count -gt 0) { Write-Warning ('Allowlisted source files absent: ' + ($Missing -join ', ')) }
 if (-not $SkipRawEvidence) {
-    & (Join-Path $PSScriptRoot 'sync_raw_startup_evidence.ps1') -SourceRoot $SourceRoot -DestinationRoot $DestinationRoot
+    $RawEvidenceSync = Join-Path $PSScriptRoot 'sync_raw_startup_evidence.ps1'
+    if ($EvidenceCandidates.Count -gt 0) {
+        & $RawEvidenceSync -SourceRoot $SourceRoot -DestinationRoot $DestinationRoot -Candidates $EvidenceCandidates
+    } else {
+        & $RawEvidenceSync -SourceRoot $SourceRoot -DestinationRoot $DestinationRoot
+    }
 }

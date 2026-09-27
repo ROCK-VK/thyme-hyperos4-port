@@ -2,7 +2,8 @@
 param(
     [Parameter(Mandatory = $true)]
     [string]$SourceRoot,
-    [string]$DestinationRoot = (Split-Path -Parent $PSScriptRoot)
+    [string]$DestinationRoot = (Split-Path -Parent $PSScriptRoot),
+    [string[]]$Candidates = @()
 )
 $ErrorActionPreference = 'Stop'
 $SourceRoot = (Resolve-Path -LiteralPath $SourceRoot).Path
@@ -33,6 +34,8 @@ $RawDirectoryAllowlist = @(
     @{ Candidate='C18'; Source='work/reports/20260926_CANDIDATE18_NATIVE_ADRENO/observations/c18_retest_20260926_231128/run_20260926_233356'; Destination='candidate18/host-observations/retest_run_20260926_233356' }
     @{ Candidate='C19'; Source='work/reports/20260927_CANDIDATE19_RGBX_EGL/standalone/run_20260927_003826'; Destination='candidate19/standalone/run_20260927_003826' }
     @{ Candidate='C19'; Source='work/reports/20260927_CANDIDATE19_RGBX_EGL/observations/run_20260927_003223'; Destination='candidate19/host-observations/run_20260927_003223' }
+    @{ Candidate='C20'; Source='work/reports/20260927_CANDIDATE20_ANGLE_DIAG/standalone/run_20260927_094544'; Destination='candidate20/standalone/run_20260927_094544' }
+    @{ Candidate='C20'; Source='work/reports/20260927_CANDIDATE20_ANGLE_DIAG/observations/run_20260927_093948'; Destination='candidate20/host-observations/run_20260927_093948' }
 )
 
 $CredentialPatterns = @(
@@ -52,6 +55,28 @@ $ManifestRows = @()
 $ExcludedRows = @()
 $MissingDirectories = @()
 $TotalBytes = [int64]0
+$CopiedCount = 0
+$NewExcludedCount = 0
+$ManifestPath = Join-Path $EvidenceRoot 'RAW_EVIDENCE_MANIFEST.csv'
+$ExclusionsPath = Join-Path $EvidenceRoot 'RAW_EVIDENCE_EXCLUSIONS.csv'
+$EntriesToProcess = @($RawDirectoryAllowlist)
+
+# Candidate-filtered syncs preserve manifest rows for all other candidates and
+# only traverse the explicitly selected entries. This avoids re-copying history.
+if ($Candidates.Count -gt 0) {
+    $KnownCandidates = @($RawDirectoryAllowlist | Select-Object -ExpandProperty Candidate -Unique)
+    $UnknownCandidates = @($Candidates | Where-Object { $_ -notin $KnownCandidates })
+    if ($UnknownCandidates.Count -gt 0) {
+        throw ('Unknown evidence candidate filter: ' + ($UnknownCandidates -join ', '))
+    }
+    if (Test-Path -LiteralPath $ManifestPath) {
+        $ManifestRows = @(Import-Csv -LiteralPath $ManifestPath | Where-Object { $_.Candidate -notin $Candidates })
+    }
+    if (Test-Path -LiteralPath $ExclusionsPath) {
+        $ExcludedRows = @(Import-Csv -LiteralPath $ExclusionsPath | Where-Object { $_.Candidate -notin $Candidates })
+    }
+    $EntriesToProcess = @($RawDirectoryAllowlist | Where-Object { $_.Candidate -in $Candidates })
+}
 
 function Normalize-GeneratedCsvLineEndings([string]$Path) {
     $Text = [IO.File]::ReadAllText($Path)
@@ -59,7 +84,7 @@ function Normalize-GeneratedCsvLineEndings([string]$Path) {
     [IO.File]::WriteAllText($Path, $Text, [Text.UTF8Encoding]::new($false))
 }
 
-foreach ($Entry in $RawDirectoryAllowlist) {
+foreach ($Entry in $EntriesToProcess) {
     $SourcePath = Join-Path $SourceRoot ($Entry.Source -replace '/', '\')
     if (-not (Test-Path -LiteralPath $SourcePath -PathType Container)) {
         $MissingDirectories += $Entry.Source
@@ -86,10 +111,12 @@ foreach ($Entry in $RawDirectoryAllowlist) {
 
         if ($File.Name -match $ForbiddenImageNamePattern) {
             $ExcludedRows += [pscustomobject]@{Candidate=$Entry.Candidate;Source=$RelativeDisplayPath;Reason='partition_or_firmware_image'}
+            $NewExcludedCount++
             continue
         }
         if ($File.Length -gt 100MB) {
             $ExcludedRows += [pscustomobject]@{Candidate=$Entry.Candidate;Source=$RelativeDisplayPath;Reason='over_100_MiB'}
+            $NewExcludedCount++
             continue
         }
 
@@ -104,6 +131,7 @@ foreach ($Entry in $RawDirectoryAllowlist) {
         }
         if ($SecretType) {
             $ExcludedRows += [pscustomobject]@{Candidate=$Entry.Candidate;Source=$RelativeDisplayPath;Reason="credential_pattern:$SecretType"}
+            $NewExcludedCount++
             continue
         }
 
@@ -124,14 +152,13 @@ foreach ($Entry in $RawDirectoryAllowlist) {
             SHA256 = $SourceHash
         }
         $TotalBytes += $File.Length
+        $CopiedCount++
     }
 }
 
 New-Item -ItemType Directory -Path $EvidenceRoot -Force | Out-Null
-$ManifestPath = Join-Path $EvidenceRoot 'RAW_EVIDENCE_MANIFEST.csv'
 $ManifestRows | Export-Csv -LiteralPath $ManifestPath -NoTypeInformation -Encoding utf8
 Normalize-GeneratedCsvLineEndings $ManifestPath
-$ExclusionsPath = Join-Path $EvidenceRoot 'RAW_EVIDENCE_EXCLUSIONS.csv'
 if ($ExcludedRows.Count -gt 0) {
     $ExcludedRows | Export-Csv -LiteralPath $ExclusionsPath -NoTypeInformation -Encoding utf8
 } else {
@@ -140,9 +167,9 @@ if ($ExcludedRows.Count -gt 0) {
 Normalize-GeneratedCsvLineEndings $ExclusionsPath
 
 [pscustomobject]@{
-    RawFilesCopied = $ManifestRows.Count
+    RawFilesCopied = $CopiedCount
     RawBytesCopied = $TotalBytes
-    CredentialOrPolicyExclusions = $ExcludedRows.Count
+    CredentialOrPolicyExclusions = $NewExcludedCount
     MissingDirectories = $MissingDirectories
     Manifest = 'evidence/RAW_EVIDENCE_MANIFEST.csv'
     Exclusions = 'evidence/RAW_EVIDENCE_EXCLUSIONS.csv'

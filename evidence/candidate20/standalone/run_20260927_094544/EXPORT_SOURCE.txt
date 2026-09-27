@@ -1,0 +1,4 @@
+Source: the unique host volume labeled THYME_DIAG, exposed by the Standalone RAM diagnostic environment.
+dmesg_diag_boot.txt is the Standalone diagnostic kernel log, not the preceding C20-angle-route-diag kernel log.
+Salvaged boot label: C20-angle-route-diag.
+Export started (UTC): 2026-09-27T01:45:56.204+00:00

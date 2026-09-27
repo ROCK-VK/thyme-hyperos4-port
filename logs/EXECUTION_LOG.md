@@ -13394,3 +13394,15 @@
 - 尚未验证：C20 首次启动、ANGLE 实际加载、EGLConfig 结果、Vulkan 与 EGL 故障关系、HyperOS 启动画面或桌面。
 - 边界：没有 reboot、擦除、切槽、BCB/misc 操作、其他分区写入或 Bootloader 回锁；PixelOS 未恢复。
 - 待处理：等待用户确认在现场观察后，先 ARMED C20 observer，再进行一次首次启动。公开材料不包含设备序列号、ROM 或分区镜像。
+
+## 2026-09-27 09:56｜C20 首次实机复验与全量 Standalone 取证
+
+- 状态：C20 启动尝试、取证和图形结果分析已完成；未进入 HyperOS 动画或桌面。完整 C20 原始证据已增量复制到公开副本，远端提交待完成。
+- 改动/结论：观察器先 ARMED，之后一次 `fastboot reboot` 返回成功；ADB 未上线。pstore 证明 First/Second Stage、APEX 激活、metadata key 使用和 `/data` F2FS 挂载成功。SurfaceFlinger 仍有 47 次 format=2 `no suitable EGLConfig found`。ANGLE/Adreno 后端未知；linker 诊断没有产生日志。graphicsengine 的 `vkEnumeratePhysicalDevices+4` SIGSEGV 与首条 EGL abort 相隔约 0.48 秒，因果未证。用户观察到米标常亮并手动返回 Fastboot。
+- 原因：完成 C20 ANGLE 路由与运行时诊断实验，取得真实 EGL 阻塞结果并保存故障现场。
+- 涉及文件：`reports/candidate20/REPORT.md`、`evidence/candidate20/standalone/run_20260927_094544/`、`evidence/candidate20/host-observations/run_20260927_093948/`、同步器与项目状态文件。
+- 验证：Standalone 源卷 8 文件、18,811,280 bytes；源与副本逐项大小/SHA-256 匹配，复制错误 0。C20 pmsg `827,191` bytes，SHA-256 `392510E7F46F4F8F440FAEF37FE1BCF235797EF05C585DC0D87B77AFE779BA83`。`oops.raw` 与 C19 同哈希，视为历史残留；Standalone dmesg 不作为 C20 日志。最近只读设备状态为 thyme/A/unlocked/Bootloader Fastboot、A 槽 unbootable=no/successful=no/retry=4；ADB 空。
+- 尚未验证：ANGLE 实际是否加载、EGLConfig 根因、Vulkan SIGSEGV 与 EGLConfig 的因果、HyperOS 动画/设置向导/桌面。
+- 安全边界：无刷写、擦除、userdata/metadata 清除、BCB/misc 修改、槽位状态修复、PixelOS 恢复或 Bootloader 回锁。
+- 待处理：完成 C20 原始证据的增量 Commit/Push；下一实验先静态验证只读 init 快照可把运行时 EGL 属性和图形进程 maps 写入 logd/pmsg，再决定是否构建 C21。
+- 替代：替代上一条“C20 尚未启动、等待现场确认”的当前状态；旧记录保留其记录时点的事实。

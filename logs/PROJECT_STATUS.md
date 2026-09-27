@@ -7,9 +7,9 @@ Port the Xiaomi 15 (dada) HyperOS 4 / Android 17 userspace to Xiaomi Mi 10S (thy
 ## Device and flashed build
 
 - Target: Xiaomi Mi 10S (`thyme`); public materials redact the physical serial.
-- C20 is flashed to slot A: only `super` and `vbmeta_system_a` were written. The phone remains in Bootloader Fastboot and C20 has not booted.
-- Read-only post-flash checks reported `product=thyme`, slot A, unlocked bootloader, Bootloader Fastboot (not userspace fastboot), and A-slot `unbootable=no`.
-- No userdata/metadata erase, other partition write, slot switch, BCB/misc modification, hardware `persist`, modemst, EFS/NV change, or bootloader relock occurred. PixelOS has not been restored.
+- C20 is installed in slot A; only `super` and `vbmeta_system_a` were written. One controlled C20 boot was attempted. The user saw a persistent Mi logo and manually returned the phone to Bootloader Fastboot.
+- Latest read-only checks: one Fastboot device, `product=thyme`, slot A, unlocked bootloader, Bootloader Fastboot (not userspace fastboot), A-slot `unbootable=no`, `successful=no`, retry count 4; ADB is offline.
+- No userdata/metadata erase, extra partition write, slot switch, BCB/misc modification, hardware `persist`, modemst, EFS/NV change, PixelOS restore, or bootloader relock occurred.
 
 ## C20 implementation and verification
 
@@ -18,7 +18,9 @@ Port the Xiaomi 15 (dada) HyperOS 4 / Android 17 userspace to Xiaomi Mi 10S (thy
 - Adds process-scoped linker `dlopen`/`dlerror` diagnostics for `surfaceflinger` and `graphicsengine`. When ADB is available, the observer records relevant properties and process maps. These diagnostics are best-effort; runtime backend selection is not yet confirmed.
 - No GPU/Vulkan, HWC/Gralloc, SELinux, kernel, vendor_boot, DTBO, fstab, encryption, or userdata/metadata changes.
 - Build checks passed: final EROFS check and property/init readback; system AVB descriptor matched the rebuilt system; inherited product/system_ext descriptors and LP layout were checked; system extracted from super matched the built image byte-for-byte. Only `super` and `vbmeta_system_a` were flashed successfully.
-- C20 runtime behavior, actual ANGLE loading, EGLConfig result, Vulkan interaction, and UI progress are unknown until first boot.
+- C20 has now booted once. Pstore confirms First/Second Stage, activated APEX, vold using the existing metadata key, and successful F2FS `/data` mount. SurfaceFlinger still logged 47 `no suitable EGLConfig found` aborts, all requesting format 2. No bootanimation or completed-boot evidence was recorded.
+- The pmsg log contains no ANGLE/libEGL/linker route record; ADB never came online, so runtime EGL properties and process maps were unavailable. Whether ANGLE actually loaded remains unknown. `graphicsengine` SIGSEGV in `vkEnumeratePhysicalDevices+4` occurred about 0.48 seconds before the first EGL abort; causality is unproven.
+- The full C20 Standalone export and host observer run are published under [`evidence/candidate20/`](../evidence/candidate20/). The `oops.raw` hash matches C19 and is treated as historical residue; Standalone dmesg is not a C20 log.
 
 ## Relevant validated history
 
@@ -29,7 +31,7 @@ Port the Xiaomi 15 (dada) HyperOS 4 / Android 17 userspace to Xiaomi Mi 10S (thy
 
 ## Next action
 
-Wait for the user to confirm they are present to observe. Then arm the C20 observer (`C20-angle-route-diag`) before one controlled first boot. If ADB comes online, capture full logcat, runtime properties, and SurfaceFlinger/graphicsengine maps. If boot fails, return to Fastboot and preserve the full Standalone diagnostic volume before analysis. Do not infer ANGLE loading from property text alone.
+Do not repeat C20 or clear userdata/metadata. Prepare a minimal C21 diagnostic hook that logs runtime `persist.graphics.egl`/`ro.hardware.egl` and read-only EGL/GLES/Vulkan mappings for SurfaceFlinger and graphicsengine to logd/pmsg after SurfaceFlinger first starts. First verify the init hook is non-blocking and that the records persist to pmsg. Do not switch GPU libraries or widen SELinux without backend evidence.
 
 ## Key files
 
