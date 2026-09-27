@@ -2,16 +2,16 @@
 
 **Xiaomi 15 (dada) HyperOS 4 / Android 17 移植至 Xiaomi Mi 10S (thyme)**
 
-这是一个实验性 Android 移植工程。当前首要目标是让小米 10S 越过 HyperOS 4 图形初始化并进入启动动画、设置向导或桌面。仓库保存可审核的脚本、补丁、项目日志与用户授权公开的 C13–C22 原始启动诊断证据；不提供 ROM 下载。
+这是一个实验性 Android 移植工程。当前首要目标是让小米 10S 越过 HyperOS 4 图形初始化并进入启动动画、设置向导或桌面。仓库保存可审核的脚本、补丁、项目日志与用户授权公开的 C13–C23 原始启动诊断证据；不提供 ROM 下载。
 
 ## 当前状态（2026-09-27）
 
-- **C23 已构建并刷入 A 槽，等待用户在场确认首次启动。** 当前设备处于 Bootloader Fastboot；最新只读状态为 `thyme`、A 槽、Bootloader 解锁、A 槽 `unbootable=no`、`retry-count=2`。C23 只写入 `super` 与 `vbmeta_system_a`，没有清除 userdata/metadata 或其他分区。
-- C23 唯一变化是在 system `build.prop` 设置 `service.sf.prime_shader_cache=0`，跳过 C22 实机确认触发 fatal 的可选 SurfaceFlinger shader-cache 预热。该诊断性绕过尚未实机启动验证，也未证明底层 buffer usage 问题已修复。
+- **C23 已完成一次启动尝试，保存的 console 进入 PixelOS Recovery 分支。** 主机只看到 ADB `unauthorized`，没有可用 logcat；console 不是 HyperOS 普通启动记录，Recovery 选择原因未确定。用户随后手动回到 Bootloader Fastboot；最新只读状态为 `thyme`、A 槽、解锁、A 槽可启动、重试计数 1。
+- C23 唯一系统变化是在 `system/build.prop` 设置 `service.sf.prime_shader_cache=0`。构建后只刷入 `super` 与 `vbmeta_system_a`；启动/取证没有清除 userdata/metadata 或改其他分区。C23 的 SurfaceFlinger 实验尚无运行时结论。
 - C22 已越过 C21 的 Vulkan RenderEngine 创建 fatal，First/Second Stage、APEX、vold 与 `/data` 初始化推进；SurfaceFlinger 随后 89 次因 `output buffer not gpu writeable` 在 `Cache::primeShaderCache` / `SkiaRenderEngine::primeCache` abort。实际 Vulkan ICD/backend 身份仍未知。C22 的完整 19 个主机观察及 Standalone 文件已按用户授权公开，来源与发布 SHA-256 见 C22 evidence manifest。
 - **C21 已完成实机启动和 Standalone 取证。** Second Stage、APEX、vold 和 `/data` 推进；SurfaceFlinger 约 80 次因 `Could not initialize Vulkan RenderEngine!` fatal，没有启动动画/设置向导/桌面证据。相邻的 `graphicsengine` Vulkan 枚举 SIGSEGV 与 SurfaceFlinger fatal 是否存在因果尚未确认。
 - C20 的 SkiaGL 路径仍反复出现 `no suitable EGLConfig found`；C21 的 SkiaVk 路由绕过了该 EGLConfig fatal，但在 Vulkan RenderEngine 初始化处失败。
-- 最新资料：[C23 报告](reports/candidate23/REPORT.md)、[C23 镜像清单](reports/candidate23/BUILD_MANIFEST.json)、[C22 实机报告](reports/candidate22/REPORT.md)、[项目当前状态](logs/PROJECT_STATUS.md)。C22 原始诊断卷与主机观察记录见 [evidence/candidate22](evidence/candidate22/) 和 [evidence 索引](evidence/README.md)；本地原件保持不变。
+- 最新资料：[C23 报告与启动结果](reports/candidate23/REPORT.md)、[C23 镜像清单](reports/candidate23/BUILD_MANIFEST.json)、[C22 实机报告](reports/candidate22/REPORT.md)、[项目当前状态](logs/PROJECT_STATUS.md)。C23 原始诊断卷与主机观察记录见 [evidence/candidate23](evidence/candidate23/) 和 [evidence 索引](evidence/README.md)；本地原件保持不变。
 
 ## 设备与来源
 
@@ -40,7 +40,7 @@ K40 对照资料显示，成功包的 vendor_boot ramdisk 与原包不同，并�
 - **C20**：将 EGL 路由统一为 ANGLE，保留 RGBX=2，并加入 linker 诊断；实机仍有 EGLConfig abort，实际 EGL 后端未知。完整 C20 原始证据见 [`evidence/candidate20/`](evidence/candidate20/) 和 [C20 报告](reports/candidate20/REPORT.md)。
 - **C21**：K40 threaded SkiaVk 路由绕开 EGLConfig fatal；实机因 Vulkan RenderEngine 初始化 fatal 未进入启动动画。
 - **C22**：以 K40 Android 17 Vulkan UMD 及隔离 GSL/LLVM/Adreno Utils 依赖配套替换 Vulkan ICD；实机越过 RenderEngine 创建 fatal，后在 Skia shader-cache 预热因输出 buffer usage 检查反复 abort。
-- **C23**：仅关闭可选 SurfaceFlinger shader-cache 预热；已构建、刷入 `super` 与 `vbmeta_system_a`，首次启动尚待用户在场确认。
+- **C23**：仅关闭可选 SurfaceFlinger shader-cache 预热；首次保存的启动记录从 First Stage 即进入 Recovery，未取得 SurfaceFlinger 用户空间日志，进入 Recovery 的原因待查。
 
 
 具体阶段和证据等级以项目状态文件及 Candidate 报告为准，旧报告的“计划/待验证”不会自动成为当前结论。
@@ -53,7 +53,7 @@ logs/              当前状态和按时间追加的执行记录
 tools/             精选构建、预检、刷写和诊断脚本
 patches/           可审阅的最小策略补丁
 reports/           K40 对照与 Candidate 分析报告
-evidence/          C13–C22 Standalone 诊断卷及 USB/ADB/Fastboot 主机观察记录
+evidence/          C13–C23 Standalone 诊断卷及 USB/ADB/Fastboot 主机观察记录
 scripts/           带明确文件白名单的本地增量同步脚本
 ```
 
@@ -71,7 +71,7 @@ scripts/           带明确文件白名单的本地增量同步脚本
 10. [C13 首次启动证据摘要](reports/boot-logs/candidate13_netbpfload_failure_excerpt.txt)
 11. [C13 Second Stage 取证准备](reports/candidate13/20260926_CANDIDATE13_SECOND_STAGE_CAPTURE_PREP.md)
 12. [K40 三方移植分析](reports/k40/20260918_K40_THREE_WAY_PORT_REVERSE_ENGINEERING_1.md)
-13. [C13–C22 原始启动诊断证据索引](evidence/README.md)
+13. [C13–C23 原始启动诊断证据索引](evidence/README.md)
 ## 脚本与构建
 
 `tools/` 中保留了历史 Candidate 构建/预检流程、C13 SELinux 审核、只读启动观察器、启动门控、Standalone 日志导出工具和 PixelOS A0′ 恢复脚本。C18–C23 构建脚本记录定点图形启动实验；C22 配套 K40 Android 17 Vulkan UMD，C23 跳过触发 C22 fatal 的可选 shader-cache 预热。C20/C21/C23 刷写脚本写 super 与 vbmeta_system_a，C22 写 super 与 vbmeta_a；各 Candidate 启动脚本要求 observer ARMED 和用户在场确认。启动、刷写和 `fastboot boot` 辅助脚本都需要审阅其操作范围；脚本本身不构成设备操作许可。它们依赖本机 WSL 环境、外部 ROM 输入和原工程中的暂存资产。本仓库没有完整输入镜像，**不能仅凭 clone 一键复现完整 ROM 构建**。脚本来源及设备操作分类见 [`tools/README.md`](tools/README.md)。
@@ -90,7 +90,7 @@ git diff --stat
 
 ## 为什么不提供完整镜像
 
-小米 15 原包、K40 成功移植包、PixelOS、展开后的 Android 系统树以及 Candidate 构建镜像都可能包含专有固件、厂商 HAL、应用或其他第三方内容。它们不属于本公开仓库的分发范围。这里不提供完整 ROM 或固件分发。按用户授权，evidence/ 保存 C13–C22 诊断日志和主机观察记录；C21 副本对设备序列号做了可追溯脱敏，C22 公开原始诊断文件保持原字节并附来源/发布 SHA-256 manifest；misc、persist、modemst、EFS/NV、校准与设备身份分区备份，以及 userdata/metadata 分区镜像仍不公开。
+小米 15 原包、K40 成功移植包、PixelOS、展开后的 Android 系统树以及 Candidate 构建镜像都可能包含专有固件、厂商 HAL、应用或其他第三方内容。它们不属于本公开仓库的分发范围。这里不提供完整 ROM 或固件分发。按用户授权，evidence/ 保存 C13–C23 诊断日志和主机观察记录；C21 副本对设备序列号做了可追溯脱敏，C22/C23 公开原始诊断文件保持原字节并附来源/发布 SHA-256 manifest；misc、persist、modemst、EFS/NV、校准与设备身份分区备份，以及 userdata/metadata 分区镜像仍不公开。
 
 仓库不附加统一开源许可证。项目代码与随附报告的权利状态应由各自作者/来源确定；不对小米固件、第三方 ROM 或厂商二进制授予任何许可证。
 

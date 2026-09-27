@@ -1,0 +1,4 @@
+Source: the unique host volume labeled THYME_DIAG, exposed by the Standalone RAM diagnostic environment.
+dmesg_diag_boot.txt is the Standalone diagnostic kernel log, not the preceding C23-sf-prime-skip kernel log.
+Salvaged boot label: C23-sf-prime-skip.
+Export started (UTC): 2026-09-27T13:23:50.373+00:00

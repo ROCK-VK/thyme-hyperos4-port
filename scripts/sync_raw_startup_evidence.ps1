@@ -36,6 +36,8 @@ $RawDirectoryAllowlist = @(
     @{ Candidate='C19'; Source='work/reports/20260927_CANDIDATE19_RGBX_EGL/observations/run_20260927_003223'; Destination='candidate19/host-observations/run_20260927_003223' }
     @{ Candidate='C20'; Source='work/reports/20260927_CANDIDATE20_ANGLE_DIAG/standalone/run_20260927_094544'; Destination='candidate20/standalone/run_20260927_094544' }
     @{ Candidate='C20'; Source='work/reports/20260927_CANDIDATE20_ANGLE_DIAG/observations/run_20260927_093948'; Destination='candidate20/host-observations/run_20260927_093948' }
+    @{ Candidate='C23'; Source='work/reports/20260927_CANDIDATE23_SF_PRIME_SKIP/standalone/run_20260927_212336'; Destination='candidate23/standalone/run_20260927_212336' }
+    @{ Candidate='C23'; Source='work/reports/20260927_CANDIDATE23_SF_PRIME_SKIP/observations/run_20260927_211900'; Destination='candidate23/host-observations/run_20260927_211900' }
 )
 
 $CredentialPatterns = @(

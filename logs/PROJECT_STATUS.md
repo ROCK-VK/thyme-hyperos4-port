@@ -6,14 +6,14 @@ Last updated: 2026-09-27 (Hong Kong time)
 
 Port the Xiaomi 15 (`dada`) HyperOS 4 / Android 17 userspace to Xiaomi Mi 10S (`thyme`). The immediate goal is to pass graphics initialization and reach the boot animation, setup wizard, or desktop.
 
-**Current stage: Candidate 23 is built and flashed; its first boot is waiting for the user's on-site confirmation.**
+**Current stage: C23 has had one controlled boot attempt; the saved console is a PixelOS Recovery instance, and the cause of Recovery selection is unknown. C23's SurfaceFlinger experiment has not been evaluated.**
 
 ## Device and flashed build
 
-- Latest post-flash read-only state: `product=thyme`, A slot, unlocked Bootloader Fastboot (not userspace Fastboot), A slot `unbootable=no`, `successful=no`, retry count 2.
+- Latest read-only state after the user manually returned to Bootloader Fastboot: unique device, `product=thyme`, A slot, unlocked, not userspace Fastboot, A slot `unbootable=no`, `successful=no`, retry count 1. The pre-boot retry count was 2.
 - C23 wrote only `super` and `vbmeta_system_a`. The inherited boot, vendor_boot, dtbo and root vbmeta were not rewritten.
-- No C23 boot, userdata/metadata erase, slot change, BCB edit, other partition write, hardware identity change, or Bootloader relock has occurred.
-- The phone remains in Fastboot. Do not treat the host-side build or flash as a successful Android boot.
+- One C23 `fastboot reboot` was executed after the observer was ARMED. No userdata/metadata erase, slot change, BCB edit, other partition write, hardware identity change, PixelOS restore, or Bootloader relock occurred.
+- The phone is currently in Fastboot. Do not treat the C23 build or flash as a successful Android boot.
 
 ## C22 result
 
@@ -35,12 +35,14 @@ Port the Xiaomi 15 (`dada`) HyperOS 4 / Android 17 userspace to Xiaomi Mi 10S (`
 - C13 reached Android First/Second Stage, APEX, vold and `/data`; C14 bypassed the BPF/kernel-version restart gate.
 - C16/C17 addressed graphics allocator `ion_device` read/open AVCs; the C17 retest did not reproduce those denials.
 - C19/C20 repeatedly failed EGLConfig selection. C21's SkiaVk route passed that recorded failure but hit Vulkan RenderEngine initialization fatal. C22 passed that fatal and reached shader-cache prewarming.
-- C23 has not been booted. Whether SurfaceFlinger skips prewarming, whether normal output buffers work, and whether HyperOS reaches boot animation or later UI are unknown.
+- C23's visible `console-ramoops` contains one Recovery-mode boot instance: init skipped first-stage mounts for recovery mode and Recovery started. It records `bootonce-bootloader` and then clears BCB after Recovery starts; this does not establish why Recovery was selected or whether an earlier normal boot was overwritten.
+- Host ADB was only `unauthorized`; no usable logcat was captured. The Standalone export copied all 7 accessible diagnostic-volume files (17,117,150 bytes) with source/copy SHA-256 matches. No pmsg was present; `oops.raw` matches the C22 historical residual, and Standalone dmesg belongs to the diagnostic environment.
+- There is no C23 SurfaceFlinger, Skia, Vulkan, or shader-cache log. The effect of `service.sf.prime_shader_cache=0`, normal composition, and any progress to HyperOS UI are unknown.
 
 ## Next step
 
-Wait for the user to confirm they are present and ready to observe. Then start the C23 read-only observer, verify `ARMED`, and use the C23 observed-start gate for one controlled first boot. If it fails, return to Fastboot and preserve the full Standalone diagnostic volume before analysis. Do not erase userdata/metadata without a new specific need and authorization.
+Do not repeat C23 or build C24 yet. First determine the most useful read-only way to distinguish a direct Recovery request from a later Recovery boot; preserve current Fastboot state and evidence. If another normal boot is proposed, arm the observer first and get the user's on-site confirmation. Do not erase userdata/metadata without a specific need and authorization.
 
 ## Public evidence
 
-The evidence index covers complete user-authorized C13–C22 diagnostic evidence. C22's accessible raw export and host observations were copied byte-for-byte with per-file source/public hashes. No ROMs, firmware packages, partition images, userdata/metadata images, credentials, or hardware-identity partition backups are included.
+The evidence index covers user-authorized C13–C23 diagnostic evidence. C23's accessible raw export and host observations are published with per-file source/public sizes and SHA-256 in the cumulative evidence manifest. No ROMs, firmware packages, partition images, userdata/metadata images, credentials, or hardware-identity partition backups are included.

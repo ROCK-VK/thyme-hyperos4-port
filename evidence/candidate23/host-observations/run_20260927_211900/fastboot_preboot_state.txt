@@ -1,0 +1,12 @@
+C23 preboot Fastboot state; read-only queries only
+host_local=2026-09-27T21:19:15.8140473+08:00
+host_utc=2026-09-27T13:19:15.8092661+00:00
+candidate=C23-sf-prime-skip
+serial=1384e684
+product=thyme
+current_slot=a
+unlocked=yes
+is_userspace=no
+slot_unbootable_a=no
+slot_successful_a=no
+slot_retry_count_a=2

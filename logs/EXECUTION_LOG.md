@@ -13459,3 +13459,13 @@
 - Validation: Python AST and PowerShell parser checks passed for the published C23 builder and flash/start gates. The builder uses a script-relative project root; device serial must be passed explicitly. No rebuilt image was needed after those script-only changes.
 - Safety: no userdata/metadata erase, slot change, BCB edit, hardware identity partition write, or Bootloader relock. The device remains in Bootloader Fastboot.
 - Next: wait for the user to confirm they are present, then arm the C23 read-only observer before one controlled first boot.
+
+## 2026-09-27 21:29｜C23 首次启动进入 Recovery 并完成全量取证
+
+- 状态：一次受控启动和故障后 Standalone 导出完成；未取得 C23 HyperOS 图形阶段证据。
+- 改动/结论：观察器 ARMED 后执行一次 fastboot reboot，返回码 0。主机看到 ADB unauthorized，无法取得 logcat；约 232 秒后 Fastboot 重新出现，用户报告屏幕进入 PixelOS Recovery。可见 console 只有一个 Recovery 启动实例：First Stage 跳过正常挂载，Recovery 开始；Recovery 随后记录 bootonce-bootloader 并清除 BCB。这不能说明 Recovery 被选择的起因，也不能证明此前是否有未保存的普通启动。未见 wipe 指令。
+- 涉及文件：C23 报告、Standalone 全量导出及主机观察目录；公开副本位于 reports/candidate23/REPORT.md 和 evidence/candidate23/。
+- 验证：THYME_DIAG 7 个可访问文件、17,117,150 bytes 全部复制，大小与 SHA-256 匹配，0 错误；无 pmsg，oops.raw 与 C22 历史残留相同，Standalone dmesg 属于诊断环境。公开累积 manifest 新增 C23 的 18 项源/发布大小和 SHA-256 记录。
+- 尚未验证：C23 是否进入普通 Android 后再转 Recovery；service.sf.prime_shader_cache=0、SurfaceFlinger/Vulkan/常规合成行为；HyperOS 动画、设置向导或桌面。
+- 安全边界：未刷写、擦除 userdata/metadata、改 BCB、切槽、恢复 PixelOS 或回锁。
+- 待处理：不重试 C23、不构建 C24；先针对性明确 Recovery 启动路径。设备随后由用户手动进入 Fastboot 并完成只读核验。

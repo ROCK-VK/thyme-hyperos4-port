@@ -82,6 +82,7 @@ $Allowlist = @(
     @{ Source='work/stage_h_thyme_os4_candidate_18_native_adreno_run1/images/BUILD_MANIFEST.json'; Destination='reports/candidate18/BUILD_MANIFEST.json' }
     @{ Source='work/reports/20260927_CANDIDATE19_RGBX_EGL/REPORT.md'; Destination='reports/candidate19/REPORT.md' }
     @{ Source='work/stage_i_thyme_os4_candidate_19_rgbx_egl_run1/images/BUILD_MANIFEST.json'; Destination='reports/candidate19/BUILD_MANIFEST.json' }
+    @{ Source='work/reports/20260927_CANDIDATE23_SF_PRIME_SKIP/REPORT.md'; Destination='reports/candidate23/REPORT.md' }
     @{ Source='work/reports/20260926_CANDIDATE13_NETBPFLOAD_EVIDENCE_EXCERPT.txt'; Destination='reports/boot-logs/candidate13_netbpfload_failure_excerpt.txt' }
     @{ Source='@STORAGE_SAFETY_REPORT'; Destination='reports/candidate13/20260925_CANDIDATE13_STORAGE_SAFETY_AND_FIRST_FAILURE.md' }
     @{ Source='work/reports/20260924_CANDIDATE10_WARMDTB_LOG_SALVAGE/pstore/console-ramoops-0'; Destination='reports/boot-logs/candidate10_console-ramoops.txt' }
