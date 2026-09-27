@@ -6,11 +6,11 @@ Last updated: 2026-09-27 (Hong Kong time)
 
 Port the Xiaomi 15 (`dada`) HyperOS 4 / Android 17 userspace to Xiaomi Mi 10S (`thyme`). The immediate goal is to pass graphics initialization and reach the boot animation, setup wizard, or desktop.
 
-**Current stage: C23 has had one controlled boot attempt; the saved console is a PixelOS Recovery instance, and the cause of Recovery selection is unknown. C23's SurfaceFlinger experiment has not been evaluated.**
+**Current stage: C23 has had one controlled attempt and only Recovery console evidence was saved; the cause remains unresolved. An Init-fatal-to-Recovery path is configured, but no ordinary Android fatal was captured. The current BCB fields are empty after Recovery cleared BCB. A-slot retry budget has been restored to 7; the phone remains in Bootloader Fastboot, waiting for the user to confirm they are present before a C23 retest.**
 
 ## Device and flashed build
 
-- Latest read-only state after the user manually returned to Bootloader Fastboot: unique device, `product=thyme`, A slot, unlocked, not userspace Fastboot, A slot `unbootable=no`, `successful=no`, retry count 1. The pre-boot retry count was 2.
+- Latest read-only state: the device is thyme, A slot, unlocked, Bootloader Fastboot, not userspace Fastboot. A slot is unbootable=no, successful=no, retry count 7; B slot retry count 7. The one explicitly authorized fastboot set_active a returned OKAY. C23 has not been restarted.
 - C23 wrote only `super` and `vbmeta_system_a`. The inherited boot, vendor_boot, dtbo and root vbmeta were not rewritten.
 - One C23 `fastboot reboot` was executed after the observer was ARMED. No userdata/metadata erase, slot change, BCB edit, other partition write, hardware identity change, PixelOS restore, or Bootloader relock occurred.
 - The phone is currently in Fastboot. Do not treat the C23 build or flash as a successful Android boot.
@@ -40,9 +40,10 @@ Port the Xiaomi 15 (`dada`) HyperOS 4 / Android 17 userspace to Xiaomi Mi 10S (`
 - There is no C23 SurfaceFlinger, Skia, Vulkan, or shader-cache log. The effect of `service.sf.prime_shader_cache=0`, normal composition, and any progress to HyperOS UI are unknown.
 
 ## Next step
-
-Do not repeat C23 or build C24 yet. First determine the most useful read-only way to distinguish a direct Recovery request from a later Recovery boot; preserve current Fastboot state and evidence. If another normal boot is proposed, arm the observer first and get the user's on-site confirmation. Do not erase userdata/metadata without a specific need and authorization.
+Keep the device in Fastboot. After the user confirms they are beside the phone and ready to observe, start the read-only observer with candidate label C23-retest, wait for ARMED, then perform one controlled C23 boot. Do not build C24 or clear userdata/metadata without a concrete need.
+If C23 re-enters Recovery, save that evidence and do not confirm wipe prompts; the current Recovery path remains unproven as the root cause.
 
 ## Public evidence
+The evidence index covers user-authorized C13–C23 diagnostic evidence. C23's accessible raw export and host observations are published with per-file source/public sizes and SHA-256 in the cumulative evidence manifest. The Recovery follow-up report is linked below; complete `misc.raw` and raw diagnostic state containing device identifiers remain local. No ROMs, firmware packages, partition images, userdata/metadata images, credentials, or hardware-identity partition backups are included.
 
-The evidence index covers user-authorized C13–C23 diagnostic evidence. C23's accessible raw export and host observations are published with per-file source/public sizes and SHA-256 in the cumulative evidence manifest. No ROMs, firmware packages, partition images, userdata/metadata images, credentials, or hardware-identity partition backups are included.
+C23 Recovery follow-up: [recovery cause and A-slot retest preparation](../reports/candidate23/RECOVERY_RETEST_20260927.md).

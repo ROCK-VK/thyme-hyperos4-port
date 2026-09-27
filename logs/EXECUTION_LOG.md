@@ -13469,3 +13469,11 @@
 - 尚未验证：C23 是否进入普通 Android 后再转 Recovery；service.sf.prime_shader_cache=0、SurfaceFlinger/Vulkan/常规合成行为；HyperOS 动画、设置向导或桌面。
 - 安全边界：未刷写、擦除 userdata/metadata、改 BCB、切槽、恢复 PixelOS 或回锁。
 - 待处理：不重试 C23、不构建 C24；先针对性明确 Recovery 启动路径。设备随后由用户手动进入 Fastboot 并完成只读核验。
+
+## 2026-09-27 22:24｜C23 Recovery follow-up and A-slot budget restoration
+
+- Status: Recovery-path analysis, read-only BCB capture, and the single authorized A-slot reset are complete; device remains in Bootloader Fastboot awaiting the user's on-site startup confirmation.
+- Findings: C23 vendor_boot contains PixelOS A0′ Recovery properties, recovery binary, recovery fstab, Recovery init files, and UI libraries with matching per-file SHA-256. The current C23 super remains the HyperOS port. Its kernel command line sets androidboot.init_fatal_reboot_target=recovery, so an Init-fatal Recovery path is possible; no ordinary Android fatal was captured, so this is not a proven cause. Recovery's later bootonce-bootloader and BCB-clearing messages do not identify the original trigger.
+- Validation: Standalone read-only misc capture was 4 MiB; only the first 2 KiB BCB fields were parsed and were empty. Full misc.raw and raw diagnostic state remain local. A-slot before reset: retry=1, unbootable=no, successful=no; B retry=7. One fastboot set_active a returned OKAY; after reset A and B retry=7, A remains unsuccessful and bootable.
+- Safety: no C23 reboot, flash, userdata/metadata erase, BCB write, PixelOS restore, or Bootloader relock was performed in this follow-up.
+- Next: after the user confirms they are present, arm the C23-retest read-only observer and then perform one C23 boot.
