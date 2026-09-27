@@ -13450,3 +13450,12 @@
 - 尚未验证：K40 UMD 在 thyme 4.19/KGSL 上的加载与运行；SurfaceFlinger 是否越过 Vulkan RenderEngine fatal；是否到达 bootanimation/设置向导/桌面。
 - 安全边界：未启动、未擦除 userdata/metadata，未写其他分区，未修改 BCB/硬件身份分区，未回锁 Bootloader。
 - 待处理：用户现场确认后，先 ARMED C22 只读观察器，再执行一次受控首次启动；失败后先完整保存 Standalone 现场。
+
+## 2026-09-27 20:47 | C22 evidence publication and C23 build/flash
+
+- Status: C22 complete accessible diagnostics and host observations are published; C23 is built and flashed, still waiting for the user's first-boot confirmation.
+- Result: C22 produced 19 accessible files (8 Standalone volume files and 11 host-observation files), totaling 20,729,013 bytes. Source and public copies match by size and SHA-256. The C22 pmsg identified repeated SurfaceFlinger output-buffer GPU-writability aborts during shader-cache prewarming; the underlying buffer-usage cause and runtime Vulkan backend remain unknown.
+- C23: the only system change is setting service.sf.prime_shader_cache=0 in system build.prop to bypass the observed optional prewarm path. EROFS, system AVB descriptor, retained descriptors, and LP layout were checked. The restricted flash wrote only super and vbmeta_system_a; both writes succeeded. C23 has not been booted.
+- Validation: Python AST and PowerShell parser checks passed for the published C23 builder and flash/start gates. The builder uses a script-relative project root; device serial must be passed explicitly. No rebuilt image was needed after those script-only changes.
+- Safety: no userdata/metadata erase, slot change, BCB edit, hardware identity partition write, or Bootloader relock. The device remains in Bootloader Fastboot.
+- Next: wait for the user to confirm they are present, then arm the C23 read-only observer before one controlled first boot.

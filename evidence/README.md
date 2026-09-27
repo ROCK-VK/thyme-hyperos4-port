@@ -1,6 +1,6 @@
-# C13–C21 启动诊断证据
+# C13–C22 启动诊断证据
 
-本目录保存经用户明确授权公开的 C13–C21 Standalone 诊断卷导出和对应主机观察记录。C13–C20 按此前发布记录保留其原始字节；C21 全量可访问文件均已复制到公开副本，但设备序列号在文本中替换为 `[REDACTED_DEVICE_ID]`、在二进制中使用等长 `REDACTED` 替换。C21 本地原件未修改，来源哈希和公开副本哈希见 [Candidate 21 发布清单](candidate21/PUBLIC_EVIDENCE_MANIFEST.csv)。累积文件路径/发布版大小/SHA-256 见 [RAW_EVIDENCE_MANIFEST.csv](RAW_EVIDENCE_MANIFEST.csv)。
+本目录保存经用户明确授权公开的 C13–C22 Standalone 诊断卷导出和对应主机观察记录。C13–C20 按此前发布记录保留其原始字节；C21 全量可访问文件均已复制到公开副本，并按既有发布记录对设备序列号脱敏。C22 的 19 个主机观察和 Standalone 文件按用户授权以原始字节发布，逐文件来源/发布大小及 SHA-256 见 [Candidate 22 发布清单](candidate22/PUBLIC_EVIDENCE_MANIFEST.csv)。累积文件路径/发布版大小/SHA-256 见 [RAW_EVIDENCE_MANIFEST.csv](RAW_EVIDENCE_MANIFEST.csv)。
 
 ## 目录
 
@@ -16,12 +16,13 @@
 - candidate19/standalone 与 host-observations：C19 RGBX EGL 实验的完整诊断卷导出和主机观察记录。
 - candidate20/standalone 与 host-observations：C20 ANGLE 路由诊断实验的完整诊断卷导出和主机观察记录；包含 console、pmsg、oops、Standalone dmesg、diag_status、设备生成文件、导出清单和启动观察时间线。
 - candidate21/standalone 与 host-observations：C21 全部可访问 Standalone 导出文件及主机观察目录，共 19 个源文件；包括 console、pmsg、历史 oops.raw、Standalone dmesg、diag_status、导出元数据、空 logcat 文件及系统生成文件。公开副本序列号脱敏，逐文件源/公开哈希见该 Candidate 的发布清单。
+- candidate22/standalone 与 host-observations：C22 的 8 个诊断卷文件和 11 个主机观察文件，共 19 项。完整保留本轮实际存在的文件及目录结构；源与公开副本逐文件大小/SHA-256 一致。Standalone dmesg 属于诊断环境，`oops.raw` 为历史/诊断残留，不能作为 C22 Android 启动日志。
 
 每个 Standalone 导出保留当时实际存在的原始 console-ramoops、pmsg-ramoops、oops.raw、Standalone dmesg、diag_status、源端校验文件、主机导出时间线和清单。缺失的文件不会补造。
 
 ## 完整性和排除项
 
-C13–C20 的既有公开内容保持此前发布形态，可能包含设备标识、内核命令行和主机路径。C21 公开副本对设备序列号作了可追溯替换；对应未修改本地原件的 SHA-256 和公开副本 SHA-256 均在 Candidate 21 清单中。
+C13–C20 的既有公开内容保持此前发布形态，可能包含设备标识、内核命令行和主机路径。C21 公开副本对设备序列号作了可追溯替换；C22 原始诊断文件按用户授权逐字节发布。各自来源与公开副本 SHA-256 见 Candidate 专用清单。
 
 RAW_EVIDENCE_EXCLUSIONS.csv 记录同步器因识别凭据特征、分区/固件镜像名称或单文件超过 100 MiB 而排除的文件。已发布诊断文件经过私钥 PEM、常见访问令牌、Bearer token 和密码赋值模式筛查；如发现真正凭据则从公开副本排除并记录。C21 序列号替换数量及各文件哈希见其专用清单。
 

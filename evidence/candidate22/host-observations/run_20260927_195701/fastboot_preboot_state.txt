@@ -1,0 +1,12 @@
+C22 preboot Fastboot state; read-only queries only
+host_local=2026-09-27T19:57:19.1906253+08:00
+host_utc=2026-09-27T11:57:19.1891615+00:00
+candidate=C22-k40-vulkan-umd
+serial=1384e684
+product=thyme
+current_slot=a
+unlocked=yes
+is_userspace=no
+slot_unbootable_a=no
+slot_successful_a=no
+slot_retry_count_a=3

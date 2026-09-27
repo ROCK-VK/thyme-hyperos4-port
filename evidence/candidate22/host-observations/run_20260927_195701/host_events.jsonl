@@ -1,0 +1,14 @@
+{"candidate": "C22-k40-vulkan-umd", "event": "observer_started", "host_utc": "2026-09-27T11:57:01.121+00:00", "serial": "1384e684"}
+{"elapsed_seconds": 0.145, "event": "usb_pnp_state_change", "host_utc": "2026-09-27T11:57:01.266+00:00", "output": "initial PnP query pending", "state": "query_pending"}
+{"elapsed_seconds": 0.145, "event": "adb_state_change", "host_utc": "2026-09-27T11:57:01.267+00:00", "output": "List of devices attached", "state": "absent"}
+{"elapsed_seconds": 0.145, "event": "fastboot_state_change", "host_utc": "2026-09-27T11:57:01.268+00:00", "output": "1384e684               fastboot", "state": "fastboot"}
+{"adb_state": "absent", "candidate": "C22-k40-vulkan-umd", "elapsed_seconds": 6.054, "event": "observer_armed", "fastboot_state": "fastboot", "host_utc": "2026-09-27T11:57:07.175+00:00", "usb_pnp_state": "present"}
+{"elapsed_seconds": 6.054, "event": "usb_pnp_state_change", "host_utc": "2026-09-27T11:57:07.176+00:00", "output": "{\"state\":\"present\",\"devices\":[{\"Status\":\"OK\",\"Class\":\"AndroidUsbDeviceClass\",\"FriendlyName\":\"Android Bootloader Interface\",\"InstanceId\":\"USB\\\\VID_18D1&PID_D00D\\\\1384E684\"}]}", "state": "present"}
+{"host_utc":"2026-09-27T11:57:19.1891615+00:00","event":"fastboot_preboot_state","candidate":"C22-k40-vulkan-umd","serial":"1384e684","current_slot":"a","slot_unbootable_a":"no","slot_successful_a":"no","slot_retry_count_a":3}
+{"host_utc":"2026-09-27T11:57:19.2206736+00:00","event":"candidate_boot_command","candidate":"C22-k40-vulkan-umd","command":"fastboot reboot","serial":"1384e684"}
+{"host_utc":"2026-09-27T11:57:19.2462332+00:00","event":"candidate_boot_command_returned","candidate":"C22-k40-vulkan-umd","exit_code":0}
+{"elapsed_seconds": 19.06, "event": "fastboot_state_change", "host_utc": "2026-09-27T11:57:20.181+00:00", "output": "", "state": "absent"}
+{"elapsed_seconds": 23.056, "event": "usb_pnp_state_change", "host_utc": "2026-09-27T11:57:24.177+00:00", "output": "{\"state\":\"absent\",\"devices\":[]}", "state": "absent"}
+{"elapsed_seconds": 491.205, "event": "fastboot_state_change", "host_utc": "2026-09-27T12:05:12.326+00:00", "output": "1384e684               fastboot", "state": "fastboot"}
+{"elapsed_seconds": 498.2, "event": "usb_pnp_state_change", "host_utc": "2026-09-27T12:05:19.321+00:00", "output": "{\"state\":\"present\",\"devices\":[{\"Status\":\"OK\",\"Class\":\"AndroidUsbDeviceClass\",\"FriendlyName\":\"Android Bootloader Interface\",\"InstanceId\":\"USB\\\\VID_18D1&PID_D00D\\\\1384E684\"}]}", "state": "present"}
+{"elapsed_seconds": 600.186, "event": "observer_window_completed", "host_utc": "2026-09-27T12:07:01.307+00:00"}

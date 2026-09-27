@@ -15,6 +15,7 @@ This folder is a curated subset of scripts from the full local workspace. The re
 - `build_candidate16_graphics_allocator_ion.py` and `build_candidate17_graphics_allocator_open.py` — add only the graphics allocator ion_device permissions directly observed in C14–C16 logs; C17 extends the exact runtime domain permission to `open read`.
 - `build_candidate18_native_adreno.py` — rebuilds system, vbmeta_system, and super from the C17 baseline to select thyme's declared native Adreno EGL route; it does not replace vendor GPU binaries or modify SELinux.
 - `build_candidate20_angle_diag.py` — builds the C20 ANGLE route and process-scoped linker diagnostic variant from the C19 baseline; required local images/build inputs are not included.
+- `build_candidate21_k40_vk_renderengine.py`, `build_candidate22_k40_vulkan_umd.py`, and `build_candidate23_sf_prime_skip.py` — focused graphics-startup experiments. C21 selects the K40 SkiaVk route; C22 pairs its Vulkan ICD with isolated K40 UMD dependencies; C23 skips the shader-cache prewarm path seen in the C22 fatal stack. Local ROM/build inputs are required.
 - `build_standalone_diag.py` — builds the RAM-only diagnostic environment; it does not represent a partition-flashing tool.
 - `audit_candidate8_property_contexts.py`, `audit_c13_selinux.py`, `audit_salvaged_ramoops.py` — focused policy and pstore analysis helpers.
 - `precheck_candidate*.py` — Candidate-specific host and artifact preconditions; a PASS does not establish successful device boot.
@@ -36,7 +37,9 @@ Device serials and private host paths are sanitized in the public copies. Supply
 - `flash_candidate16_graphics_allocator_ion.ps1` and `flash_candidate17_graphics_allocator_open.ps1` — default to Dry-Run; explicit execute mode writes only the corresponding Candidate `vbmeta_system_a` and `super` images and does not reboot.
 - `flash_candidate18_native_adreno.ps1` — defaults to Dry-Run; explicit execute mode verifies the C18 manifest and target, then sequentially writes only `super` and `vbmeta_system_a` without rebooting or erasing data.
 - `flash_candidate20_angle_diag.ps1` — defaults to Dry-Run; requires an explicit `-Serial` and execute switch to write only `super` and `vbmeta_system_a`, without rebooting or erasing data.
+- `flash_candidate23_sf_prime_skip.ps1` — defaults to Dry-Run; requires an explicit `-Serial` and execute switch to write only `super` and `vbmeta_system_a`, without rebooting or erasing data.
 - `start_candidate20_observed_boot.ps1` — validates the C20 observer ARMED record and requires a separate user-watching confirmation before one Fastboot reboot.
+- `start_candidate23_observed_boot.ps1` — validates the C23 observer ARMED record and requires a separate user-watching confirmation before one Fastboot reboot.
 - `start_candidate18_observed_boot.ps1` — checks a fresh `C18-native-adreno` observer ARMED record and Fastboot identity; execution also requires an explicit user-watching confirmation before one Fastboot reboot.
 - `restore_pixelos_a0_prime.ps1` — can write the six PixelOS A0′ recovery partitions when explicitly invoked in execute mode.
 
@@ -59,3 +62,10 @@ The original workflow used Windows 11, WSL Ubuntu, local Android platform-tools,
 - `flash_candidate22_k40_vulkan_umd.ps1` defaults to Dry-Run. Supply `-Serial` and `-Execute` to write only `super` and `vbmeta_a`; it does not reboot or erase data.
 - `start_candidate22_observed_boot.ps1` requires `-RunDir`, `-Serial`, `-Execute`, and `-UserWatchingConfirmed`; it verifies a fresh C22 observer ARMED record and device/slot state before one Fastboot reboot.
 - Public C22 scripts require the target serial explicitly rather than embedding a machine-specific default.
+
+## Candidate 23
+
+- `build_candidate23_sf_prime_skip.py` sets `service.sf.prime_shader_cache=0` to bypass only the optional shader-cache prewarm implicated by C22's SurfaceFlinger fatal; this is diagnostic, not a proven regular-composition fix.
+- `flash_candidate23_sf_prime_skip.ps1` defaults to Dry-Run and requires `-Serial` and `-Execute` to write only `super` and `vbmeta_system_a`.
+- `start_candidate23_observed_boot.ps1` requires a fresh C23 observer ARMED record, `-Serial`, and the explicit user-watching confirmation before a single Fastboot reboot.
+- C23's first boot is not yet verified. Do not describe the property bypass as a successful boot or a fix for the underlying output-buffer usage issue.

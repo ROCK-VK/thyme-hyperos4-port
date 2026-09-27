@@ -1,0 +1,112 @@
+{
+  "candidate": "Candidate 23 SurfaceFlinger shader-cache prime bypass",
+  "base": "Candidate 22 K40 Android 17 Vulkan UMD ABI compatibility stack",
+  "changes": [
+    "system/build.prop: set service.sf.prime_shader_cache=0 to bypass the optional RenderEngine shader-cache prime that produced the C22 output-buffer GPU-usage fatal."
+  ],
+  "evidence_basis": [
+    "C22 pmsg recorded 89 identical SurfaceFlinger aborts with output buffer not gpu writeable; the stack traversed Cache::primeShaderCache and SkiaRenderEngine::primeCache.",
+    "Android 17 upstream SurfaceFlinger gates primeCache() on service.sf.prime_shader_cache, defaulting to 1; C23 sets it to 0 before SurfaceFlinger starts."
+  ],
+  "limits": [
+    "This is a diagnostic bypass of optional startup shader prewarming, not a proven fix for allocator/GraphicBuffer usage mismatches during regular composition.",
+    "C22 logs did not identify the actual Vulkan ICD/backend, so successful selection of the K40 Vulkan UMD is not claimed."
+  ],
+  "retained_from_c22": [
+    "C22 K40 Android 17 Vulkan ICD and isolated SONAME UMD/GSL/LLVM dependencies in vendor_a.",
+    "C13-C22 boot, SELinux, BPF, ION, storage, RenderEngine and hardware-specific thyme changes.",
+    "Thyme kernel, boot, vendor_boot, dtbo, root vbmeta, system_ext, product, odm and mi_ext inputs retained; userdata and metadata are not modified."
+  ],
+  "checks": [
+    "C22 inherited boot/vendor_boot/dtbo/vbmeta/vbmeta_system files checked against the C22 manifest (C22 super was not rehashed).",
+    "C23 final EROFS fsck passed; build.prop was read back from the final EROFS and retained C20-C21 properties plus the C23 property were asserted exactly once.",
+    "New system AVB hashtree descriptor is the only vbmeta_system descriptor replaced; product/system_ext descriptors and header metadata were preserved.",
+    "LP was rebuilt with the C22 vendor UMD and prior A logical partition geometry; lpdump checked expected partitions and extents."
+  ],
+  "flash_scope_prepared": [
+    "super",
+    "vbmeta_system_a"
+  ],
+  "inherited_images_checked": {
+    "boot.img": {
+      "bytes": 201326592,
+      "sha256": "E5A016056D5C93C7A886980A7C062617EC44DC06A48417D7DD0F4476708A6368"
+    },
+    "vendor_boot.img": {
+      "bytes": 100663296,
+      "sha256": "02333B82BA936F1BAAB1ECAB744632C70F8FC16688A206C7041EF319F112A137"
+    },
+    "dtbo.img": {
+      "bytes": 33554432,
+      "sha256": "50E1AC0EDCBD333778217AA6FE8D972F6FF85ADD0DAE8A015A6642C2172DD886"
+    },
+    "vbmeta.img": {
+      "bytes": 131072,
+      "sha256": "66A53C2EC38247193CC86B7F5DE887556864413D1142C3C1994645DE1E3BAB10"
+    },
+    "vbmeta_system.img": {
+      "bytes": 131072,
+      "sha256": "E3A2807CE59CFAF93BEF7E08EE45A1D055DE1264FFEA8F6E8EED06893892AC74"
+    }
+  },
+  "logical_input_hashes": {
+    "vendor_c22.img": {
+      "bytes": 1510998016,
+      "sha256": "FCEAFEE5B5909D7BE9BBEC48D9E8720F37798DDEEBDBF193424FB3A095CBA675"
+    },
+    "system_ext_a.img": {
+      "bytes": 942669824,
+      "sha256": "6B63E58346DA5B2FEBA7F51980CCEBF886D5991DD07F91541FE4D9F1485CDAD5"
+    },
+    "mi_ext.img": {
+      "bytes": 202375168,
+      "sha256": "43ED8FC0D1848F5D53BFB7206AC91FE5E5ED4E3F71E958D49F2EEA4C9C8B4BCE"
+    },
+    "odm.img": {
+      "bytes": 35758080,
+      "sha256": "075E4A17DC4CA716399166388B1C175060D5CBB31139B2ACBD9E5B2DEE352E22"
+    },
+    "product.img": {
+      "bytes": 4387241984,
+      "sha256": "87955DBE97AC28B01A214273BD03F36B5886310DC3B2E4128B9F4661E1C3345E"
+    }
+  },
+  "vbmeta_system_update": {
+    "base_sha256": "E3A2807CE59CFAF93BEF7E08EE45A1D055DE1264FFEA8F6E8EED06893892AC74",
+    "flags": 2,
+    "rollback_index": 0,
+    "rollback_index_location": 2,
+    "system_image_size": 958156800,
+    "system_root_digest": "45ee8b27c378f9df98ba527a2d2dc533108594bc8559ed88df933f4d85db9aa4",
+    "unchanged_other_descriptors": [
+      "product",
+      "system_ext"
+    ]
+  },
+  "images": {
+    "boot.img": {
+      "bytes": 201326592,
+      "sha256": "E5A016056D5C93C7A886980A7C062617EC44DC06A48417D7DD0F4476708A6368"
+    },
+    "vendor_boot.img": {
+      "bytes": 100663296,
+      "sha256": "02333B82BA936F1BAAB1ECAB744632C70F8FC16688A206C7041EF319F112A137"
+    },
+    "dtbo.img": {
+      "bytes": 33554432,
+      "sha256": "50E1AC0EDCBD333778217AA6FE8D972F6FF85ADD0DAE8A015A6642C2172DD886"
+    },
+    "vbmeta.img": {
+      "bytes": 131072,
+      "sha256": "66A53C2EC38247193CC86B7F5DE887556864413D1142C3C1994645DE1E3BAB10"
+    },
+    "vbmeta_system.img": {
+      "bytes": 131072,
+      "sha256": "B0FFDFD7FD492F17ABD6FDC0F3577C6F9C1976C8087B6A21E77191FA1A624F46"
+    },
+    "super.img": {
+      "bytes": 7701892056,
+      "sha256": "F0E252E232D12AEB8E84D9A56B77B39744D6972FD8E695618A10E89168209A15"
+    }
+  }
+}

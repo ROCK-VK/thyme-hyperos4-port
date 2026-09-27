@@ -1,0 +1,4 @@
+Source: the unique host volume labeled THYME_DIAG, exposed by the Standalone RAM diagnostic environment.
+dmesg_diag_boot.txt is the Standalone diagnostic kernel log, not the preceding C22-k40-vulkan-umd kernel log.
+Salvaged boot label: C22-k40-vulkan-umd.
+Export started (UTC): 2026-09-27T12:07:25.452+00:00
