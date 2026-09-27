@@ -21,6 +21,7 @@ Port the Xiaomi 15 (dada) HyperOS 4 / Android 17 userspace to Xiaomi Mi 10S (thy
 - C20 has now booted once. Pstore confirms First/Second Stage, activated APEX, vold using the existing metadata key, and successful F2FS `/data` mount. SurfaceFlinger still logged 47 `no suitable EGLConfig found` aborts, all requesting format 2. No bootanimation or completed-boot evidence was recorded.
 - The pmsg log contains no ANGLE/libEGL/linker route record; ADB never came online, so runtime EGL properties and process maps were unavailable. Whether ANGLE actually loaded remains unknown. `graphicsengine` SIGSEGV in `vkEnumeratePhysicalDevices+4` occurred about 0.48 seconds before the first EGL abort; causality is unproven.
 - The full C20 Standalone export and host observer run are published under [`evidence/candidate20/`](../evidence/candidate20/). The `oops.raw` hash matches C19 and is treated as historical residue; Standalone dmesg is not a C20 log.
+- C20 evidence sync commit: [`cab1a78`](https://github.com/ROCK-VK/thyme-hyperos4-port/commit/cab1a7847b08651466a8e2b04a5d9a58af0c1727); anonymous access to the report, manifest, console, and pmsg was verified.
 
 ## Relevant validated history
 

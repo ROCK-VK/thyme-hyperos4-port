@@ -13406,3 +13406,13 @@
 - 安全边界：无刷写、擦除、userdata/metadata 清除、BCB/misc 修改、槽位状态修复、PixelOS 恢复或 Bootloader 回锁。
 - 待处理：完成 C20 原始证据的增量 Commit/Push；下一实验先静态验证只读 init 快照可把运行时 EGL 属性和图形进程 maps 写入 logd/pmsg，再决定是否构建 C21。
 - 替代：替代上一条“C20 尚未启动、等待现场确认”的当前状态；旧记录保留其记录时点的事实。
+
+## 2026-09-27 10:11｜C20 公开证据推送与匿名校验
+
+- 状态：C20 完整诊断证据和实机报告已推送 Public 仓库；匿名访问校验通过。
+- 改动/结论：新增 `evidence/candidate20/` 19 个文件、18,886,374 bytes，并更新报告、状态、README、证据索引和按 Candidate 过滤的同步器。
+- 验证：公开 API 确认仓库 Public、默认分支 `main` 指向 commit `cab1a7847b08651466a8e2b04a5d9a58af0c1727`。匿名 README、报告、状态、manifest、console 与 pmsg 均 HTTP 200；远端 pmsg 为 827,191 bytes，SHA-256 与本地相同。C20 19 个原始文件与本地来源逐字节相同；凭据/策略排除 0。
+- 尚未验证：ANGLE 实际 EGL 后端、EGLConfig 根因、Vulkan 与 SurfaceFlinger 的因果关系和 HyperOS 动画/桌面。
+- 安全边界：没有上传 ROM、固件、Candidate 镜像或设备分区镜像；没有执行设备操作。
+- 待处理：下轮先静态验证只读 init hook 可安全记录 EGL 运行时属性和图形进程 maps 摘要至 pmsg。
+- 替代：更新 09:56 记录中“远端提交待完成”的状态；启动结论不变。
