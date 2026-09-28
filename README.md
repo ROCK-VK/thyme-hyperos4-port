@@ -4,14 +4,13 @@
 
 这是一个实验性 Android 移植工程。当前首要目标是让小米 10S 越过 HyperOS 4 图形初始化并进入启动动画、设置向导或桌面。仓库保存可审核的脚本、补丁、项目日志与用户授权公开的 C13–C23 原始启动诊断证据；不提供 ROM 下载。
 
-## 当前状态（2026-09-27）
+## 当前状态（2026-09-28）
 
-- **C23 已完成一次启动尝试，保存的 console 进入 PixelOS Recovery 分支。** 主机只看到 ADB `unauthorized`，没有可用 logcat；console 不是 HyperOS 普通启动记录，Recovery 选择原因未确定。用户随后手动回到 Bootloader Fastboot；最新只读状态为 `thyme`、A 槽、解锁、A 槽可启动、重试计数 1。
-- C23 唯一系统变化是在 `system/build.prop` 设置 `service.sf.prime_shader_cache=0`。构建后只刷入 `super` 与 `vbmeta_system_a`；启动/取证没有清除 userdata/metadata 或改其他分区。C23 的 SurfaceFlinger 实验尚无运行时结论。
-- C22 已越过 C21 的 Vulkan RenderEngine 创建 fatal，First/Second Stage、APEX、vold 与 `/data` 初始化推进；SurfaceFlinger 随后 89 次因 `output buffer not gpu writeable` 在 `Cache::primeShaderCache` / `SkiaRenderEngine::primeCache` abort。实际 Vulkan ICD/backend 身份仍未知。C22 的完整 19 个主机观察及 Standalone 文件已按用户授权公开，来源与发布 SHA-256 见 C22 evidence manifest。
-- **C21 已完成实机启动和 Standalone 取证。** Second Stage、APEX、vold 和 `/data` 推进；SurfaceFlinger 约 80 次因 `Could not initialize Vulkan RenderEngine!` fatal，没有启动动画/设置向导/桌面证据。相邻的 `graphicsengine` Vulkan 枚举 SIGSEGV 与 SurfaceFlinger fatal 是否存在因果尚未确认。
-- C20 的 SkiaGL 路径仍反复出现 `no suitable EGLConfig found`；C21 的 SkiaVk 路由绕过了该 EGLConfig fatal，但在 Vulkan RenderEngine 初始化处失败。
-- 最新资料：[C23 报告与启动结果](reports/candidate23/REPORT.md)、[C23 镜像清单](reports/candidate23/BUILD_MANIFEST.json)、[C22 实机报告](reports/candidate22/REPORT.md)、[项目当前状态](logs/PROJECT_STATUS.md)。C23 原始诊断卷与主机观察记录见 [evidence/candidate23](evidence/candidate23/) 和 [evidence 索引](evidence/README.md)；本地原件保持不变。
+- **C23 已完成两次启动尝试。** 首次保存到 Recovery 分支；原因仍未知。最新 retest 的 console 证明普通 First/Second Stage、APEX、vold 和 /data 初始化推进，pmsg 记录 BootAnimationShownTiming start time: 42129ms。用户现场仍只看到小米 Logo 常亮；没有 Setup Wizard、桌面或 sys.boot_completed=1 直接采样。
+- 本轮 ADB 未上线。pmsg 没有再记录 C22 的 shader-cache output-buffer fatal、EGLConfig fatal 或 Vulkan RenderEngine fatal；service.sf.prime_shader_cache=0 的运行时值及其因果作用仍未直接确认。
+- 重复 netd SIGABRT 和指纹服务 SIGSEGV 出现在 pmsg 中，但目前没有证据证明它们阻止 BootAnimation/UI。当前不据此扩大修复范围，也未构建 C24。
+- 设备由用户手动返回 Bootloader Fastboot。2026-09-28 15:24 HKT 只读状态：thyme、A 槽、已解锁、非 userspace Fastboot；A retry=6、B retry=7，均 unbootable=no、successful=no。C23 仍刷入；PixelOS 未恢复；本轮未清 userdata/metadata。
+- 最新结果：[C23 正常启动复验报告](reports/candidate23/C23_RETEST_20260928.md)；完整原始诊断和 USB/ADB/Fastboot 观察见 [C23 evidence](evidence/candidate23/) 与[证据索引](evidence/README.md)。C23 构建及首次 Recovery 取证分别见 [C23 构建报告](reports/candidate23/BUILD_REPORT.md) 和 [Recovery 原因核查](reports/candidate23/RECOVERY_RETEST_20260927.md)。当前快照见 [项目状态](logs/PROJECT_STATUS.md)。
 
 ## 设备与来源
 
@@ -40,7 +39,7 @@ K40 对照资料显示，成功包的 vendor_boot ramdisk 与原包不同，并�
 - **C20**：将 EGL 路由统一为 ANGLE，保留 RGBX=2，并加入 linker 诊断；实机仍有 EGLConfig abort，实际 EGL 后端未知。完整 C20 原始证据见 [`evidence/candidate20/`](evidence/candidate20/) 和 [C20 报告](reports/candidate20/REPORT.md)。
 - **C21**：K40 threaded SkiaVk 路由绕开 EGLConfig fatal；实机因 Vulkan RenderEngine 初始化 fatal 未进入启动动画。
 - **C22**：以 K40 Android 17 Vulkan UMD 及隔离 GSL/LLVM/Adreno Utils 依赖配套替换 Vulkan ICD；实机越过 RenderEngine 创建 fatal，后在 Skia shader-cache 预热因输出 buffer usage 检查反复 abort。
-- **C23**：仅关闭可选 SurfaceFlinger shader-cache 预热；首次保存的启动记录从 First Stage 即进入 Recovery，未取得 SurfaceFlinger 用户空间日志，进入 Recovery 的原因待查。
+- **C23**：仅关闭可选 SurfaceFlinger shader-cache 预热。首次尝试保存到 Recovery；后续 retest 进入普通 Android First/Second Stage、数据初始化和 BootAnimation 相关阶段，但桌面未确认。C22 的 shader-cache fatal 在本轮 pmsg 未复现；属性实际运行值尚未确认。最新报告和原始证据见上方链接。
 
 
 具体阶段和证据等级以项目状态文件及 Candidate 报告为准，旧报告的“计划/待验证”不会自动成为当前结论。
