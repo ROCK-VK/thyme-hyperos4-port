@@ -6,10 +6,10 @@
 
 ## 当前状态（2026-09-28）
 
-- **C23 已完成三次受控启动尝试。** 首次现场进入 Recovery；之后两次未出现 HyperOS 第二屏。最新完整观察约 11 分 52.8 秒：用户始终只看到静态小米 Logo；ADB 未上线。pmsg 记录 `/data`/fscrypt 初始化和 BootAnimation shown-timing，但没有 `sys.boot_completed=1`、bootanim exit、SystemUI、SetupWizard 或 Launcher 的直接记录。
-- 最新 pmsg 未再记录 C22 shader-cache output-buffer fatal、EGLConfig fatal 或 Vulkan RenderEngine fatal；`service.sf.prime_shader_cache=0` 的运行时值和因果作用仍未直接确认。pmsg 还记录 netd、指纹和 audio.service 重复崩溃，以及 SurfaceControl 相关的 `UltraFrameworkComponentFactoryImpl` 类缺失；这些问题均未证明是静态 Logo 的原因。
-- 当前不构建 C24，直到定点分析找到可修复的具体阻塞。设备由用户手动返回 Bootloader Fastboot。2026-09-28 16:19 HKT 只读状态：thyme、A 槽、已解锁、非 userspace Fastboot；A retry=5、B retry=7，均 unbootable=no、successful=no。C23 仍刷入；PixelOS 未恢复；本轮未清 userdata/metadata。
-- 最新结果：[C23 完整开机窗口报告](reports/candidate23/C23_LONG_BOOT_RETEST_20260928.md)、[本轮源/公开哈希清单](evidence/candidate23/long_boot_retest/PUBLIC_EVIDENCE_MANIFEST.csv)、[C23 原始证据目录](evidence/candidate23/)、[证据索引](evidence/README.md)。早期 C23 复验报告见 [C23 retest](reports/candidate23/C23_RETEST_20260928.md)；构建和 Recovery 核查见 [C23 构建报告](reports/candidate23/BUILD_REPORT.md) 与 [Recovery 原因核查](reports/candidate23/RECOVERY_RETEST_20260927.md)。当前快照见 [项目状态](logs/PROJECT_STATUS.md)。
+- **C23 的 11 分 52 秒完整观察仍只有静态小米 Logo。** pmsg 证明 `/data`/fscrypt、keystore2 和 BootAnimation 代码推进，但没有 system_server 阶段、WindowManager/SystemUI/HOME、bootanim exit、boot-complete 或 HWC/display present 的直接记录；因此 Framework/UI 未完成与物理显示链未更新仍无法区分。ADB 未上线。
+- K40 OS4 Android 17 定点比较未发现可直接复用的通用 Framework/WindowManager/boot-animation 修复；其核心 framework JAR 与 Xiaomi 15 供体/C23 一致，目标 overlay 未移植。netd、指纹、audio 和 `UltraFrameworkComponentFactoryImpl` 异常没有被证明是当前界面阻塞原因。
+- 已构建并刷入**诊断型 C24**，只写 `super` 与 `vbmeta_system_a`；没有改其他引导镜像或清除 userdata/metadata。C24 新增 post-fs-data 诊断服务，计划采样启动属性、关键进程、WindowManager/ActivityManager、SurfaceFlinger/display/HOME 状态到 logd/pmsg。C24 尚未启动，采样运行/留存和启动改善均未验证。设备保持 thyme/A Bootloader Fastboot、Bootloader 解锁，等待现场确认首次启动。
+- 重点资料：[C23 Framework/UI 与显示断点、C24 诊断报告](reports/candidate24/C23_FRAMEWORK_DISPLAY_C24_DIAGNOSTIC_20260928.md)、[C24 构建报告](reports/candidate24/BUILD_REPORT.md)、[C24 构建清单](reports/candidate24/BUILD_MANIFEST.json)、[C23 完整开机观察](reports/candidate23/C23_LONG_BOOT_RETEST_20260928.md)、[C23 原始证据和哈希清单](evidence/candidate23/long_boot_retest/)、[项目状态](logs/PROJECT_STATUS.md)。
 
 ## 设备与来源
 
@@ -39,6 +39,7 @@ K40 对照资料显示，成功包的 vendor_boot ramdisk 与原包不同，并�
 - **C21**：K40 threaded SkiaVk 路由绕开 EGLConfig fatal；实机因 Vulkan RenderEngine 初始化 fatal 未进入启动动画。
 - **C22**：以 K40 Android 17 Vulkan UMD 及隔离 GSL/LLVM/Adreno Utils 依赖配套替换 Vulkan ICD；实机越过 RenderEngine 创建 fatal，后在 Skia shader-cache 预热因输出 buffer usage 检查反复 abort。
 - **C23**：仅关闭可选 SurfaceFlinger shader-cache 预热。首次尝试保存到 Recovery；后续启动推进到 `/data`/fscrypt 和 BootAnimation shown-timing 日志阶段，但两轮均未见用户实际进入 HyperOS 动画、Setup Wizard 或桌面。长窗口 pmsg 未复现 C22 的 shader-cache fatal，但运行时属性值未采样；静态 Logo 的新根因仍未知。最新报告和完整原始证据见上方链接。
+- **C24**：基于 C23 的 framework/display 诊断变体；post-fs-data 后定期记录启动属性、关键 PID、WindowManager/ActivityManager、SurfaceFlinger/display 与 HOME 解析信息到 logd/pmsg。仅完成主机侧构建检查和 `super`/`vbmeta_system_a` 刷写，尚未启动；不是已验证的启动修复。报告见 [`C24 诊断准备`](reports/candidate24/C23_FRAMEWORK_DISPLAY_C24_DIAGNOSTIC_20260928.md)。
 
 
 具体阶段和证据等级以项目状态文件及 Candidate 报告为准，旧报告的“计划/待验证”不会自动成为当前结论。
@@ -55,7 +56,7 @@ evidence/          C13–C23 Standalone 诊断卷及 USB/ADB/Fastboot 主机观�
 scripts/           带明确文件白名单的本地增量同步脚本
 ```
 
-建议阅读顺序：先看 [C23 SurfaceFlinger 预热绕过报告](reports/candidate23/REPORT.md)、[C22 实机故障报告](reports/candidate22/REPORT.md) 和 [C21 K40 SkiaVk 路由报告](reports/candidate21/REPORT.md)，再按以下历史材料阅读：
+建议阅读顺序：先看 [C24 Framework/display 诊断报告](reports/candidate24/C23_FRAMEWORK_DISPLAY_C24_DIAGNOSTIC_20260928.md)、[C23 SurfaceFlinger 预热绕过报告](reports/candidate23/REPORT.md)、[C22 实机故障报告](reports/candidate22/REPORT.md) 和 [C21 K40 SkiaVk 路由报告](reports/candidate21/REPORT.md)，再按以下历史材料阅读：
 
 1. [C20 ANGLE 路由与运行时诊断报告](reports/candidate20/REPORT.md)
 2. [当前项目状态](logs/PROJECT_STATUS.md)
@@ -72,7 +73,7 @@ scripts/           带明确文件白名单的本地增量同步脚本
 13. [C13–C23 原始启动诊断证据索引](evidence/README.md)
 ## 脚本与构建
 
-`tools/` 中保留了历史 Candidate 构建/预检流程、C13 SELinux 审核、只读启动观察器、启动门控、Standalone 日志导出工具和 PixelOS A0′ 恢复脚本。C18–C23 构建脚本记录定点图形启动实验；C22 配套 K40 Android 17 Vulkan UMD，C23 跳过触发 C22 fatal 的可选 shader-cache 预热。C20/C21/C23 刷写脚本写 super 与 vbmeta_system_a，C22 写 super 与 vbmeta_a；各 Candidate 启动脚本要求 observer ARMED 和用户在场确认。启动、刷写和 `fastboot boot` 辅助脚本都需要审阅其操作范围；脚本本身不构成设备操作许可。它们依赖本机 WSL 环境、外部 ROM 输入和原工程中的暂存资产。本仓库没有完整输入镜像，**不能仅凭 clone 一键复现完整 ROM 构建**。脚本来源及设备操作分类见 [`tools/README.md`](tools/README.md)。
+`tools/` 中保留了历史 Candidate 构建/预检流程、C13 SELinux 审核、只读启动观察器、启动门控、Standalone 日志导出工具和 PixelOS A0′ 恢复脚本。C18–C23 构建脚本记录定点图形启动实验；C22 配套 K40 Android 17 Vulkan UMD，C23 跳过触发 C22 fatal 的可选 shader-cache 预热；C24 增加 Framework/display 启动诊断。Candidate 刷写脚本可能写入设备分区；启动脚本要求观察器 ARMED 和用户在场确认。脚本本身不构成设备操作许可。它们依赖本机 WSL 环境、外部 ROM 输入和原工程中的暂存资产。本仓库没有完整输入镜像，**不能仅凭 clone 一键复现完整 ROM 构建**。脚本来源及设备操作分类见 [`tools/README.md`](tools/README.md)。
 
 后续更新公开副本时，先审核允许发布的本地变更，再运行文本与原始诊断证据同步器。原始证据同步器只递归处理明确列入 allowlist 的 Standalone 导出和 host-observation 目录，复制原始字节并生成逐文件 SHA-256 清单；可用 `-EvidenceCandidates C22` 只同步新增 Candidate，保留其他 Candidate 的 manifest 行而不重新遍历旧目录。识别到凭据、分区/固件镜像名或超大文件时会排除并记录原因：
 

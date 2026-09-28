@@ -1,0 +1,159 @@
+{
+  "candidate": "Candidate 24 Framework/UI/display readiness diagnostic",
+  "base": "Candidate 23 SurfaceFlinger shader-cache prime bypass",
+  "changes": [
+    "Added /system/bin/c24_bootdiag.sh and /system/etc/init/c24_bootdiag.rc; the system init.rc explicitly imports the diagnostic rc.",
+    "The post-fs-data oneshot samples boot properties/process PIDs every 10 seconds and bounded WindowManager, ActivityManager, SurfaceFlinger, display, layer-list and BootAnimation-latency dumps about once per minute for 15 minutes. Output goes to Android logd/pmsg; it writes no persistent diagnostic file."
+  ],
+  "evidence_basis": [
+    "C23 ran for about 11m52s with a static Xiaomi logo and pmsg coverage to about 11m38s, but did not capture system_server phases, WMS enable-screen, SystemUI/HOME, bootanim.exit, sys.boot_completed or HWC/present state.",
+    "BootAnimationShownTiming in C23 does not prove a frame reached the physical panel; C24 samples framework state and SurfaceFlinger/display state so those failure classes can be distinguished.",
+    "Targeted K40 OS4 Android 17 comparison found no directly reusable framework/display boot fix; C23 core framework jars match the OS4 donor/K40, while K40-specific overlays are device-targeted and were not copied."
+  ],
+  "limits": [
+    "C24 changes diagnostic init scheduling and adds periodic binder dumps, a small workload that could slightly perturb timing; it does not change SELinux enforcing, GPU routing, display configuration, fstab, encryption, kernel or vendor hardware stack.",
+    "Software present/latency records can show SurfaceFlinger/HWC submission attempts, but only the user's observation establishes what appeared on the physical panel.",
+    "All runtime diagnostic output still depends on logd/pmsg retention and will be verified from the next boot; this build is not runtime-validated."
+  ],
+  "retained_from_c23": [
+    "C23 shader-cache bypass, K21 SkiaVk RenderEngine profile, C22 isolated K40 Vulkan UMD stack, prior BPF/ION/property-context/storage fixes, SELinux enforcing and thyme kernel/vendor/device hardware stack.",
+    "No changes to userdata, metadata, misc/BCB, boot-control state or hardware identity/calibration partitions."
+  ],
+  "checks": [
+    "C23 small inherited image set checked against its manifest; the existing 7.7 GB C23 super was not rehashed.",
+    "New system EROFS fsck passed; final EROFS readback asserted imported init rc, service/action, sampling script and retained C23 property.",
+    "avbtool verify_image validated the new system footer and hashtree; the system descriptor data size is allowed to reflect the additional EROFS blocks while remaining within system_a.",
+    "New vbmeta_system contains the updated system hashtree descriptor only; C23 product/system_ext descriptors and AVB header metadata retained.",
+    "LP repacked with the same C23 logical partition sources and geometry; lpdump extent checks passed.",
+    "Android shell script syntax checked with Ubuntu sh -n; new diagnostics use system_file xattrs and existing system_file/ shell_exec tool contexts only; no SELinux policy added."
+  ],
+  "flash_scope_prepared": [
+    "super",
+    "vbmeta_system_a"
+  ],
+  "c23_baseline": {
+    "checked_images": {
+      "boot.img": {
+        "bytes": 201326592,
+        "sha256": "E5A016056D5C93C7A886980A7C062617EC44DC06A48417D7DD0F4476708A6368"
+      },
+      "vendor_boot.img": {
+        "bytes": 100663296,
+        "sha256": "02333B82BA936F1BAAB1ECAB744632C70F8FC16688A206C7041EF319F112A137"
+      },
+      "dtbo.img": {
+        "bytes": 33554432,
+        "sha256": "50E1AC0EDCBD333778217AA6FE8D972F6FF85ADD0DAE8A015A6642C2172DD886"
+      },
+      "vbmeta.img": {
+        "bytes": 131072,
+        "sha256": "66A53C2EC38247193CC86B7F5DE887556864413D1142C3C1994645DE1E3BAB10"
+      },
+      "vbmeta_system.img": {
+        "bytes": 131072,
+        "sha256": "B0FFDFD7FD492F17ABD6FDC0F3577C6F9C1976C8087B6A21E77191FA1A624F46"
+      }
+    },
+    "retained_properties": [
+      "service.sf.prime_shader_cache=0",
+      "debug.renderengine.vulkan=true",
+      "debug.renderengine.backend=skiavkthreaded",
+      "debug.hwui.renderer=skiavk",
+      "ro.surface_flinger.default_composition_pixel_format=2"
+    ],
+    "system_init_rc_sha256_before": "4A55170C4D52C0E6B49AD807CDFCB86583E4DD9E2F2BF628F444132AB7B4928F",
+    "system_init_rc_sha256_c24": "C6CD03EA1FD0ED3FE4E0A778EF59EE7718CFDE71F79EFD83685EF87B2A48AC9A"
+  },
+  "system_build": {
+    "file_contexts": [
+      "/system/system/etc/init/c24_bootdiag\\.rc u:object_r:system_file:s0",
+      "/system/system/bin/c24_bootdiag\\.sh u:object_r:system_file:s0"
+    ],
+    "new_fs_config_paths": [
+      "system/system/etc/init/c24_bootdiag.rc",
+      "system/system/bin/c24_bootdiag.sh"
+    ],
+    "final_erofs_readback": {
+      "/system/etc/init/hw/init.rc": {
+        "contains": "import /system/etc/init/c24_bootdiag.rc",
+        "bytes": 80910
+      },
+      "/system/etc/init/c24_bootdiag.rc": {
+        "contains": "start c24_bootdiag",
+        "bytes": 188
+      },
+      "/system/bin/c24_bootdiag.sh": {
+        "contains": "C24BootDiag",
+        "bytes": 4650
+      },
+      "/system/build.prop": {
+        "contains": "service.sf.prime_shader_cache=0",
+        "bytes": 13337
+      }
+    },
+    "system_image_sha256": "5594D30394455D63A5E08AD561E4982A0AF851FF461C2CFD015217BF68D20FCC",
+    "system_image_bytes": 1092616192
+  },
+  "vbmeta_system_update": {
+    "base_sha256": "B0FFDFD7FD492F17ABD6FDC0F3577C6F9C1976C8087B6A21E77191FA1A624F46",
+    "system_image_size_before": 958156800,
+    "system_image_size_after": 958160896,
+    "system_tree_size": 7553024,
+    "system_root_digest": "35d54489d5fd90138cae0266518d510571d859053cb4edbb9cf7fcb35e61680f",
+    "flags": 2,
+    "rollback_index": 0,
+    "rollback_index_location": 2,
+    "unchanged_other_descriptors": [
+      "product",
+      "system_ext"
+    ]
+  },
+  "logical_input_hashes": {
+    "vendor_c22.img": {
+      "bytes": 1510998016,
+      "sha256": "FCEAFEE5B5909D7BE9BBEC48D9E8720F37798DDEEBDBF193424FB3A095CBA675"
+    },
+    "system_ext_a.img": {
+      "bytes": 942669824,
+      "sha256": "6B63E58346DA5B2FEBA7F51980CCEBF886D5991DD07F91541FE4D9F1485CDAD5"
+    },
+    "mi_ext.img": {
+      "bytes": 202375168,
+      "sha256": "43ED8FC0D1848F5D53BFB7206AC91FE5E5ED4E3F71E958D49F2EEA4C9C8B4BCE"
+    },
+    "odm.img": {
+      "bytes": 35758080,
+      "sha256": "075E4A17DC4CA716399166388B1C175060D5CBB31139B2ACBD9E5B2DEE352E22"
+    },
+    "product.img": {
+      "bytes": 4387241984,
+      "sha256": "87955DBE97AC28B01A214273BD03F36B5886310DC3B2E4128B9F4661E1C3345E"
+    }
+  },
+  "images": {
+    "boot.img": {
+      "bytes": 201326592,
+      "sha256": "E5A016056D5C93C7A886980A7C062617EC44DC06A48417D7DD0F4476708A6368"
+    },
+    "vendor_boot.img": {
+      "bytes": 100663296,
+      "sha256": "02333B82BA936F1BAAB1ECAB744632C70F8FC16688A206C7041EF319F112A137"
+    },
+    "dtbo.img": {
+      "bytes": 33554432,
+      "sha256": "50E1AC0EDCBD333778217AA6FE8D972F6FF85ADD0DAE8A015A6642C2172DD886"
+    },
+    "vbmeta.img": {
+      "bytes": 131072,
+      "sha256": "66A53C2EC38247193CC86B7F5DE887556864413D1142C3C1994645DE1E3BAB10"
+    },
+    "vbmeta_system.img": {
+      "bytes": 131072,
+      "sha256": "1A67C4A2E22DA746E184B146D7DD65059D00FB501EE3642DA1BD2AEFCE706D08"
+    },
+    "super.img": {
+      "bytes": 7701896152,
+      "sha256": "2B84BD93ADFA85FC851A17937B7F96AB4176F01F3E3D00FFC2DB78766BA2CDD8"
+    }
+  }
+}

@@ -68,4 +68,11 @@ The original workflow used Windows 11, WSL Ubuntu, local Android platform-tools,
 - `build_candidate23_sf_prime_skip.py` sets `service.sf.prime_shader_cache=0` to bypass only the optional shader-cache prewarm implicated by C22's SurfaceFlinger fatal; this is diagnostic, not a proven regular-composition fix.
 - `flash_candidate23_sf_prime_skip.ps1` defaults to Dry-Run and requires `-Serial` and `-Execute` to write only `super` and `vbmeta_system_a`.
 - `start_candidate23_observed_boot.ps1` requires a fresh C23 observer ARMED record, `-Serial`, and the explicit user-watching confirmation before a single Fastboot reboot.
-- C23's first boot is not yet verified. Do not describe the property bypass as a successful boot or a fix for the underlying output-buffer usage issue.
+- C23's user-space BootAnimation code emitted a shown-timing record, but the user observed only the static Xiaomi logo and no boot-complete/UI evidence was captured. Do not describe the property bypass as a verified visible animation or a fix for the underlying output-buffer usage issue.
+
+## Candidate 24
+
+- `build_candidate24_framework_display_diag.py` builds a diagnostic-only system addition from the local C23 inputs; ROM/build inputs and generated images are not included.
+- `candidate24_bootdiag/` contains the init service and script. It samples boot completion, boot-animation/service properties, process PIDs, WindowManager/ActivityManager, SurfaceFlinger/display state and HOME resolution to logd/pmsg for up to 15 minutes. Actual execution and pmsg retention remain unverified until C24 boots.
+- `flash_candidate24_framework_display_diag.ps1` requires an explicit `-Serial` and `-Execute`; it writes only `super` and `vbmeta_system_a` and does not reboot or erase data.
+- See [C24 diagnostic report](../reports/candidate24/C23_FRAMEWORK_DISPLAY_C24_DIAGNOSTIC_20260928.md), [build report](../reports/candidate24/BUILD_REPORT.md), and [manifest](../reports/candidate24/BUILD_MANIFEST.json).

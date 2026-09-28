@@ -1,0 +1,9 @@
+service c24_bootdiag /system/bin/sh /system/bin/c24_bootdiag.sh
+    class core
+    user shell
+    group shell log readproc
+    disabled
+    oneshot
+
+on post-fs-data
+    start c24_bootdiag
