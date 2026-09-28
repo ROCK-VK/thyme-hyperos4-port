@@ -183,4 +183,4 @@ K40 产品配置另有 `ro.hwui.use_vulkan=true`；C21 未改 product，thyme ve
 - 只读观察器：`tools/observe_candidate13_readonly.py`
 - 项目环境：Windows 11 + WSL Ubuntu；C21 使用既有 WSL 构建树及已缓存 EROFS/LP/AVB 工具。
 - 公开项目：https://github.com/ROCK-VK/thyme-hyperos4-port
-- 最新公开 Commit：https://github.com/ROCK-VK/thyme-hyperos4-port/commit/734e158dbce83feadc313ff7ff406e7d1e03ccab （C25 持久诊断日志与主机观察、报告及公开清单已同步；未上传 misc.raw、ROM、分区镜像或设备身份资料）。
+- C26 诊断构建/刷写资料已于 2026-09-29 同步至 Public 仓库 main；该增量 Commit：https://github.com/ROCK-VK/thyme-hyperos4-port/commit/949ee593ab5504e5e291bd3922394590262e4ff4。远端 main、README、C26 报告与 helper 源码已匿名访问验证；未上传 ROM、分区镜像或编译后的 helper 二进制。

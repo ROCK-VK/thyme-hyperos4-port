@@ -13952,4 +13952,5 @@
 - 验证：K40 定点文件对照完成；helper 以 Android NDK r29 编译为 AArch64 PIE，`-Wall -Wextra -Werror` 通过；构建器报告 EROFS 标记检查、AVB system footer、vbmeta_system 描述符、LP/Super 逻辑输入检查通过。PowerShell Parser 对刷写/启动脚本 0 错误。刷写前核对唯一目标 thyme、A 槽、Bootloader unlocked、is-userspace=no、A unbootable=no、retry=2；C26 super（7,703,583,704 bytes，SHA-256 `601FF7548F658442B9F17176FB2AC391791E1453660E55A41D8B292E1E290E62`）10/10 sparse chunk 全部发送/写入成功；vbmeta_system_a（131,072 bytes，SHA-256 `194000046E3FA288322D4D9D01B65559042DBCB27E3E354C986796888ABA40A3`）发送/写入成功。刷写脚本复核设备仍为 Bootloader Fastboot。
 - 尚未验证：设备端分区回读、C26 首次启动、诊断服务运行和持久化、zygote 首次退出原因、Framework/UI 后续阶段。构建器对 ELF dump 使用文本捕获并只检查 ASCII 标记；该 readback `bytes` 不代表原始 ELF 文件大小，原始 helper 尺寸与 SHA 见 manifest。
 - 待处理：用户在手机旁确认后，先启动 C26 只读观察器并确认 ARMED，再执行唯一一次 C26 启动；如 ADB 不在线，返回 Fastboot 后完整导出 THYME_DIAG 与 metadata 诊断目录并校验。
+- GitHub：C26 诊断代码、报告、构建清单和状态已同步至公开仓库，Commit 949ee593ab5504e5e291bd3922394590262e4ff4；匿名 GitHub API 确认为 Public/main，README、C26 报告与 helper 源码返回 HTTP 200。
 - 替代：无；本条更新 C25“下一步捕获 Zygote 首因”的当前执行状态，不替代 C25 历史实机结论。
