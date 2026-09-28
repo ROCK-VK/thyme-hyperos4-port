@@ -6,11 +6,10 @@
 
 ## 当前状态（2026-09-28）
 
-- **C23 已完成两次启动尝试。** 首次保存到 Recovery 分支；原因仍未知。最新 retest 的 console 证明普通 First/Second Stage、APEX、vold 和 /data 初始化推进，pmsg 记录 BootAnimationShownTiming start time: 42129ms。用户现场仍只看到小米 Logo 常亮；没有 Setup Wizard、桌面或 sys.boot_completed=1 直接采样。
-- 本轮 ADB 未上线。pmsg 没有再记录 C22 的 shader-cache output-buffer fatal、EGLConfig fatal 或 Vulkan RenderEngine fatal；service.sf.prime_shader_cache=0 的运行时值及其因果作用仍未直接确认。
-- 重复 netd SIGABRT 和指纹服务 SIGSEGV 出现在 pmsg 中，但目前没有证据证明它们阻止 BootAnimation/UI。当前不据此扩大修复范围，也未构建 C24。
-- 设备由用户手动返回 Bootloader Fastboot。2026-09-28 15:24 HKT 只读状态：thyme、A 槽、已解锁、非 userspace Fastboot；A retry=6、B retry=7，均 unbootable=no、successful=no。C23 仍刷入；PixelOS 未恢复；本轮未清 userdata/metadata。
-- 最新结果：[C23 正常启动复验报告](reports/candidate23/C23_RETEST_20260928.md)；完整原始诊断和 USB/ADB/Fastboot 观察见 [C23 evidence](evidence/candidate23/) 与[证据索引](evidence/README.md)。C23 构建及首次 Recovery 取证分别见 [C23 构建报告](reports/candidate23/BUILD_REPORT.md) 和 [Recovery 原因核查](reports/candidate23/RECOVERY_RETEST_20260927.md)。当前快照见 [项目状态](logs/PROJECT_STATUS.md)。
+- **C23 已完成三次受控启动尝试。** 首次现场进入 Recovery；之后两次未出现 HyperOS 第二屏。最新完整观察约 11 分 52.8 秒：用户始终只看到静态小米 Logo；ADB 未上线。pmsg 记录 `/data`/fscrypt 初始化和 BootAnimation shown-timing，但没有 `sys.boot_completed=1`、bootanim exit、SystemUI、SetupWizard 或 Launcher 的直接记录。
+- 最新 pmsg 未再记录 C22 shader-cache output-buffer fatal、EGLConfig fatal 或 Vulkan RenderEngine fatal；`service.sf.prime_shader_cache=0` 的运行时值和因果作用仍未直接确认。pmsg 还记录 netd、指纹和 audio.service 重复崩溃，以及 SurfaceControl 相关的 `UltraFrameworkComponentFactoryImpl` 类缺失；这些问题均未证明是静态 Logo 的原因。
+- 当前不构建 C24，直到定点分析找到可修复的具体阻塞。设备由用户手动返回 Bootloader Fastboot。2026-09-28 16:19 HKT 只读状态：thyme、A 槽、已解锁、非 userspace Fastboot；A retry=5、B retry=7，均 unbootable=no、successful=no。C23 仍刷入；PixelOS 未恢复；本轮未清 userdata/metadata。
+- 最新结果：[C23 完整开机窗口报告](reports/candidate23/C23_LONG_BOOT_RETEST_20260928.md)、[本轮源/公开哈希清单](evidence/candidate23/long_boot_retest/PUBLIC_EVIDENCE_MANIFEST.csv)、[C23 原始证据目录](evidence/candidate23/)、[证据索引](evidence/README.md)。早期 C23 复验报告见 [C23 retest](reports/candidate23/C23_RETEST_20260928.md)；构建和 Recovery 核查见 [C23 构建报告](reports/candidate23/BUILD_REPORT.md) 与 [Recovery 原因核查](reports/candidate23/RECOVERY_RETEST_20260927.md)。当前快照见 [项目状态](logs/PROJECT_STATUS.md)。
 
 ## 设备与来源
 
@@ -39,7 +38,7 @@ K40 对照资料显示，成功包的 vendor_boot ramdisk 与原包不同，并�
 - **C20**：将 EGL 路由统一为 ANGLE，保留 RGBX=2，并加入 linker 诊断；实机仍有 EGLConfig abort，实际 EGL 后端未知。完整 C20 原始证据见 [`evidence/candidate20/`](evidence/candidate20/) 和 [C20 报告](reports/candidate20/REPORT.md)。
 - **C21**：K40 threaded SkiaVk 路由绕开 EGLConfig fatal；实机因 Vulkan RenderEngine 初始化 fatal 未进入启动动画。
 - **C22**：以 K40 Android 17 Vulkan UMD 及隔离 GSL/LLVM/Adreno Utils 依赖配套替换 Vulkan ICD；实机越过 RenderEngine 创建 fatal，后在 Skia shader-cache 预热因输出 buffer usage 检查反复 abort。
-- **C23**：仅关闭可选 SurfaceFlinger shader-cache 预热。首次尝试保存到 Recovery；后续 retest 进入普通 Android First/Second Stage、数据初始化和 BootAnimation 相关阶段，但桌面未确认。C22 的 shader-cache fatal 在本轮 pmsg 未复现；属性实际运行值尚未确认。最新报告和原始证据见上方链接。
+- **C23**：仅关闭可选 SurfaceFlinger shader-cache 预热。首次尝试保存到 Recovery；后续启动推进到 `/data`/fscrypt 和 BootAnimation shown-timing 日志阶段，但两轮均未见用户实际进入 HyperOS 动画、Setup Wizard 或桌面。长窗口 pmsg 未复现 C22 的 shader-cache fatal，但运行时属性值未采样；静态 Logo 的新根因仍未知。最新报告和完整原始证据见上方链接。
 
 
 具体阶段和证据等级以项目状态文件及 Candidate 报告为准，旧报告的“计划/待验证”不会自动成为当前结论。

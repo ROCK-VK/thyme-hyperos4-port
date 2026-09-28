@@ -17,7 +17,7 @@
 - candidate20/standalone 与 host-observations：C20 ANGLE 路由诊断实验的完整诊断卷导出和主机观察记录；包含 console、pmsg、oops、Standalone dmesg、diag_status、设备生成文件、导出清单和启动观察时间线。
 - candidate21/standalone 与 host-observations：C21 全部可访问 Standalone 导出文件及主机观察目录，共 19 个源文件；包括 console、pmsg、历史 oops.raw、Standalone dmesg、diag_status、导出元数据、空 logcat 文件及系统生成文件。公开副本序列号脱敏，逐文件源/公开哈希见该 Candidate 的发布清单。
 - candidate22/standalone 与 host-observations：C22 的 8 个诊断卷文件和 11 个主机观察文件，共 19 项。完整保留本轮实际存在的文件及目录结构；源与公开副本逐文件大小/SHA-256 一致。Standalone dmesg 属于诊断环境，`oops.raw` 为历史/诊断残留，不能作为 C22 Android 启动日志。
-- candidate23/standalone 与 host-observations：包含 2026-09-27 首次 Recovery 现场，以及 2026-09-28 retest 的 8 个诊断卷文件和 10 个主机观察文件。retest console 证明正常 First/Second Stage 与 /data 初始化，pmsg 记录 BootAnimationShownTiming；用户仍只看到静态小米 Logo，桌面未确认。首次尝试的 Recovery 原因仍未知。
+- candidate23/standalone 与 host-observations：包含 2026-09-27 首次 Recovery 现场、2026-09-28 两次正常启动复验及其主机观察记录。`long_boot_retest/` 中保存 2026-09-28 15:47 启动后的 10 项主机观察文件和 12 项 Standalone/导出元数据文件；其中 THYME_DIAG 原始卷的 8 个文件共 20,433,856 bytes，全部复制校验通过。用户全程看到静态小米 Logo；主机观察约 11m52 后重新发现 Fastboot；pmsg 约 11m38，记录 `/data`/fscrypt 与 BootAnimation shown-timing，但没有 boot-completed 或桌面直接证据。SHA-256 和来源见累积 manifest 及该轮 `PUBLIC_EVIDENCE_MANIFEST.csv`。旧 `oops.raw` 与更早取证完全相同，不归属本轮 C23。
 
 每个 Standalone 导出保留当时实际存在的原始 console-ramoops、pmsg-ramoops、oops.raw、Standalone dmesg、diag_status、源端校验文件、主机导出时间线和清单。缺失的文件不会补造。
 

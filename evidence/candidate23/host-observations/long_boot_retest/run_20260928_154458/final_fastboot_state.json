@@ -1,0 +1,17 @@
+{
+  "observed_local": "2026-09-28T16:19:25.9920508+08:00",
+  "observed_utc": "2026-09-28T08:19:26.0013073Z",
+  "devices": "1384e684\t fastboot",
+  "getvars": {
+    "product": "product: thyme\r\nFinished. Total time: 0.003s",
+    "current-slot": "current-slot: a\r\nFinished. Total time: 0.002s",
+    "unlocked": "unlocked: yes\r\nFinished. Total time: 0.001s",
+    "is-userspace": "is-userspace: no\r\nFinished. Total time: 0.002s",
+    "slot-unbootable:a": "slot-unbootable:a: no\r\nFinished. Total time: 0.003s",
+    "slot-successful:a": "slot-successful:a: no\r\nFinished. Total time: 0.003s",
+    "slot-retry-count:a": "slot-retry-count:a: 5\r\nFinished. Total time: 0.003s",
+    "slot-unbootable:b": "slot-unbootable:b: no\r\nFinished. Total time: 0.003s",
+    "slot-successful:b": "slot-successful:b: no\r\nFinished. Total time: 0.003s",
+    "slot-retry-count:b": "slot-retry-count:b: 7\r\nFinished. Total time: 0.003s"
+  }
+}

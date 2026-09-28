@@ -13486,3 +13486,13 @@
 - Remaining: Repeated netd SIGABRT and fingerprint-service SIGSEGV are present, but no evidence ties either to the missing UI. Do not infer that the shader-cache property caused the new progress. No C24 is built from this run alone.
 - Safety: No flash, data/metadata erase, BCB write, further slot operation, PixelOS restore, hardware-identity partition write, or Bootloader relock.
 - Report: [C23 retest](../reports/candidate23/C23_RETEST_20260928.md); raw files and host timeline: [C23 evidence](../evidence/candidate23/).
+
+## 2026-09-28 16:19 | C23 full boot-window retest remained at static Xiaomi logo
+
+- Status: One complete boot observation, Standalone full export, and read-only Fastboot verification are complete; no partition was flashed and no data was erased.
+- Result: The observer was ARMED before one `fastboot reboot` at 15:47:14.282 HKT (OKAY). The user reports a static Xiaomi logo throughout and manually returned to Fastboot. Host Fastboot reappeared about 11m52.8s after reboot; ADB never appeared. pmsg spans about 697.883s and records a successful F2FS `/data` mount, fscrypt initialization, and `BootAnimationShownTiming start time: 40943ms`. This does not prove the visible HyperOS animation. No direct `sys.boot_completed=1`, `service.bootanim.exit`, SystemUI/SetupWizard/Launcher record was found.
+- Findings: The pmsg did not reproduce the prior EGLConfig, Vulkan RenderEngine, or output-buffer shader-cache fatal signatures; `service.sf.prime_shader_cache` was not sampled. It records 138 netd SIGABRTs, 137 fingerprint HAL SIGSEGVs, 74 audio.service SIGSEGVs and 23 `UltraFrameworkComponentFactoryImpl` ClassNotFoundException messages on a `SurfaceControl.<clinit>` stack. None is proven to explain the missing UI. C24 is not built.
+- Evidence: All 22 accessible Standalone and host-observation source files (20,764,672 bytes) were published with per-file source/public SHA-256 match. The 8 THYME_DIAG files total 20,433,856 bytes and copied with zero errors. Console spans kernel uptime 120.114755–702.552956s without a panic; the pmsg span is about 697.883s; `oops.raw` is unchanged historical residue.
+- Device: Final read-only state is thyme/A, unlocked Bootloader Fastboot, non-userspace. A retry fell from 6 to 5; A/B remain unbootable=no and unsuccessful=no; B retry=7.
+- Safety: No Candidate flash, userdata/metadata erase, set_active, BCB/misc write, PixelOS restore, hardware identity/secure partition write, or Bootloader relock.
+- Report: [C23 complete boot-window report](../reports/candidate23/C23_LONG_BOOT_RETEST_20260928.md); [long-window raw evidence](../evidence/candidate23/long_boot_retest/).

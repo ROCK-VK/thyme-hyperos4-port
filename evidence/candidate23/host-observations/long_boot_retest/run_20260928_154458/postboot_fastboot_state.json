@@ -1,0 +1,58 @@
+{
+  "candidate": "C23-long-boot-retest",
+  "recorded_local": "2026-09-28T15:59:53.5738602+08:00",
+  "recorded_utc": "2026-09-28T07:59:53.5778023+00:00",
+  "devices_raw": "1384e684               fastboot",
+  "getvars": [
+    {
+      "name": "product",
+      "exit_code": 0,
+      "raw": "product: thyme\r\nFinished. Total time: 0.002s"
+    },
+    {
+      "name": "current-slot",
+      "exit_code": 0,
+      "raw": "current-slot: a\r\nFinished. Total time: 0.002s"
+    },
+    {
+      "name": "unlocked",
+      "exit_code": 0,
+      "raw": "unlocked: yes\r\nFinished. Total time: 0.001s"
+    },
+    {
+      "name": "is-userspace",
+      "exit_code": 0,
+      "raw": "is-userspace: no\r\nFinished. Total time: 0.002s"
+    },
+    {
+      "name": "slot-unbootable:a",
+      "exit_code": 0,
+      "raw": "slot-unbootable:a: no\r\nFinished. Total time: 0.003s"
+    },
+    {
+      "name": "slot-successful:a",
+      "exit_code": 0,
+      "raw": "slot-successful:a: no\r\nFinished. Total time: 0.003s"
+    },
+    {
+      "name": "slot-retry-count:a",
+      "exit_code": 0,
+      "raw": "slot-retry-count:a: 5\r\nFinished. Total time: 0.003s"
+    },
+    {
+      "name": "slot-unbootable:b",
+      "exit_code": 0,
+      "raw": "slot-unbootable:b: no\r\nFinished. Total time: 0.003s"
+    },
+    {
+      "name": "slot-successful:b",
+      "exit_code": 0,
+      "raw": "slot-successful:b: no\r\nFinished. Total time: 0.003s"
+    },
+    {
+      "name": "slot-retry-count:b",
+      "exit_code": 0,
+      "raw": "slot-retry-count:b: 7\r\nFinished. Total time: 0.004s"
+    }
+  ]
+}

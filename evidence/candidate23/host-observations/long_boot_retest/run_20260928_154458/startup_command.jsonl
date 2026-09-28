@@ -1,0 +1,2 @@
+{"event":"candidate_boot_command","candidate":"C23-long-boot-retest","serial":"1384e684","command":"fastboot reboot","host_local":"2026-09-28T15:47:14.2824445+08:00","host_utc":"2026-09-28T07:47:14.2824688+00:00"}
+{"event":"candidate_boot_command_returned","candidate":"C23-long-boot-retest","serial":"1384e684","exit_code":0,"output":"Rebooting                                          OKAY [  0.000s]\r\nFinished. Total time: 0.001s","host_local":"2026-09-28T15:47:14.3246808+08:00","host_utc":"2026-09-28T07:47:14.3247223+00:00"}
