@@ -1,0 +1,16 @@
+timestamp=2026-09-28T23:44:27.3758728+08:00
+fastboot_device=[REDACTED_DEVICE_SERIAL]
+product=thyme
+current-slot=a
+unlocked=yes
+is-userspace=no
+slot-unbootable:a=no
+slot-successful:a=no
+slot-retry-count:a=2
+slot-unbootable:b=no
+slot-successful:b=no
+slot-retry-count:b=7
+standalone_image=[LOCAL_PROJECT_ROOT]
+image_size=201326592
+image_sha256=EB6E47DBEBFB6469EC0178D17F793538A6C0A41FA09DB4DBC5C04034B2AB65E0
+operation=RAM-only fastboot boot; no partition write

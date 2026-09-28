@@ -7,7 +7,7 @@ import hashlib
 import shutil
 from datetime import datetime
 
-REPO_ROOT = "e:/RVK/10S_OS4"
+REPO_ROOT = os.environ.get("THYME_OS4_ROOT", os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 DEFAULT_OUT_DIR = os.path.join(REPO_ROOT, "work", "standalone_diag")
 parser = argparse.ArgumentParser(description="Build a Standalone Diag image into a new, isolated output directory.")
 parser.add_argument("--out-dir", required=True, help="New output directory; existing paths are refused to preserve prior artifacts.")
@@ -391,7 +391,7 @@ else
                 MOUNT_FSTYPE=${MOUNT_REST%%|*}
                 MOUNT_OPTS=${MOUNT_REST#*|}
                 case ",$MOUNT_OPTS," in *,ro,*) META_IS_RO=1 ;; *) META_IS_RO=0 ;; esac
-                case ",$MOUNT_OPTS," in *,noload,*) META_NOLOAD=1 ;; *) META_NOLOAD=0 ;; esac
+                case ",$MOUNT_OPTS," in *,noload,*|*,norecovery,*) META_NOLOAD=1 ;; *) META_NOLOAD=0 ;; esac
                 echo "[C25] metadata mount source=$MOUNT_SOURCE fstype=$MOUNT_FSTYPE options=$MOUNT_OPTS" >> "$STATUS_LOG"
                 if [ "$MOUNT_SOURCE" != "$META_NODE" ] || [ "$MOUNT_FSTYPE" != "ext4" ] || [ "$META_IS_RO" -ne 1 ] || [ "$META_NOLOAD" -ne 1 ]; then
                     echo "[C25][STOP] mount table does not confirm the requested ext4 ro,noload mount; no metadata files read" >> "$STATUS_LOG"
@@ -403,7 +403,7 @@ else
                     if /bin/cp -a "$META_MOUNT/thyme_os4_diag/." "$C25_DEST/" 2>> "$STATUS_LOG"; then
                         VERIFY_FILE=/tmp/dumps/C25_METADATA_COPY_VERIFY.txt
                         : > "$VERIFY_FILE"
-                        echo "source=$META_MOUNT/thyme_os4_diag mount=ext4,ro,noload" >> "$VERIFY_FILE"
+                        echo "source=$META_MOUNT/thyme_os4_diag requested=ext4,ro,noload actual=$MOUNT_FSTYPE,$MOUNT_OPTS" >> "$VERIFY_FILE"
                         /bin/find "$META_MOUNT/thyme_os4_diag" -type f -print | /bin/sort > /tmp/c25_metadata_file_list
                         COPY_COUNT=0
                         COPY_ERRORS=0

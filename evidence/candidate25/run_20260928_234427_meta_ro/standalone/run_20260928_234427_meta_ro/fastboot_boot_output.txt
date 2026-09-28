@@ -1,0 +1,5 @@
+[2026-09-28T23:44:27.4687561+08:00] fastboot boot [LOCAL_PROJECT_ROOT]
+Sending 'boot.img' (196608 KB)                     OKAY [  4.949s]
+Booting                                            OKAY [  0.223s]
+Finished. Total time: 5.246s
+exit_code=0

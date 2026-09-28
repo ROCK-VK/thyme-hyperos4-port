@@ -56,10 +56,30 @@ C25 仅替换 C24 未能形成可验证采样的 logd-only shell 诊断机制：
 
 未执行 reboot、userdata/metadata 清理、set_active、BCB/misc 操作、其他分区写入、PixelOS 恢复或 Bootloader 回锁。
 
-## 下一步
+## C25 首次启动观察（2026-09-28）
 
-C25 首次启动尚未执行，等待用户现场确认。设备保持 Fastboot；待用户在场并明确表示“开始启动 C25”后，先启动并确认 C25 观察器 ARMED，再执行一次 reboot。观察期间记录屏幕、USB/ADB/Fastboot；若 ADB 未上线或屏幕仍为第一屏，用户返回 Fastboot 后使用新建的 Standalone 只读 metadata 导出镜像完整备份诊断卷及 C25 持久采样，再分析采样服务是否启动、采样轮数和 Framework/display 状态。
+- 主机观察目录：`observations/run_20260928_231358/`。观察器 ARMED 后，2026-09-28 23:14:16 HKT 执行唯一一次 `fastboot reboot`，命令返回 OKAY。观察器运行约 898 秒后自然结束；用户全程看到中央小米 Logo + `powered by Android` 第一屏，没有看到 HyperOS 三点第二屏。ADB 始终未上线。主机 USB/Fastboot 在启动期间大部分时间 absent；约 892 秒时 Fastboot 重新出现，随后 USB present。用户报告是手动进入 Fastboot。A 槽 retry 从 3 降到 2，unbootable=no、successful=no；B 槽保持 unbootable=no、successful=no、retry=7。
+- 该观察证明 C25 在完整约 15 分钟窗口内未到达用户可见第二屏；不能据此确定 Framework、bootanimation 或物理显示的具体阻塞，也不能证明 C25 持久诊断服务是否启动。C25 首启结果仍需持久样本读取。
 
-观察启动门控已准备：tools/start_candidate25_observed_boot.ps1 只接受新鲜、候选标签正确的 ARMED 记录；默认不 reboot，只有明确传入 Execute 和 UserWatchingConfirmed 才会执行单次 fastboot reboot。PowerShell AST parser 检查通过。观察器调用参数为 --candidate C25-first-screen-diag，输出目录为 work/reports/20260928_C25_FIRST_SCREEN_DIAG/observations。
+## 首次 Standalone 导出与只读校验器修正
 
-本报告不把 C25 诊断功能描述为已获真机验证，也不推断当前启动阻塞已解决。
+- 第一轮 Standalone RAM 镜像为 `work/standalone_diag_c25_meta_ro_20260928_run2/standalone_diag_boot.img`，大小 201,326,592 bytes，SHA-256 `114C593F59825B745FCB81723D71CA702384976432A943FB9271F422F4E70E26`。设备预检为唯一 thyme、A 槽、解锁、Bootloader Fastboot；A retry=2。`fastboot boot` 返回 OKAY，仅 RAM 启动。
+- 唯一 sysfs `PARTNAME=metadata` 匹配到 `/dev/sda18`，Major:Minor 103:2，节点与 sysfs 一致，容量 16,777,216 bytes。ext4 挂载表显示 `ro,relatime,norecovery`；由于旧验证器只接受字符串 `noload`，它在确认源/类型/只读后停止，未读取 metadata 诊断目录，并成功卸载。Linux 4.19 ext4 文档说明 `norecovery` 是不加载 journal 的选项，与此处请求的 `noload` 语义相符；因此该次是选项别名校验缺陷，不是放宽只读边界。
+- THYME_DIAG 动态识别为唯一 F: FAT32 卷。全卷复制到 `standalone/run_20260928_233210/THYME_DIAG/`：5 个文件、4,197,876 bytes、1 个目录，大小与 SHA-256 校验 5/5 通过。可见文件包括 `diag_status.log`、4 MiB `misc.raw`、其 SHA 清单及 Windows `System Volume Information` 文件；无 C25 metadata 导出目录，也无 pstore 文件。完整 `misc.raw` 仅保存在本地取证副本，不公开上传。`diag_status.log` 明确记录在 metadata 读取前停止。
+- 修正 `tools/build_standalone_diag.py`：保留 ext4、源设备、容量及 `ro` 检查；仅允许 mount table 的精确 token `noload` 或 `norecovery`，并把 requested/actual options 写入校验记录。run3 镜像独立构建于 `work/standalone_diag_c25_meta_ro_20260928_run3/`，201,326,592 bytes，实际 SHA-256 `EB6E47DBEBFB6469EC0178D17F793538A6C0A41FA09DB4DBC5C04034B2AB65E0`。此前执行记录中有一位抄写错误（`...EB6B...`），文件本体及 MANIFEST 均为 `...EB6E...`。最终 ramdisk 解包规则确认，BusyBox ash `-n` 检查通过。
+
+## C25 持久诊断实机结果（run3）
+
+- Fastboot 前置核对只有设备 `[REDACTED_DEVICE_ID]`：product=thyme、A 槽、Bootloader unlocked、非 userspace Fastboot；A 槽 unbootable=no、successful=no、retry=2，B 槽 retry=7。run3 镜像与 MANIFEST 一致后，`fastboot boot` 返回 Sending/Booting OKAY；仅 RAM 临时启动。
+- Standalone 唯一识别 `PARTNAME=metadata`：DEVNAME=sda18、uevent major/minor=259:2、设备节点 stat 为十六进制 103:2、容量 16,777,216 bytes；以 ext4 `ro,noload` 请求挂载，实际挂载表为 `ro,relatime,norecovery`。脚本完成只读验证、复制两文件并卸载，没有写 metadata。
+- 诊断卷动态识别为 G:（THYME_DIAG/FAT32）。完整复制到 `standalone/run_20260928_234427_meta_ro/THYME_DIAG/`：8 个文件、4,272,050 bytes、2 个目录；逐文件大小及 SHA-256 8/8 一致，枚举/复制错误为 0。卷中没有 console-ramoops、pmsg-ramoops、oops.raw；包含 `diag_status.log`、C25 metadata 导出、misc.raw 与其散列、Windows 系统卷文件。完整 misc.raw 留在本机，不公开。
+- C25 导出两份 metadata 文件：`C25_INIT_TRIGGER.txt` 和 `C25_bootdiag_19700120T231537Z_1026.log`；`C25_METADATA_COPY_VERIFY.txt` 记录源/副本字节数和 SHA-256 一致（mismatch=0）。设备时钟显示 1970，C25 时间分析使用 elapsed_ms / uptime_ms，不采用该日历时间。
+- 服务验证：init post-fs-data 标记存在；helper 写有 `START ... file=open`，且在文件中持久写入 56 个样本及 84 组 dumpsys 开始/结束记录。第 1 样本 uptime=15.310s 时多项服务尚未可读；其后 55 个约 15 秒间隔样本一致报告：`init.svc.zygote=restarting`、`zygote_secondary=restarting`、`netd=restarting`；system_server、zygote64、SystemUI、HOME、SetupWizard PID 均为 none；SurfaceFlinger 与 bootanimation 持续 running；`service.bootanim.exit=0`，`sys.boot_completed` 为 empty/unreadable。最后样本 uptime=842.681s、collector elapsed=827.404s。日志没有 `COMPLETE`，未达到配置的 900 秒；中断原因不能仅凭现有文件确定。
+- Window、Activity、Display 以及 HOME 查询持续返回 service-not-found；SurfaceFlinger 查询成功，显示 HWC display 0、`PresentFences=true`，并列出 `BootAnimation` layer。它证明 compositor/display interface 可查询，不证明一帧成功 present 至物理面板。
+- 因 system_server / zygote64 在后续样本均不存在，C25 的直接可见阻塞已收敛为 zygote 服务无法稳定启动；退出原因尚无 logcat/crash 记录。现有 C23/C24 pmsg 有重复 `ZygotePid: -1`，但无明确 `AndroidRuntime`/`ZygoteInit` fatal，不能当作根因。C25 没有采集或导出 logcat。
+- 用户观察始终为中央小米 Logo + `powered by Android` 第一屏，未看到 HyperOS 三点第二屏。BootAnimation service/PID/layer 存在，但是否真实显示到物理面板仍未知；zygote/system_server 尚未启动，因此当前优先收集 zygote 退出原因，不改 HWC/GPU。
+- C25 helper 记录只到 827.404s 且缺少完成标记。相较用户约 898s 的主机窗口，不能宣称诊断任务完整运行满 15 分钟；最后样本距 helper 配置的 900s 截止还差约 72.6s。
+- 下一步应准备最小 logcat/crash 采集增量，优先保留现有 C25 功能条件；获取 Zygote 启动失败首条日志后再定点修复。当前不构建 C26：最新磁盘读数 C=76.91 GiB，低于本项目 80 GiB 重型工作门槛；D=119.58 GiB、E=176.64 GiB。Docker 未触碰。
+- run3 后用户报告已手动返回 Bootloader Fastboot；本轮主机 `fastboot devices` 未枚举到设备，因此模式尚未主机确认。run3 期间为 Standalone RAM UMS，THYME_DIAG=G:。未执行持久分区修改、userdata/metadata 擦除、set_active、BCB 修改、PixelOS 恢复或 Bootloader 回锁。
+
+ext4 选项语义参考：[Linux 4.19 ext4 文档](https://www.kernel.org/doc/html/v4.19/filesystems/ext4/ext4.html)。

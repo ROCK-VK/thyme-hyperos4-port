@@ -1,0 +1,10 @@
+timestamp=2026-09-28T23:45:18.6472743+08:00
+source=G:\
+volume_label=THYME_DIAG
+destination=[LOCAL_PROJECT_ROOT]
+directories_including_empty=2
+files_found=8
+files_verified=8
+source_bytes=4272050
+enumeration_errors=0
+copy_or_hash_errors=0

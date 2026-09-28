@@ -2,15 +2,16 @@
 
 **Xiaomi 15 (dada) HyperOS 4 / Android 17 移植至 Xiaomi Mi 10S (thyme)**
 
-这是一个实验性 Android 移植工程。当前首要目标是让小米 10S 越过 HyperOS 4 图形初始化并进入启动动画、设置向导或桌面。仓库保存可审核的脚本、补丁、项目日志与用户授权公开的 C13–C24 原始启动诊断证据；不提供 ROM 下载。
+这是一个实验性 Android 移植工程。当前首要目标是让小米 10S 越过 HyperOS 4 启动阻塞并进入启动动画、设置向导或桌面。仓库保存可审核的脚本、补丁、项目日志与用户授权公开的 C13–C25 启动诊断证据；不提供 ROM 下载。
 
-## 当前状态（2026-09-28）
+## 当前状态（2026-09-29）
 
-- **C25 已基于 C24 构建并刷写，尚未首次启动。** 仅写入 super 与 vbmeta_system_a，手机保持 thyme / A 槽 / 已解锁的 Bootloader Fastboot。刷写命令成功；没有分区回读，因此不称为逐字节读回验证。
-- C25 是首屏与 Framework/display 诊断版：以有界 AArch64 helper 替代 C24 未留下标记的 logd-only sampler，将启动标记和约 15 分钟属性、进程、WMS/AM/SurfaceFlinger/display/HOME 采样同步保存到 logd 与 /metadata/thyme_os4_diag。该诊断服务尚未在真机验证。
+- **C25 已启动约 898 秒，用户全程看到小米第一屏，未见 HyperOS 三点第二屏，ADB 未上线。** Standalone 只读导出的持久采样证明 Zygote/zygote_secondary 长时间处于 restarting，system_server/zygote64 PID 不存在；具体退出原因尚未保存。
+- C25 诊断 helper 已通过真机验证：post-fs-data 标记存在，持久日志有 56 个样本；Window/Activity/Display 服务查询持续 service-not-found。SurfaceFlinger 可枚举 HWC display 0 和 BootAnimation layer，但没有物理面板成功 present 的证据。完整取证与逐文件校验见 [`evidence/candidate25/run_20260928_234427_meta_ro/`](evidence/candidate25/run_20260928_234427_meta_ro/)；报告见 [C25 首屏诊断报告](reports/candidate25/C25_FIRST_SCREEN_DIAGNOSTIC_BUILD_FLASH_20260928.md)。
+- 当前下一步是采集 Zygote 崩溃/退出首因，再实施定点修复。C25 采样在设定 900 秒前结束，没有 COMPLETE 标记；不声称已获得完整窗口。
 - 用户澄清：中央小米 Logo + powered by Android 是第一屏；带 Xiaomi HyperOS Logo 与三个点的图片是第二屏。此前观察只确认第一屏，不能当作已看到 HyperOS 第二屏。
-- C24 的采样标记缺失，system_server、WMS、SystemUI/HOME、boot-animation exit、boot-complete 和物理 display present 仍未知。K40 定点对照没有找到可直接套用的通用 Framework/HWC 修复；C25 不带宽泛 HWC SELinux allow，也不替换 K40 硬件专属组件。
-- 未清除 userdata/metadata，未修改 boot-control/BCB/硬件身份分区，未回锁，也未启动 C25。首次启动需用户在场确认。
+- C24 的采样标记缺失；C25 已将当前停点推进为持续 Zygote 重启且没有 system_server 的可核对状态。BootAnimation layer 存在不等于物理面板成功 present，用户屏幕仍只有小米第一屏。
+- 本轮没有清除 userdata/metadata、修改 boot-control/BCB/硬件身份分区或回锁 Bootloader。C25 的 Standalone 仅 RAM 启动，metadata 只读挂载并复制后卸载。
 - 重点资料：[C25 构建/刷写报告](reports/candidate25/C25_FIRST_SCREEN_DIAGNOSTIC_BUILD_FLASH_20260928.md)、[C25 构建报告](reports/candidate25/BUILD_REPORT.md)、[C25 清单](reports/candidate25/BUILD_MANIFEST.json)、[当前项目状态](logs/PROJECT_STATUS.md)。
 ## 设备与来源
 
@@ -40,10 +41,10 @@ K40 对照资料显示，成功包的 vendor_boot ramdisk 与原包不同，并�
 - **C21**：K40 threaded SkiaVk 路由绕开 EGLConfig fatal；实机因 Vulkan RenderEngine 初始化 fatal 未进入启动动画。
 - **C22**：以 K40 Android 17 Vulkan UMD 及隔离 GSL/LLVM/Adreno Utils 依赖配套替换 Vulkan ICD；实机越过 RenderEngine 创建 fatal，后在 Skia shader-cache 预热因输出 buffer usage 检查反复 abort。
 - **C23**：仅关闭可选 SurfaceFlinger shader-cache 预热。首次尝试保存到 Recovery；后续启动推进到 `/data`/fscrypt 和 BootAnimation shown-timing 日志阶段，但两轮均未见用户实际进入 HyperOS 动画、Setup Wizard 或桌面。长窗口 pmsg 未复现 C22 的 shader-cache fatal，但运行时属性值未采样；静态 Logo 的新根因仍未知。最新报告和完整原始证据见上方链接。
-- **C24**：基于 C23 的 framework/display 诊断变体；仅完成一次约 16 分 43 秒启动，用户看到第一屏小米 Logo + `powered by Android`，未见 HyperOS 第二屏。ADB 未上线，pmsg 无诊断服务标记；Framework/UI 状态和物理 present 仍未知。A retry 由 4 降至 3。详见[首次启动报告](reports/candidate24/C24_FIRST_BOOT_EVIDENCE_20260928.md)和[完整原始证据](evidence/candidate24/framework_display/20260928_194944/)。
+- **C24**：基于 C23 的 framework/display 诊断变体；启动观察约 16 分 43 秒，用户看到第一屏小米 Logo + `powered by Android`，未见 HyperOS 第二屏。ADB 未上线，pmsg 无诊断服务标记。详见[首次启动报告](reports/candidate24/C24_FIRST_BOOT_EVIDENCE_20260928.md)和[完整原始证据](evidence/candidate24/framework_display/20260928_194944/)。
 
 
-- **C25**：以持久化、限额的 AArch64 helper 取代 C24 未留标记的 logd-only sampler；采样同时写入 logd 与 metadata 下的专用诊断目录。已刷写 super 和 vbmeta_system_a，尚未首启，诊断运行效果待实机确认。见 [C25 报告](reports/candidate25/C25_FIRST_SCREEN_DIAGNOSTIC_BUILD_FLASH_20260928.md)。
+- **C25**：有界 AArch64 helper 同时向 logd 和 metadata 持久目录写样本；实机验证到 Zygote/zygote_secondary restarting、system_server PID 不存在，SurfaceFlinger 与 BootAnimation layer 存在，但物理 present 未证明。Zygote 退出原因待采集。见 [C25 报告](reports/candidate25/C25_FIRST_SCREEN_DIAGNOSTIC_BUILD_FLASH_20260928.md)及[本轮导出与主机观察证据](evidence/candidate25/run_20260928_234427_meta_ro/)。
 
 具体阶段和证据等级以项目状态文件及 Candidate 报告为准，旧报告的“计划/待验证”不会自动成为当前结论。
 
@@ -55,7 +56,7 @@ logs/              当前状态和按时间追加的执行记录
 tools/             精选构建、预检、刷写和诊断脚本
 patches/           可审阅的最小策略补丁
 reports/           K40 对照与 Candidate 分析报告
-evidence/          C13–C24 Standalone 诊断卷及 USB/ADB/Fastboot 主机观察记录
+evidence/          C13–C25 Standalone 诊断卷及 USB/ADB/Fastboot 主机观察记录
 scripts/           带明确文件白名单的本地增量同步脚本
 ```
 

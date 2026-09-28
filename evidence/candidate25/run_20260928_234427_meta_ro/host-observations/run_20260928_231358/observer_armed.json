@@ -1,0 +1,11 @@
+{
+  "candidate": "C25-first-screen-diag",
+  "armed_utc": "2026-09-28T15:14:03.506+00:00",
+  "elapsed_seconds": 5.061,
+  "serial": "[REDACTED_DEVICE_SERIAL]",
+  "usb_pnp_state": "present",
+  "usb_pnp_output": "{\"state\":\"present\",\"devices\":[{\"Status\":\"OK\",\"Class\":\"AndroidUsbDeviceClass\",\"FriendlyName\":\"Android Bootloader Interface\",\"InstanceId\":\"USB\\\\VID_18D1&PID_D00D\\\\[REDACTED_DEVICE_SERIAL]\"}]}",
+  "adb_state": "absent",
+  "fastboot_state": "fastboot",
+  "run_dir": "work\\reports\\20260928_C25_FIRST_SCREEN_DIAG\\observations\\run_20260928_231358"
+}

@@ -1,0 +1,8 @@
+
+DeviceID   : G:
+VolumeName : THYME_DIAG
+FileSystem : FAT32
+Size       : 66072576
+FreeSpace  : 61795840
+
+

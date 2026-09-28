@@ -119,9 +119,12 @@ function Resolve-AllowlistedSource([string]$RelativeSource) {
 function ConvertTo-PublicText([string]$Text) {
     $Text = [regex]::Replace($Text, '(?i)\b[A-Z]:\\(?:[^\\\r\n]+\\)*10S_OS4', '[LOCAL_PROJECT_ROOT]')
     $Text = [regex]::Replace($Text, '(?i)\b[A-Z]:/(?:[^/\r\n]+/)*10S_OS4', '[LOCAL_PROJECT_ROOT]')
+    if (-not [string]::IsNullOrWhiteSpace($env:COMPUTERNAME)) {
+        $Text = [regex]::Replace($Text, '(?i)\b' + [regex]::Escape($env:COMPUTERNAME) + '\b', '[LOCAL_HOST]')
+    }
     $Text = [regex]::Replace($Text, '(?i)/mnt/[a-z]/RVK/10S_OS4', '/path/to/thyme-os4-local')
     $Text = [regex]::Replace($Text, '(?m)^([^\r\n]*?/path/to/thyme-os4-local[^\r\n]*?)[ \t]+\r?$', '$1')
-    $Text = [regex]::Replace($Text, '(?i)/root/[^/\s]+', '[LOCAL_WSL_USER]')
+    $Text = [regex]::Replace($Text, '(?i)/root/10s_os4_build', '/path/to/thyme-os4-build')
     $Text = [regex]::Replace($Text, '(?i)(androidboot\.cpuid=)0x[0-9a-f]+', '$1[REDACTED_CPUID]')
     $Text = [regex]::Replace($Text, '(?i)\b[A-Z]:\\Users\\[^\s"''<>|]+', '[LOCAL_USER_PATH]')
     $Text = [regex]::Replace($Text, '(?i)\b[DE]:\\[^\s"''<>|]+', '[LOCAL_PATH]')

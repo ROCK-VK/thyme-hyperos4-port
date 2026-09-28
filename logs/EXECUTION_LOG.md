@@ -13543,3 +13543,12 @@
 - Added a C25-specific gate that verifies a fresh ARMED record, one expected Fastboot device, thyme/A/unlocked/non-userspace state and an eligible A slot.
 - Default mode only saves preboot state. A reboot requires both explicit Execute and UserWatchingConfirmed switches; the gate was syntax-parsed but not executed.
 - The phone remains in Fastboot. C25 first boot still awaits the user's onsite confirmation.
+
+## 2026-09-29 00:04 HKT｜C25 持久诊断结果与 run3 取证
+
+- 状态：Standalone run3 只读取证完成；C25 启动结果定位到 Zygote 重启环，退出原因尚未知。
+- 结论：metadata 只读导出 2 个诊断文件，校验 mismatch=0。C25 helper 写入 56 个样本；连续 55 个后续样本显示 zygote/zygote_secondary/netd restarting，system_server/zygote64 与 UI/HOME 进程不存在；SurfaceFlinger/bootanimation 运行，BootAnimation layer 可列出，但无物理 display 成功 present 证据。采样未完成 900 秒，未记录 logcat/crash 首因。
+- 证据：完整可访问 THYME_DIAG 8 个文件共 4,272,050 bytes，源/公开副本大小与 SHA-256 8/8 一致；pstore 文件不存在。`misc.raw` 及其哈希、未脱敏原始 diag_status 未公开。
+- 设备：用户报告已手动返回 Fastboot；最新主机 `fastboot devices` 返回 0 台，未确认 USB Fastboot 枚举。未执行设备写入、清除、切槽、启动或恢复操作。
+- 空间：C/D/E 可用 76.91/119.56/176.47 GiB。E 上旧 C13.1 stage 删除请求被执行策略拒绝，未删除；D Ubuntu VHDX 本轮未压缩；Docker 未触碰。
+- 下一步：先恢复主机 Fastboot 只读枚举，再设计定点 Zygote logcat/crash 捕获；取得首条真实错误前不构建猜测性修复。
