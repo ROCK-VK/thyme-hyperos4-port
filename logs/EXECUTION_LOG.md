@@ -13508,3 +13508,11 @@
 - Device: 2026-09-28 18:39 HKT read-only status is thyme/A, unlocked Bootloader Fastboot (not userspace); A retry=4, B retry=7, both bootable and unsuccessful. A had previously been recorded with retry=5; no reboot or set_active was run during this C24 preparation, so the decrement cause is unknown.
 - Reports and scripts: [C24 diagnostic report](../reports/candidate24/C23_FRAMEWORK_DISPLAY_C24_DIAGNOSTIC_20260928.md), [build report](../reports/candidate24/BUILD_REPORT.md), [manifest](../reports/candidate24/BUILD_MANIFEST.json), and [tool notes](../tools/README.md).
 - Next: wait for the user to confirm they are present; arm the read-only observer with candidate tag `C24-framework-display-diag` before one C24 first boot.
+
+## 2026-09-28 19:04 | C23 actual BootAnimation and K40 resource check
+
+- Status: Targeted read-only resource comparison completed; public report/status updated and pending this incremental push.
+- Findings: Read the actual product image shared by C23/C24 and extracted only `bootanimation.zip`. It contains five frames at 5 fps; decoded adjacent-frame differences are confined to the bottom progress dots (about 116–348 pixels), while the HyperOS logo itself is unchanged. The successful Android 17 K40 package uses a different 32-frame, 31.7 fps asset with different canvas parameters. This makes a nearly static-looking Android BootAnimation a plausible explanation for the user's visual report, but it does not prove an Android frame reached the physical panel or rule out Framework/HWC faults. The earlier expanded worktree copy was not the authoritative runtime asset; the actual product image is.
+- Evidence: C23/C24 product image SHA-256 `87955DBE97AC28B01A214273BD03F36B5886310DC3B2E4128B9F4661E1C3345E`; C23 bootanimation SHA-256 `44FE368CFD028F3CB89E7DCCAD75DF96EA9F77C3C1F417CE86C2853996721EB8`; K40 bootanimation SHA-256 `5F7E3851C891C569A6A8EF5B5E0AE4351D5EC7D8ADFF89D27A2B5D5FAC5D6368`.
+- Scope: No device operations, rebuild, or flash. The read-only mount was removed after extraction. C24 remains unbooted in Bootloader Fastboot, awaiting the user's on-site confirmation.
+- Remaining: C24 must sample actual system_server/WMS/UI state, BootAnimation layer and physical display present behavior.

@@ -6,7 +6,7 @@
 
 C23 pmsg 覆盖约 697.883 秒。它记录 `/data`/fscrypt 初始化、keystore2 持续等待 `sys.boot_completed=1`，以及 BootAnimation PID 的后续代码和 `BootAnimationShownTiming start time: 40943ms`。用户在约 11 分 52 秒观察窗口中始终看到静态小米 Logo，ADB 未上线。
 
-现有证据无法确认 system_server 最后运行到哪个阶段，也没有 ActivityManager/WindowManager、WMS enable-screen、SystemUI、SetupWizard、Launcher、`service.bootanim.exit`、`sys.boot_completed=1`、HWC validate/present 或物理显示更新的直接记录。BootAnimation 的 shown-timing 不是屏幕显示动画的证据。因此，Framework/UI 未完成与 Android 已运行但显示链没有更新面板，当前仍不能区分；没有证据表明 Android 已成功向物理 display present 一帧。
+现有证据无法确认 system_server 最后运行到哪个阶段，也没有 ActivityManager/WindowManager、WMS enable-screen、SystemUI、SetupWizard、Launcher、`service.bootanim.exit`、`sys.boot_completed=1`、HWC validate/present 或物理显示更新的直接记录。BootAnimation 的 shown-timing 不是屏幕显示动画的证据。新增的资源核查发现 C23 实际 BootAnimation 只有 5 帧，logo 本身不变、仅底部进度点区域在帧间改变；所以用户看到“静态 Logo”也可能与 Android 正在显示这套 BootAnimation 兼容。Framework/UI 未完成与显示链未更新仍无法区分；没有证据表明 Android 已成功向物理 display present 一帧。
 
 `netd` SIGABRT、指纹 HAL/audio.service SIGSEGV 与 23 次 `UltraFrameworkComponentFactoryImpl` ClassNotFoundException 有真实记录，但没有证据将它们连接到 system_server ready、WMS enable-screen 或显示 present 阻塞。该类也未在所扫描的 K40 OS4 成功包 system/system_ext JAR 中找到；K40 成功系统没有它会降低其为必要组件的可能性，但没有完整证明 thyme 的 fallback 行为。
 
@@ -16,9 +16,11 @@ C23 pmsg 覆盖约 697.883 秒。它记录 `/data`/fscrypt 初始化、keystore2
 
 - `framework.jar`、`framework-res.apk`、`miui-framework.jar`、`miui-services.jar` 三方一致；没有发现可直接复用的通用 Framework/WindowManager 修复。
 - K40 `services.jar` 与 `MiuiSystemUI.apk` 有差异，但看到的差异主要为 K40 定制服务和目标 UI 功能；未发现与本次 boot-ready 或 thyme 物理显示提交直接对应的改动。
-- K40 设备 overlays 为目标设备专属；`bootanim.rc` 三方一致。没有复制 K40 内核、vendor、HWC、overlay 或硬件固件。
+- K40 设备 overlays 为目标设备专属；`bootanim.rc` 三方一致。C23/C24 共用的实际 `product.img`（4,387,241,984 bytes，SHA-256 `87955DBE97AC28B01A214273BD03F36B5886310DC3B2E4128B9F4661E1C3345E`）中，`media/bootanimation.zip` 为 188,294 bytes，SHA-256 `44FE368CFD028F3CB89E7DCCAD75DF96EA9F77C3C1F417CE86C2853996721EB8`；`desc.txt` 是 `1200 2670 5`、`p 0 5 part0`，共 5 帧。解码后帧间差异仅限底部进度点（约 116–348 像素），HyperOS logo 本身不变。早先另一个展开工作树中的同名资源与实际 product 镜像不同；本结论以实际镜像提取值为准。
+- K40 成功包 product 的 `bootanimation.zip` 为 4,623,524 bytes、SHA-256 `5F7E3851C891C569A6A8EF5B5E0AE4351D5EC7D8ADFF89D27A2B5D5FAC5D6368`，`desc.txt` 是 `1080 2400 31.70`，含 32 帧。它是一个不同的目标包动画资源；画布参数不同，未复制进 C24，也不能据此断定它可修复 Framework/HWC 阻塞。
+- 因而 K40 提供了可供后续评估的 BootAnimation 资源差异，但没有已证实的 system_server、WindowManager 或物理显示提交修复。`bootanim.rc` 三方相同；没有复制 K40 内核、vendor、HWC、overlay 或硬件固件。
 
-本次因此没有进行猜测性 Framework/HWC 修复。
+本次没有进行猜测性 Framework/HWC 修复，也没有替换 C24 的动画资源。C24 需要先判断实际 BootAnimation layer/latency 及 SurfaceFlinger/display 状态；静态感本身可能来自动画内容，不能单独当作 present 故障证据。
 
 ## C24 诊断实现
 
