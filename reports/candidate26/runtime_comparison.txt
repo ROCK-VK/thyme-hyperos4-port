@@ -1,0 +1,89 @@
+[/system/etc/init/hw/init.zygote64.rc]
+C25 sha256=f90de6ec5f3a3e46f678f03287cabc933ac4d679bdfc5fb485bf50c34aec9ce9 bytes=1097
+K40 sha256=f90de6ec5f3a3e46f678f03287cabc933ac4d679bdfc5fb485bf50c34aec9ce9 bytes=1097 dump_exit=0
+DONOR sha256=f90de6ec5f3a3e46f678f03287cabc933ac4d679bdfc5fb485bf50c34aec9ce9 bytes=1097 dump_exit=0
+[/system/etc/init/hw/init.zygote64_32.rc]
+C25 sha256=ca8ad539813ea134a3464066adf816aa71612d711cbc5b318e4c9bea75bd672d bytes=715
+K40 sha256=ca8ad539813ea134a3464066adf816aa71612d711cbc5b318e4c9bea75bd672d bytes=715 dump_exit=0
+DONOR sha256=ca8ad539813ea134a3464066adf816aa71612d711cbc5b318e4c9bea75bd672d bytes=715 dump_exit=0
+[/system/bin/app_process64]
+C25 sha256=06d483898dc5f5715894277ddaec5ed6c25889af7a9018e6f0815bde7cfa342f bytes=51856
+K40 sha256=06d483898dc5f5715894277ddaec5ed6c25889af7a9018e6f0815bde7cfa342f bytes=51856 dump_exit=0
+DONOR sha256=06d483898dc5f5715894277ddaec5ed6c25889af7a9018e6f0815bde7cfa342f bytes=51856 dump_exit=0
+[/system/bin/app_process32]
+C25 sha256=d25e7edccac30721c53dc1fe7e690f97a3cae7d6e3fd3eb6cf3c8af416176697 bytes=11204
+K40 sha256=d25e7edccac30721c53dc1fe7e690f97a3cae7d6e3fd3eb6cf3c8af416176697 bytes=11204 dump_exit=0
+DONOR sha256=d25e7edccac30721c53dc1fe7e690f97a3cae7d6e3fd3eb6cf3c8af416176697 bytes=11204 dump_exit=0
+[/system/lib64/libandroid_runtime.so]
+C25 sha256=15f04857b182e1d4bf84b32aac0c5e8a37b049cb6e3493d4d1d1c0f121d68510 bytes=3188304
+K40 sha256=15f04857b182e1d4bf84b32aac0c5e8a37b049cb6e3493d4d1d1c0f121d68510 bytes=3188304 dump_exit=0
+DONOR sha256=15f04857b182e1d4bf84b32aac0c5e8a37b049cb6e3493d4d1d1c0f121d68510 bytes=3188304 dump_exit=0
+[/system/etc/classpaths/bootclasspath.pb]
+C25 sha256=e9a28fe4e3065f996082532828c4e55d9868fa2740dfd58fd87daa54eb1eed27 bytes=2250
+K40 sha256=e9a28fe4e3065f996082532828c4e55d9868fa2740dfd58fd87daa54eb1eed27 bytes=2250 dump_exit=0
+DONOR sha256=e9a28fe4e3065f996082532828c4e55d9868fa2740dfd58fd87daa54eb1eed27 bytes=2250 dump_exit=0
+[/system/etc/classpaths/systemserverclasspath.pb]
+C25 sha256=320dec2bc93cd81c0f0c218aee27afb94c1051f0e098e2d93893136c9c798f8b bytes=194
+K40 sha256=320dec2bc93cd81c0f0c218aee27afb94c1051f0e098e2d93893136c9c798f8b bytes=194 dump_exit=0
+DONOR sha256=320dec2bc93cd81c0f0c218aee27afb94c1051f0e098e2d93893136c9c798f8b bytes=194 dump_exit=0
+[/system/apex/com.android.art.capex]
+C25 sha256=01b9200bf81e9274b06206fc50f541da513af2f1569d57a8226c4299ca65cf16 bytes=23564842
+K40 sha256=01b9200bf81e9274b06206fc50f541da513af2f1569d57a8226c4299ca65cf16 bytes=23564842 dump_exit=0
+DONOR sha256=01b9200bf81e9274b06206fc50f541da513af2f1569d57a8226c4299ca65cf16 bytes=23564842 dump_exit=0
+[/system/apex/com.android.runtime.apex]
+C25 sha256=45a073dd1ed7f8447c99e3360d989489aaa3a3573bf2913c284bc9c83d36e595 bytes=12996608
+K40 sha256=45a073dd1ed7f8447c99e3360d989489aaa3a3573bf2913c284bc9c83d36e595 bytes=12996608 dump_exit=0
+DONOR sha256=45a073dd1ed7f8447c99e3360d989489aaa3a3573bf2913c284bc9c83d36e595 bytes=12996608 dump_exit=0
+[K40_PRODUCT /etc/build.prop selected runtime/build properties]
+ro.build.flavor=miproduct_dada-user
+dalvik.vm.ps-min-first-save-ms=8000
+dalvik.vm.usap_pool_size_max=1
+dalvik.vm.enable_pr_dexopt=true
+dalvik.vm.default-dex2oat-cpu-set=0,1,2,3,4,5,6,7
+dalvik.vm.boot-dex2oat-cpu-set=0,1,5,6
+dalvik.vm.background-dex2oat-cpu-set=0,1,5,6
+dalvik.vm.systemuicompilerfilter=speed-profile
+dalvik.vm.monitortimeout.enable=true
+[DONOR_PRODUCT /etc/build.prop selected runtime/build properties]
+ro.build.flavor=miproduct_dada-user
+dalvik.vm.ps-min-first-save-ms=8000
+dalvik.vm.usap_pool_size_max=1
+dalvik.vm.default-dex2oat-cpu-set=0,1,2,3,4,5,6,7
+dalvik.vm.boot-dex2oat-cpu-set=0,1,5,6
+dalvik.vm.background-dex2oat-cpu-set=0,1,5,6
+dalvik.vm.systemuicompilerfilter=speed-profile
+dalvik.vm.monitortimeout.enable=true
+[C25_PRODUCT /etc/build.prop selected runtime/build properties]
+ro.build.flavor=miproduct_thyme-user
+dalvik.vm.ps-min-first-save-ms=8000
+dalvik.vm.usap_pool_size_max=1
+dalvik.vm.default-dex2oat-cpu-set=0,1,2,3,4,5,6,7
+dalvik.vm.boot-dex2oat-cpu-set=0,1,5,6
+dalvik.vm.background-dex2oat-cpu-set=0,1,5,6
+dalvik.vm.systemuicompilerfilter=speed-profile
+dalvik.vm.monitortimeout.enable=true
+[C25_SYSTEM system/build.prop selected runtime properties]
+dalvik.vm.heapsize=36m
+dalvik.vm.dex2oat64.enabled=true
+dalvik.vm.image-dex2oat-Xms=64m
+dalvik.vm.image-dex2oat-Xmx=512m
+dalvik.vm.dex2oat-Xms=64m
+dalvik.vm.dex2oat-Xmx=512m
+dalvik.vm.usejit=true
+dalvik.vm.dexopt.secondary=true
+dalvik.vm.dexopt.thermal-cutoff=2
+dalvik.vm.appimageformat=lz4
+dalvik.vm.dex2oat-resolve-startup-strings=true
+dalvik.vm.dex2oat-max-image-block-size=524288
+dalvik.vm.minidebuginfo=true
+dalvik.vm.dex2oat-minidebuginfo=true
+dalvik.vm.madvise.vdexfile.size=104857600
+dalvik.vm.madvise.odexfile.size=104857600
+dalvik.vm.usap_pool_enabled=false
+dalvik.vm.usap_refill_threshold=1
+dalvik.vm.usap_pool_size_max=3
+dalvik.vm.usap_pool_size_min=1
+dalvik.vm.usap_pool_refill_delay_ms=3000
+dalvik.vm.useartservice=true
+dalvik.vm.enable_pr_dexopt=true
+[C25 identity] product input size/hash is recorded in /path/to/thyme-os4-local/work/stage_o_thyme_os4_candidate_25_first_screen_diag_20260928_run5/images/BUILD_MANIFEST.json; full super is not unpacked here

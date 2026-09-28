@@ -40,11 +40,16 @@ $Allowlist = @(
     @{ Source='tools/build_candidate18_native_adreno.py'; Destination='tools/build_candidate18_native_adreno.py' }
     @{ Source='tools/build_standalone_diag.py'; Destination='tools/build_standalone_diag.py' }
     @{ Source='tools/build_candidate25_first_screen_diag.py'; Destination='tools/build_candidate25_first_screen_diag.py' }
+    @{ Source='tools/build_candidate26_zygote_diag.py'; Destination='tools/build_candidate26_zygote_diag.py' }
     @{ Source='tools/flash_candidate25_first_screen_diag.ps1'; Destination='tools/flash_candidate25_first_screen_diag.ps1' }
+    @{ Source='tools/flash_candidate26_zygote_diag.ps1'; Destination='tools/flash_candidate26_zygote_diag.ps1' }
     @{ Source='tools/start_candidate25_observed_boot.ps1'; Destination='tools/start_candidate25_observed_boot.ps1' }
+    @{ Source='tools/start_candidate26_observed_boot.ps1'; Destination='tools/start_candidate26_observed_boot.ps1' }
     @{ Source='tools/candidate25_bootdiag/c25_bootdiag.cpp'; Destination='tools/candidate25_bootdiag/c25_bootdiag.cpp' }
     @{ Source='tools/candidate25_bootdiag/c25_bootdiag.rc'; Destination='tools/candidate25_bootdiag/c25_bootdiag.rc' }
     @{ Source='tools/candidate25_bootdiag/c25_policy_fragment.cil'; Destination='tools/candidate25_bootdiag/c25_policy_fragment.cil' }
+    @{ Source='tools/candidate26_zygote_diag/c26_zygote_diag.cpp'; Destination='tools/candidate26_zygote_diag/c26_zygote_diag.cpp' }
+    @{ Source='tools/candidate26_zygote_diag/c26_zygote_diag.rc'; Destination='tools/candidate26_zygote_diag/c26_zygote_diag.rc' }
     @{ Source='tools/flash_candidate13.ps1'; Destination='tools/flash_candidate13.ps1' }
     @{ Source='tools/flash_candidate14_bpf_bootstrap_bypass.ps1'; Destination='tools/flash_candidate14_bpf_bootstrap_bypass.ps1' }
     @{ Source='tools/flash_candidate15_angle_egl.ps1'; Destination='tools/flash_candidate15_angle_egl.ps1' }
@@ -92,6 +97,10 @@ $Allowlist = @(
     @{ Source='work/reports/20260928_C25_FIRST_SCREEN_DIAG/C25_FIRST_SCREEN_DIAGNOSTIC_BUILD_FLASH_20260928.md'; Destination='reports/candidate25/C25_FIRST_SCREEN_DIAGNOSTIC_BUILD_FLASH_20260928.md' }
     @{ Source='work/stage_o_thyme_os4_candidate_25_first_screen_diag_20260928_run5/BUILD_REPORT.md'; Destination='reports/candidate25/BUILD_REPORT.md' }
     @{ Source='work/stage_o_thyme_os4_candidate_25_first_screen_diag_20260928_run5/images/BUILD_MANIFEST.json'; Destination='reports/candidate25/BUILD_MANIFEST.json' }
+    @{ Source='work/reports/20260929_C26_ZYGOTE_FIRST_EXIT/C26_BUILD_FLASH_STATUS.md'; Destination='reports/candidate26/C26_BUILD_FLASH_STATUS.md' }
+    @{ Source='work/reports/20260929_C26_ZYGOTE_FIRST_EXIT/runtime_comparison.txt'; Destination='reports/candidate26/runtime_comparison.txt' }
+    @{ Source='work/stage_c26_zygote_diag_20260929_run2/C26_ZYGOTE_DIAGNOSTIC_BUILD_REPORT.md'; Destination='reports/candidate26/C26_ZYGOTE_DIAGNOSTIC_BUILD_REPORT.md' }
+    @{ Source='work/stage_c26_zygote_diag_20260929_run2/images/BUILD_MANIFEST.json'; Destination='reports/candidate26/BUILD_MANIFEST.json' }
     @{ Source='work/reports/20260926_CANDIDATE13_NETBPFLOAD_EVIDENCE_EXCERPT.txt'; Destination='reports/boot-logs/candidate13_netbpfload_failure_excerpt.txt' }
     @{ Source='@STORAGE_SAFETY_REPORT'; Destination='reports/candidate13/20260925_CANDIDATE13_STORAGE_SAFETY_AND_FIRST_FAILURE.md' }
     @{ Source='work/reports/20260924_CANDIDATE10_WARMDTB_LOG_SALVAGE/pstore/console-ramoops-0'; Destination='reports/boot-logs/candidate10_console-ramoops.txt' }

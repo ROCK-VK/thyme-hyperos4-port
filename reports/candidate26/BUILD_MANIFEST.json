@@ -1,0 +1,194 @@
+{
+  "candidate": "Candidate 26 Zygote first-exit diagnostic",
+  "base": "Candidate 25 persistent first-screen/framework diagnostic",
+  "changes": [
+    "Retains C25's persistent 15-second framework/display sampler and adds an explicitly shell-labeled init service that streams all logd buffers to a unique metadata file with 1 MiB rotation and three rotated files.",
+    "Adds a bounded native watcher using Bionic property wait with a 2-second timeout to record changes in zygote, zygote_secondary, c26_logcat, c25_bootdiag, netd and init debug-PID properties for up to 15 minutes.",
+    "On each observed zygote restarting/stopped transition, records current zygote process cmdline/status when visible and captures up to eight bounded logcat tails from crash/system/main.",
+    "Uses the existing shell_exec and c25_diag_data_file labeling/policy for new helper outputs. Platform CIL, fstab, properties, GPU/HWC, ART, kernel and hardware partitions are unchanged."
+  ],
+  "evidence_basis": [
+    "C25 persisted 55 consecutive samples with init.svc.zygote and zygote_secondary restarting and no system_server PID, but contained no Android logcat/crash buffer export and therefore did not preserve the first Zygote exit reason.",
+    "Targeted C25/K40/donor byte comparisons show identical zygote rc files, app_process32/64, libandroid_runtime, bootclasspath/systemserverclasspath protobufs, ART APEX and runtime APEX; no K40 Zygote/ART replacement is supported by the present evidence."
+  ],
+  "diagnostic_limits": [
+    "The continuous logcat output is capped at four files of up to 1 MiB each; event and event-tail files are capped at 512 KiB and 1 MiB. The watcher records up to eight tails and exits after 15 minutes.",
+    "The watcher uses the existing shell SELinux domain and policy. If init cannot start a service or shell cannot read logd/proc, C25 sampling and init/pstore logs remain separate evidence; C26 does not silently label that as a successful capture.",
+    "This version collects no /data/tombstones content; Standalone follow-up may read only if it can do so safely without changing the mounted data state."
+  ],
+  "k40_runtime_comparison": {
+    "report": "work/reports/20260929_C26_ZYGOTE_FIRST_EXIT/runtime_comparison.txt",
+    "result": "Zygote rc, app_process32/64, libandroid_runtime, classpath PBs, ART capex and runtime apex are byte-identical across cached K40 OS4.0.0.8 Android 17 package, Xiaomi 15 donor and C25. K40 and donor selected product dalvik.vm values also match. No direct K40 Zygote/ART adaptation found."
+  },
+  "runtime_helper": {
+    "bytes": 2342504,
+    "sha256": "AFB8CEB31E5C46D89AC5849EBD94ED11B8B18CC8AA13929FA2F5E00B38DB91E6",
+    "architecture": "AArch64",
+    "needed": [
+      "liblog.so"
+    ],
+    "cxx_runtime": "statically linked libc++",
+    "source_sha256": "F5E4DE692E5976D71CCB2FE171C00315ADD0DDB66EEA8684CCB509C3AA242E79"
+  },
+  "policy": {
+    "init_import_added": "import /system/etc/init/c26_zygote_diag.rc",
+    "init_import_retained": "import /system/etc/init/c25_bootdiag.rc",
+    "runtime_file_contexts_verified": true,
+    "plat_sepolicy_sha256": "25E1258BAD2C587C40A79FE41820FE05E8318768B204B80B5346BE76FAFEFCBF",
+    "plat_sepolicy_and_mapping_sha256_file": "a2ebd43aebbb49647be9d8e68fa7dc79b9d07cea9484f622f2cc76692c19d3ed",
+    "cil_changed": false,
+    "resumed_partial_run": true
+  },
+  "system_build": {
+    "file_context_additions": [
+      "/system/system/bin/c25_bootdiag u:object_r:shell_exec:s0",
+      "/system/system/etc/init/c25_bootdiag\\.rc u:object_r:system_file:s0",
+      "/system/system/bin/c26_zygote_diag u:object_r:shell_exec:s0",
+      "/system/system/etc/init/c26_zygote_diag\\.rc u:object_r:system_file:s0"
+    ],
+    "new_fs_config_paths": [
+      "system/system/bin/c26_zygote_diag",
+      "system/system/etc/init/c26_zygote_diag.rc"
+    ],
+    "final_erofs_readback": {
+      "/system/etc/init/hw/init.rc": {
+        "contains": "import /system/etc/init/c26_zygote_diag.rc",
+        "bytes": 80953
+      },
+      "/system/etc/init/c26_zygote_diag.rc": {
+        "contains": "seclabel u:r:shell:s0",
+        "bytes": 486
+      },
+      "/system/bin/c26_zygote_diag": {
+        "contains": "init.svc_debug_pid.zygote",
+        "bytes": 3046129
+      },
+      "/system/etc/selinux/plat_file_contexts": {
+        "contains": "/metadata/thyme_os4_diag",
+        "bytes": 50788
+      }
+    },
+    "system_image_bytes": 1092616192,
+    "system_image_sha256": "F7FE0D4450335772DDC43A05B8E5AAA20395D7B30B5A2CDA4200A4D6F5F920E8",
+    "plat_sepolicy_sha256": "25E1258BAD2C587C40A79FE41820FE05E8318768B204B80B5346BE76FAFEFCBF",
+    "plat_cil_unchanged_from_c25": true
+  },
+  "vbmeta_system_update": {
+    "base_sha256": "63B03D20B8EF718C70EF36F063DA57EDD858CE9D7570E490AFE48681A89104C7",
+    "system_image_size_before": 959000576,
+    "system_image_size_after": 959836160,
+    "system_tree_size": 7565312,
+    "system_root_digest": "c386d6de1f4d0e96d93bd9e41e955a481e2765fb9f16732f140b4b3418ac2bca",
+    "flags": 2,
+    "rollback_index": 0,
+    "rollback_index_location": 2,
+    "unchanged_other_descriptors": [
+      "product",
+      "system_ext"
+    ]
+  },
+  "logical_input_hashes": {
+    "vendor_c22.img": {
+      "bytes": 1510998016,
+      "sha256": "FCEAFEE5B5909D7BE9BBEC48D9E8720F37798DDEEBDBF193424FB3A095CBA675"
+    },
+    "system_ext_a.img": {
+      "bytes": 942669824,
+      "sha256": "6B63E58346DA5B2FEBA7F51980CCEBF886D5991DD07F91541FE4D9F1485CDAD5"
+    },
+    "mi_ext.img": {
+      "bytes": 202375168,
+      "sha256": "43ED8FC0D1848F5D53BFB7206AC91FE5E5ED4E3F71E958D49F2EEA4C9C8B4BCE"
+    },
+    "odm.img": {
+      "bytes": 35758080,
+      "sha256": "075E4A17DC4CA716399166388B1C175060D5CBB31139B2ACBD9E5B2DEE352E22"
+    },
+    "product.img": {
+      "bytes": 4387241984,
+      "sha256": "87955DBE97AC28B01A214273BD03F36B5886310DC3B2E4128B9F4661E1C3345E"
+    }
+  },
+  "flash_scope_prepared": [
+    "super",
+    "vbmeta_system_a"
+  ],
+  "images": {
+    "boot.img": {
+      "bytes": 201326592,
+      "sha256": "E5A016056D5C93C7A886980A7C062617EC44DC06A48417D7DD0F4476708A6368"
+    },
+    "vendor_boot.img": {
+      "bytes": 100663296,
+      "sha256": "02333B82BA936F1BAAB1ECAB744632C70F8FC16688A206C7041EF319F112A137"
+    },
+    "dtbo.img": {
+      "bytes": 33554432,
+      "sha256": "50E1AC0EDCBD333778217AA6FE8D972F6FF85ADD0DAE8A015A6642C2172DD886"
+    },
+    "vbmeta.img": {
+      "bytes": 131072,
+      "sha256": "66A53C2EC38247193CC86B7F5DE887556864413D1142C3C1994645DE1E3BAB10"
+    },
+    "vbmeta_system.img": {
+      "bytes": 131072,
+      "sha256": "194000046E3FA288322D4D9D01B65559042DBCB27E3E354C986796888ABA40A3"
+    },
+    "super.img": {
+      "bytes": 7703583704,
+      "sha256": "601FF7548F658442B9F17176FB2AC391791E1453660E55A41D8B292E1E290E62"
+    }
+  },
+  "c25_baseline": {
+    "checked_images": {
+      "boot.img": {
+        "bytes": 201326592,
+        "sha256": "E5A016056D5C93C7A886980A7C062617EC44DC06A48417D7DD0F4476708A6368"
+      },
+      "vendor_boot.img": {
+        "bytes": 100663296,
+        "sha256": "02333B82BA936F1BAAB1ECAB744632C70F8FC16688A206C7041EF319F112A137"
+      },
+      "dtbo.img": {
+        "bytes": 33554432,
+        "sha256": "50E1AC0EDCBD333778217AA6FE8D972F6FF85ADD0DAE8A015A6642C2172DD886"
+      },
+      "vbmeta.img": {
+        "bytes": 131072,
+        "sha256": "66A53C2EC38247193CC86B7F5DE887556864413D1142C3C1994645DE1E3BAB10"
+      },
+      "vbmeta_system.img": {
+        "bytes": 131072,
+        "sha256": "63B03D20B8EF718C70EF36F063DA57EDD858CE9D7570E490AFE48681A89104C7"
+      }
+    },
+    "logical_input_hashes": {
+      "vendor_c22.img": {
+        "bytes": 1510998016,
+        "sha256": "FCEAFEE5B5909D7BE9BBEC48D9E8720F37798DDEEBDBF193424FB3A095CBA675"
+      },
+      "system_ext_a.img": {
+        "bytes": 942669824,
+        "sha256": "6B63E58346DA5B2FEBA7F51980CCEBF886D5991DD07F91541FE4D9F1485CDAD5"
+      },
+      "mi_ext.img": {
+        "bytes": 202375168,
+        "sha256": "43ED8FC0D1848F5D53BFB7206AC91FE5E5ED4E3F71E958D49F2EEA4C9C8B4BCE"
+      },
+      "odm.img": {
+        "bytes": 35758080,
+        "sha256": "075E4A17DC4CA716399166388B1C175060D5CBB31139B2ACBD9E5B2DEE352E22"
+      },
+      "product.img": {
+        "bytes": 4387241984,
+        "sha256": "87955DBE97AC28B01A214273BD03F36B5886310DC3B2E4128B9F4661E1C3345E"
+      }
+    }
+  },
+  "host_storage_gate": {
+    "C_free_gib": 76.76,
+    "D_free_gib": 119.52,
+    "E_free_gib": 176.11,
+    "note": "C is below 80 GiB; prior bounded review found no safe project-reclaimable large files. All large staging/build outputs are directed to E and WSL on D. Docker assets are excluded and untouched."
+  }
+}

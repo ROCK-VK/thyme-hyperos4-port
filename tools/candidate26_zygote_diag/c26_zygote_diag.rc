@@ -1,0 +1,20 @@
+service c26_logcat /system/bin/c26_zygote_diag --logcat
+    class core
+    user shell
+    group shell log
+    disabled
+    oneshot
+    seclabel u:r:shell:s0
+
+service c26_zygote_watch /system/bin/c26_zygote_diag --watch
+    class core
+    user shell
+    group shell log readproc
+    disabled
+    oneshot
+    seclabel u:r:shell:s0
+
+on post-fs-data
+    write /metadata/thyme_os4_diag/C26_INIT_TRIGGER.txt "candidate=C26 action=post-fs-data"
+    start c26_logcat
+    start c26_zygote_watch

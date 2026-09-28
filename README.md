@@ -6,13 +6,13 @@
 
 ## 当前状态（2026-09-29）
 
-- **C25 已启动约 898 秒，用户全程看到小米第一屏，未见 HyperOS 三点第二屏，ADB 未上线。** Standalone 只读导出的持久采样证明 Zygote/zygote_secondary 长时间处于 restarting，system_server/zygote64 PID 不存在；具体退出原因尚未保存。
-- C25 诊断 helper 已通过真机验证：post-fs-data 标记存在，持久日志有 56 个样本；Window/Activity/Display 服务查询持续 service-not-found。SurfaceFlinger 可枚举 HWC display 0 和 BootAnimation layer，但没有物理面板成功 present 的证据。完整取证与逐文件校验见 [`evidence/candidate25/run_20260928_234427_meta_ro/`](evidence/candidate25/run_20260928_234427_meta_ro/)；报告见 [C25 首屏诊断报告](reports/candidate25/C25_FIRST_SCREEN_DIAGNOSTIC_BUILD_FLASH_20260928.md)。
-- 当前下一步是采集 Zygote 崩溃/退出首因，再实施定点修复。C25 采样在设定 900 秒前结束，没有 COMPLETE 标记；不声称已获得完整窗口。
-- 用户澄清：中央小米 Logo + powered by Android 是第一屏；带 Xiaomi HyperOS Logo 与三个点的图片是第二屏。此前观察只确认第一屏，不能当作已看到 HyperOS 第二屏。
-- C24 的采样标记缺失；C25 已将当前停点推进为持续 Zygote 重启且没有 system_server 的可核对状态。BootAnimation layer 存在不等于物理面板成功 present，用户屏幕仍只有小米第一屏。
-- 本轮没有清除 userdata/metadata、修改 boot-control/BCB/硬件身份分区或回锁 Bootloader。C25 的 Standalone 仅 RAM 启动，metadata 只读挂载并复制后卸载。
-- 重点资料：[C25 构建/刷写报告](reports/candidate25/C25_FIRST_SCREEN_DIAGNOSTIC_BUILD_FLASH_20260928.md)、[C25 构建报告](reports/candidate25/BUILD_REPORT.md)、[C25 清单](reports/candidate25/BUILD_MANIFEST.json)、[当前项目状态](logs/PROJECT_STATUS.md)。
+- **C26 Zygote 首因诊断版已构建并刷写，设备当前保持 Bootloader Fastboot，尚未启动。** 本轮只写入 `super` 和 `vbmeta_system_a`，未擦除数据或修改槽位状态。
+- C25 的 55 个连续持久样本显示 zygote/zygote_secondary 长时间处于 restarting，system_server/zygote64 PID 不存在；未保存 Zygote 退出首因。C25 完整取证见 [`evidence/candidate25/run_20260928_234427_meta_ro/`](evidence/candidate25/run_20260928_234427_meta_ro/)及[C25 报告](reports/candidate25/C25_FIRST_SCREEN_DIAGNOSTIC_BUILD_FLASH_20260928.md)。
+- C26 继承 C25 sampler，新增有界 logd 全 buffer 持久轮转采集，以及 Zygote 属性/进程状态转换记录和退出时 logcat tail；是否能在真机成功运行与留存仍待验证。
+- K40 OS4.0.0.8 Android 17 成功包、Xiaomi 15 供体与 C25 的定点 Zygote/ART 比较未发现可直接移植的不同实现；因此 C26 是诊断增量，不是猜测性运行时替换。
+- 下一步需等待用户在手机旁确认，再启动只读观察器、确认 ARMED 后执行一次 C26 启动。预期第一优先级是取得 Zygote 首次退出日志；不得把主机侧构建检查写成真机启动成功。
+- 本轮没有清除 userdata/metadata、修改 boot-control/BCB/硬件身份分区或回锁 Bootloader。设备端没有分区回读；刷写结论基于 Fastboot 命令成功。
+- 重点资料：[C26 构建/刷写状态](reports/candidate26/C26_BUILD_FLASH_STATUS.md)、[C26 构建清单](reports/candidate26/BUILD_MANIFEST.json)、[当前项目状态](logs/PROJECT_STATUS.md)。
 ## 设备与来源
 
 | 角色 | 设备/平台 | 用途 |
@@ -45,6 +45,7 @@ K40 对照资料显示，成功包的 vendor_boot ramdisk 与原包不同，并�
 
 
 - **C25**：有界 AArch64 helper 同时向 logd 和 metadata 持久目录写样本；实机验证到 Zygote/zygote_secondary restarting、system_server PID 不存在，SurfaceFlinger 与 BootAnimation layer 存在，但物理 present 未证明。Zygote 退出原因待采集。见 [C25 报告](reports/candidate25/C25_FIRST_SCREEN_DIAGNOSTIC_BUILD_FLASH_20260928.md)及[本轮导出与主机观察证据](evidence/candidate25/run_20260928_234427_meta_ro/)。
+- **C26**：基于 C25 新增持久 logcat 采集和 Zygote 重启状态/tail 诊断。仅主机构建和限定分区刷写已完成，尚未启动、尚无 C26 实机诊断结果。见 [C26 构建/刷写状态](reports/candidate26/C26_BUILD_FLASH_STATUS.md)。
 
 具体阶段和证据等级以项目状态文件及 Candidate 报告为准，旧报告的“计划/待验证”不会自动成为当前结论。
 

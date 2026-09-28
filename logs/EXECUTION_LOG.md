@@ -60,7 +60,7 @@
      - 删除 `c7`、`c9`、`c11`、`c12`、`c13` 构建舞台内的冗余 `super_sparse.img`（共 36 GB，所有成品已在 Windows E 盘完整归档）；
      - 清理 `apt clean` 与旧 `journal` 日志；
   2. **P2 级清理（释放 ~47.8 GB）**：
-     - 删除 `[LOCAL_WSL_USER] GB）与 `[LOCAL_WSL_USER] GB）；
+     - 删除 `/root/super_10s_partitions`（7.4 GB）与 `/root/super_sky_partitions`（6.4 GB）；
      - 删除早期 Candidate 2 构建目录（12.0 GB）；
      - 删除 Candidate 1 内部冗余的大镜像文件（super_a_avb.img、product_thyme.img 等共 22 GB）；
   3. **P3 级清理（释放 ~42.6 GB）**：
@@ -198,7 +198,7 @@
      - 导致整套镜像内所有 3,712 个 inode 的扩展属性被全部清零（`Xattr size: 0`），Superblock 丢失 `xattr_filter` 特性；
      - 当系统进入 `enforcing=1` 时，所有文件被标记为 `u:object_r:unlabeled:s0`，导致 `apexd`（域 `u:r:apexd:s0`）读取 `/system_ext/apex` 触发 `Permission denied`，Init 等待 10 秒超时后调用 `reboot("bootloader,bootstrap-apexd-failed")`。
   2. **Candidate 11 元数据全量精准修复**：
-     - 来源配置锁定：`[LOCAL_WSL_USER]/thyme_xiaomi15_os4_first_boot_candidate_1/configs_retained/system_ext/` 下的 `fs_config`（3,713 项，精确匹配文件系统 inode 数）与 `file_contexts`（3,716 项）；
+     - 来源配置锁定：`/path/to/thyme-os4-build/thyme_xiaomi15_os4_first_boot_candidate_1/configs_retained/system_ext/` 下的 `fs_config`（3,713 项，精确匹配文件系统 inode 数）与 `file_contexts`（3,716 项）；
      - 规范定义锁定：`/system_ext/apex` 规范配置为 `0 0 0755` 且 `u:object_r:system_file:s0`；
      - 属性去重修复 100% 保持：严格在已消除 Duplicate Prefix 冲突的 `system_ext_tree` 基础上打包，5 条重复前缀定义保持注释；
      - 构建执行：向 `mkfs.erofs` 正式补齐 `--fs-config-file` 与 `--file-contexts`，生成 `system_ext_c11.raw.erofs`；
@@ -232,7 +232,7 @@
      - 彻底攻克了高通平台用户空间重启导致 PMIC 切断 DDR 供电抹除 ramoops 的行业难题！DDR 内存自刷新在重启中全程通电保全！
   2. **Objective B：突破性打捞出 2085 行真实 Android 14 二阶段 Init 运行现场日志**：
      - Standalone Diag 成功从 DDR 内存中挂载 pstore 并提取出完整 `console-ramoops-0`（157,792 字节，2,085 行，SHA256: `ea20bac2b3a243151df0ce9e162dfdbbeb92226e0066c0cc7860498a3a7831b2`）；
-     - 关键事实：彻底排除了历史残留干扰，日志包含完整自建内核标识（`Linux version 4.19.325-perf-g45b9b954f074 (root@Rock-Laptop)`）及完整启动时序；
+     - 关键事实：彻底排除了历史残留干扰，日志包含完整自建内核标识（`Linux version 4.19.325-perf-g45b9b954f074 (root@[LOCAL_HOST])`）及完整启动时序；
      - `PropertyInit` 100% 验证通过：无任何重复前缀碰撞，各分区属性正常加载覆盖；
      - `ueventd` 正常启动运行，解析 `ueventd.rc`；
      - `apexd --bootstrap` 正常启动，在 `/system/apex` 中成功扫描并解析全部 35 个预装 APEX 模块。
@@ -263,7 +263,7 @@
 - 状态：已完成（主机侧取证复核、旧结论证伪、Candidate 10 主机侧构建与精简 4 门禁静态验证全部通过；物理设备只读保持 PixelOS A0' 基线在线）。
 - 改动/结论：
   1. **司法级证据审计证伪 oops.raw（去伪存真，剔除历史残留干扰）**：
-     - 二进制取证确证：`oops.raw`（16MB）系从 UFS 闪存物理分区 `/dev/block/sda15` 打捞所得，内部全部 7 段 kmsg 的内核 Banner 均为 `Wed Jun 5 14:47:35 UTC 2024`，内核命令行包含 `buildvariant=user`，无任何自定义内核标识（`Rock-Laptop`、`4.19.325`、`init_fatal_panic` 匹配均为 0）；
+     - 二进制取证确证：`oops.raw`（16MB）系从 UFS 闪存物理分区 `/dev/block/sda15` 打捞所得，内部全部 7 段 kmsg 的内核 Banner 均为 `Wed Jun 5 14:47:35 UTC 2024`，内核命令行包含 `buildvariant=user`，无任何自定义内核标识（`[LOCAL_HOST]`、`4.19.325`、`init_fatal_panic` 匹配均为 0）；
      - 此前报告中提及的 `vold: keystore2 Keystore earlyBootEnded error: -68`、`servicemanager: Could not find aidl/SurfaceFlinger` 以及音频固件加载日志，全部为 2024 年小米官方 MIUI 历史崩溃残存数据，非 Candidate 9 现场！
      - 搜索全文，`critical process exited 4 times` 出现次数为 0，确证该说法系上一轮 Agent 为解释自动重启现象而做出的理论假说，无日志实证。
   2. **Candidate 9 真实崩溃机理闭环定位（确认为 Situation D：现场保全缺失）**：
@@ -463,7 +463,7 @@
      - **在原版 Candidate 5 中**：`CONFIG_PANIC_TIMEOUT=-1` 导致上述 panic 立即触发 `emergency_restart()`，形成约 10 秒循环重启；
      - **在 panic0 中**：`panic=0` 使 APPS 看门狗关闭并进入死循环，形成米标常亮停机。
   3. **六大核验项事实定论**：
-     - 来源核验：内核版本标头为 `Linux version 4.19.325-perf-g45b9b954f074 (root@Rock-Laptop) #1 SMP PREEMPT Tue Sep 22 15:06:57 CST 2026`，100% 归属于本轮 Candidate 5 A5 内核，完全排除 PixelOS 或 Standalone 历史残留；
+     - 来源核验：内核版本标头为 `Linux version 4.19.325-perf-g45b9b954f074 (root@[LOCAL_HOST]) #1 SMP PREEMPT Tue Sep 22 15:06:57 CST 2026`，100% 归属于本轮 Candidate 5 A5 内核，完全排除 PixelOS 或 Standalone 历史残留；
      - 存在 `Kernel panic - not syncing`：是（第 1825 行）；
      - 存在 `Attempted to kill init! exitcode=0x00007f00`：是（第 1825 行）；
      - 存在 Call trace：是（CPU 5 PID 1 Comm: init，栈顶为 `dump_backtrace` -> `__dump_stack` -> `dump_stack` -> `panic` -> `do_exit` -> `do_group_exit` -> `el0_svc`）；
@@ -1019,7 +1019,7 @@
 - 状态：已完成（独立审核；未刷机）
 - 改动/结论：独立复核官方 A13 输入摘要、boot/vendor_boot v3 头、ramdisk/fstab provenance、AVB footer/vbmeta、vendor DTB bundle、DTBO entry 数量以及 host artifact 边界；确认只读合同审计成立，但 exact packaging/signing/mapping 缺失，结论为 `PASS_WITH_BOUNDARIES / READ_ONLY_BOOT_CONTRACT_CONFIRMED / ASSEMBLY_BLOCKED / NOT_FLASHABLE`。
 - 原因：host Image/DTB/DTBO/modules 不能仅凭 release/vermagic 字符串与官方 boot/vendor_boot 合同等同；官方 vendor DTB/DTBO 映射和 vbmeta 重签 owner 未闭合。
-- 涉及文件：`work/reports/20260919_THYME_BOOT_VENDOR_BOOT_HOST_CONTRACT_1.md`、`work/reports/20260919_THYME_BOOT_VENDOR_BOOT_HOST_CONTRACT_REVIEW_1.md`、WSL artifact `[LOCAL_WSL_USER]/thyme_boot_vendor_contract_artifact_1`、`日志/项目当前状态.md`、source map。
+- 涉及文件：`work/reports/20260919_THYME_BOOT_VENDOR_BOOT_HOST_CONTRACT_1.md`、`work/reports/20260919_THYME_BOOT_VENDOR_BOOT_HOST_CONTRACT_REVIEW_1.md`、WSL artifact `/path/to/thyme-os4-build/thyme_boot_vendor_contract_artifact_1`、`日志/项目当前状态.md`、source map。
 - 验证：摘要 artifact 与工作区报告尺寸/状态一致；临时解包目录不存在；无编译/打包/设备 worker，官方输入未修改。
 - 尚未验证：exact mkbootimg/AVB owner、签名 key/descriptor 流、vendor DTB/DTBO 精确映射、modules ABI/deployment、boot/vendor_boot 候选和设备。
 - 待处理：只读查找 thyme A13 package metadata 与 DTB/DTBO/AVB 生成逻辑；不能找到时维持阻塞，不盲猜组装。
@@ -1030,7 +1030,7 @@
 - 状态：已完成（独立审核；未刷机）
 - 改动/结论：独立读取 artifact、`.ko` ELF/架构/vermagic、`Module.symvers`、`modules.order`、selector diff、临时路径和 worker 状态，确认唯一 `make -j1 scripts/ modules` exit 0，`module-lto.lds` 生成，3 个 ARM64 relocatable `.ko` 真实存在。结论为 `PASS_WITH_BOUNDARIES / HOST_ONLY_MODULES_BUILD_CONFIRMED / MODULE_LTO_GENERATED / THREE_KO_CONFIRMED / AUTO_CONF_DERIVED_DIFF_CORRECTED / NOT_FLASHABLE`。
 - 原因：上一轮缺少 `module-lto.lds` 的失败已由真实目录级 Kbuild 入口解决；目标报告另有一处过宽表述，声称三份派生配置均与旧 RELR artifact cmp identical，独立 cmp 发现 `auto.conf` 多出当前 `.config` 对应的两个 RELR 项。
-- 涉及文件：`work/reports/20260919_THYME_KERNEL_REAL_PANEL_MODULES_RETRY_1.md`、`work/reports/20260919_THYME_KERNEL_REAL_PANEL_MODULES_RETRY_REVIEW_1.md`、WSL artifact `[LOCAL_WSL_USER]/thyme_kernel_real_panel_modules_retry_artifact_1`、`日志/项目当前状态.md`、source map。
+- 涉及文件：`work/reports/20260919_THYME_KERNEL_REAL_PANEL_MODULES_RETRY_1.md`、`work/reports/20260919_THYME_KERNEL_REAL_PANEL_MODULES_RETRY_REVIEW_1.md`、WSL artifact `/path/to/thyme-os4-build/thyme_kernel_real_panel_modules_retry_artifact_1`、`日志/项目当前状态.md`、source map。
 - 验证：`.config` 与 `tristate.conf` cmp identical；`auto.conf` 与旧 artifact 不同仅在 `CONFIG_TOOLS_SUPPORT_RELR=y`、`CONFIG_RELR=y` 两行，符合 syncconfig 派生结果；3 个 `.ko` 均为 AArch64 REL、vermagic `4.19.325-cip131-st15-perf SMP preempt mod_unload modversions aarch64`；清理后无 worker。
 - 尚未验证：exact AOSP/厂商 toolchain、设备内核 ABI/签名、modules_install、boot/vendor_boot、AVB、super、Android userspace、真机启动和可刷包。
 - 待处理：先审核 host kernel 与模块的输出合同及 boot/vendor_boot 打包入口，再决定最小 boot 骨架；不重复 modules 构建、不复制 K40/Pixel/Sky 二进制。
@@ -1041,7 +1041,7 @@
 - 状态：已完成（独立审核；未刷机）
 - 改动/结论：独立核对固定 archive、artifact 和唯一真实命令。顶层 `scripts:` 目录级入口经 `scripts/Makefile.build` 消费 `extra-y`，再由 `$(obj)/%.lds` 规则预处理 `module-lto.lds.S`；`make -j1 scripts/` exit 0，生成 330-byte `O/scripts/module-lto.lds`。结论为 `PASS_WITH_BOUNDARIES / SCRIPT_GENERATION_CONFIRMED / MODULE_LTO_GENERATION_PATH_CLOSED / NOT_FLASHABLE`。
 - 原因：上一轮显式 `scripts/module-lto.lds` target 不可用，不能误判为源模板缺失；本轮已用旧 Kbuild 实际目录入口闭合生成路径。
-- 涉及文件：`work/reports/20260919_THYME_MODULE_LTO_LDS_REAL_ENTRY_CLOSURE_1.md`、`work/reports/20260919_THYME_MODULE_LTO_LDS_REAL_ENTRY_CLOSURE_REVIEW_1.md`、WSL artifact `[LOCAL_WSL_USER]/thyme_module_lto_real_entry_closure_artifact_1`、`日志/项目当前状态.md`、source map。
+- 涉及文件：`work/reports/20260919_THYME_MODULE_LTO_LDS_REAL_ENTRY_CLOSURE_1.md`、`work/reports/20260919_THYME_MODULE_LTO_LDS_REAL_ENTRY_CLOSURE_REVIEW_1.md`、WSL artifact `/path/to/thyme-os4-build/thyme_module_lto_real_entry_closure_artifact_1`、`日志/项目当前状态.md`、source map。
 - 验证：独立读取 851-byte 模板、生成脚本、顶层/scripts Kbuild 规则、配置 cmp、artifact 文件清单和成功记录；临时 source/O/tools 已清理；无 worker、无 `.ko`、无设备操作。
 - 尚未验证：modules、模块 ABI/vermagic、exact toolchain、boot/vendor_boot、AVB、super、设备启动和可刷包。
 - 待处理：只做一次 `scripts/` 前置加 `modules` 的 `-j1` host-only 重试，验证真实 `.ko`；保持三个 flags false/stop。
@@ -1052,7 +1052,7 @@
 - 状态：已完成（独立审核；未刷机）
 - 改动/结论：复核唯一一次 `make -j1 scripts/module-lto.lds`。固定 archive 中模板和生成声明存在，但旧 Kbuild 的直接路径目标不可用，首错为 `No rule to make target 'scripts/module-lto.lds'`；没有生成目标脚本、没有重跑 modules。结论为 `PASS_WITH_BOUNDARIES / TARGET_UNAVAILABLE_CONFIRMED / MODULE_LTO_GENERATION_PATH_UNRESOLVED / NOT_FLASHABLE`。
 - 原因：`scripts/module-lto.lds.S` 与 `extra-$(CONFIG_LTO_CLANG)` 声明只证明存在生成关系，不证明顶层可直接调用该路径；需要定位真实 `scripts` 入口。
-- 涉及文件：`work/reports/20260919_THYME_MODULE_LTO_LDS_GENERATION_CLOSURE_1.md`、`work/reports/20260919_THYME_MODULE_LTO_LDS_GENERATION_CLOSURE_REVIEW_1.md`、WSL artifact `[LOCAL_WSL_USER]/thyme_module_lto_lds_generation_artifact_1`。
+- 涉及文件：`work/reports/20260919_THYME_MODULE_LTO_LDS_GENERATION_CLOSURE_1.md`、`work/reports/20260919_THYME_MODULE_LTO_LDS_GENERATION_CLOSURE_REVIEW_1.md`、WSL artifact `/path/to/thyme-os4-build/thyme_module_lto_lds_generation_artifact_1`。
 - 验证：artifact 失败证据、851-byte 模板、声明和配置独立核对；临时 source/O/tools 已清理；无 worker、无模块、无设备操作。
 - 尚未验证：旧 Kbuild 生成 `extra-y` 的真实入口、`scripts/module-lto.lds` 生成成功、任何 `.ko`。
 - 待处理：只读定位 `scripts/Makefile.build`/顶层 scripts 目标关系，随后执行一次最小 `scripts` 入口 host-only 实验；继续保持三个 flags false/stop。
@@ -1063,7 +1063,7 @@
 - 状态：已完成（独立审核；未刷机）
 - 改动/结论：复核唯一一次 WSL ext4 `make -j1 modules`。syncconfig、generated headers、VDSO/VDSO32、DTC、genksyms、modpost 完成，`MODPOST 3 modules` 后在第一个 `gspca_main.ko` 链接阶段失败，首错为 `ld.lld: error: cannot find linker script scripts/module-lto.lds`；实际 `.ko` 数量为 0。结论为 `PASS_WITH_BOUNDARIES / MODULES_FAILURE_CONFIRMED / MODULE_LTO_LDS_MISSING_CONFIRMED / NO_KO_OUTPUT / NOT_FLASHABLE`。
 - 原因：fresh modules-only O= 未提供由 `scripts/module-lto.lds.S` 生成的 `scripts/module-lto.lds`；不能把 modules.order/Module.symvers 当成模块包，也不能直接复制旧 O= 中间文件绕过问题。
-- 涉及文件：`work/reports/20260919_THYME_KERNEL_REAL_PANEL_MODULES_BUILD_1.md`、`work/reports/20260919_THYME_KERNEL_REAL_PANEL_MODULES_BUILD_REVIEW_1.md`、WSL artifact `[LOCAL_WSL_USER]/thyme_kernel_real_panel_modules_build_artifact_1`。
+- 涉及文件：`work/reports/20260919_THYME_KERNEL_REAL_PANEL_MODULES_BUILD_1.md`、`work/reports/20260919_THYME_KERNEL_REAL_PANEL_MODULES_BUILD_REVIEW_1.md`、WSL artifact `/path/to/thyme-os4-build/thyme_kernel_real_panel_modules_build_artifact_1`。
 - 验证：独立读取 artifact 失败证据、3 项 `=m` 配置和 3 个 modules.order 条目；固定 archive 中 `scripts/module-lto.lds.S` 与 Makefile 生成声明存在；临时 source/O/tools 已清理；无 `.ko`、无设备操作、无残留 worker。
 - 尚未验证：`scripts/module-lto.lds` 的 Kbuild 生成前置条件、任何 `.ko`、modules_install、boot/vendor_boot、AVB、设备。
 - 待处理：只做一次低成本 `scripts/module-lto.lds` 生成目标 host-only 实验，确认 Kbuild 前置条件后再设计 modules 重试；保持 `THYME_BUILD_READY=false`、`IMAGE_READY=false`、`DEVICE_WRITE_STOP=true`。
@@ -1074,7 +1074,7 @@
 - 状态：已完成（独立审核；未刷机）
 - 改动/结论：复核唯一一次 `make -j1` host-only 完整构建。artifact 保留 ARM64 Image、AArch64 vmlinux、System.map、3 个 base DTB 和 12 个 DTBO；全部 DTB/DTBO 为 Device Tree Blob v17。预处理 DTS 的最终 selector 为 `dsi_j2s_mp_42_02_0b_dsc_cmd`，目标 thyme DTBO 与未改 selector baseline `cmp=DIFFERENT`。结论为 `PASS_WITH_BOUNDARIES / HOST_KERNEL_IMAGE_DTB_DTBO_ARTIFACT_CONFIRMED / SELECTOR_EFFECT_CONFIRMED_FOR_HOST_DTBO / NOT_FLASHABLE`。
 - 原因：这是 selector host-only 闭合后的第一份完整 kernel/DTB/DTBO 诊断产物，用于从“能生成 DTBO”推进到“能生成带候选真实面板选择的 kernel 产物”；仍不能推导真机可启动。
-- 涉及文件：`work/reports/20260919_THYME_KERNEL_REAL_PANEL_IMAGE_DTBO_BUILD_1.md`、`work/reports/20260919_THYME_KERNEL_REAL_PANEL_IMAGE_DTBO_BUILD_REVIEW_1.md`、WSL artifact `[LOCAL_WSL_USER]/thyme_kernel_real_panel_image_dtbo_build_artifact_1`。
+- 涉及文件：`work/reports/20260919_THYME_KERNEL_REAL_PANEL_IMAGE_DTBO_BUILD_1.md`、`work/reports/20260919_THYME_KERNEL_REAL_PANEL_IMAGE_DTBO_BUILD_REVIEW_1.md`、WSL artifact `/path/to/thyme-os4-build/thyme_kernel_real_panel_image_dtbo_build_artifact_1`。
 - 验证：Image 53467160 bytes、vmlinux 683368728 bytes、System.map 12645545 bytes、kernel.release `4.19.325-cip131-st15-perf`；3 DTB/12 DTBO 均可识别；预处理 DTS 866696 bytes；临时 source/O/tools 已精确清理；无构建 worker。
 - 尚未验证：exact AOSP/厂商 toolchain、modules、boot/vendor_boot、AVB、super、system/vendor 合同、0B active mapping、设备启动和可刷包。
 - 待处理：基于该诊断 artifact 闭合 boot/vendor_boot、modules、AVB 与 system/vendor 合同，形成可回退完整候选前不刷写；保持 `THYME_BUILD_READY=false`、`IMAGE_READY=false`、`DEVICE_WRITE_STOP=true`。
@@ -1085,7 +1085,7 @@
 - 状态：已完成（独立审核；未刷机）
 - 改动/结论：独立读取并核对本轮 artifact，确认 WSL 原生 ext4 中一次 `make -j1` 目录级构建成功；DTC wrapper 捕获真实 `thyme-sm8250-overlay` 预处理输入，最终 `sde_dsi` selector 为 `dsi_j2s_mp_42_02_0b_dsc_cmd`；生成 DTBO 为 Device Tree Blob v17，且与 simulator baseline 字节不同。结论为 `PASS_WITH_BOUNDARIES / PREPROCESS_CAPTURE_CONFIRMED / SELECTOR_EFFECT_CONFIRMED_FOR_HOST_DTBO / NOT_FLASHABLE`。
 - 原因：上一轮只保留 selector 文本差异、没有 DTC 输入证据；本轮修正 wrapper 执行路径后，selector 已得到真实 host-only 编译闭环。
-- 涉及文件：`work/reports/20260919_THYME_DTBO_SELECTOR_PREPROCESS_EFFECT_CAPTURE_RETRY_1.md`、`work/reports/20260919_THYME_DTBO_SELECTOR_PREPROCESS_EFFECT_CAPTURE_RETRY_REVIEW_1.md`、`work/stage_c_thyme_dtbo_selector_preprocess_effect_retry_1/`、WSL artifact `[LOCAL_WSL_USER]/thyme_dtbo_selector_preprocess_effect_retry_artifact_1`。
+- 涉及文件：`work/reports/20260919_THYME_DTBO_SELECTOR_PREPROCESS_EFFECT_CAPTURE_RETRY_1.md`、`work/reports/20260919_THYME_DTBO_SELECTOR_PREPROCESS_EFFECT_CAPTURE_RETRY_REVIEW_1.md`、`work/stage_c_thyme_dtbo_selector_preprocess_effect_retry_1/`、WSL artifact `/path/to/thyme-os4-build/thyme_dtbo_selector_preprocess_effect_retry_artifact_1`。
 - 验证：捕获 DTS 867233 bytes；selector block 直接指向 0B 候选；目标 DTBO 458797 bytes，simulator baseline 473322 bytes，`cmp` 为 `DIFFERENT`；临时 source/O/wrapper 已清理；无 make/clang/ld.lld/lpmake worker。
 - 尚未验证：0B active mapping、完整 kernel/Image/modules、boot/vendor_boot、AVB、Android userspace、设备启动与刷写包。
 - 待处理：在保持 selector/closure 和 `-j1` 资源门禁的前提下，设计下一次受限完整 kernel/DTB/DTBO host build；继续保持 `THYME_BUILD_READY=false`、`IMAGE_READY=false`、`DEVICE_WRITE_STOP=true`。
@@ -2077,7 +2077,7 @@
 - 改动/结论：`tools/build_v04_full_b0_images_final3.sh` 的 ROOT/TREE/CFG/OUT/工具/日志改为可由环境变量覆盖；末尾固定 `exit 0` 改为输出并返回实际 `status`。第一次在 E 盘新目录运行时 product sparse 转换长时间卡在 NTFS，主动中断，未把 partial 当作成功。
 - 原因：独立审核发现固定成功码会掩盖构建失败；需要一份可复现的失败闭环和成功闭环。
 - 涉及文件：`tools/build_v04_full_b0_images_final3.sh`、`work/reports/20260910_v04_full_b0_images_repro_final7_build.log`、`work/reports/20260910_v04_full_b0_images_repro_final7_root_build.log`。
-- 验证：改用 Ubuntu 根盘 `[LOCAL_WSL_USER] 后完整构建返回 0；system/system_ext/product/mi_ext EROFS、vendor 六项 B0 debugfs 删除、odm 和所有 hash/size 记录均为 0，复制校验记录为 `COPY_STATUS=0`。
+- 验证：改用 Ubuntu 根盘 `/root/v04_b0_images_repro_final7` 后完整构建返回 0；system/system_ext/product/mi_ext EROFS、vendor 六项 B0 debugfs 删除、odm 和所有 hash/size 记录均为 0，复制校验记录为 `COPY_STATUS=0`。
 - 尚未验证：设备挂载、动态 linker/Binder、SELinux load 和首启。
 - 待处理：保留 E 盘成功日志和根盘输出作为离线证据；继续做 final6 raw→lpunpack provenance。
 - 替代：替代脚本“无论失败都 exit 0”的旧实现；历史中断日志保留为失败尝试。
@@ -2085,7 +2085,7 @@
 ## 2026-09-10 21:20｜完成正确 final6 raw→lpunpack provenance 并触发空间清理
 
 - 状态：核心离线回读已完成；大文件重复复制失败，未连接或写入手机。
-- 改动/结论：新增 `tools/roundtrip_v04_full_b0_super_provenance_final7.sh`，按 `simg2img → lpdump(raw) → lpunpack --slot=0 → fsck/e2fsck → 提取 → compare` 保存独立退出码。final8 运行日志显示所有核心步骤为 0，六分区逐文件 compare PASS；raw/unpack/提取输出位于 Ubuntu 根盘 `[LOCAL_WSL_USER] `PERSIST` 开关，避免把验证结果与跨文件系统重复复制混淆。
+- 改动/结论：新增 `tools/roundtrip_v04_full_b0_super_provenance_final7.sh`，按 `simg2img → lpdump(raw) → lpunpack --slot=0 → fsck/e2fsck → 提取 → compare` 保存独立退出码。final8 运行日志显示所有核心步骤为 0，六分区逐文件 compare PASS；raw/unpack/提取输出位于 Ubuntu 根盘 `/root/v04_b0_super_provenance_final8`。脚本增加 `PERSIST` 开关，避免把验证结果与跨文件系统重复复制混淆。
 - 原因：补齐旧日志中 sparse/短选项 `-S` 失败与后续 PASS 输出之间的 provenance 缺口。
 - 涉及文件：`tools/roundtrip_v04_full_b0_super_provenance_final7.sh`、`work/reports/20260910_v04_full_b0_super_provenance_final8.log`、`work/reports/20260910_v04_full_b0_super_provenance_final8_compare.md/.json`、`work/reports/20260910_P0_final6补充独立审核.md`。
 - 验证：`SIMG2IMG_EXIT=0`、`LPDUMP_EXIT=0`、`LPUNPACK_EXIT=0`；四项 EROFS、两项 ext4、六项提取和 `COMPARE_EXIT=0`；system/system_ext/product/vendor/odm/mi_ext 条目 4543/3403/1712/2441/61/1，缺失/额外/不匹配全为 0。向 E 盘复制 raw 的早期尝试返回 `Cannot allocate memory`，不作为核心验证失败；final8 根盘 raw 复制返回 0，但重复复制 product_a 时发生 I/O 错误。
@@ -3289,7 +3289,7 @@
 ## 2026-09-11 20:40｜mi_ext 消费者关联受限文本批次
 
 - 状态：已完成；按审核 `LIMITED_GO_HOST_ONLY` 执行后暂停，未修改候选或手机。
-- 改动/结论：只在 B0 `product/etc`、`system/etc`、`system_ext/etc`、`vendor/etc` 中流式读取 928 个 `*.rc/*.prop/*.xml/*.conf` 文本文件。6 个文件命中关键词：`product/etc/device_features/thyme.xml` 引用 `/mi_ext`；`system_ext/etc/init/init.miui.ext.rc` 引用 `/mnt/vendor/mi_ext[LOCAL_WSL_USER] 和 remount overlay；`product/etc/vintf/compatibility_matrix.xml`、`system/etc/kernel/approved-ogki-builds.xml`、`system_ext/etc/sysconfig/power_greeze_config.xml`、`vendor/etc/selinux/vendor_mac_permissions.xml` 出现 `nezha`/`8850`/相关字符串。6 个链接文件不可访问，不能当作无匹配。
+- 改动/结论：只在 B0 `product/etc`、`system/etc`、`system_ext/etc`、`vendor/etc` 中流式读取 928 个 `*.rc/*.prop/*.xml/*.conf` 文本文件。6 个文件命中关键词：`product/etc/device_features/thyme.xml` 引用 `/mi_ext`；`system_ext/etc/init/init.miui.ext.rc` 引用 `/mnt/vendor/mi_ext/root/xbin` 和 remount overlay；`product/etc/vintf/compatibility_matrix.xml`、`system/etc/kernel/approved-ogki-builds.xml`、`system_ext/etc/sysconfig/power_greeze_config.xml`、`vendor/etc/selinux/vendor_mac_permissions.xml` 出现 `nezha`/`8850`/相关字符串。6 个链接文件不可访问，不能当作无匹配。
 - 原因：把已确认的 lowerdir 缺失与 B0 framework/provider 文本消费者关联起来，支持“mi_ext/overlay/设备身份错配”静态候选；不把文本命中当成运行时因果证据。
 - 涉及文件：仅读取四个指定 B0 `etc` 目录和此前四份 `mi_ext` 文本证据；未写入新文件。
 - 验证：任务退出码 0，输出 23 行；无 Python/子进程残留；PowerShell 工作集约 `117.2→117.0 MB`。6 个读取错误被显式保留，未读镜像/二进制，未全树扫描，未调用设备/ADB/Fastboot/WSL/Docker/编译。
@@ -3553,7 +3553,7 @@
 
 - 状态：部分完成；完成重启后的只读复核，尝试最小服务修复但未能执行，未修改移植候选、源镜像或手机。
 - 改动/结论：重启后 `wsl.exe --version` 正常（WSL 2.7.7.0，kernel 6.18.26.1-1，Windows 10.0.26200.9445），但 `--status` 与 `--list --verbose` 仍返回 `Wsl/EnumerateDistros/Service/E_ACCESSDENIED`。`WslService=Running/Automatic`、`hns=Running/Manual`，而 `vmcompute=Stopped/Manual`；`LxssManager` 仍不是可见服务名。System32 与 `C:\Program Files\WSL\wsl.exe` 两个客户端得到相同结果。
-- 原因：当前会话身份为非管理员 `ROCK-LAPTOP\\CodexSandboxOffline`。`Start-Service vmcompute` 与 `sc.exe start vmcompute` 均返回 `Access is denied`，因此尚不能证明或修复 vmcompute 启动问题。当前更像 WSL 后端服务/权限状态异常，而不是项目脚本或 EROFS 文件导致；具体系统根因仍未确认。
+- 原因：当前会话身份为非管理员 `[LOCAL_HOST]\\CodexSandboxOffline`。`Start-Service vmcompute` 与 `sc.exe start vmcompute` 均返回 `Access is denied`，因此尚不能证明或修复 vmcompute 启动问题。当前更像 WSL 后端服务/权限状态异常，而不是项目脚本或 EROFS 文件导致；具体系统根因仍未确认。
 - 涉及文件：仅核对 `日志/项目当前状态.md`、`work/reports/20260911_wsl_diagnostic.md` 及 Windows 服务状态；本条不新增业务代码或镜像。
 - 验证：无 `wsl`、`wslhost`、`vmcompute`、Python、ADB/Fastboot 残留进程；服务 ACL 可查询但启动权限不足；事件日志读取对 Hyper-V 管理日志也返回未授权/不存在。未启动发行版、未运行 erofs 工具、未改 `.wslconfig`、未安装/更新 WSL。
 - 尚未验证：管理员上下文下启动 `vmcompute` 是否恢复发行版枚举；若不能，是否需要重启 `WslService`、修复可选功能或查看系统事件。
@@ -3585,7 +3585,7 @@
 ## 2026-09-11 23:37｜Codex 执行范围仍阻塞 WSL
 
 - 状态：失败后暂停；未修改候选、源镜像或设备。
-- 改动/结论：按审核 GO 在当前 Codex PowerShell 仅执行一次 `whoami /user` 和一次 `wsl.exe --list --verbose`。`whoami` 退出码 0，身份为隔离账户 `rock-laptop\codexsandboxoffline`（SID 末尾 1006）；WSL 枚举退出码 -1，原始输出为 `Wsl/EnumerateDistros/Service/E_ACCESSDENIED`。用户真实 PowerShell 的 SID 末尾 1001 与本执行身份不同，不能把两次结果合并成机器级根因。
+- 改动/结论：按审核 GO 在当前 Codex PowerShell 仅执行一次 `whoami /user` 和一次 `wsl.exe --list --verbose`。`whoami` 退出码 0，身份为隔离账户 `[LOCAL_HOST]\codexsandboxoffline`（SID 末尾 1006）；WSL 枚举退出码 -1，原始输出为 `Wsl/EnumerateDistros/Service/E_ACCESSDENIED`。用户真实 PowerShell 的 SID 末尾 1001 与本执行身份不同，不能把两次结果合并成机器级根因。
 - 原因：确认外部 WSL 恢复是否对本 Codex 执行范围生效；结果显示用户范围可用与 Codex 隔离范围被拒绝并存。
 - 涉及文件：新增 `work/reports/20260911_wsl_scope_recheck.md`；同步 `日志/项目当前状态.md`。
 - 验证：未启动发行版、未运行 erofs、未读镜像/APK、未安装/更新/提权/改配置、未编译、未调用 ADB/Fastboot/设备；结束检查未发现 WSL/WSLHost/Python/ADB/Fastboot 残留。PowerShell 工作集约 `79.2→83.8 MB`，私有提交量近似 `27.6→29.9 MB`。
@@ -3711,7 +3711,7 @@
 - 原因：当前 Codex 执行边界仍无法让该 WSL 子命令访问服务；此前 Ubuntu 最小探针成功不代表 erofs 子进程访问一定成功。
 - 涉及文件：新增/更新 work/reports/20260912_erofs_help_probe.md、日志/项目当前状态.md；无业务文件改动。
 - 验证：PowerShell 工作集约 83.5→84.6 MB，私有提交量约 27.6→28.5 MB；未发现 WSL/WSLHost/Python/ADB/Fastboot 残留。没有读取镜像、创建提取目录、运行 -x、Python/编译或调用设备。
-- 尚未验证：extract.erofs CLI 参数、layout=3 定点解码、XML/SHA 闭合和 C0 输入。
+- 尚未验证：xtract.erofs CLI 参数、layout=3 定点解码、XML/SHA 闭合和 C0 输入。
 - 待处理：按审核要求立即停止，不重试 WSL/erofs、不改配置；等待审核窗口决定是否转由用户真实 Ubuntu/PowerShell 执行 A 路径。
 - 替代：细化 2026-09-12 00:29 “WSL 执行范围恢复”的结论；该结论仅适用于 WSL 列表和 Ubuntu 最小探针，不适用于本次 erofs 子命令。
 
@@ -3730,7 +3730,7 @@
 ## 2026-09-12 00:36｜完全访问执行范围复测通过
 
 - 状态：已完成；仅验证身份、WSL 入口和 EROFS CLI 帮助，未修改业务代码、镜像、设备或 WSL 配置。
-- 改动/结论：whoami.exe /user 退出 0，身份为真实用户 rock-laptop\rock（SID 末尾 1001）；wsl.exe --list --verbose 退出 0，列出 docker-desktop 与 Ubuntu；当前移植窗口执行 extract.erofs --help 退出 2 并输出完整 usage，确认 -i/--image、-X/--extract=X、-o/--outdir=X、-T#。帮助退出码 2 是工具帮助路径返回值。
+- 改动/结论：whoami.exe /user 退出 0，身份为真实用户 [LOCAL_HOST]\rock（SID 末尾 1001）；wsl.exe --list --verbose 退出 0，列出 docker-desktop 与 Ubuntu；当前移植窗口执行 extract.erofs --help 退出 2 并输出完整 usage，确认 -i/--image、-X/--extract=X、-o/--outdir=X、-T#。帮助退出码 2 是工具帮助路径返回值。
 - 原因：验证重新授予完全访问后移植窗口是否已摆脱旧 WSL 执行范围阻塞；三项均通过，旧的 Wsl/Service/E_ACCESSDENIED 不再复现于本批。
 - 涉及文件：新增 work/reports/20260912_full_access_scope_retest.md；更新 日志/项目当前状态.md；无业务文件改动。
 - 验证：未读镜像、未创建提取目录、未运行 -x、未运行 Python/编译、未调用 ADB/Fastboot/设备；结束时无 Python/ADB/Fastboot 残留，仅有短暂 wslhost。
@@ -8565,9 +8565,9 @@
 
 - 状态：部分完成；仅主机环境准备和诊断，未修改业务代码；未编 kernel、未生成 DTB/DTBO/image、未操作设备；手机已断开。
 - 改动/结论：在 `work/build_env/source` 新建固定 HEAD 的 bounded clones/materializations。device 物化 61 files/3,598,431 bytes；sm8250_common 物化 13 files/139,515 bytes；vendor_thyme 物化 2 files/39,743 bytes；原始 partial clones 未改写。
-- kernel 结果：Windows Git `read-tree` 因 `drivers/gpu/drm/nouveau/nvkm/subdev/i2c/aux.c` 的 Windows 保留设备名失败。按用户建议在 Ubuntu WSL 原生 ext4 建立 `[LOCAL_WSL_USER]/source/kernel_sm8250` 固定 HEAD partial clone，目录约 2,625,767 bytes；两次 bounded sparse `read-tree` 均在 promisor blob fetch 处停滞，已停止精确 Git 子进程，未继续无界下载。
+- kernel 结果：Windows Git `read-tree` 因 `drivers/gpu/drm/nouveau/nvkm/subdev/i2c/aux.c` 的 Windows 保留设备名失败。按用户建议在 Ubuntu WSL 原生 ext4 建立 `/path/to/thyme-os4-build/source/kernel_sm8250` 固定 HEAD partial clone，目录约 2,625,767 bytes；两次 bounded sparse `read-tree` 均在 promisor blob fetch 处停滞，已停止精确 Git 子进程，未继续无界下载。
 - 工具链结论：Ubuntu WSL 的 `/usr/bin/make`、`/usr/bin/gcc`、`/usr/bin/python3` 可用；`clang`、`ld.lld`、`dtc` 未找到。不能把 host make/gcc 写成 `clang-r416183`/aarch64 exact toolchain。
-- Kconfig 验证：仅对 `[LOCAL_WSL_USER]/probe/kernel_sm8250` 的 17 文件/366,651-byte source slice 执行一次 `make -C ... O=... ARCH=arm64 olddefconfig`；命令进入 Makefile 后因缺少 `scripts/subarch.include` 失败，O= 目录为空，未生成 `.config`。`merge_config.sh` 完整流程未执行，五个冲突仍为 textual-only/`DEFERRED_NO_KCONFIG`。
+- Kconfig 验证：仅对 `/path/to/thyme-os4-build/probe/kernel_sm8250` 的 17 文件/366,651-byte source slice 执行一次 `make -C ... O=... ARCH=arm64 olddefconfig`；命令进入 Makefile 后因缺少 `scripts/subarch.include` 失败，O= 目录为空，未生成 `.config`。`merge_config.sh` 完整流程未执行，五个冲突仍为 textual-only/`DEFERRED_NO_KCONFIG`。
 - 重要失败方案：Windows kernel 工作树路径不再继续尝试，除非改变到 Linux-native filesystem；WSL promisor 不再无界等待，除非取得 bounded source mirror 或明确网络预算。失败原因不是已确认的 kernel 代码错误，而是 Windows 保留名和不完整/停滞的 blob 物化。
 - 验证：收口时无 Git/make/clang worker；Free RAM 约 17.33 GiB、Commit used 约 21.99/64.22 GiB、C/D/E 约 108.97/194.59/190.25 GiB 可用。未触碰 `[LOCAL_PATH] `wsl --shutdown`，未进行 adb/fastboot/刷写。
 - 待处理：取得完整固定 kernel source 或可审计 Linux source mirror，并补齐 exact wrapper/toolchain provenance 后，才可重跑单线程 `merge_config.sh + olddefconfig`；当前保持 `THYME_BUILD_READY=false / IMAGE_READY=false / DEVICE_WRITE_STOP=true`，暂停独立审核。
@@ -8586,7 +8586,7 @@
 ## 2026-09-18｜thyme kernel Linux archive acquisition 有界尝试收口
 
 - 状态：失败后收口；仅主机环境准备与诊断，未修改业务代码；未编 kernel、未运行 dtc、未生成 DTB/DTBO/image、未操作设备。
-- 改动/结论：按独立审核批准，在 Ubuntu WSL 原生 ext4 对固定 kernel commit `71b13e62f057a649b77fe4062feb73ee72ad609c` 做一次官方 GitHub codeload archive 尝试，目标 `[LOCAL_WSL_USER]/kernel_source_archive.tar.gz`。
+- 改动/结论：按独立审核批准，在 Ubuntu WSL 原生 ext4 对固定 kernel commit `71b13e62f057a649b77fe4062feb73ee72ad609c` 做一次官方 GitHub codeload archive 尝试，目标 `/path/to/thyme-os4-build/kernel_source_archive.tar.gz`。
 - 资源门禁：尝试前 Free RAM 约 20.13 GiB、Commit used 约 18.53/64.22 GiB、C/D/E 约 108.97/194.60/190.25 GiB 可用；通过 1 GiB/300 秒/单 worker 约束。
 - 探针：codeload HEAD 返回 HTTP 200 但无 `Content-Length`；`Range: bytes=0-0` 未返回 `Content-Range` 总大小并在 30 秒探针窗口内超时。
 - 结果：唯一下载命令使用 `--max-time 300 --max-filesize 1073741824`，最终报 `curl: (28) Operation timed out after 300000 milliseconds with 13033603 bytes received`。未得到可解包的完整 archive，未进行 extraction 或 Kconfig 重试。
@@ -8598,9 +8598,9 @@
 ## 2026-09-18｜thyme kernel fixed archive 解包与真实 Kconfig 尝试收口
 
 - 状态：部分完成；仅主机侧 source/Kconfig 诊断，未修改业务代码；未编 kernel、未运行 dtc/DTB/DTBO、未生成镜像、未操作设备。
-- 改动/结论：用户提供固定 archive `[LOCAL_PROJECT_ROOT]\android_kernel_xiaomi_sm8250-71b13e62f057a649b77fe4062feb73ee72ad609c.tar.gz`，大小 209,537,309 bytes；通过 `/mnt/e` 只读读取，在 Ubuntu WSL ext4 解包到 `[LOCAL_WSL_USER]/source/kernel_sm8250_71b13e62_archive`。归档 listing 80,154 entries，解包 74,329 files，`du` 约 1,140,958,927 bytes；未覆盖旧 partial clone/probe。
+- 改动/结论：用户提供固定 archive `[LOCAL_PROJECT_ROOT]\android_kernel_xiaomi_sm8250-71b13e62f057a649b77fe4062feb73ee72ad609c.tar.gz`，大小 209,537,309 bytes；通过 `/mnt/e` 只读读取，在 Ubuntu WSL ext4 解包到 `/path/to/thyme-os4-build/source/kernel_sm8250_71b13e62_archive`。归档 listing 80,154 entries，解包 74,329 files，`du` 约 1,140,958,927 bytes；未覆盖旧 partial clone/probe。
 - 源码验证：`Makefile`、`scripts/subarch.include`、`scripts/kconfig/merge_config.sh`、`arch/arm64`、`include`、顶层 `Kconfig` 及 `kona-perf_defconfig`、`debugfs.config`、`sm8250-common.config`、`thyme.config` 均存在。
-- Kconfig 验证：按 `kona-perf → debugfs → sm8250-common → thyme` 执行 `merge_config.sh -m -O` 成功写出 `[LOCAL_WSL_USER]/kconfig_out_71b13e62_archive/.config`；随后唯一一次单线程 `make ... ARCH=arm64 olddefconfig` 使用 host `/usr/bin/gcc` 编译了 fixdep/conf.o，但在生成 `scripts/kconfig/zconf.tab.c` 时因 `/bin/sh: 1: bison: not found` 退出 2。
+- Kconfig 验证：按 `kona-perf → debugfs → sm8250-common → thyme` 执行 `merge_config.sh -m -O` 成功写出 `/path/to/thyme-os4-build/kconfig_out_71b13e62_archive/.config`；随后唯一一次单线程 `make ... ARCH=arm64 olddefconfig` 使用 host `/usr/bin/gcc` 编译了 fixdep/conf.o，但在生成 `scripts/kconfig/zconf.tab.c` 时因 `/bin/sh: 1: bison: not found` 退出 2。
 - 输出边界：O= 目录有 6 files/73,394 bytes；存在 merge-only `.config`、Makefile、fixdep，缺少 `include/config/auto.conf`、`include/generated/autoconf.h`、`scripts/kconfig/conf`、`zconf.tab.c`。五个 symbol 的值（CMDLINE 为 `cgroup_disable=pressure ramoops_memreserve=4M`，其余四个为 `n`）仅是 merge-only 前置值，实际 Kconfig 仍 `UNAVAILABLE/DEFERRED_NO_KCONFIG`。
 - 重要失败尝试：完整 source 已不再是 blocker；当前 immediate blocker 是 `bison` 缺失，且 clang-r416183/aarch64/dtc/exact wrapper/ABI/owner 仍未闭合。不可把 merge-only `.config` 写成最终配置，不安装依赖、不重复 olddefconfig。
 - 验证：资源恢复后复核 Free RAM 约 17.31 GiB、Commit used 约 17.26/64.22 GiB、C/D/E 约 108.67/192.38/186.69 GiB；无 Windows/WSL build worker。未触碰 Docker VHDX，未执行 `wsl --shutdown`，未进行 adb/fastboot/刷写。
@@ -8640,7 +8640,7 @@
 ## 2026-09-18｜WSL 重复源码副本清理
 
 - 状态：已完成；仅清理明确无后续用途的重复临时产物，未修改业务代码、目标源码或设备。
-- 改动/结论：确认 `[LOCAL_WSL_USER]/source/kernel_sm8250_archive_71b13e62` 与目标 `[LOCAL_WSL_USER]/source/kernel_sm8250_71b13e62_archive` 为两个不同的 WSL ext4 路径，各约 1.3G；无 tar/make/gcc/clang/bison/flex worker 后，仅删除前者重复副本。
+- 改动/结论：确认 `/path/to/thyme-os4-build/source/kernel_sm8250_archive_71b13e62` 与目标 `/path/to/thyme-os4-build/source/kernel_sm8250_71b13e62_archive` 为两个不同的 WSL ext4 路径，各约 1.3G；无 tar/make/gcc/clang/bison/flex worker 后，仅删除前者重复副本。
 - 验证：目标归档源码目录仍存在，重复副本已不存在；当前 Free RAM约17.49 GiB、Commit used约17.14/64.22 GiB、C/D/E约108.39/192.37/186.69 GiB；Docker VHDX未触碰，未执行 `wsl --shutdown`。
 - 待处理：保留用户 Windows 归档和目标 WSL 源码；不删除 partial clone、probe、Kconfig O= 输出或救援资产，直到后续审核明确其不再需要。
 
@@ -8649,7 +8649,7 @@
 - 状态：部分完成；仅准备 Kconfig 主机依赖并执行一次单线程 `olddefconfig`，未修改业务代码；未编 kernel、未运行 dtc/DTB/DTBO、未生成镜像、未操作设备。
 - 资源门禁：依赖准备前 Free RAM约17.55 GiB、Commit used约18.20/64.22 GiB、C/D/E约108.36/192.37/186.69 GiB；通过门禁。最终复核 Free RAM约18.30 GiB、Commit used约17.77/64.22 GiB、C/D/E约108.34/192.37/186.69 GiB，无残留 worker。
 - 依赖准备：Ubuntu 26.04 `resolute/main` 通过 apt 安装 `bison 2:3.8.2+dfsg-1build4`、`flex 2.6.4-8.2build2` 和依赖 `m4 1.4.21-1`；没有安装 clang/LLVM/dtc。
-- Kconfig 验证：在现有固定源码 `[LOCAL_WSL_USER]/source/kernel_sm8250_71b13e62_archive` 和 O= `[LOCAL_WSL_USER]/kconfig_out_71b13e62_archive` 上唯一一次重跑 `make -j1 ... ARCH=arm64 olddefconfig`。`YACC`、`LEX`、`HOSTCC`、`HOSTLD` 完成并生成 `conf`/zconf 中间文件。
+- Kconfig 验证：在现有固定源码 `/path/to/thyme-os4-build/source/kernel_sm8250_71b13e62_archive` 和 O= `/path/to/thyme-os4-build/kconfig_out_71b13e62_archive` 上唯一一次重跑 `make -j1 ... ARCH=arm64 olddefconfig`。`YACC`、`LEX`、`HOSTCC`、`HOSTLD` 完成并生成 `conf`/zconf 中间文件。
 - 失败根因：`scripts/as-version.sh: 59` 调用的 `scripts/min-tool-version.sh` 在固定归档中不存在，归档 listing 也没有该路径；随后 `scripts/Kconfig.include:56` 报 `Sorry, this assembler is not supported.`，make 退出 2。
 - 输出边界：`include/config/auto.conf`、`include/generated/autoconf.h` 未生成；O= `.config` 仍是 merge-only 前置结果。五个符号不能升级为最终 Kconfig 值，继续标记 `UNAVAILABLE/DEFERRED_NO_KCONFIG`。
 - 重要失败方案：不从其它源码树复制 `min-tool-version.sh`，不修改固定 archive source，不把 host gcc 写成 exact clang build，不自动重跑。
@@ -8703,9 +8703,9 @@
 ## 2026-09-19｜THYME-KCONFIG-HOST-CLANG-DIAGNOSTIC-1
 
 - 状态：部分完成；主机诊断 Kconfig 通过，但 exact LLVM 未闭合；未修改业务代码、固定 archive、旧 O= 输出或 Windows 工作树。
-- 改动/结论：一次性安装 Ubuntu resolute `clang/lld`，实际 `clang/clang++/ld.lld` 为 21.1.8；在新 O= `[LOCAL_WSL_USER]/host_clang_diag_kconfig_1` 依固定 fragment 顺序完成一次 merge_config 和一次单线程 olddefconfig，均 exit 0。
+- 改动/结论：一次性安装 Ubuntu resolute `clang/lld`，实际 `clang/clang++/ld.lld` 为 21.1.8；在新 O= `/path/to/thyme-os4-build/host_clang_diag_kconfig_1` 依固定 fragment 顺序完成一次 merge_config 和一次单线程 olddefconfig，均 exit 0。
 - 原因：验证 integrated-as 是否能绕过外部 assembler-version 脚本阻塞；结果生成了完整 host-diagnostic Kconfig，但不能证明 `clang-r416183b` owner、完整 kernel build 或设备可用性。
-- 涉及文件：`work/stage_c_thyme_kconfig_host_clang_diagnostic_1/thyme_kconfig_host_clang_diagnostic.tsv`、`work/reports/20260919_THYME_KCONFIG_HOST_CLANG_DIAGNOSTIC_1.md`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL 诊断 O= `[LOCAL_WSL_USER]/host_clang_diag_kconfig_1`。
+- 涉及文件：`work/stage_c_thyme_kconfig_host_clang_diagnostic_1/thyme_kconfig_host_clang_diagnostic.tsv`、`work/reports/20260919_THYME_KCONFIG_HOST_CLANG_DIAGNOSTIC_1.md`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL 诊断 O= `/path/to/thyme-os4-build/host_clang_diag_kconfig_1`。
 - 验证：`.config` 174494 bytes、`include/config/auto.conf` 49126 bytes、`include/generated/autoconf.h` 64758 bytes；最终值为 CMDLINE 加 `ramoops_memreserve=4M`，四个设备/触觉相关 symbol 为 `n`；收口 Free RAM约8.63 GiB、Commit used约33.93/64.22 GiB，无残留 worker。
 - 尚未验证：exact AOSP clang/LLVM、完整 kernel、DTB/DTBO/image、模块 ABI、A17/OS4 provider 和设备行为；`min-tool-version.sh` 在 source 仍缺失，本次只观察到 integrated-as 没有报错。
 - 待处理：保持 `HOST_CLANG_DIAGNOSTIC_PASS / EXACT_LLVM_UNVERIFIED / THYME_BUILD_READY=false`；不复制缺失脚本，不把 host clang 结果升级为 exact build，不编完整 kernel。
@@ -8716,7 +8716,7 @@
 - 状态：部分完成；dtc 依赖准备成功，但固定 4.19 Kbuild 没有暴露目标 DTBO 的安全窄入口；未修改业务代码、固定 source、Windows tree、host Kconfig O= 或用户 archive。
 - 改动/结论：一次性安装 `device-tree-compiler 1.7.2-2ubuntu1`/`libfdt1`，DTC 1.7.2 可用。复制 host Kconfig `.config`/generated headers 到临时 DTBO O= 后，单次 `make -j1 V=1` 目标调用在进入 DTC 前以 `No rule to make target arch/arm64/boot/dts/vendor/qcom/thyme-sm8250-overlay.dtbo` 退出 2。
 - 原因：qcom Makefile 通过 `dtbo-y`/`scripts/Makefile.dtbo` 声明 target 与三个 base DTB，但该旧 Kbuild 顶层不提供直接路径 rule；为遵守不调用全量 dtbs，未扩大目标。受限 dry-run 只显示了低层入口缺 `scripts/Kbuild.include` 或变量污染到 `scripts/basic/kona.dtb`，没有执行第二次真实构建。
-- 涉及文件：`work/stage_c_thyme_dtb_dtbo_host_diagnostic_1/thyme_dtb_dtbo_host_diagnostic.tsv`、`work/reports/20260919_THYME_DTB_DTBO_HOST_DIAGNOSTIC_1.md`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；临时 `[LOCAL_WSL_USER]/host_clang_diag_dtbo_1` 已删除。
+- 涉及文件：`work/stage_c_thyme_dtb_dtbo_host_diagnostic_1/thyme_dtb_dtbo_host_diagnostic.tsv`、`work/reports/20260919_THYME_DTB_DTBO_HOST_DIAGNOSTIC_1.md`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；临时 `/path/to/thyme-os4-build/host_clang_diag_dtbo_1` 已删除。
 - 验证：固定 Makefile/DTS/include/source lineage 有界读取；没有 `.dtb`/`.dtbo` 输出；source `thyme-sm8250.dtsi` 仍默认 `dsi_sim_vid`。收口 Free RAM约7.38 GiB、Commit used约35.09/64.22 GiB，无残留 worker。
 - 尚未验证：窄 DTBO invocation、DTC 实际编译、base DTB/overlay bytes、真实 panel owner、kernel/image/device；没有全量 dtbs、kernel 或设备动作。
 - 待处理：保持 `DTBO_HOST_DIAGNOSTIC_BLOCKED / THYME_BUILD_READY=false / IMAGE_READY=false / DEVICE_WRITE_STOP=true`；不得修改 Makefile、selector、panel blob，不得直接调用全量 dtbs。
@@ -8735,7 +8735,7 @@
 - 状态：已完成（独立审核；仅主机诊断）
 - 改动/结论：独立核验固定 archive 的 `host_clang_diag_kconfig_1` 输出；`.config`、`include/config/auto.conf`、`include/generated/autoconf.h` 均存在，五个已知冲突符号的最终值与窗口报告一致。
 - 原因：确认上一轮不是只看报告，而是确实生成了 Kconfig 结果；同时保持 exact LLVM 未闭合的边界。
-- 涉及文件：`work/reports/20260919_THYME_KCONFIG_HOST_CLANG_DIAGNOSTIC_REVIEW_1.md`、`work/reports/20260919_THYME_KCONFIG_HOST_CLANG_DIAGNOSTIC_1.md`、`[LOCAL_WSL_USER]/host_clang_diag_kconfig_1`。
+- 涉及文件：`work/reports/20260919_THYME_KCONFIG_HOST_CLANG_DIAGNOSTIC_REVIEW_1.md`、`work/reports/20260919_THYME_KCONFIG_HOST_CLANG_DIAGNOSTIC_1.md`、`/path/to/thyme-os4-build/host_clang_diag_kconfig_1`。
 - 验证：独立检查 source 链接、三个输出文件大小、五个符号和残留进程；未操作设备。
 - 尚未验证：exact `clang-r416183b`、完整 kernel/DTB/DTBO、模块 ABI、镜像和实机启动。
 - 待处理：在不把诊断 clang 冒充 owner 的前提下，继续主机侧 DTB/DTBO 构建准备。
@@ -8768,7 +8768,7 @@
 - 状态：已完成（受限主机诊断收口；结论为阻塞）
 - 改动/结论：对固定 archive 的 qcom DTS 子目录执行唯一一次 `make -n V=1 -j1`；命令 exit 0，但展开了 `scripts/basic`、`scripts/kconfig`、顶层 `obj=.`、`kernel/bounds.c`→`kernel/bounds.s` 及 12 个 qcom Xiaomi overlay，未达到窄目标安全条件，结论为 `QCOM_SUBDIR_DRYRUN_BLOCKED`。
 - 原因：目录级 invocation 虽能展开命令，但会进入 kernel 生成准备并扩大到 12 个 overlay；按审核边界不能据此执行真实 make。
-- 涉及文件：`work/stage_c_thyme_dtb_qcom_subdir_target_1/thyme_dtb_qcom_subdir_target.tsv`、`work/reports/20260919_THYME_DTB_QCOM_SUBDIR_TARGET_1.md`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；临时 `[LOCAL_WSL_USER]/host_clang_qcom_dtbo_1` 已删除。
+- 涉及文件：`work/stage_c_thyme_dtb_qcom_subdir_target_1/thyme_dtb_qcom_subdir_target.tsv`、`work/reports/20260919_THYME_DTB_QCOM_SUBDIR_TARGET_1.md`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；临时 `/path/to/thyme-os4-build/host_clang_qcom_dtbo_1` 已删除。
 - 验证：dry-run exit 0；没有真实 make、全量 `dtbs`、`.dtb/.dtbo` 输出、source/Makefile 修改或设备操作；清理后 Free RAM约8.68 GiB、Commit used约33.63/64.22 GiB，无残留 worker。
 - 尚未验证：更窄且不触发 kernel 生成的 qcom invocation、实际 dtc 编译、DTB/DTBO bytes、真实 0B panel owner、kernel/image/device。
 - 待处理：保持 `THYME_BUILD_READY=false / IMAGE_READY=false / DEVICE_WRITE_STOP=true`；只有在命令范围可审计且不展开 kernel 生成后，才考虑下一次真实主机诊断。
@@ -8779,7 +8779,7 @@
 - 状态：已完成（host-only 证据收口）
 - 改动/结论：从用户提供的官方 Xiaomi 10S A13 `dtbo.img` 按 Android DTBO v0 大端格式读取 header 和 29-entry table，按历史索引提取 entry 5 并用 DTC 1.7.2 反编译；entry 5 含 7 个实际 J2/J2S/0B 命名 panel 候选，代表节点具有 dsi_cmd_mode、burst_mode、供电/GPIO 和 0x438 x 0x924（1080x2340）timing。结论为 `REAL_PANEL_DTB_ENTRY_EXTRACTED`，但 active mapping 仍未闭合。
 - 原因：需要从官方 A13 DTBO 取得真实 panel 候选，检验历史 board-id 45/0、0B 与公开 thyme source 的关系，同时不把候选误认成当前设备 active panel。
-- 涉及文件：`work/stage_c_thyme_real_panel_dtbo_decompile_1/thyme_real_panel_dtbo_decompile.tsv`、`work/reports/20260919_THYME_REAL_PANEL_DTBO_DECOMPILE_1.md`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL `[LOCAL_WSL_USER]/thyme_real_panel_dtbo_decompile_1/` 仅保留 header/entry metadata、`entry5.dts` 和关键摘要。
+- 涉及文件：`work/stage_c_thyme_real_panel_dtbo_decompile_1/thyme_real_panel_dtbo_decompile.tsv`、`work/reports/20260919_THYME_REAL_PANEL_DTBO_DECOMPILE_1.md`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL `/path/to/thyme-os4-build/thyme_real_panel_dtbo_decompile_1/` 仅保留 header/entry metadata、`entry5.dts` 和关键摘要。
 - 验证：magic `0xd7b7ab1e`、version 0、entry_count 29、entry_size 32、page_size 4096；entry 5 offset 2393973/size 484885 边界有效；DTC 生成 937039-byte `entry5.dts`。header 的 id/rev/custom 无 45/0 row，而固定 overlay source 明确声明 `qcom,board-id = <45 0>`；固定 dtsi 仍默认 `dsi_sim_vid`。清理后 Free RAM约7.49 GiB、Commit used约35.32/64.22 GiB，无构建 worker。
 - 尚未验证：历史 `dtbo_idx=10` 与 entry 5 的关系、当前设备 active panel、任一候选在当前 A17/OS4 source 中的可用性、kernel/DTB/DTBO/image/device。
 - 待处理：保持 `THYME_BUILD_READY=false / IMAGE_READY=false / DEVICE_WRITE_STOP=true`；不得修改 selector、复制 panel blob、编译或刷写。后续若继续只能在新的证据门禁下做映射分析。
@@ -8790,7 +8790,7 @@
 - 状态：已完成（独立审核；仅主机侧）
 - 改动/结论：独立重读原始 `dtbo.img`、entry 5 反编译结果和固定 kernel archive DTS。header、entry 5 的 offset/size 边界及 0B/J2 panel 节点证据可复核；结论为 `PASS_WITH_BOUNDARIES / REAL_PANEL_DTB_ENTRY_EXTRACTED / ACTIVE_MAPPING_UNRESOLVED / NOT_BUILD_READY`。
 - 原因：确认目标窗口没有把历史 entry 5、0B 运行时属性或公开 source 的 board-id 误写成 active DTBO 映射；保留 active mapping 未知边界。
-- 涉及文件：`work/reports/20260919_THYME_REAL_PANEL_DTBO_DECOMPILE_REVIEW_1.md`、`work/reports/20260919_THYME_REAL_PANEL_DTBO_DECOMPILE_1.md`、WSL `[LOCAL_WSL_USER]/thyme_real_panel_dtbo_decompile_1/entry5.dts`。
+- 涉及文件：`work/reports/20260919_THYME_REAL_PANEL_DTBO_DECOMPILE_REVIEW_1.md`、`work/reports/20260919_THYME_REAL_PANEL_DTBO_DECOMPILE_1.md`、WSL `/path/to/thyme-os4-build/thyme_real_panel_dtbo_decompile_1/entry5.dts`。
 - 验证：独立 Python 解析得到 DTBO header `(0xd7b7ab1e, 13415454, 32, 32, 29, 32, 4096, 0)`；entry 5 为 `size=484885, offset=2393973`；代表 0B 节点含 `dsi_cmd_mode`、`burst_mode`、TE/reset GPIO 和 `0x438 x 0x924`；未发现构建/刷写 worker。
 - 尚未验证：`dtbo_idx=10` 与 entry 5 的关系、实际 active panel、selector/source owner、A17/OS4 display provider；没有 kernel/DTB/DTBO/image 或设备验证。
 - 待处理：只做 0B/`dtbo_idx=10` 与官方 entry/fragment 的只读相关性核验；保持 `THYME_BUILD_READY=false / IMAGE_READY=false / DEVICE_WRITE_STOP=true`。
@@ -8975,7 +8975,7 @@
 ## 2026-09-19｜THYME Kconfig closure 复现通过
 
 - 状态：已完成（host-only Kconfig closure；未编译 Image）
-- 改动/结论：跳过 make -n，只将 [LOCAL_WSL_USER]/host_clang_diag_kconfig_1/.config（174494 bytes）复制到新 O= [LOCAL_WSL_USER]/kconfig_closure_repro_1，并严格执行一次 ARCH=arm64、LLVM=1、LLVM_IAS=1、HOSTCC/HOSTCXX/CC=clang、-j1、olddefconfig。命令 exit 0，生成 include/config/auto.conf 与 include/generated/autoconf.h。结论为 KCONFIG_CLOSURE_PASS。
+- 改动/结论：跳过 make -n，只将 /path/to/thyme-os4-build/host_clang_diag_kconfig_1/.config（174494 bytes）复制到新 O= /path/to/thyme-os4-build/kconfig_closure_repro_1，并严格执行一次 ARCH=arm64、LLVM=1、LLVM_IAS=1、HOSTCC/HOSTCXX/CC=clang、-j1、olddefconfig。命令 exit 0，生成 include/config/auto.conf 与 include/generated/autoconf.h。结论为 KCONFIG_CLOSURE_PASS。
 - 原因：复现并验证上一轮的 Kconfig 非交互闭合问题；本轮不接受交互默认值、不使用 yes 管道、不运行 make -n、不修改固定 archive。
 - 涉及文件：work/stage_c_thyme_kconfig_closure_repro_1/thyme_kconfig_closure_repro.tsv、work/stage_c_thyme_kconfig_closure_repro_1/kconfig_closure_diff.md、work/reports/20260919_THYME_KCONFIG_CLOSURE_REPRO_1.md、日志/项目当前状态.md、work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv；closure O= 保留，baseline O= 与固定 source 未修改。
 - 验证：scripts/kconfig/conf 成功运行 --olddefconfig；最终 .config 174494 bytes、.config.old 174494 bytes、auto.conf 49126 bytes、autoconf.h 64758 bytes；baseline 与 final .config 字节一致，CONFIG 受限 diff 无新增/改变/删除。收口 Free RAM约7.51 GiB、Commit used约33.68/64.22 GiB；无 make/conf/clang/ld.lld worker。
@@ -8988,7 +8988,7 @@
 - 状态：已完成（host-only 诊断通过；受资源边界约束停止后续工作）
 - 改动/结论：在 WSL ext4 的固定 kernel archive 上，将只读 Kconfig closure 用 `cp -a` 复制到新 O=，确认 `.config` 与 closure 字节一致；跳过 `make -n`，严格只执行一次 `-j1 Image`。`make` exit 0，生成 `arch/arm64/boot/Image`。结论为 `HOST_CLANG_IMAGE_DIAGNOSTIC_PASS`，不等于设备或刷写就绪。
 - 原因：验证可审计 Kconfig closure 能否支撑固定 source 的 host-clang Image 诊断；本轮不接受交互配置，不修改固定 source/closure，不构建设备包。
-- 涉及文件：work/stage_c_thyme_kernel_host_clang_image_after_closure_1/thyme_kernel_host_clang_image_after_closure.tsv、work/reports/20260919_THYME_KERNEL_HOST_CLANG_IMAGE_AFTER_CLOSURE_1.md、日志/项目当前状态.md、work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv；WSL O= `[LOCAL_WSL_USER]/host_clang_kernel_build_diag_5` 保留，固定 archive 与 closure 未修改。
+- 涉及文件：work/stage_c_thyme_kernel_host_clang_image_after_closure_1/thyme_kernel_host_clang_image_after_closure.tsv、work/reports/20260919_THYME_KERNEL_HOST_CLANG_IMAGE_AFTER_CLOSURE_1.md、日志/项目当前状态.md、work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv；WSL O= `/path/to/thyme-os4-build/host_clang_kernel_build_diag_5` 保留，固定 archive 与 closure 未修改。
 - 验证：输出完成 LTO、MODPOST、`LD vmlinux`、`SYSMAP System.map`、`OBJCOPY arch/arm64/boot/Image`；Image 57661464 bytes，vmlinux 687249088 bytes；`.config` 174494 bytes、auto.conf 49126 bytes、autoconf.h 64758 bytes；构建尾部唯一警告为缺失 `arch/arm64/boot/dts/`，不影响 Image 目标；收尾无 make/conf/clang/ld.lld/LLVM worker，临时工具映射已删除。
 - 尚未验证：exact AOSP LLVM、DTB/DTBO、modules、super/vbmeta、刷写包、设备启动与实机验证；本轮没有检查或使用 Module.symvers 作为模块就绪证据。
 - 待处理：等待独立审核；保持 `THYME_BUILD_READY=false / IMAGE_READY=false / DEVICE_WRITE_STOP=true`，不启动新构建，不执行设备写入。独立监控在最终 LTO/link 窗口报告 Free RAM 约1.84 GiB，最终安全检查恢复至约4.73 GiB，因此停止所有后续扩展。
@@ -8999,7 +8999,7 @@
 - 状态：已完成（仅分析与 closure 复制；未构建）
 - 改动/结论：使用绝对路径检查固定 WSL ext4 source 的 `arch/arm64/boot`、DTS、vendor 和 vendor/qcom Makefile；虽然存在相邻 overlay 文件与 `thyme-sm8250.dtsi`，但没有 `thyme-sm8250-overlay.dtbo` 文件、精确 target 或 `thyme.*overlay` Kbuild 规则。按任务要求记录并停止。
 - 原因：请求只允许构建明确的 `thyme-sm8250-overlay.dtbo` target；无规则时不得运行 full dtbs、不得猜测相邻 overlay、不得修改 DTS/selector。
-- 涉及文件：work/stage_c_thyme_dtbo_build_closure_1/thyme_dtbo_build_closure.tsv、work/reports/20260919_THYME_DTBO_BUILD_CLOSURE_1.md、日志/项目当前状态.md、work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv；WSL O= `[LOCAL_WSL_USER]/thyme_dtbo_build_closure_1` 只保留复制的 `.config`。
+- 涉及文件：work/stage_c_thyme_dtbo_build_closure_1/thyme_dtbo_build_closure.tsv、work/reports/20260919_THYME_DTBO_BUILD_CLOSURE_1.md、日志/项目当前状态.md、work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv；WSL O= `/path/to/thyme-os4-build/thyme_dtbo_build_closure_1` 只保留复制的 `.config`。
 - 验证：未运行 `make -n`，未启动 `make` 或任何 LLVM 工具；closure `.config` 174494 bytes，复制后前后两次 `cmp` 均 identical；最终 Free RAM约9.23 GiB、Commit used约33.47/64.22 GiB；无 make/conf/clang/ld.lld/LLVM worker。
 - 尚未验证：请求 DTBO target 的真实 Kbuild 产物、dtc、DTB/DTBO、modules、打包和设备；本轮没有生成任何 DTB/DTBO。
 - 待处理：若要继续，必须先提供或审核批准包含该精确 target 的 source/rule；当前保持 `DTBO_TARGET_UNAVAILABLE / NO_BUILD_PERFORMED / THYME_BUILD_READY=false / IMAGE_READY=false / DEVICE_WRITE_STOP=true`。
@@ -9010,7 +9010,7 @@
 - 状态：已完成（单次 host-only DTBO 目标尝试失败；已按首错停止）
 - 改动/结论：独立审核纠正此前目标检索错误，确认 `arch/arm64/boot/dts/vendor/qcom/Makefile` 声明 `thyme-sm8250-overlay.dtbo` 及 kona base-DTB。随后在全新 WSL O= 上只执行一次显式目标构建；实际 Kbuild 返回 `No rule to make target 'arch/arm64/boot/dts/vendor/qcom/thyme-sm8250-overlay.dtbo'`，外层 make exit 2。结论为 `DTBO_GENERATED_TARGET_BUILD_FAIL / KBUILD_TARGET_RESOLUTION_BLOCKED`。
 - 原因：验证 Makefile 声明的生成目标能否在固定 source/config 中被顶层 Kbuild 解析；首个解析错误已出现，按边界不重试、不改用 full dtbs、不修改 Makefile/DTS。
-- 涉及文件：work/stage_c_thyme_dtbo_generated_target_build_1/thyme_dtbo_generated_target_build.tsv、work/reports/20260919_THYME_DTBO_GENERATED_TARGET_BUILD_1.md、日志/项目当前状态.md、work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv；WSL O= `[LOCAL_WSL_USER]/thyme_dtbo_generated_target_build_1` 只保留 `.config`。
+- 涉及文件：work/stage_c_thyme_dtbo_generated_target_build_1/thyme_dtbo_generated_target_build.tsv、work/reports/20260919_THYME_DTBO_GENERATED_TARGET_BUILD_1.md、日志/项目当前状态.md、work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv；WSL O= `/path/to/thyme-os4-build/thyme_dtbo_generated_target_build_1` 只保留 `.config`。
 - 验证：没有运行 `make -n`；唯一命令使用 `-j1`、`LLVM=1`、`LLVM_IAS=1`、`KCONFIG_NOSILENTUPDATE=1` 和临时 LLVM 21 映射；`.config` 174494 bytes，失败前后 cmp identical；无 DTB/DTBO；临时映射和 O= 中间文件已清理；最终 Free RAM约9.16 GiB、Commit约33.48/64.22 GiB；无 worker。
 - 尚未验证：可解析的等价 Kbuild target、dtc/base-DTB/DTBO、modules、打包和设备；本轮不再尝试。
 - 待处理：等待独立审核或明确给出可解析的 Kbuild 等价目标；保持 `THYME_BUILD_READY=false / IMAGE_READY=false / DEVICE_WRITE_STOP=true`。
@@ -9021,7 +9021,7 @@
 - 状态：已完成（host-only 目录级 DTB/DTBO 诊断通过；已暂停等待独立审核）
 - 改动/结论：针对旧 Kbuild 没有顶层单文件转发的问题，使用末尾斜杠目录入口 `arch/arm64/boot/dts/vendor/qcom/`，严格只执行一次 `-j1` 构建。make exit 0，生成 3 个 kona base-DTB 和 12 个 SM8250 DTBO，其中 `thyme-sm8250-overlay.dtbo` 存在。结论为 `DTBO_KBUILD_DIRECTORY_PASS`。
 - 原因：验证独立审核指出的目录级 `__build` 入口；不修改固定 source/DTS/Makefile/selector，不运行 full dtbs，不构建 modules 或设备包。
-- 涉及文件：work/stage_c_thyme_dtbo_kbuild_directory_build_1/thyme_dtbo_kbuild_directory_build.tsv、work/reports/20260919_THYME_DTBO_KBUILD_DIRECTORY_BUILD_1.md、日志/项目当前状态.md、work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv；WSL 紧凑 artifact `[LOCAL_WSL_USER]/thyme_dtbo_kbuild_directory_artifact_1` 保留目标 DTBO、3 个 base-DTB、.config、kernel.release 与摘要。
+- 涉及文件：work/stage_c_thyme_dtbo_kbuild_directory_build_1/thyme_dtbo_kbuild_directory_build.tsv、work/reports/20260919_THYME_DTBO_KBUILD_DIRECTORY_BUILD_1.md、日志/项目当前状态.md、work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv；WSL 紧凑 artifact `/path/to/thyme-os4-build/thyme_dtbo_kbuild_directory_artifact_1` 保留目标 DTBO、3 个 base-DTB、.config、kernel.release 与摘要。
 - 验证：`.config` 构建前后 cmp identical，174494 bytes；`kona.dtb` 470368、`kona-v2.dtb` 477286、`kona-v2.1.dtb` 477290 bytes；`thyme-sm8250-overlay.dtbo` 473322 bytes；其他 11 个 DTBO 均列入报告但未作为 thyme 成功证据；仅有 modpost const qualifier warning，构建继续并 exit 0；收尾无 worker，临时映射和 O= 中间文件已清理。
 - 尚未验证：exact AOSP/厂商工具链一致性、DTBO 与实际设备 panel/selector 的绑定、完整 Image/packaging/刷写和实机启动；本轮不执行。
 - 待处理：等待独立审核；保持 `THYME_BUILD_READY=false / IMAGE_READY=false / DEVICE_WRITE_STOP=true`，暂停后续任务。
@@ -9032,7 +9032,7 @@
 - 改动/结论：独立确认固定 WSL ext4 archive 与 Kconfig closure O= 上完成了一个 ARM64 `Image` 诊断产物；`Image` 为 57,661,464 bytes，`vmlinux` 为 687,249,088 bytes；O= `.config` 与 closure `.config` 字节一致。结论为 `PASS_WITH_BOUNDARIES / HOST_CLANG_IMAGE_ARTIFACT_CONFIRMED / NOT_FLASHABLE`。
 - 原因：执行窗口的成功报告必须重新由审核侧按当前输出、配置和进程状态核对；不能把 Ubuntu host clang/lld 诊断结果升级为 exact AOSP owner 或设备就绪。
 - 涉及文件：`work/reports/20260919_THYME_KERNEL_HOST_CLANG_IMAGE_AFTER_CLOSURE_REVIEW_1.md`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`。
-- 验证：`file` 识别 Image 为 ARM64 Linux kernel Image、`vmlinux` 为 AArch64 ELF；`cmp` 返回 0；auto.conf/autoconf.h/kernel.release/utsrelease.h 存在；无 make/conf/clang/ld.lld/LLVM worker；无 DTB/DTBO。审核后清理约 6.3 GiB 原始 O= 中间文件，仅保留 `[LOCAL_WSL_USER]/host_clang_kernel_image_artifact_1` 约724 MiB的关键输出。
+- 验证：`file` 识别 Image 为 ARM64 Linux kernel Image、`vmlinux` 为 AArch64 ELF；`cmp` 返回 0；auto.conf/autoconf.h/kernel.release/utsrelease.h 存在；无 make/conf/clang/ld.lld/LLVM worker；无 DTB/DTBO。审核后清理约 6.3 GiB 原始 O= 中间文件，仅保留 `/path/to/thyme-os4-build/host_clang_kernel_image_artifact_1` 约724 MiB的关键输出。
 - 尚未验证：exact AOSP LLVM、真实 thyme panel selector、DTB/DTBO、modules ABI、vendor_boot/ramdisk、OS4 provider/VINTF/SELinux/linker、super/vbmeta、设备启动和刷写。
 - 待处理：下一项只做 DTB/DTBO/Kbuild 输入闭合；重新重任务前做资源门禁，Free RAM 不得进入 <3 GiB；不刷机。
 - 替代：本条把执行窗口的 `HOST_CLANG_IMAGE_DIAGNOSTIC_PASS` 独立限定为 host artifact 证据；不改变 `THYME_BUILD_READY=false / IMAGE_READY=false / DEVICE_WRITE_STOP=true`。
@@ -9062,7 +9062,7 @@
 - 状态：部分完成（host-only selector 派生实验；Kconfig syncconfig 失败，未生成 DTB/DTBO）
 - 改动/结论：在 WSL ext4 建立固定 archive 的独立源码副本，只把 `qcom,dsi-default-panel` 从 `dsi_sim_vid` 派生改为候选 `dsi_j2s_mp_42_02_0b_dsc_cmd`；精确 diff 只有一处。随后按要求只执行一次目录级 `-j1` 构建，首个真实错误为 `scripts/kconfig/conf --syncconfig Kconfig` 报 `The configuration requires explicit update`，make exit 1。结论为 `HOST_ONLY_SELECTOR_BUILD_FAIL / KCONFIG_SYNC_EXPLICIT_UPDATE_REQUIRED / NO_DTB_DTBO / NOT_FLASHABLE`。
 - 原因：验证候选 0B panel selector 是否能在同一固定 closure 和目录级 Kbuild 入口下生成 DTBO；0B 只是硬件候选，不是已证明 active mapping。按首错即停，不接受交互配置、不运行 olddefconfig、不修改固定 archive/closure、不重跑。
-- 涉及文件：`work/reports/20260919_THYME_DTBO_REAL_PANEL_SELECTOR_DERIVED_BUILD_1.md`、`work/stage_c_thyme_dtbo_selector_j2s_0b_build_1/thyme_dtbo_selector_j2s_0b_build.tsv`、`work/stage_c_thyme_dtbo_selector_j2s_0b_build_1/selector.diff`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `[LOCAL_WSL_USER]/thyme_dtbo_selector_j2s_0b_artifact_1` 保留 `.config` 与 `selector.diff`。
+- 涉及文件：`work/reports/20260919_THYME_DTBO_REAL_PANEL_SELECTOR_DERIVED_BUILD_1.md`、`work/stage_c_thyme_dtbo_selector_j2s_0b_build_1/thyme_dtbo_selector_j2s_0b_build.tsv`、`work/stage_c_thyme_dtbo_selector_j2s_0b_build_1/selector.diff`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `/path/to/thyme-os4-build/thyme_dtbo_selector_j2s_0b_artifact_1` 保留 `.config` 与 `selector.diff`。
 - 验证：构建前后 O= `.config` 均 174494 bytes，和 closure `cmp` identical；无 `.dtb`、`.dtbo`、`thyme-sm8250-overlay.dtbo` 或 `kernel.release`。启动 Free RAM 9.30 GiB、Commit 33.54/64.22 GiB；首错时 Free RAM 8.96 GiB、Commit 33.89/64.22 GiB；清理后 Free RAM 9.25 GiB、Commit 33.55/64.22 GiB；Windows/WSL 均无 make/clang/ld.lld/dtc/llvm worker。
 - 尚未验证：selector 与真实面板硬件绑定、Kconfig closure 对该副本的可重复 syncconfig、DTB/DTBO 内容、exact AOSP toolchain、打包、刷写和设备启动；本轮不执行。
 - 待处理：无；报告与 TSV 已同步进 compact artifact，临时源码副本已删除。最终 Free RAM 9.97 GiB、Commit used 34.21/64.22 GiB；保持 `THYME_BUILD_READY=false / IMAGE_READY=false / DEVICE_WRITE_STOP=true`，暂停等待独立审核，不启动下一任务。
@@ -9071,9 +9071,9 @@
 ## 2026-09-19｜THYME selector closure 复用重试仍在 syncconfig 首错收口
 
 - 状态：部分完成（完整 closure 复用的 host-only selector 重试；未生成 DTB/DTBO）
-- 改动/结论：在 WSL ext4 建立新的 selector 源码副本，只改 `thyme-sm8250.dtsi` 的唯一 panel selector 行；新 O= 完整复制 `[LOCAL_WSL_USER]/kconfig_closure_repro_1`，确认包含 `.config`、`include/config/auto.conf` 和 `scripts/kconfig/conf`。随后只执行一次真实目录级 `-j1` 构建，仍在 `scripts/kconfig/conf --syncconfig Kconfig` 报 `The configuration requires explicit update`，make exit 1。结论为 `HOST_ONLY_SELECTOR_CLOSURE_RETRY_FAIL / KCONFIG_SYNC_EXPLICIT_UPDATE_REQUIRED / NO_DTB_DTBO / NOT_FLASHABLE`。
+- 改动/结论：在 WSL ext4 建立新的 selector 源码副本，只改 `thyme-sm8250.dtsi` 的唯一 panel selector 行；新 O= 完整复制 `/path/to/thyme-os4-build/kconfig_closure_repro_1`，确认包含 `.config`、`include/config/auto.conf` 和 `scripts/kconfig/conf`。随后只执行一次真实目录级 `-j1` 构建，仍在 `scripts/kconfig/conf --syncconfig Kconfig` 报 `The configuration requires explicit update`，make exit 1。结论为 `HOST_ONLY_SELECTOR_CLOSURE_RETRY_FAIL / KCONFIG_SYNC_EXPLICIT_UPDATE_REQUIRED / NO_DTB_DTBO / NOT_FLASHABLE`。
 - 原因：审核要求验证上一轮“只复制 `.config`”是否为根因；本轮完整 closure 仍被 `KCONFIG_NOSILENTUPDATE=1` 下的 syncconfig 拒绝，因此该问题不能再归因于缺失 `auto.conf`。按首错即停，不接受交互配置、不运行 olddefconfig、不修改 fixed archive/closure、不重跑。
-- 涉及文件：`work/reports/20260919_THYME_DTBO_REAL_PANEL_SELECTOR_CLOSURE_RETRY_1.md`、`work/stage_c_thyme_dtbo_selector_j2s_0b_closure_retry_1/thyme_dtbo_selector_j2s_0b_closure_retry.tsv`、`work/stage_c_thyme_dtbo_selector_j2s_0b_closure_retry_1/selector.diff`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `[LOCAL_WSL_USER]/thyme_dtbo_selector_j2s_0b_closure_retry_artifact_1` 保留 `.config`、diff、报告和 TSV。
+- 涉及文件：`work/reports/20260919_THYME_DTBO_REAL_PANEL_SELECTOR_CLOSURE_RETRY_1.md`、`work/stage_c_thyme_dtbo_selector_j2s_0b_closure_retry_1/thyme_dtbo_selector_j2s_0b_closure_retry.tsv`、`work/stage_c_thyme_dtbo_selector_j2s_0b_closure_retry_1/selector.diff`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `/path/to/thyme-os4-build/thyme_dtbo_selector_j2s_0b_closure_retry_artifact_1` 保留 `.config`、diff、报告和 TSV。
 - 验证：构建前 `.config` 与 closure cmp identical，174494 bytes；O= 中 `auto.conf` 49126 bytes、`conf` 134136 bytes；构建后 `.config` 仍 identical，`auto.conf` 仍在而 `tristate.conf` 被 make 清理；无 `.dtb`、`.dtbo`、`thyme-sm8250-overlay.dtbo` 或 `kernel.release`。真实构建前资源 Free RAM 10.63 GiB、Commit 32.04/64.22 GiB；构建期间最低 Free RAM 8.91 GiB、Commit 峰值 33.98/64.22 GiB；清理后 Free RAM 9.54 GiB、Commit 33.74/64.22 GiB；无 worker。
 - 尚未验证：selector 与硬件 active mapping、Kconfig closure 的可重复 syncconfig 修复方案、DTB/DTBO 内容、exact AOSP toolchain、打包、刷写和设备启动；本轮不执行。
 - 待处理：无；报告/TSV 已同步进 compact artifact，临时源码副本、完整 O= 和工具映射已删除。删除源码副本后的最终 Free RAM 11.57 GiB、Commit used 32.04/64.22 GiB；保持 `THYME_BUILD_READY=false / IMAGE_READY=false / DEVICE_WRITE_STOP=true`，暂停等待独立审核。
@@ -9084,7 +9084,7 @@
 - 状态：部分完成（非交互 olddefconfig 成功；配置变化，按规则停止）
 - 改动/结论：在 WSL ext4 建立新的 selector 源码副本，只改唯一 panel selector 行；新 O= 完整复制 closure。随后只执行一次不带 `KCONFIG_NOSILENTUPDATE=1` 的 `make -j1 olddefconfig`，conf 成功写回 `.config`，make exit 0。配置从 174494 bytes 变为 174536 bytes，新增 `CONFIG_TOOLS_SUPPORT_RELR=y` 和 `CONFIG_RELR=y`。结论为 `KCONFIG_OLDEFCONFIG_PASS_CONFIG_CHANGED / CLOSURE_REVIEW_REQUIRED / NO_DTBO_BUILD`。
 - 原因：审核要求只解决 explicit-update 门槛并审计配置变化；olddefconfig 的成功不等于 owner 配置闭合。按规则因 CONFIG 改动停止，不把它当作默认 owner 配置，不继续 DTBO 构建。
-- 涉及文件：`work/reports/20260919_THYME_KCONFIG_EXPLICIT_CLOSURE_REBUILD_1.md`、`work/stage_c_thyme_kconfig_explicit_closure_rebuild_1/thyme_kconfig_explicit_closure_rebuild.tsv`、`work/stage_c_thyme_kconfig_explicit_closure_rebuild_1/selector.diff`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `[LOCAL_WSL_USER]/thyme_kconfig_explicit_closure_artifact_1` 保留 `.config`、`auto.conf`、`tristate.conf`、diff、报告和 TSV。
+- 涉及文件：`work/reports/20260919_THYME_KCONFIG_EXPLICIT_CLOSURE_REBUILD_1.md`、`work/stage_c_thyme_kconfig_explicit_closure_rebuild_1/thyme_kconfig_explicit_closure_rebuild.tsv`、`work/stage_c_thyme_kconfig_explicit_closure_rebuild_1/selector.diff`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `/path/to/thyme-os4-build/thyme_kconfig_explicit_closure_artifact_1` 保留 `.config`、`auto.conf`、`tristate.conf`、diff、报告和 TSV。
 - 验证：构建前 `.config`/closure cmp identical；olddefconfig exit 0；构建后 `.config` cmp different，仅两项 CONFIG 新增；`auto.conf` 49126 bytes、`tristate.conf` 18100 bytes。olddefconfig 前资源 Free RAM 9.26 GiB、Commit 33.52/64.22 GiB；执行后 9.45/34.31；删除源码副本后最终 9.63/33.75；无 make/conf/clang/ld.lld/llvm worker。
 - 尚未验证：两项 RELR 配置是否属于 exact owner、selector 与硬件 active mapping、DTB/DTBO、exact AOSP toolchain、打包、刷写和设备启动；本轮不执行。
 - 待处理：无；完整 O=、临时源码副本和工具映射已删除，报告/TSV 已同步 artifact。保持 `THYME_BUILD_READY=false / IMAGE_READY=false / DEVICE_WRITE_STOP=true`，暂停等待独立审核。
@@ -9095,7 +9095,7 @@
 - 状态：已完成（host-only 目录级构建通过；目标仍 NOT_FLASHABLE，已暂停等待独立审核）
 - 改动/结论：在 WSL ext4 建立 selector 临时源码副本，只改 `thyme-sm8250.dtsi` 的唯一 selector 行；新 O= 完整复制固定 closure，再覆盖已审核 RELR artifact 的 `.config`、`auto.conf`、`tristate.conf`。未运行 olddefconfig 或 make -n，唯一真实目录级 `-j1` Kbuild make exit 0，生成 3 个 kona base-DTB 和 12 个 SM8250 DTBO，目标 `thyme-sm8250-overlay.dtbo` 存在（473322 bytes）。结论为 `DTBO_KBUILD_RELR_CLOSURE_PASS / THYME_DTBO_GENERATED / NOT_FLASHABLE`。
 - 原因：验证已审核的 `CONFIG_TOOLS_SUPPORT_RELR=y`、`CONFIG_RELR=y` closure 能否越过 syncconfig 并进入 DTC；不修改 fixed archive/closure，不构建打包物，不刷机。
-- 涉及文件：`work/reports/20260919_THYME_DTBO_REAL_PANEL_SELECTOR_RELR_CLOSURE_BUILD_1.md`、`work/stage_c_thyme_dtbo_selector_relr_closure_build_1/thyme_dtbo_selector_relr_closure_build.tsv`、`work/stage_c_thyme_dtbo_selector_relr_closure_build_1/selector.diff`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `[LOCAL_WSL_USER]/thyme_dtbo_selector_relr_closure_artifact_1` 保留 `.config`、kernel.release、3 个 base-DTB、目标 DTBO、diff、报告和 TSV。
+- 涉及文件：`work/reports/20260919_THYME_DTBO_REAL_PANEL_SELECTOR_RELR_CLOSURE_BUILD_1.md`、`work/stage_c_thyme_dtbo_selector_relr_closure_build_1/thyme_dtbo_selector_relr_closure_build.tsv`、`work/stage_c_thyme_dtbo_selector_relr_closure_build_1/selector.diff`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `/path/to/thyme-os4-build/thyme_dtbo_selector_relr_closure_artifact_1` 保留 `.config`、kernel.release、3 个 base-DTB、目标 DTBO、diff、报告和 TSV。
 - 验证：构建前后 `.config` 与 RELR artifact cmp identical，174536 bytes；kernel.release 为 `4.19.325-cip131-st15-perf`；base-DTB 大小为 470368/477286/477290 bytes，file 均识别 Device Tree Blob v17；目标 DTBO file 识别 Device Tree Blob v17；另生成的 11 个 DTBO 已单独列出。唯一非致命警告为 `scripts/mod/modpost.c:808` const qualifier warning；无 Kbuild/DTC 错误。构建前资源 9.25/33.72，构建最低 Free RAM 8.70、Commit 峰值 34.59/64.22，删除源码副本后最终 9.15/33.59；无 worker。
 - 尚未验证：exact AOSP/厂商工具链一致性、0B selector 与真实 active panel owner、DTBO 反编译归属、完整 Image/modules、打包、刷写和设备启动；本轮不执行。
 - 待处理：无；临时源码副本、完整 O= 和工具映射已删除，报告/TSV 已同步 artifact。保持 `THYME_BUILD_READY=false / IMAGE_READY=false / DEVICE_WRITE_STOP=true`，暂停等待独立审核。
@@ -9106,7 +9106,7 @@
 - 状态：部分完成（捕获机制未能越过第一个 DTC 调用；未生成 DTB/DTBO）
 - 改动/结论：在 WSL ext4 建立临时 selector 源码副本，只改唯一 selector 行；完整 closure 与 RELR artifact 配置覆盖到新 O=。依据固定 `scripts/Makefile.lib` 的 `CPP -> dtc-tmp -> DTC` 链路，用 `DTC_EXT` 设置一次性 wrapper，目标 thyme 输出时复制实际 `dtc-tmp` 后 exec O= 真实 DTC。第一个真实 DTC 调用为 `kona.dtb`，wrapper 因 O= 内 `scripts/dtc/dtc` 尚未作为依赖构建而 exec 失败，make exit 1。结论为 `PREPROCESS_CAPTURE_UNAVAILABLE / DTC_WRAPPER_DEPENDENCY_BLOCKED / NO_DTB_DTBO`。
 - 原因：独立审核要求必须证明 selector 进入实际 DTC 输入；本轮 wrapper 设计被旧 Kbuild 的 DTC 依赖选择阻断，不能把 source diff 当作预处理输入证据。按首错即停，不修 wrapper、不手工补 DTC、不重跑。
-- 涉及文件：`work/reports/20260919_THYME_DTBO_SELECTOR_PREPROCESS_EFFECT_CLOSURE_1.md`、`work/stage_c_thyme_dtbo_selector_preprocess_effect_closure_1/thyme_dtbo_selector_preprocess_effect_closure.tsv`、`work/stage_c_thyme_dtbo_selector_preprocess_effect_closure_1/selector.diff`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `[LOCAL_WSL_USER]/thyme_dtbo_selector_preprocess_effect_artifact_1` 仅保留 selector.diff、报告和 TSV。
+- 涉及文件：`work/reports/20260919_THYME_DTBO_SELECTOR_PREPROCESS_EFFECT_CLOSURE_1.md`、`work/stage_c_thyme_dtbo_selector_preprocess_effect_closure_1/thyme_dtbo_selector_preprocess_effect_closure.tsv`、`work/stage_c_thyme_dtbo_selector_preprocess_effect_closure_1/selector.diff`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `/path/to/thyme-os4-build/thyme_dtbo_selector_preprocess_effect_artifact_1` 仅保留 selector.diff、报告和 TSV。
 - 验证：O= `.config` 前后 174536 bytes，与 RELR artifact cmp identical；失败后 O= `auto.conf` 49168 bytes、`tristate.conf` 18100 bytes；capture 目录为空；无 DTB/DTBO，未执行新 DTBO 与 simulator 基线 cmp。构建前资源 8.98/33.89，首错时最低 Free RAM 8.71、Commit 34.08/64.22，删除源码副本后最终 9.30/33.83；无 worker。
 - 尚未验证：实际预处理 DTS、selector 是否进入 DTC、0B active mapping、DTBO 内容、打包、刷写和设备启动；本轮不执行。
 - 待处理：无；临时源码副本、O=、工具映射、wrapper、capture 目录已删除，报告/TSV 已同步 artifact。保持 `THYME_BUILD_READY=false / IMAGE_READY=false / DEVICE_WRITE_STOP=true`，暂停等待独立审核。
@@ -9119,7 +9119,7 @@
 - 直接事实：捕获预处理 DTS 为 867233 bytes，`&sde_dsi` 最终 selector 为 `dsi_j2s_mp_42_02_0b_dsc_cmd`，对应 0B include/定义存在；`dsi_sim_vid` 仍有其他候选定义/引用但不是最终 selector 值。生成目标 DTBO 458797 bytes，与 simulator baseline 473322 bytes 的 `cmp -s` 结果为 `DIFFERENT`。本轮把 selector 进入真实 DTC 输入从 UNKNOWN 提升为 host-only 已证实。
 - 配置/构建：新 O= 覆盖 RELR artifact 的 `.config`、`auto.conf`、`tristate.conf`；构建前后 `.config` cmp identical，174536 bytes，`CONFIG_TOOLS_SUPPORT_RELR=y`、`CONFIG_RELR=y`；未运行 `make -n` 或手动 olddefconfig。生成 3 个 kona base-DTB 和 12 个 DTBO；唯一非致命 warning 为 modpost const qualifier warning。
 - 资源与安全：构建前 Free RAM 9.95 GiB、Commit 33.34/64.22 GiB；构建期间约 8.74/34.05；清理后 9.18/33.63；Windows/WSL worker 为零。未执行 adb/fastboot/设备写入，未触碰 Docker VHDX，未执行 `wsl --shutdown`，未计算 standalone SHA-256。
-- 产物：报告 `work/reports/20260919_THYME_DTBO_SELECTOR_PREPROCESS_EFFECT_CAPTURE_RETRY_1.md`、独立审核 `work/reports/20260919_THYME_DTBO_SELECTOR_PREPROCESS_EFFECT_CAPTURE_RETRY_REVIEW_1.md`、TSV `work/stage_c_thyme_dtbo_selector_preprocess_effect_retry_1/thyme_dtbo_selector_preprocess_effect_capture_retry.tsv`、selector diff/context/cmp；WSL artifact `[LOCAL_WSL_USER]/thyme_dtbo_selector_preprocess_effect_retry_artifact_1` 保留完整预处理 DTS、DTC invocation、目标 DTBO、`.config`、kernel.release 和审计文件。
+- 产物：报告 `work/reports/20260919_THYME_DTBO_SELECTOR_PREPROCESS_EFFECT_CAPTURE_RETRY_1.md`、独立审核 `work/reports/20260919_THYME_DTBO_SELECTOR_PREPROCESS_EFFECT_CAPTURE_RETRY_REVIEW_1.md`、TSV `work/stage_c_thyme_dtbo_selector_preprocess_effect_retry_1/thyme_dtbo_selector_preprocess_effect_capture_retry.tsv`、selector diff/context/cmp；WSL artifact `/path/to/thyme-os4-build/thyme_dtbo_selector_preprocess_effect_retry_artifact_1` 保留完整预处理 DTS、DTC invocation、目标 DTBO、`.config`、kernel.release 和审计文件。
 - 当前边界：`PASS_WITH_BOUNDARIES / PREPROCESS_CAPTURE_CONFIRMED / SELECTOR_EFFECT_CONFIRMED_FOR_HOST_DTBO / NOT_FLASHABLE`；仍保持 `THYME_BUILD_READY=false / IMAGE_READY=false / DEVICE_WRITE_STOP=true`。0B 仍是有证据的候选，不等于 active mapping、完整 Image/ABI、Android userspace 或真机启动成功。
 - 替代：本条替代上一条“`PREPROCESS_CAPTURE_UNAVAILABLE / DTC_WRAPPER_DEPENDENCY_BLOCKED / SELECTOR_EFFECT_UNPROVEN`”作为当前状态；上一条保留为真实失败历史，不删除。
 
@@ -9128,7 +9128,7 @@
 - 状态：已完成（host-only 诊断构建通过；等待独立审核；未刷机）
 - 改动/结论：在 WSL Ubuntu 原生 ext4 建立固定 archive 的隔离源码副本，只把 qcom,dsi-default-panel 从 dsi_sim_vid 派生改为 dsi_j2s_mp_42_02_0b_dsc_cmd。O= 完整复制固定 closure，并覆盖 RELR artifact 的 .config、auto.conf、tristate.conf。唯一真实 make -j1 同时完成 Image、vmlinux、System.map、3 个基础 DTB 和 12 个 SM8250 DTBO，make exit 0。
 - 原因：在已确认的 RELR closure 和 selector 预处理证据上，验证 host-side 完整 kernel/DTB/DTBO 产物是否能在同一受限入口生成；不把 host 产物扩大解释为 exact AOSP owner 或可刷镜像。
-- 涉及文件：work/reports/20260919_THYME_KERNEL_REAL_PANEL_IMAGE_DTBO_BUILD_1.md、work/stage_c_thyme_kernel_real_panel_image_dtbo_build_1/thyme_kernel_real_panel_image_dtbo_build.tsv、selector.diff、selector-cmp.txt、日志/项目当前状态.md、work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv；WSL artifact [LOCAL_WSL_USER]/thyme_kernel_real_panel_image_dtbo_build_artifact_1。
+- 涉及文件：work/reports/20260919_THYME_KERNEL_REAL_PANEL_IMAGE_DTBO_BUILD_1.md、work/stage_c_thyme_kernel_real_panel_image_dtbo_build_1/thyme_kernel_real_panel_image_dtbo_build.tsv、selector.diff、selector-cmp.txt、日志/项目当前状态.md、work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv；WSL artifact /path/to/thyme-os4-build/thyme_kernel_real_panel_image_dtbo_build_artifact_1。
 - 关键产物：Image 53467160 bytes；vmlinux 683368728 bytes；System.map 12645545 bytes；kernel.release 4.19.325-cip131-st15-perf；kona.dtb/kona-v2.dtb/kona-v2.1.dtb 为 470368/477286/477290 bytes；目标 thyme-sm8250-overlay.dtbo 为 473322 bytes；3 个 DTB 和 12 个 DTBO 均由 file 识别为 Device Tree Blob version 17。
 - 验证：构建前后 .config 174536 bytes，与 RELR artifact cmp identical；CONFIG_TOOLS_SUPPORT_RELR=y、CONFIG_RELR=y；实际预处理 DTS 866696 bytes，最终 selector 为 dsi_j2s_mp_42_02_0b_dsc_cmd；目标 DTBO 与未改 selector 的同类 Kbuild baseline 同为 473322 bytes但 cmp exit 1，确认 host-only selector effect。构建前最近资源 9.88/33.40，期间最低 Free RAM约2.81、Commit峰值43.15/64.22，清理后10.84/32.16；无编译 worker。
 - 尚未验证：exact AOSP/厂商 LLVM owner、0B selector 与设备 active panel mapping、boot/vendor_boot、modules ABI、Android userspace/VINTF/SELinux/linker、AVB/super/vbmeta、设备启动和实际烧录版本。
@@ -9141,8 +9141,8 @@
 
 - 状态：部分完成（modules host-only 构建失败；未生成可验证 .ko；未刷机）
 - 改动/结论：在 WSL Ubuntu 原生 ext4 建立新的 selector source/O/tools 副本，保留唯一 dsi_sim_vid → dsi_j2s_mp_42_02_0b_dsc_cmd 差分；O= 完整复制 closure 并覆盖 RELR .config、auto.conf、tristate.conf。唯一真实 make -j1 modules 进入 syncconfig、generated headers、VDSO/VDSO32、DTC、genksyms、modpost 和 MODPOST 3 modules，随后 make exit 1。
-- 原因：第一个 .ko gspca_main.ko 链接时，ld.lld 报 cannot find linker script scripts/module-lto.lds。source/scripts/module-lto.lds 与 fresh O=[LOCAL_WSL_USER]/thyme_kernel_real_panel_modules_build_o_1/scripts/module-lto.lds 均不存在。按任务边界不修补、不手工生成、不复制旧 O= 中间物、不重跑。
-- 涉及文件：work/reports/20260919_THYME_KERNEL_REAL_PANEL_MODULES_BUILD_1.md、work/stage_c_thyme_kernel_real_panel_modules_build_1/thyme_kernel_real_panel_modules_build.tsv、selector.diff、build-error.txt、日志/项目当前状态.md、work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv；WSL artifact [LOCAL_WSL_USER]/thyme_kernel_real_panel_modules_build_artifact_1。
+- 原因：第一个 .ko gspca_main.ko 链接时，ld.lld 报 cannot find linker script scripts/module-lto.lds。source/scripts/module-lto.lds 与 fresh O=/path/to/thyme-os4-build/thyme_kernel_real_panel_modules_build_o_1/scripts/module-lto.lds 均不存在。按任务边界不修补、不手工生成、不复制旧 O= 中间物、不重跑。
+- 涉及文件：work/reports/20260919_THYME_KERNEL_REAL_PANEL_MODULES_BUILD_1.md、work/stage_c_thyme_kernel_real_panel_modules_build_1/thyme_kernel_real_panel_modules_build.tsv、selector.diff、build-error.txt、日志/项目当前状态.md、work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv；WSL artifact /path/to/thyme-os4-build/thyme_kernel_real_panel_modules_build_artifact_1。
 - 验证：配置只有 CONFIG_USB_GSPCA=m、CONFIG_RMNET_PERF=m、CONFIG_RMNET_SHS=m；构建前后 .config 174536 bytes 与 RELR artifact cmp identical；Module.symvers 700 bytes；根 modules.order 151 bytes 列出 3 个预期 .ko；实际 .ko count 0；kernel.release 为 4.19.325-cip131-st15-perf；无 .ko 因此 vermagic/file/ELF 验证不适用。
 - 资源与清理：任务开始 10.77/32.22，实际构建前 6.72/36.71，失败收口清理后 9.30/34.08 GiB；C/D/E 可用约 103.93/183.01/186.55 GiB；无 make/clang/ld.lld/LLVM/dtc/conf worker。artifact 约 296 KiB；source/O/tools 精确临时目录已删除并 test -e 验证不存在。
 - 尚未验证：module-lto.lds 的正确生成前置条件、可审计 modules owner、任何 .ko vermagic/ABI、modules_install、boot/vendor_boot、AVB/super/vbmeta、设备启动和实际烧录版本。
@@ -9155,7 +9155,7 @@
 - 状态：已完成（TARGET_UNAVAILABLE；未构建 modules/full kernel；等待独立审核）
 - 改动/结论：在 WSL Ubuntu 原生 ext4 建立全新的 selector source/O/tools 副本，完整复制 closure 并覆盖 RELR .config、auto.conf、tristate.conf。固定 archive 只读确认 scripts/module-lto.lds.S 存在且为 851 bytes；scripts/Makefile:39 声明 extra CONFIG_LTO_CLANG module-lto.lds，Makefile:905 引用 scripts/module-lto.lds。唯一真实 make -j1 scripts/module-lto.lds exit 1。
 - 原因：Kbuild 在 syncconfig/主机准备后返回 No rule to make target scripts/module-lto.lds。精确 target 不可用；不改 Makefile、不手工生成、不换成 modules/full kernel、不复制旧 O=。
-- 涉及文件：work/reports/20260919_THYME_MODULE_LTO_LDS_GENERATION_CLOSURE_1.md、work/stage_c_thyme_module_lto_lds_generation_closure_1/thyme_module_lto_lds_generation_closure.tsv、selector.diff、build-error.txt、declaration.txt、日志/项目当前状态.md、work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv；WSL artifact [LOCAL_WSL_USER]/thyme_module_lto_lds_generation_artifact_1。
+- 涉及文件：work/reports/20260919_THYME_MODULE_LTO_LDS_GENERATION_CLOSURE_1.md、work/stage_c_thyme_module_lto_lds_generation_closure_1/thyme_module_lto_lds_generation_closure.tsv、selector.diff、build-error.txt、declaration.txt、日志/项目当前状态.md、work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv；WSL artifact /path/to/thyme-os4-build/thyme_module_lto_lds_generation_artifact_1。
 - 验证：.config 174536 bytes 与 RELR artifact cmp identical；auto.conf 49168、tristate.conf 18100；O= scripts/module-lto.lds 不存在；kernel.release 未生成；无 modules/full-kernel 产物。source/O/tools 已删除并 test -e 验证不存在。
 - 资源与安全：开始 12.03/30.88，启动前 6.58/36.51，清理后 9.46/33.69 GiB；C/D/E 可用约 103.87/183.01/186.55 GiB；无 make/clang/ld.lld/LLVM/dtc/conf worker；artifact 约 288 KiB。未执行 modules、modules_install、打包、super、vbmeta、adb/fastboot、设备写入，未触碰 Docker VHDX，未执行 wsl --shutdown。
 - 尚未验证：旧版 Kbuild 如何通过 aggregate/full kernel 入口生成 module-lto.lds、可审计的 modules owner、.ko vermagic/ABI、boot/vendor_boot、设备启动和实际烧录版本。
@@ -9167,7 +9167,7 @@
 - 状态：已完成（SCRIPT_GENERATED；仅生成 host linker script；等待独立审核；未刷机）
 - 改动/结论：静态读取固定 archive 的顶层 Makefile、scripts/Makefile、scripts/Makefile.build、scripts/Makefile.lib，确认真实入口为顶层 scripts/ 目录级递归：scripts recipe 调用 build=scripts，scripts/Makefile.build 的 __build 消费 extra-y，obj/%.lds 规则从 src/%.lds.S 运行 cpp_lds_S。随后在全新 WSL ext4 source/O/tools 中唯一真实 make -j1 scripts/ exit 0，日志出现 LDS scripts/module-lto.lds。
 - 原因：显式 scripts/module-lto.lds 没有直接规则，但目录级 scripts/ 入口能加载 scripts/Makefile 的 extra-$(CONFIG_LTO_CLANG) 声明并执行 Makefile.build 的 linker-script pattern rule；本轮只验证该最小入口，不构建 modules/full kernel。
-- 涉及文件：work/reports/20260919_THYME_MODULE_LTO_LDS_REAL_ENTRY_CLOSURE_1.md、work/stage_c_thyme_module_lto_lds_real_entry_closure_1/thyme_module_lto_lds_real_entry_closure.tsv、selector.diff、build-success.txt、static-entry.txt、日志/项目当前状态.md、work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv；WSL artifact [LOCAL_WSL_USER]/thyme_module_lto_real_entry_closure_artifact_1。
+- 涉及文件：work/reports/20260919_THYME_MODULE_LTO_LDS_REAL_ENTRY_CLOSURE_1.md、work/stage_c_thyme_module_lto_lds_real_entry_closure_1/thyme_module_lto_lds_real_entry_closure.tsv、selector.diff、build-success.txt、static-entry.txt、日志/项目当前状态.md、work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv；WSL artifact /path/to/thyme-os4-build/thyme_module_lto_real_entry_closure_artifact_1。
 - 验证：O=/scripts/module-lto.lds 存在，330 bytes，file 为 assembler source ASCII text；内容含 SECTIONS、.bss/.data/.rodata/.text 和 .eh_frame discard；.config 174536 bytes与RELR artifact cmp identical；auto.conf 49168、tristate.conf 18100；kernel.release 4.19.325-cip131-st15-perf；无 modules/full-kernel 产物。
 - 资源与清理：任务开始 12.02/30.88，实际构建前 6.71/36.72，清理后 9.28/34.06 GiB；C/D/E 可用约 103.77/183.01/186.55 GiB；无 make/clang/ld.lld/LLVM/dtc/conf worker。artifact 约 296 KiB；source/O/tools 已删除并 test -e 验证不存在。
 - 尚未验证：modules 重试是否能使用该脚本、.ko vermagic/ABI、modules_install、boot/vendor_boot、Image、设备启动和实际烧录版本。
@@ -9180,7 +9180,7 @@
 - 状态：已完成（host-only modules 构建成功；等待独立审核；未刷机）
 - 改动/结论：在 WSL Ubuntu 原生 ext4 建立新的 selector source/O/tools 副本，完整复制 closure 并覆盖 RELR .config、auto.conf、tristate.conf。唯一真实命令为 make -j1 scripts/ modules，make exit 0；目录级 scripts/ 入口生成 scripts/module-lto.lds，随后 MODPOST 3 modules 并生成 3 个 .ko。
 - 原因：上一轮 modules-only 在第一个 .ko 链接时因 scripts/module-lto.lds 缺失失败；上一轮已通过真实 scripts/ 入口确认该脚本的生成路径，本轮按审核边界用同 selector/RELR closure 做一次 modules retry。
-- 涉及文件：work/reports/20260919_THYME_KERNEL_REAL_PANEL_MODULES_RETRY_1.md、work/stage_c_thyme_kernel_real_panel_modules_retry_1/thyme_kernel_real_panel_modules_retry.tsv、work/stage_c_thyme_kernel_real_panel_modules_retry_1/selector.diff、日志/项目当前状态.md、work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv；WSL artifact [LOCAL_WSL_USER]/thyme_kernel_real_panel_modules_retry_artifact_1。
+- 涉及文件：work/reports/20260919_THYME_KERNEL_REAL_PANEL_MODULES_RETRY_1.md、work/stage_c_thyme_kernel_real_panel_modules_retry_1/thyme_kernel_real_panel_modules_retry.tsv、work/stage_c_thyme_kernel_real_panel_modules_retry_1/selector.diff、日志/项目当前状态.md、work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv；WSL artifact /path/to/thyme-os4-build/thyme_kernel_real_panel_modules_retry_artifact_1。
 - 验证：make exit 0；module-lto.lds 330 bytes、file 为 assembler source ASCII text；实际生成 gspca_main.ko 527384、rmnet_perf.ko 1834768、rmnet_shs.ko 2240544 bytes，均为 ARM64 relocatable ELF；三者 vermagic 均为 4.19.325-cip131-st15-perf SMP preempt mod_unload modversions aarch64；Module.symvers 771410 bytes、modules.order 151 bytes；三份配置均与 RELR artifact cmp identical。
 - 边界事实：Kbuild 为完成 modules 自动扩展依赖，日志包含 LD vmlinux、SORTEX vmlinux、SYSMAP System.map，随后进入 modules stage 2；这些隐式中间结果未复制进 artifact。未执行 modules_install、Image/DTB/DTBO 交付链、super、vbmeta、打包、adb、fastboot 或设备写入。
 - 资源与清理：实际构建前 Free RAM 11.66 GiB、Commit 31.52/64.22 GiB；构建期间最低观测 Free RAM 约 3.52 GiB、Commit 约 41.70/64.22 GiB；清理后 10.31/33.75 GiB；source/O/tools 精确临时路径已删除并 test -e 验证不存在；artifact 约 5.5 MiB。未触碰 Docker VHDX，未执行 wsl --shutdown，手机保持断开。
@@ -9193,11 +9193,11 @@
 - 状态：部分完成（只读合同核验完成；候选组装停止）
 - 改动/结论：仅分析，未修改业务源码、固定 kernel archive、官方镜像或设备状态。官方 thyme A13 的 boot/vendor_boot header、ramdisk/fstab provenance、AVB footer、vendor DTB bundle 和 dtbo table 已只读提取并与 host Image/DTB/DTBO/modules artifact 对照。
 - 原因：候选替换所需的 exact AVB owner/signing key、vendor_boot DTB bundle 选择/拼接规则、官方 29-entry DTBO 映射和完整 mkbootimg/AVB packaging owner 尚未确认；继续组装会把推测写成格式事实。
-- 涉及文件：`work/reports/20260919_THYME_BOOT_VENDOR_BOOT_HOST_CONTRACT_1.md`、`work/stage_c_thyme_boot_vendor_boot_host_contract_1/thyme_boot_vendor_boot_host_contract.tsv`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL 摘要 artifact `[LOCAL_WSL_USER]/thyme_boot_vendor_contract_artifact_1`。
+- 涉及文件：`work/reports/20260919_THYME_BOOT_VENDOR_BOOT_HOST_CONTRACT_1.md`、`work/stage_c_thyme_boot_vendor_boot_host_contract_1/thyme_boot_vendor_boot_host_contract.tsv`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL 摘要 artifact `/path/to/thyme-os4-build/thyme_boot_vendor_contract_artifact_1`。
 - 验证：官方 boot header v3、kernel 52654096、ramdisk 19850726、payload 72515584；vendor_boot header v3/page 4096、vendor ramdisk 2238、DTB 1613832、payload 1626112；official vendor DTB 为 4 个 FDT blob（540195/540191/533273/173）；official dtbo count 29、total_size 13415454；boot/vendor_boot/dtbo footer release 为 avbtool 1.2.0、algorithm NONE；official vbmeta 为 signed SHA256_RSA2048。host Image 53467160、3 DTB 与 12 DTBO、modules release 线索已记录。
 - 尚未验证：exact official mkbootimg/AVB owner、签名 key/descriptor 重建流程、vendor DTB 精确 bundle mapping、official 29-entry DTBO mapping、vendor_dlkm/modules_install/ABI、设备 active panel 和真机启动。
 - 待处理：保持 `THYME_BUILD_READY=false`、`IMAGE_READY=false`、`DEVICE_WRITE_STOP=true`；不执行 packaging、签名、刷写或设备操作，等待最小合同缺口补齐。
-- 清理：只读解包临时目录 `[LOCAL_WSL_USER]/thyme_boot_vendor_contract_inspect_1` 精确删除；未触碰 Docker VHDX，未执行 `wsl --shutdown`；手机保持断开。
+- 清理：只读解包临时目录 `/path/to/thyme-os4-build/thyme_boot_vendor_contract_inspect_1` 精确删除；未触碰 Docker VHDX，未执行 `wsl --shutdown`；手机保持断开。
 - 替代：本条把“下一步可评估最小 boot 骨架”收窄为“先补齐官方 AVB/DTB/DTBO/工具 owner 合同”；不推翻 modules retry 的 host-only 成功事实。
 
 ## 2026-09-19 08:15｜THYME A13 packaging metadata / owner closure 只读收口
@@ -9220,7 +9220,7 @@
 - 状态：已完成（host/read-only ABI 审计；未编译、未组装、未刷机）
 - 改动/结论：仅分析，未修改业务代码、kernel source、`.config` 或官方镜像。结论为 `HOST_ABI_AUDIT_COMPLETE / OFFICIAL_A13_MODULE_OWNER_NOT_CLOSED / HOST_MODULES_NOT_A13_COMPATIBLE / NOT_FLASHABLE`。
 - 原因：官方 A13 kernel release 为 `4.19.157-perf-g92c089fc2d37`、Clang 10.0.7；host retry artifact release 和三个 `.ko` vermagic 为 `4.19.325-cip131-st15-perf`。release/vermagic 已直接不同，host `.ko` 不能直接作为官方 A13 或最终 OS4 module owner。
-- 涉及文件：`work/reports/20260919_THYME_KERNEL_MODULE_ABI_COMPATIBILITY_1.md`、`work/stage_c_thyme_kernel_module_abi_compatibility_1/thyme_kernel_module_abi_compatibility.tsv`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`、`日志/项目当前状态.md`；WSL artifact `[LOCAL_WSL_USER]/thyme_kernel_module_abi_compatibility_artifact_1`。
+- 涉及文件：`work/reports/20260919_THYME_KERNEL_MODULE_ABI_COMPATIBILITY_1.md`、`work/stage_c_thyme_kernel_module_abi_compatibility_1/thyme_kernel_module_abi_compatibility.tsv`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`、`日志/项目当前状态.md`；WSL artifact `/path/to/thyme-os4-build/thyme_kernel_module_abi_compatibility_artifact_1`。
 - 验证：官方 `boot/vendor_boot` v3 头与 kernel strings/config 只读提取；官方 config 174282 bytes，`CONFIG_MODULES=y`、`CONFIG_MODVERSIONS=y`、`CONFIG_MODULE_SIG_ALL=y`、SHA512；boot/vendor ramdisk marker count 均为 0；host `.ko` 三个均 ARM64 relocatable，含 `.modinfo`/`__versions`，host `Module.symvers` 771410 bytes/13900 lines，modules.order 3 项，host config 未启用 `CONFIG_MODULE_SIG`。
 - ABI 级别：release/strings `CONFIRMED_DIFFERENT`；vermagic `CONFIRMED_DIFFERENT`；symbol CRC `UNKNOWN`（缺 official Module.symvers/official `.ko`）；module signature `POLICY_DIFFERENT / ACTUAL_UNKNOWN`；device actually loadable `UNKNOWN`（未操作设备）。
 - vendor/module owner：官方 boot/vendor ramdisk 清单没有 `.ko` 或 modules metadata；官方 sparse `super.img` 直接 `lpdump --all` 返回 invalid geometry，本轮未转换 raw、未运行 lpunpack，logical vendor/vendor_dlkm/system_dlkm 内容和 owner 仍 UNKNOWN。
@@ -9234,7 +9234,7 @@
 - 状态：已完成（host-only 格式验证；未刷机、未生成候选）
 - 改动/结论：仅分析并生成可再生的 host round-trip 诊断产物，未修改官方 `boot.img`、host kernel artifact、源码或配置。结论为 `HOST_V3_IDENTITY_ROUNDTRIP_PASS / HOST_IMAGE_SUBSTITUTION_FORMAT_PASS / AVB_NOT_ATTACHED / NOT_FLASHABLE`。
 - 原因：在不等待 Xiaomi 精确 mkbootimg owner、不获取官方私钥的前提下，验证本地 AOSP-style mkbootimg 对官方 v3 boot payload 的可逆性，并单独检查 host Image 的格式与 boot 分区尺寸余量。
-- 涉及文件：`work/reports/20260919_THYME_BOOT_HOST_ROUNDTRIP_1.md`、`work/stage_c_thyme_boot_host_roundtrip_1/thyme_boot_host_roundtrip.tsv`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`、`日志/项目当前状态.md`；WSL artifact `[LOCAL_WSL_USER]/thyme_boot_host_roundtrip_artifact_1`。
+- 涉及文件：`work/reports/20260919_THYME_BOOT_HOST_ROUNDTRIP_1.md`、`work/stage_c_thyme_boot_host_roundtrip_1/thyme_boot_host_roundtrip.tsv`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`、`日志/项目当前状态.md`；WSL artifact `/path/to/thyme-os4-build/thyme_boot_host_roundtrip_artifact_1`。
 - A 段验证：官方 boot v3、kernel 52654096、ramdisk 19850726、OS 13.0.0、patch 2024-04、empty cmdline；identity output 72515584 bytes；二次 parse 全部匹配；官方与 identity 前 72515584 bytes cmp 通过，kernel/ramdisk 解包后 cmp 通过。
 - B 段验证：host Image 53467160 bytes；host substitution output 73326592 bytes；二次 parse 为 v3、kernel 53467160、ramdisk 19850726、OS/patch/cmdline 匹配；output mod 4096=0，小于官方 boot 文件 134217728 bytes，余量 60911136 bytes。
 - AVB 边界：官方原始 boot 只读 `avbtool info_image` 显示 896-byte footer/vbmeta、Algorithm `NONE`、release `avbtool 1.2.0`；identity/host 新输出均返回 no vbmeta image，即未观察到 footer。没有执行 sign、append_hash_footer 或 vbmeta 重建；round-trip 不是 AVB/设备验证。
@@ -9248,7 +9248,7 @@
 - 状态：已完成（自有诊断 AVB/boot 结构；未刷机、不可刷）
 - 改动/结论：仅在 WSL Ubuntu 原生 ext4 的 host round-trip 复制品上执行 `avbtool add_hash_footer` 与 `make_vbmeta_image`；未修改先前 artifact、官方 boot、官方 vbmeta 或设备。结论为 `DEV_AVB_STRUCTURE_CONFIRMED / FLAGS2_NONE_DIAGNOSTIC_CONTRACT_CONFIRMED / FLASHABLE=false`。
 - 原因：建立不依赖官方 release key/private key 的自有开发诊断合同，验证 flags=2/Algorithm NONE 下 host boot footer、boot descriptor 和独立 vbmeta 的尺寸/字段一致性。
-- 涉及文件：`work/reports/20260919_THYME_DEV_AVB_BOOT_CONTRACT_1.md`、`work/stage_c_thyme_dev_avb_boot_contract_1/thyme_dev_avb_boot_contract.tsv`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`、`日志/项目当前状态.md`；WSL artifact `[LOCAL_WSL_USER]/thyme_dev_avb_boot_contract_artifact_1`。
+- 涉及文件：`work/reports/20260919_THYME_DEV_AVB_BOOT_CONTRACT_1.md`、`work/stage_c_thyme_dev_avb_boot_contract_1/thyme_dev_avb_boot_contract.tsv`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`、`日志/项目当前状态.md`；WSL artifact `/path/to/thyme-os4-build/thyme_dev_avb_boot_contract_artifact_1`。
 - 验证：输入 host boot payload 73326592 bytes；footer 输出 Image size=201326592、Original image size=73326592、VBMeta offset=73326592、VBMeta size=512、Algorithm NONE、flags=2、partition=boot；footer descriptor image size=73326592，digest 为 avbtool 生成的 `73f26581d19baf736314fcead0d9f8067a6183bf13b32d1c518a68acbd6168ff`。
 - 验证：自有 `dev_vbmeta_flags2_none.img` 4096 bytes、padding=4096、Authentication Block=0、Algorithm NONE、flags=2、单一 boot hash descriptor；其前 512 bytes 与 footer 独立 vbmeta cmp 通过；带 footer boot 仍可被 `unpack_bootimg` 读取 v3/kernel/ramdisk/OS/patch/cmdline。
 - 关键边界：没有使用官方 signed `vbmeta.img`/`vbmeta_system.img`，没有 key/signing helper、RSA signing、append_hash_footer 或 device verify；没有生成 vbmeta_system。flags=2/Algorithm NONE 只代表诊断结构事实，不代表 bootloader 接受或可启动。
@@ -9262,7 +9262,7 @@
 - 状态：已完成（vendor_boot identity 通过；DTBO container 工具缺失而保持 UNKNOWN；未刷机）
 - 改动/结论：仅分析并生成 vendor_boot identity round-trip 诊断产物，未修改官方 vendor_boot/dtbo/vbmeta、固定源码或设备。结论为 `VENDOR_BOOT_IDENTITY_CONTRACT_CONFIRMED / DTBO_MINIMAL_FORMAT_UNKNOWN / FLASHABLE=false`。
 - 原因：先闭合官方 vendor_boot v3 的可逆 header/ramdisk/DTB/cmdline 边界，再判断 host DTBO 是否有可信 container 生成入口；没有 `mkdtimg` 时不手工猜测 table 字段。
-- 涉及文件：`work/reports/20260919_THYME_VENDOR_BOOT_DTBO_HOST_CONTRACT_1.md`、`work/stage_c_thyme_vendor_boot_dtbo_host_contract_1/thyme_vendor_boot_dtbo_host_contract.tsv`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`、`日志/项目当前状态.md`；WSL artifact `[LOCAL_WSL_USER]/thyme_vendor_boot_dtbo_host_contract_artifact_1`。
+- 涉及文件：`work/reports/20260919_THYME_VENDOR_BOOT_DTBO_HOST_CONTRACT_1.md`、`work/stage_c_thyme_vendor_boot_dtbo_host_contract_1/thyme_vendor_boot_dtbo_host_contract.tsv`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`、`日志/项目当前状态.md`；WSL artifact `/path/to/thyme-os4-build/thyme_vendor_boot_dtbo_host_contract_artifact_1`。
 - vendor_boot 验证：官方 VNDRBOOT v3、page 4096、header 2112、vendor ramdisk 2238、DTB 1613832、DTB address 0x1f00000、vendor cmdline/offsets 由 `unpack_bootimg` 回读；identity output 1626112 bytes；二次 parse 全字段匹配；官方解包与 identity 解包的 dtb/vendor_ramdisk cmp 通过。
 - DTB 验证：FDT payload 4 个连续 v17 blob，offset/size 为 0/540195、540195/540191、1080386/533273、1613659/173，总和 1613832；末 blob strings 含 `qcom,rtic-id`。
 - DTBO 验证：host artifact 12 个单独 `.dtbo`；目标 `thyme-sm8250-overlay.dtbo` 为 v17、473322 bytes、magic [REDACTED_DEVICE_ID]；`dtc` 1.7.2 可反编译，selector evidence 指向 `dsi_j2s_mp_42_02_0b_dsc_cmd`，baseline cmp_exit=1、device_mapping_confirmed=false。
@@ -9277,7 +9277,7 @@
 - 状态：已完成（只读解析 owner 已确认；DTBO build owner 未闭合；不可刷）
 - 改动/结论：仅分析并生成紧凑报告/TSV/WSL 证据，未修改业务源码、kernel config 或官方镜像。结论为 `DTBO_TABLE_PARSE_OWNER_CONFIRMED / DTBO_BUILD_OWNER_READY=false / FLASHABLE=false`。
 - 原因：本地有界搜索未找到可信 `mkdtimg`/`mkdtboimg.py`/等价生成器；取得 AOSP `platform/system/libufdt` 固定 commit `f20ea93ecad75ca2abda5339ad67dc56285f941d` 的 Python 3 `mkdtboimg.py` 作为解析 owner，先闭合现有官方/ donor DTBO 表事实，避免手工猜表头或把 parser 成功当可刷。
-- 涉及文件：`work/reports/20260919_THYME_DTBO_TABLE_OWNER_INTAKE_1.md`、`work/stage_c_thyme_dtbo_table_owner_intake_1/thyme_dtbo_table_owner_intake.tsv`、同目录的 `dtbo_table_summary.tsv`/`dtbo_sequence_comparison.tsv`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`、`日志/项目当前状态.md`；WSL artifact `[LOCAL_WSL_USER]/thyme_dtbo_table_owner_intake_artifact_1`。
+- 涉及文件：`work/reports/20260919_THYME_DTBO_TABLE_OWNER_INTAKE_1.md`、`work/stage_c_thyme_dtbo_table_owner_intake_1/thyme_dtbo_table_owner_intake.tsv`、同目录的 `dtbo_table_summary.tsv`/`dtbo_sequence_comparison.tsv`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`、`日志/项目当前状态.md`；WSL artifact `/path/to/thyme-os4-build/thyme_dtbo_table_owner_intake_artifact_1`。
 - 输入：thyme 官方 A13 `dtbo.img`、alioth/K40 官方 A13 `dtbo.img`、K40/12X 成功移植包中明确选定的 K40 `firmware-update/dtbo.img`；三套文件均 33554432 bytes。
 - 验证：三套表均为 magic `0xd7b7ab1e`、header 32、entry 32、29 entries、entries_offset 32、page_size 4096、version 0；每套 29 行 entry 的 `id/rev/custom0..3` 全为 0，`dt_offset+dt_size<=total_size` 全部 PASS。
 - 验证：thyme total_size=13415454，alioth=13415446，K40 donor=13415454；thyme 与 K40 donor 的 size 多重集合相同但按 index 的 size/offset 顺序不同，未据此声称 payload 相同或 index 可迁移。
@@ -9291,7 +9291,7 @@
 - 状态：已完成（host-only diagnostic create/round-trip；不可刷）
 - 改动/结论：在 Ubuntu WSL 原生 ext4 使用固定 AOSP `mkdtboimg.py` 创建一张 one-entry 和一张 host-12-entry 诊断 DTBO 表；未修改源码或官方镜像。结论为 `HOST_DIAGNOSTIC_DTBO_CREATE_CONFIRMED / ROUNDTRIP_PASS / ACTIVE_INDEX_UNKNOWN / FLASHABLE=false`。
 - 原因：独立审核确认 AOSP 工具的 `create` 路径可用，但 exact-thyme 29-entry/index/panel mapping 仍未知；按授权只做明确标注的 host diagnostic table，验证生成器和 round-trip，不把结果推进为官方表。
-- 涉及文件：`work/reports/20260919_THYME_DTBO_CONTAINER_DIAGNOSTIC_CREATE_1.md`、`work/stage_c_thyme_dtbo_container_diagnostic_create_1/thyme_dtbo_container_diagnostic_create.tsv`、`payload_roundtrip.tsv`、`input_manifest.tsv`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `[LOCAL_WSL_USER]/thyme_dtbo_container_diagnostic_create_artifact_1`。
+- 涉及文件：`work/reports/20260919_THYME_DTBO_CONTAINER_DIAGNOSTIC_CREATE_1.md`、`work/stage_c_thyme_dtbo_container_diagnostic_create_1/thyme_dtbo_container_diagnostic_create.tsv`、`payload_roundtrip.tsv`、`input_manifest.tsv`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `/path/to/thyme-os4-build/thyme_dtbo_container_diagnostic_create_artifact_1`。
 - 输入/参数：one-entry 使用 `thyme-sm8250-overlay.dtbo` 473322 bytes；12-entry 使用 host artifact 下按文件名排序的 alioth/apollo/cas/cmi/dagu/elish/enuma/lmi/munch/psyche/thyme/umi 共 12 项；page_size=4096、version=0、id/rev/custom0..3=0。
 - 验证：one-entry create/dump exit=0，raw/total=473386，count=1，header/entry=32，entries_offset=32，边界/FDT magic/zero metadata PASS；12-entry create/dump exit=0，raw/total=5704404，count=12，其余同样 PASS。
 - 验证：AOSP dump 提取后直接 byte compare 共 13/13 PASS；12-entry 中 thyme overlay 的 entry index 10 仅是字典序诊断排列，active_index 保持 UNKNOWN。
@@ -9305,7 +9305,7 @@
 - 状态：已完成（host-only vendor_boot identity/3-DTB 格式诊断；不可刷）
 - 改动/结论：使用工作区 `mkbootimg.py`/`unpack_bootimg.py` 在 WSL Ubuntu 原生 ext4 生成官方 4-FDT identity variant 与 host 3-DTB variant；未修改官方镜像、源码或设备。结论为 `HOST_VENDOR_BOOT_DTB_DIAGNOSTIC_CONFIRMED / IDENTITY_ROUNDTRIP_PASS / HOST_3DTB_FORMAT_PASS / FLASHABLE=false`。
 - 原因：在保持官方 v3/page/offset/cmdline/vendor ramdisk 合同的前提下，验证当前 3 个 host DTB 是否能形成可回读的格式诊断，并明确 3 vs 4 FDT 差异；不猜测或补造官方第 4 个 FDT。
-- 涉及文件：`work/reports/20260919_THYME_VENDOR_BOOT_DTB_HOST_DIAGNOSTIC_1.md`、`work/stage_c_thyme_vendor_boot_dtb_host_diagnostic_1/thyme_vendor_boot_dtb_host_diagnostic.tsv`、`dtb_fdt_parse.tsv`、`host_dtb_manifest.tsv`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `[LOCAL_WSL_USER]/thyme_vendor_boot_dtb_host_diagnostic_artifact_1`。
+- 涉及文件：`work/reports/20260919_THYME_VENDOR_BOOT_DTB_HOST_DIAGNOSTIC_1.md`、`work/stage_c_thyme_vendor_boot_dtb_host_diagnostic_1/thyme_vendor_boot_dtb_host_diagnostic.tsv`、`dtb_fdt_parse.tsv`、`host_dtb_manifest.tsv`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `/path/to/thyme-os4-build/thyme_vendor_boot_dtb_host_diagnostic_artifact_1`。
 - 输入：官方 thyme A13 vendor_boot；host DTB `kona.dtb` 470368、`kona-v2.dtb` 477286、`kona-v2.1.dtb` 477290，合计 1424944 bytes。
 - identity 验证：输出 1626112 bytes；VNDRBOOT v3、page 4096、header 2112、vendor ramdisk 2238、DTB 1613832、DTB address 0x1f00000、4 FDT、cmdline、DTB/ramdisk cmp 均 PASS。
 - host-3-DTB 验证：输出 1433600 bytes；VNDRBOOT v3、page 4096、header 2112、vendor ramdisk 2238、DTB 1424944、DTB address 0x1f00000、3 个 FDT、FDT magic/边界、cmdline、ramdisk cmp 均 PASS；明确为 `3_vs_4`，没有复制官方第 4 个 qcom,rtic-id blob。
@@ -9320,7 +9320,7 @@
 - 状态：已完成（host-only 诊断包；随后按用户中断指令停止推进；不可刷）
 - 改动/结论：把前序独立验证的 host Image substitution boot、host 3-DTB vendor_boot 和 host 12-entry DTBO 三个输出复制到 WSL ext4 诊断 artifact，重新执行 boot/vendor_boot/DTBO 回读和独立结构解析。结论为 `HOST_LOW_LEVEL_SPINE_ASSEMBLY_CONFIRMED / FLASHABLE=false`。
 - 原因：验证当前 low-level spine 的来源、输出尺寸、目标分区容量、格式字段和 provenance 是否能闭合为一个主机诊断包；不把独立诊断输出升级为完整候选。
-- 涉及文件：`work/reports/20260919_THYME_LOW_LEVEL_SPINE_HOST_ASSEMBLY_1.md`、`work/stage_c_thyme_low_level_spine_host_assembly_1/thyme_low_level_spine_host_assembly.tsv`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`、`日志/项目当前状态.md`；WSL artifact `[LOCAL_WSL_USER]/thyme_low_level_spine_host_assembly_artifact_1`。
+- 涉及文件：`work/reports/20260919_THYME_LOW_LEVEL_SPINE_HOST_ASSEMBLY_1.md`、`work/stage_c_thyme_low_level_spine_host_assembly_1/thyme_low_level_spine_host_assembly.tsv`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`、`日志/项目当前状态.md`；WSL artifact `/path/to/thyme-os4-build/thyme_low_level_spine_host_assembly_artifact_1`。
 - 输入/输出：boot `73326592/134217728` bytes，fit 余量 `60891136`；vendor_boot `1433600/100663296` bytes，fit 余量 `99229696`；dtbo `5704404/33554432` bytes，fit 余量 `27850028`。三个输出均 FIT。
 - 验证：boot `ANDROID!` header v3、kernel `53467160`、ramdisk `19850726`、OS/patch `13.0.0/2024-04`；vendor_boot `VNDRBOOT` v3/page4096/header2112、ramdisk2238、host DTB 1424944、3 FDT magic/bounds PASS；DTBO magic `[REDACTED_DEVICE_ID]`、header/entry32、count12、page4096、version0、12/12 bounds/FDT PASS；与前序对应 artifact 分块 byte compare `3/3 PASS`。
 - 边界：官方 module ABI 与 host kernel/`.ko` 不同；vendor DTB `3 vs 4` 未闭合；官方 DTBO `29 vs host 12` mapping 未闭合；diagnostic entry 10 不是 active index；dev AVB flags=2 只作独立旁证，未组合完整 vbmeta chain；未验证 bootloader/device accept、启动或刷写。
@@ -9336,7 +9336,7 @@
 - 第 4 个 FDT：独立解析 `offset=1613659`、`size=173`、FDT v17、root `/`、`qcom,rtic-id=<1>`、`MP_DATA` 52 bytes，完整结构中无 `compatible`。`dtc` 反编译与独立 parser 一致。
 - 源码归属：现有 thyme 预处理 DTS 和源码型 DTBO artifact 没有 `rtic` 精确命中；bounded 公开源码检索未得到可核实的 exact-thyme/SM8250 DTS/Kbuild/DTBO owner，因此该小 FDT 是必需启动 DTB、工厂附加 blob 还是其他附属数据仍为 UNKNOWN。
 - 原因：按审核要求只做最小输入闭合；不重新大规模解包 super，不启动 lpmake/lpunpack，不构建、不生成候选、不操作设备。
-- 涉及文件：`work/reports/20260919_THYME_EARLY_BOOT_CONTROL_GROUP_INTAKE_1.md`、`work/stage_c_thyme_early_boot_control_group_intake_1/thyme_early_boot_control_group_intake.tsv`、`work/stage_c_thyme_early_boot_control_group_intake_1/public_source_bounded_search.txt`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `[LOCAL_WSL_USER]/thyme_early_boot_control_group_intake_artifact_1`。
+- 涉及文件：`work/reports/20260919_THYME_EARLY_BOOT_CONTROL_GROUP_INTAKE_1.md`、`work/stage_c_thyme_early_boot_control_group_intake_1/thyme_early_boot_control_group_intake.tsv`、`work/stage_c_thyme_early_boot_control_group_intake_1/public_source_bounded_search.txt`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `/path/to/thyme-os4-build/thyme_early_boot_control_group_intake_artifact_1`。
 - 验证：FDT header/size/offset/bounds、属性值、`dtc` 输出、host preprocessed DTS 精确 `rtic` 搜索、模块 metadata 行数和三个 ARM64 sample `.ko` 文件类型均已读取；Free RAM 约 17.62 GiB，无重型 worker。
 - 尚未验证：exact OS4 logical module owner、official target `.ko`/Module.symvers/签名/加载合同、RTIC 小 FDT 的公开源码 owner、bootloader/内核消费方、设备启动或刷写接受。
 - 安全：未执行 adb/fastboot、设备写入、重启、lpmake/lpunpack、构建、Docker VHDX 操作或 `wsl --shutdown`；未计算 SHA-256；flags 保持 `THYME_BUILD_READY=false`、`IMAGE_READY=false`、`DEVICE_WRITE_STOP=true`。
@@ -9351,7 +9351,7 @@
 - 控制矩阵：A0 官方控制；B1 只替换自建 Image、保留官方 boot ramdisk/vendor_boot 四 FDT/DTBO 29-entry/vendor/odm/system；B2 exact modules；B3 DTB/DTBO。B1 只有在 boot AVB/slot/rollback、Image 对官方 DTB 兼容性以及模块风险放行条件闭合后才可考虑一次可回退实验；本轮没有执行。
 - ABI 边界：官方 `4.19.157-perf-g92c089fc2d37`、MODULE_SIG/SHA512/LTO_NONE 与 host `4.19.325-cip131-st15-perf`、未启用 MODULE_SIG/LTO_CLANG 不同；现有 host `.ko` 不得直接复制到官方控制组。
 - RTIC：对 A13 fstab、modules.load/dep、host preprocessed DTS 做 bounded consumer/string 关联仍无命中；第 4 个 `qcom,rtic-id` FDT 的 consumer/启动必要性继续 UNKNOWN，不添加或删除它。
-- 涉及文件：`work/reports/20260919_THYME_MODULE_EARLY_BOOT_CONTROL_DESIGN_1.md`、`work/stage_c_thyme_module_early_boot_control_design_1/thyme_module_early_boot_control_design.tsv`、`work/stage_c_thyme_module_early_boot_control_design_1/rtic_consumer_bounded.txt`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `[LOCAL_WSL_USER]/thyme_module_early_boot_control_design_artifact_1`。
+- 涉及文件：`work/reports/20260919_THYME_MODULE_EARLY_BOOT_CONTROL_DESIGN_1.md`、`work/stage_c_thyme_module_early_boot_control_design_1/thyme_module_early_boot_control_design.tsv`、`work/stage_c_thyme_module_early_boot_control_design_1/rtic_consumer_bounded.txt`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `/path/to/thyme-os4-build/thyme_module_early_boot_control_design_artifact_1`。
 - 验证：TSV 包含 41 个 module rows，计数为 38 个 `LATE_FEATURE_CANDIDATE`、3 个 `UNKNOWN`；artifact 仅约 380 KiB 小型文本、173-byte FDT 和三个已有小型 `.ko` 样本，无官方大镜像。
 - 尚未验证：exact module owner、官方 `.ko`/Module.symvers/签名/加载时序、RTIC consumer、AVB/bootloader accept、设备启动或任何刷写。
 - 安全：未执行 adb/fastboot、设备写入、重启、构建、super 解包、`lpunpack`、`lpmake`、Docker VHDX 操作或 `wsl --shutdown`；未计算 SHA-256；flags 保持 `THYME_BUILD_READY=false`、`IMAGE_READY=false`、`DEVICE_WRITE_STOP=true`。
@@ -9402,7 +9402,7 @@
 - boot header 独立回读：ANDROID!、v3、kernel=53467160、ramdisk=19850726、OS/patch=13.0.0/2024-04、cmdline 为空。AVB descriptor 的 hash algorithm 字段为 sha256；没有另行计算独立文件哈希。
 - 边界：没有官方 signed vbmeta/vbmeta_system、私钥、signing helper、chain、rollback、vendor_boot/dtbo/super；flags=2/Algorithm NONE 仅为诊断结构，不能证明 bootloader 接受、设备启动或可刷。
 - 最小 B1 失败观测清单仅作设计：新鲜 Fastboot preflight、官方回退输入、slot readback、console/pstore/ADB 可用性记录、失败后回 Fastboot；未执行任何设备动作。
-- 涉及文件：`work/reports/20260919_THYME_DEV_AVB_REBOUND_HOST_CONTRACT_1.md`、`work/stage_c_thyme_dev_avb_rebound_host_contract_1/thyme_dev_avb_rebound_host_contract.tsv`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `[LOCAL_WSL_USER]/thyme_dev_avb_rebound_host_contract_artifact_1`。
+- 涉及文件：`work/reports/20260919_THYME_DEV_AVB_REBOUND_HOST_CONTRACT_1.md`、`work/stage_c_thyme_dev_avb_rebound_host_contract_1/thyme_dev_avb_rebound_host_contract.tsv`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `/path/to/thyme-os4-build/thyme_dev_avb_rebound_host_contract_artifact_1`。
 - 验证：新 footer/vbmeta `info_image`、boot header 回读和 descriptor prefix cmp 均通过；临时 WSL 工作目录已精确删除，未发现官方大镜像进入 artifact；未构建、未执行 adb/fastboot、未刷写、未触碰 Docker VHDX、未执行 `wsl --shutdown`。
 - 尚未验证：生产签名/owner、vbmeta_system/slot/rollback chain、bootloader/device acceptance、vendor_boot/dtbo/super/userspace、B1 真机启动和早期日志。
 - 待处理：暂停等待独立审核；不要把本轮诊断输出升级为真机候选。
@@ -9413,7 +9413,7 @@
 - 状态：已完成（独立审核；诊断结构；不可刷）。
 - 改动/结论：独立读取 WSL artifact 的输出和 `cross_check.txt`，确认新 footer/vbmeta 的 original/offset/descriptor image size 都是 `73326592`，footer 与独立 vbmeta 前 512 bytes 比较通过；确认报告没有把 Algorithm NONE/Flags 2 当成设备接受。
 - 原因：验证替换 Image 后 descriptor 不再指向旧官方 payload，同时保持生产 AVB、chain、rollback 和 bootloader acceptance 未闭合的边界。
-- 涉及文件：`work/reports/20260919_THYME_DEV_AVB_REBOUND_HOST_CONTRACT_1.md`、`work/stage_c_thyme_dev_avb_rebound_host_contract_1/thyme_dev_avb_rebound_host_contract.tsv`、WSL artifact `[LOCAL_WSL_USER]/thyme_dev_avb_rebound_host_contract_artifact_1`。
+- 涉及文件：`work/reports/20260919_THYME_DEV_AVB_REBOUND_HOST_CONTRACT_1.md`、`work/stage_c_thyme_dev_avb_rebound_host_contract_1/thyme_dev_avb_rebound_host_contract.tsv`、WSL artifact `/path/to/thyme-os4-build/thyme_dev_avb_rebound_host_contract_artifact_1`。
 - 验证：独立审核报告 `work/reports/20260919_THYME_DEV_AVB_REBOUND_HOST_CONTRACT_REVIEW_1.md`；artifact 文件清单与字段回读一致；未执行设备动作。
 - 尚未验证：官方签名/chain、rollback/slot、bootloader/device acceptance、模块/DTB/DTBO/userspace 和 B1 真机启动。
 - 待处理：继续 host-only 审计自有诊断链与官方分区/chain 差异；G1/G5/G6/G7 未闭合前不刷写。
@@ -9429,7 +9429,7 @@
 - key 安全：私钥只在 WSL 临时工作目录生成和使用，完成后删除；artifact 只留公钥 PEM/blob与小型证据。该 key 是 self-owned test key，绝不是小米官方 key。
 - 边界：没有使用官方 vbmeta/vbmeta_system、私钥、vendor_boot、dtbo、super、userspace；未执行设备、adb/fastboot、刷写、重启、构建、lpmake/lpunpack、Docker VHDX 或 `wsl --shutdown`。AVB descriptor 的 sha256 只为工具结构字段，未另行计算独立文件哈希。
 - 最小失败观测设计沿用 B1：新鲜 Fastboot preflight、官方回退输入、slot readback、console/pstore/ADB 可用性和失败后回 Fastboot；本轮未执行。
-- 涉及文件：`work/reports/20260919_THYME_SELF_SIGNED_DEV_AVB_CHAIN_HOST_1.md`、`work/stage_c_thyme_self_signed_dev_avb_chain_host_1/thyme_self_signed_dev_avb_chain_host.tsv`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `[LOCAL_WSL_USER]/thyme_self_signed_dev_avb_chain_host_artifact_1`。
+- 涉及文件：`work/reports/20260919_THYME_SELF_SIGNED_DEV_AVB_CHAIN_HOST_1.md`、`work/stage_c_thyme_self_signed_dev_avb_chain_host_1/thyme_self_signed_dev_avb_chain_host.tsv`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `/path/to/thyme-os4-build/thyme_self_signed_dev_avb_chain_host_artifact_1`。
 - 验证：TSV 18 行/8 列检查通过；两次 PEM 公钥 `verify_image` 均返回 0；临时工作目录和私钥均已删除，artifact 未含私钥或官方大镜像；收尾 Free RAM 约 12.95 GiB，未发现 make/clang/ld.lld/dtc/lpmake/lpunpack/avbtool/openssl worker。
 - 尚未验证：小米官方 key/owner、vbmeta_system chain、slot/rollback、bootloader/device acceptance、vendor_boot/dtbo/super/userspace、B1 实机启动和早期日志。
 - 待处理：暂停等待独立审核；不得把 self-signed host chain 升级为真机候选。
@@ -9440,7 +9440,7 @@
 - 状态：已完成（独立审核；主机自签诊断；不可刷）。
 - 改动/结论：独立读取 WSL artifact 的 `verify_status.txt`、字段文本、cleanup 记录和输出清单；确认 signed boot footer 与单 boot descriptor 顶层 vbmeta 使用一次性自有 RSA-2048 key，并由对应 PEM 公钥验证返回码 0；确认私钥已删除。
 - 原因：证明替换后的 host payload 可以形成自洽的签名/descriptor 工具链，同时明确它与 Xiaomi 官方 key、vbmeta_system chain、slot/rollback、设备接受完全分离。
-- 涉及文件：`work/reports/20260919_THYME_SELF_SIGNED_DEV_AVB_CHAIN_HOST_1.md`、`work/stage_c_thyme_self_signed_dev_avb_chain_host_1/thyme_self_signed_dev_avb_chain_host.tsv`、WSL artifact `[LOCAL_WSL_USER]/thyme_self_signed_dev_avb_chain_host_artifact_1`。
+- 涉及文件：`work/reports/20260919_THYME_SELF_SIGNED_DEV_AVB_CHAIN_HOST_1.md`、`work/stage_c_thyme_self_signed_dev_avb_chain_host_1/thyme_self_signed_dev_avb_chain_host.tsv`、WSL artifact `/path/to/thyme-os4-build/thyme_self_signed_dev_avb_chain_host_artifact_1`。
 - 验证：独立审核报告 `work/reports/20260919_THYME_SELF_SIGNED_DEV_AVB_CHAIN_HOST_REVIEW_1.md`；`verify_signed_boot_pem_public_rc=0`、`verify_self_signed_vbmeta_pem_public_rc=0`；无设备动作。
 - 尚未验证：官方 key/chain、设备接受、slot/rollback、vendor_boot/DTBO/modules/DTB/userspace 和 B1 真机启动。
 - 待处理：继续主机侧定义官方控制组与自有诊断组差异及一次性回退门禁；不得把自有 key 直接用于刷机。
@@ -9462,7 +9462,7 @@
 - 状态：已完成（等待独立审核）。
 - 改动/结论：仅分析并复算，未修改 pinned source、固定 fragment 或业务代码。固定树中 `CONFIG_DEVTMPFS`（`drivers/base/Kconfig:29`）、`CONFIG_DRM_MSM`（`drivers/gpu/drm/msm/Kconfig:2`，由 `drivers/gpu/drm/Kconfig:295` 引入）、`CONFIG_DM_VERITY_AVB`（`drivers/md/Kconfig:518`）均存在；四个既有 fragment 都没有直接请求三项，且没有 bounded 默认/选择关系将其置为 `y`，因此 baseline unset 是可解释的来源结果。
 - 原因：上一轮 built-in/early-driver 审计把三项标为风险缺口，需要区分“fragment 未请求/默认 n”与“后续 fragment 覆盖为 n”，并验证最小修正是否能被 Kconfig 依赖求解。
-- 涉及文件：`work/reports/20260919_THYME_KCONFIG_GAP_SOURCE_RECONCILIATION_1.md`、`work/stage_c_thyme_kconfig_gap_source_reconciliation_1/thyme_kconfig_gap_source_reconciliation.tsv`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；紧凑 WSL artifact `[LOCAL_WSL_USER]/thyme_kconfig_gap_source_reconciliation_artifact_1`。
+- 涉及文件：`work/reports/20260919_THYME_KCONFIG_GAP_SOURCE_RECONCILIATION_1.md`、`work/stage_c_thyme_kconfig_gap_source_reconciliation_1/thyme_kconfig_gap_source_reconciliation.tsv`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；紧凑 WSL artifact `/path/to/thyme-os4-build/thyme_kconfig_gap_source_reconciliation_artifact_1`。
 - 验证：Ubuntu WSL 原生 ext4 中真实执行无 patch baseline 与仅含三项 `=y` 的临时 patch 两次 `merge_config.sh + olddefconfig`，均返回 `0`；baseline 三项均 unset，patched 最终为 `CONFIG_DEVTMPFS=y`、`CONFIG_DRM_MSM=y`、`CONFIG_DM_VERITY_AVB=y`，`CONFIG_DEVTMPFS_MOUNT` 仍 unset；olddefconfig 日志无 warning/error/not-final/missed/undefined/unmet 命中。TSV 13 条数据行、8 列、0 坏行；artifact 已含四个 fragment、四个 Kconfig 源片段、配置和日志。
 - 尚未验证：这不是正确 owner 配置的确认；未验证 first-stage `/dev`、显示 DT/firmware/runtime、AVB chain/signing/rollback、Image/模块/设备接受或真机启动。
 - 待处理：等待独立审核；不得把临时三符号 patch 写回 pinned fragment，不得据此生成候选或刷写。flags 继续为 `THYME_BUILD_READY=false`、`IMAGE_READY=false`、`DEVICE_WRITE_STOP=true`、`FLASHABLE=false`。
@@ -9484,7 +9484,7 @@
 - 状态：部分完成（host build 已执行但因工具链命名缺口失败；等待独立审核）。
 - 改动/结论：未修改 pinned source、固定 fragment 或业务代码。在固定 commit `71b13e62f057a649b77fe4062feb73ee72ad609c` 的 Ubuntu ext4 临时树中追加仅含 `CONFIG_DEVTMPFS=y`、`CONFIG_DRM_MSM=y`、`CONFIG_DM_VERITY_AVB=y` 的临时 patch；`merge_config.sh` 和 `olddefconfig` 均成功，随后只执行一次 `make -j1 Image`。
 - 原因：验证三符号 host Kconfig patch 是否能进入真实 kernel Image 编译阶段，同时保持不生成候选和不触碰设备的边界。
-- 涉及文件：`work/reports/20260919_THYME_KCONFIG_PATCH_HOST_BUILD_1.md`、`work/stage_c_thyme_kconfig_patch_host_build_1/thyme_kconfig_patch_host_build.tsv`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；紧凑 WSL artifact `[LOCAL_WSL_USER]/thyme_kconfig_patch_host_build_artifact_1`。
+- 涉及文件：`work/reports/20260919_THYME_KCONFIG_PATCH_HOST_BUILD_1.md`、`work/stage_c_thyme_kconfig_patch_host_build_1/thyme_kconfig_patch_host_build.tsv`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；紧凑 WSL artifact `/path/to/thyme-os4-build/thyme_kconfig_patch_host_build_artifact_1`。
 - 验证：`make Image` 返回 `2`，在 `init/built-in.a` 阶段报 `/bin/sh: llvm-nm: not found` 和 `/bin/sh: llvm-ar: not found`；Ubuntu 存在版本化 `/usr/bin/llvm-nm-21`、`/usr/bin/llvm-ar-21`、`/usr/bin/ld.lld-21`，但本轮没有重跑或建立 symlink/map。`kernel.release` 已生成为 `4.19.325-cip131-st15-perf`；Image、vmlinux、Module.symvers、modules.order 均 absent；最大 RSS `150636 KiB`，未触发资源门禁。
 - 尚未验证：版本化 LLVM 工具名映射后的第二次 build、Image/DTB/DTBO、模块 ABI/签名、运行时显示/first-stage、AVB/设备接受和真机启动。
 - 待处理：如需继续，先由后续任务明确授权并单独处理 Ubuntu LLVM tool-name map；不得把本轮 `.config` 或半成品当作可刷候选。当前 flags 为 `THYME_BUILD_READY=false`、`IMAGE_READY=false`、`DEVICE_WRITE_STOP=true`、`FLASHABLE=false`。
@@ -9495,7 +9495,7 @@
 - 状态：部分完成（工具名门槛已解决；固定源码编译错误阻塞；等待独立审核）。
 - 改动/结论：仅建立命令生命周期内的 `PATH=/usr/lib/llvm-21/bin:...` overlay，未修改 `/usr/bin`、pinned source、固定 fragment 或业务代码。四个 fragment 加三符号临时 patch 的 `merge_config.sh`/`olddefconfig` 均成功；随后只执行一次 `make -j1 Image`。
 - 原因：验证上一轮 `llvm-nm`/`llvm-ar` 工具名缺口消除后，三符号 patch 能否继续进入真实 Image 编译，同时保持 host-only 和不可刷边界。
-- 涉及文件：`work/reports/20260919_THYME_LLVM_TOOLNAME_MAP_HOST_BUILD_2.md`、`work/stage_c_thyme_llvm_toolname_map_host_build_2/thyme_llvm_toolname_map_host_build.tsv`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；紧凑 WSL artifact `[LOCAL_WSL_USER]/thyme_llvm_toolname_map_host_build_artifact_2`。
+- 涉及文件：`work/reports/20260919_THYME_LLVM_TOOLNAME_MAP_HOST_BUILD_2.md`、`work/stage_c_thyme_llvm_toolname_map_host_build_2/thyme_llvm_toolname_map_host_build.tsv`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；紧凑 WSL artifact `/path/to/thyme-os4-build/thyme_llvm_toolname_map_host_build_artifact_2`。
 - 验证：PATH overlay 下工具解析到 `/usr/lib/llvm-21/bin`，未再出现工具 not found；`make Image` 返回 `2`，耗时约 `10:26.57`，最大 RSS `187940 KiB`。失败于 `drivers/gpu/drm/msm/msm_drv.c:1236:38`：`strnstr(dev_name(dev), "mdp")` 传入 2 参数，而声明需要 3 参数。`Image`、`vmlinux`、`Module.symvers`、`modules.order`、本次 `kernel.release` 均 absent；DTB/DTBO 未启动。
 - 尚未验证：该固定源码/头文件 API mismatch 的修复方案、后续 Image/DTB/DTBO、模块 ABI/签名、运行时显示/first-stage、AVB/设备接受和真机启动。
 - 待处理：本轮已用掉唯一允许的工具映射后 Image 重跑额度；如需继续必须由新任务明确源码修复授权，不得把当前临时 config 或半成品作为候选。flags 继续为 `THYME_BUILD_READY=false`、`IMAGE_READY=false`、`DEVICE_WRITE_STOP=true`、`FLASHABLE=false`。
@@ -9528,7 +9528,7 @@
 - 状态：已完成（host-only 构建失败；等待独立审核）。
 - 改动/结论：使用仅对本次命令生效的 `/usr/lib/llvm-21/bin` PATH overlay，未修改系统、pinned source 或 fragment；这是上一条工具名阻塞后的唯一一次 `make -j1 Image` 重跑。
 - 验证：工具名映射生效，`merge_config.sh`/`olddefconfig` rc=0；`make Image` rc=2，真实失败为 `drivers/gpu/drm/msm/msm_drv.c:1236` 的 `strnstr` 两参数调用与三参数声明不匹配；最大 RSS `187940 KiB`、耗时约 `10:26.57`。Image、vmlinux、modules、kernel.release 均 absent，DTB/DTBO 未执行；临时目录已清理，TSV 15 条数据行/8 列/0 坏行。
-- 涉及文件：`work/reports/20260919_THYME_LLVM_TOOLNAME_MAP_HOST_BUILD_2.md`、`work/stage_c_thyme_llvm_toolname_map_host_build_2/thyme_llvm_toolname_map_host_build.tsv`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；artifact `[LOCAL_WSL_USER]/thyme_llvm_toolname_map_host_build_artifact_2`。
+- 涉及文件：`work/reports/20260919_THYME_LLVM_TOOLNAME_MAP_HOST_BUILD_2.md`、`work/stage_c_thyme_llvm_toolname_map_host_build_2/thyme_llvm_toolname_map_host_build.tsv`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；artifact `/path/to/thyme-os4-build/thyme_llvm_toolname_map_host_build_artifact_2`。
 - 尚未验证：该固定源码 API mismatch 的修复、后续 Image/DTB/DTBO/modules、运行时、AVB/设备接受和真机启动。
 - 待处理：停止新构建，等待独立审核；flags 继续 `THYME_BUILD_READY=false`、`IMAGE_READY=false`、`DEVICE_WRITE_STOP=true`、`FLASHABLE=false`。
 - 替代：补充并固定 `THYME-LLVM-TOOLNAME-MAP-HOST-BUILD-2` 的最终执行顺序和收口事实；不替代早先工具名阻塞记录。
@@ -9538,7 +9538,7 @@
 - 状态：已完成（source-only；等待独立审核）。
 - 改动/结论：仅从固定归档按白名单提取 DRM MSM、string API、techpack display 和 Kbuild 片段，并做全归档 `.c/.h` 的单符号 bounded scan；未修改 pinned source/fragment、未构建。确认 `include/linux/string.h:84` 与 `lib/string.c:1002` 是三参数 API，而 `drivers/gpu/drm/msm/msm_drv.c:1236` 是唯一两参数调用，属于内部 API/来源错配。
 - 原因：上一轮 LLVM tool map 后 Image 暴露 `msm_drv.c:1236` 编译错误，需要先证明最小修复的来源和语义，避免盲目写回或重建。
-- 涉及文件：`work/reports/20260919_THYME_MSM_DRV_STRNSTR_API_SOURCE_AUDIT_1.md`、`work/stage_c_thyme_msm_drv_strnstr_source_audit_1/thyme_msm_drv_strnstr_source_audit.tsv`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；紧凑 WSL artifact `[LOCAL_WSL_USER]/thyme_msm_drv_strnstr_source_audit_artifact_1`。
+- 涉及文件：`work/reports/20260919_THYME_MSM_DRV_STRNSTR_API_SOURCE_AUDIT_1.md`、`work/stage_c_thyme_msm_drv_strnstr_source_audit_1/thyme_msm_drv_strnstr_source_audit.tsv`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；紧凑 WSL artifact `/path/to/thyme-os4-build/thyme_msm_drv_strnstr_source_audit_artifact_1`。
 - 验证：同一归档 `techpack/display/msm/msm_drv.c:2055` 和公开 Android `kernel/msm` 对应代码均使用 `strnstr(dev_name(dev), "mdp", strlen("mdp"))`；固定 DRM MSM 子树只有该一处调用。工作区不是 Git、归档无 `.git`，本地无法追溯转折 commit；K40 本地包无源文件参考。建议候选仅为补 `strlen("mdp")`，未应用。
 - 尚未验证：候选 patch 后的对象/Image 编译、两个 `CONFIG_DRM_MSM` 显示 Kbuild 路径的最终 owner 拓扑、DT/DTBO/firmware、运行时显示、AVB/设备接受和真机启动。
 - 待处理：等待独立审核；若获新授权，先在临时副本只应用一行候选并编译 `msm_drv.o`，再评估 Image；不得直接改 pinned source、生成候选或刷写。flags 继续 `THYME_BUILD_READY=false`、`IMAGE_READY=false`、`DEVICE_WRITE_STOP=true`、`FLASHABLE=false`。
@@ -9561,7 +9561,7 @@
 - 改动/结论：在 Ubuntu WSL 原生 ext4 全新临时树中，从固定 commit `71b13e62f057a649b77fe4062feb73ee72ad609c`、四个 pinned fragment 副本和既有三符号临时 Kconfig patch 出发，仅应用一行候选补丁：为 `drivers/gpu/drm/msm/msm_drv.c:1236` 的 `strnstr(dev_name(dev), "mdp")` 补 `strlen("mdp")` 第三参数。固定归档、pinned fragment、系统目录和工作树源码未改。
 - 原因：独立来源审计已确认固定树 API 为三参数；本轮只验证该最小候选能否越过真实对象编译门槛，不扩大到完整 Image。
 - 验证：`merge_config.sh` rc=0；`olddefconfig` rc=0；`make -j1 drivers/gpu/drm/msm/msm_drv.o` rc=0。对象 `msm_drv.o` 为 `384616` bytes LLVM IR bitcode，耗时约 `13.01 s`，最大 RSS `138644 KiB`。最终 `CONFIG_DEVTMPFS=y`、`CONFIG_DRM_MSM=y`、`CONFIG_DM_VERITY_AVB=y`，`CONFIG_DEVTMPFS_MOUNT` 仍 unset；仅有固定树 modpost const qualifier warning，无失败 error。
-- 涉及文件：`work/reports/20260919_THYME_MSM_DRV_STRNSTR_PATCH_OBJECT_BUILD_1.md`、`work/stage_c_thyme_msm_drv_strnstr_patch_object_build_1/thyme_msm_drv_strnstr_patch_object_build.tsv`（22×8，BadRows=0）、`work/stage_c_thyme_msm_drv_strnstr_patch_object_build_1/msm_drv_strnstr.patch`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；artifact `[LOCAL_WSL_USER]/thyme_msm_drv_strnstr_patch_object_build_artifact_1`。
+- 涉及文件：`work/reports/20260919_THYME_MSM_DRV_STRNSTR_PATCH_OBJECT_BUILD_1.md`、`work/stage_c_thyme_msm_drv_strnstr_patch_object_build_1/thyme_msm_drv_strnstr_patch_object_build.tsv`（22×8，BadRows=0）、`work/stage_c_thyme_msm_drv_strnstr_patch_object_build_1/msm_drv_strnstr.patch`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；artifact `/path/to/thyme-os4-build/thyme_msm_drv_strnstr_patch_object_build_artifact_1`。
 - owner/边界：已保存 `drivers/gpu/drm/Makefile`、`techpack/display/Makefile`、`techpack/display/msm/Makefile` 的两个 `CONFIG_DRM_MSM` 路径证据；完整 link owner 仍未闭合。未运行 Image、vmlinux、DTB/DTBO、modules、Module.symvers 或 modules.order；这些输出均 absent。
 - 清理与安全：artifact 已保留配置、日志、补丁、owner 证据和对象；完整源码/O=临时目录已精确删除并确认 absent。未组装 boot/vendor_boot/vbmeta/super，未执行 AVB、adb、fastboot、设备读写或刷写，未触碰 Docker VHDX，未执行 `wsl --shutdown`，未做独立 SHA-256。
 - 尚未验证：完整 Image/link、两个显示 owner 的最终拓扑、DT/DTBO/firmware、模块 ABI/签名、运行时显示、AVB/设备接受和真机启动。
@@ -9581,11 +9581,11 @@
 
 ## 2026-09-19 16:56｜THYME 显示 owner Kbuild 拓扑审计
 
-- 收口补充（16:58）：artifact 关键报告、TSV、对象列表、符号证据均已核对；TSV artifact 含表头加 22 条数据行。精确临时目录 `[LOCAL_WSL_USER]/thyme_display_owner_kbuild_topology_1` 已删除并确认 absent，最后进程检查没有真实 `make`、clang、ld.lld、llvm-ar 或 dtc worker。
+- 收口补充（16:58）：artifact 关键报告、TSV、对象列表、符号证据均已核对；TSV artifact 含表头加 22 条数据行。精确临时目录 `/path/to/thyme-os4-build/thyme_display_owner_kbuild_topology_1` 已删除并确认 absent，最后进程检查没有真实 `make`、clang、ld.lld、llvm-ar 或 dtc worker。
 - 状态：已完成（host-only bounded 分析与 dry-run；等待独立审核；不可刷）。
 - 改动/结论：固定 commit `71b13e62f057a649b77fe4062feb73ee72ad609c` 的 root Kbuild 同时把 `drivers/built-in.a` 与 `techpack/built-in.a` 放入 `KBUILD_VMLINUX_MAIN`。当前 `CONFIG_DRM_MSM=y` 因此同时激活 `drivers/gpu/drm/msm/msm.o` 和 `techpack/display/msm/msm_drm.o`，结论为 `BOTH_DISPLAY_PATHS_ENTER_BUILTIN / LINK_NOT_RUN / IMAGE_NOT_BUILT`。
 - 原因：上一轮单对象编译只保存了两个 owner 路径的存在性，尚未回答最终 link 拓扑；本轮需要先确认 Thyme/0B 应由哪条显示实现负责，避免在 owner 未分离前扩展完整 Image。
-- 涉及文件：`work/reports/20260919_THYME_DISPLAY_OWNER_KBUILD_TOPOLOGY_1.md`、`work/stage_c_thyme_display_owner_kbuild_topology_1/thyme_display_owner_kbuild_topology.tsv`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `[LOCAL_WSL_USER]/thyme_display_owner_kbuild_topology_artifact_1`。
+- 涉及文件：`work/reports/20260919_THYME_DISPLAY_OWNER_KBUILD_TOPOLOGY_1.md`、`work/stage_c_thyme_display_owner_kbuild_topology_1/thyme_display_owner_kbuild_topology.tsv`、`日志/项目当前状态.md`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `/path/to/thyme-os4-build/thyme_display_owner_kbuild_topology_artifact_1`。
 - 验证：固定源码静态读取、root `make -pn`、drivers 内部 `scripts/Makefile.build -n`（99 个对象）和按 Kona make-time export 注入后的 techpack 内部 dry-run（107 个对象）均完成；`techpack/display/config/konadisp.conf` 确认 SDE/DP/DSI parser/WB/RSC 是 make-time 注入，不是普通 Kconfig 定义。两份 `msm_iommu.c` 字节相同且都定义全局 `msm_iommu_new()`；其他同名 core 全局定义也形成重复链接风险。TSV 为 22 条数据行、8 列、BadRows=0。
 - 重要判断：Thyme DTS 通过 `xiaomi-sm8250-common.dtsi` 使用 Kona SDE，`mdss_mdp` compatible 为 `qcom,sde-kms`；techpack match 表覆盖该 compatible，drivers DRM MSM match 表不覆盖。techpack 还包含 MI DSI panel/LHBM 实现，因此推荐 techpack 作为唯一 Thyme/0B owner；drivers 路径应在后续新任务中设置 mutually-exclusive gate。当前 `thyme-sm8250.dtsi:62` 的 `dsi_sim_vid` 未改。
 - 尚未验证：最终 linker/modpost 对重复全局符号的实际错误、LTO/ThinLTO 处理、完整 Kona DTB probe、firmware/clock/regulator 合同、Android userspace/runtime 和设备接受。顶层 `make -n` 补充探针在固定树缺失的生成式 `crypto/asymmetric_keys/x509.asn1.c` 处停止；没有执行 recipe，不能把该 probe 当作显示 linker 结果。
@@ -9608,10 +9608,10 @@
 - 状态：已完成（host-only bounded；等待独立审核；不可刷）。
 - 改动/结论：在 Ubuntu WSL 原生 ext4 的临时固定 commit 副本中，把 `drivers/gpu/drm/Makefile` 的 `CONFIG_DRM_MSM` 子目录门控临时改为未定义的 `CONFIG_THYME_DRM_MSM_GENERIC`，保留 techpack 的 `CONFIG_DRM_MSM` 门控；既有 `strnstr(..., strlen("mdp"))` 一行补丁同样只在临时树生效。结论为 `PASS_WITH_BOUNDARIES / DISPLAY_OWNER_GATE_OBJECT_BUILD_PASS / TECHPACK_KONA_ONLY_OWNER_IN_DRY_RUN / KCONFIG_UNCHANGED / MSM_DRV_OBJECT_RC0 / BASELINE_FULL_COMPILE_NOT_RUN / LINK_NOT_RUN / IMAGE_NOT_BUILT / FLASHABLE=false`。
 - 原因：上一轮已确认 drivers 与 techpack 两个显示 owner 同时进入 built-in；本轮验证最小可逆 gate 是否只排除通用 drivers owner 而不误关 Kona techpack owner。
-- 涉及文件：`work/reports/20260919_THYME_DISPLAY_OWNER_GATE_OBJECT_BUILD_1.md`、`work/stage_c_thyme_display_owner_gate_object_build_1/thyme_display_owner_gate_object_build.tsv`、`work/stage_c_thyme_display_owner_gate_object_build_1/artifact_manifest.txt`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `[LOCAL_WSL_USER]/thyme_display_owner_gate_object_build_artifact_1`。
+- 涉及文件：`work/reports/20260919_THYME_DISPLAY_OWNER_GATE_OBJECT_BUILD_1.md`、`work/stage_c_thyme_display_owner_gate_object_build_1/thyme_display_owner_gate_object_build.tsv`、`work/stage_c_thyme_display_owner_gate_object_build_1/artifact_manifest.txt`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `/path/to/thyme-os4-build/thyme_display_owner_gate_object_build_artifact_1`。
 - 验证：baseline/gate `merge_config.sh` 与 `olddefconfig` 均 rc=0，两个 `.config` `cmp` 一致；父目录 dry-run 对象数由 drivers `99→0`、techpack `107→107`；techpack `msm_drv.o` 单目标 rc=0，产物 `440352` bytes LLVM IR bitcode，最大 RSS `143440 KiB`、耗时 `12.95 s`。TSV 为 22 条数据行、8 列、BadRows=0；artifact 已复核并保留必要 evidence。
 - 尚未验证：gate 前实际编译 RSS/耗时（本轮按范围未编译 baseline object）、最终 linker/modpost、完整 Image/vmlinux、DTB/DTBO/modules、0B selector、firmware/AVB/runtime 和真机启动；构建日志中固定 `modpost.c:808` warning 非致命，不能升级成失败。
-- 待处理：等待独立审核；未经审核和新授权，不启动完整 Image，不修改 pinned source，不操作设备。精确临时 source/O=目录 `[LOCAL_WSL_USER]/thyme_display_owner_gate_object_build_1` 已删除，未发现 make/clang/tar worker。
+- 待处理：等待独立审核；未经审核和新授权，不启动完整 Image，不修改 pinned source，不操作设备。精确临时 source/O=目录 `/path/to/thyme-os4-build/thyme_display_owner_gate_object_build_1` 已删除，未发现 make/clang/tar worker。
 - 替代：本条把“owner gate 尚未验证”更新为“临时 gate 在 Kconfig/父目录对象图/techpack 代表性对象范围通过”；不替代最终 linker、镜像、运行时和设备门禁。
 
 ## 2026-09-19 17:26｜THYME 显示 owner gate 对象构建独立审核
@@ -9630,7 +9630,7 @@
 - 状态：已完成（host-only setup attempt；首个错误后停止；不可刷）。
 - 改动/结论：在新的 Ubuntu WSL 原生 ext4 临时树中提取固定 commit，并应用已审核的三符号 Kconfig patch、drivers owner gate 和 `strnstr` 一行 API patch。首次 `merge_config.sh -m -O .../out` 返回 `1`，首个确定错误为 `output directory .../out does not exist`；结论为 `IMAGE_BUILD_BLOCKED_AT_MERGE_CONFIG_OUTPUT_DIRECTORY_MISSING`。
 - 原因：本轮严格按“首个工具/生成前置错误即停止、不重试、不换方案”执行；没有创建缺失 output 目录，因此不能把 setup 阻断升级成源码或 Image 编译失败。
-- 涉及文件：`work/reports/20260919_THYME_IMAGE_FIRST_COMPILE_GATED_1.md`、`work/stage_c_thyme_image_first_compile_gated_1/thyme_image_first_compile_gated.tsv`、`work/stage_c_thyme_image_first_compile_gated_1/artifact_manifest.txt`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `[LOCAL_WSL_USER]/thyme_image_first_compile_gated_artifact_1`。
+- 涉及文件：`work/reports/20260919_THYME_IMAGE_FIRST_COMPILE_GATED_1.md`、`work/stage_c_thyme_image_first_compile_gated_1/thyme_image_first_compile_gated.tsv`、`work/stage_c_thyme_image_first_compile_gated_1/artifact_manifest.txt`、`work/stage_c_k40_three_way_reverse_engineering_1/source_map.tsv`；WSL artifact `/path/to/thyme-os4-build/thyme_image_first_compile_gated_artifact_1`。
 - 验证：资源预检为 Windows 可用 RAM 约 19.83 GiB、WSL available 约 14 GiB、ext4 可用约 831 GiB；merge 日志已保存；`olddefconfig` 与唯一一次 `make -j1 Image` 均 `NOT_RUN`；`Image`/`vmlinux`/`kernel.release`/`Module.symvers`/`modules.order` 均未生成；临时 source/O= 目录已删除且无构建 worker。
 - 尚未验证：最终 linker/modpost、techpack 是否进入 vmlinux、重复全局符号、Image/DTB/DTBO/modules、耗时/RSS 和设备运行；本轮没有 Image metrics。
 - 待处理：保持 `THYME_BUILD_READY=false`、`IMAGE_READY=false`、`DEVICE_WRITE_STOP=true`、`FLASHABLE=false`，等待审核或新任务明确授权的重新尝试；不自动重放本轮命令。
@@ -9639,7 +9639,7 @@
 ## 2026-09-19 18:18｜THYME techpack-only 完整 Image 编译与最终链接
 
 - 状态：已完成（host-only Image/vmlinux；设备不可刷）。
-- 改动/结论：在持久化 Ubuntu WSL 原生 ext4 工作树 `[LOCAL_WSL_USER]/thyme_techpack_kernel_image_bringup_1` 中，预创建 `out/` 后沿用固定 commit、三符号 Kconfig patch、LLVM-21 PATH 映射、techpack-only owner gate 和 `strnstr` 最小 patch；`merge_config.sh`、`olddefconfig`、`make -j1 Image` 分别成功，最终 `LTO → MODPOST → LD vmlinux → SYSMAP → OBJCOPY Image` 完成。
+- 改动/结论：在持久化 Ubuntu WSL 原生 ext4 工作树 `/path/to/thyme-os4-build/thyme_techpack_kernel_image_bringup_1` 中，预创建 `out/` 后沿用固定 commit、三符号 Kconfig patch、LLVM-21 PATH 映射、techpack-only owner gate 和 `strnstr` 最小 patch；`merge_config.sh`、`olddefconfig`、`make -j1 Image` 分别成功，最终 `LTO → MODPOST → LD vmlinux → SYSMAP → OBJCOPY Image` 完成。
 - 原因：完成 `THYME-TECHPACK-KERNEL-IMAGE-BRINGUP` 的唯一 host-side 目标；上一轮 `out/` 未预创建的 setup 首错已通过持久化目录初始化修复，没有重放或清理编译缓存。
 - 涉及文件：WSL 工作树的 `source/`、`out/`、`patches/`、`logs/`、`artifacts/`；关键产物为 `artifacts/Image`、`artifacts/kernel.release`、`artifacts/thyme_techpack_image.config`、`artifacts/image_build.log`。
 - 补丁：`patches/owner-gate.diff` 将 generic drivers owner 改为 `CONFIG_THYME_DRM_MSM_GENERIC`；`patches/strnstr.diff`/`strnstr.patch` 为 DRM MSM 调用补 `strlen("mdp")`；未写回固定 archive 或 Windows 工作树。
@@ -9652,14 +9652,14 @@
 ## 2026-09-19 18:39｜THYME techpack-only B1 boot 主机侧准备
 
 - 状态：已完成（host-only 产物、回读和 AVB 结构通过；未进行设备实验）。
-- 改动/结论：在持久化 WSL ext4 树 `[LOCAL_WSL_USER]/thyme_techpack_b1_boot_preparation_1` 中，直接复用上一里程碑新 Image `[LOCAL_WSL_USER]/thyme_techpack_kernel_image_bringup_1/artifacts/Image`（53,467,160 bytes，2026-09-19 18:17:58），从官方 A13 boot v3 解出 ramdisk/header 参数，只替换 kernel，生成 `outputs/boot_b1_payload.img`（73,326,592 bytes）。
+- 改动/结论：在持久化 WSL ext4 树 `/path/to/thyme-os4-build/thyme_techpack_b1_boot_preparation_1` 中，直接复用上一里程碑新 Image `/path/to/thyme-os4-build/thyme_techpack_kernel_image_bringup_1/artifacts/Image`（53,467,160 bytes，2026-09-19 18:17:58），从官方 A13 boot v3 解出 ramdisk/header 参数，只替换 kernel，生成 `outputs/boot_b1_payload.img`（73,326,592 bytes）。
 - 原因：完成 `THYME-TECHPACK-B1-BOOT-PREPARATION` 的主机侧最小控制组准备，不重新解压 kernel、不清理 O=、不混入 host DTB/DTBO/OS4 用户空间。
 - 验证：payload unpack→repack→parse 通过；回读 kernel 与新 Image、回读 ramdisk 与官方 ramdisk 均逐字节一致；最终 header v3、kernel 53,467,160、ramdisk 19,850,726、OS 13.0.0、patch 2024-04、空 cmdline。
 - AVB：使用 `tools/bootimg/avbtool.py` 1.3.0 和本轮新生成的一次性 RSA-2048 自有 key，对 boot payload 建立新的 SHA256_RSA2048 footer；`boot_b1_self_signed.img` 为 201,326,592 bytes，footer vbmeta 1,344 bytes，独立顶层 `b1_self_signed_vbmeta.img` 为 4,096 bytes。boot footer 和顶层 vbmeta 均用本轮公钥 PEM `verify_image` 通过；工具首次验证因 descriptor 分区名要求同目录 `boot.img` 别名而失败，创建临时 symlink 重试通过后已删除别名。临时私钥已删除；当前 descriptor digest/公钥均不同于历史 host AVB artifact，不复用旧 digest。
 - 控制组：官方 `vendor_boot.img`（100,663,296 bytes、v3、四 FDT、DTB bundle 1,613,832 bytes）和官方 `dtbo.img`（33,554,432 bytes、29 entries）复制到 control_group 后与源逐字节一致；官方 vbmeta/vbmeta_system 仅保留参考副本。官方 system/vendor/odm/firmware 仍以原包为来源，未复制 OS4 用户空间。
 - 容量核对：`partition.xml` 和历史 fastboot 证据的 boot/vendor_boot/dtbo/vbmeta/vbmeta_system 分区容量分别为 201,326,592/100,663,296/33,554,432/131,072/131,072 bytes；官方 boot 文件 134,217,728 bytes 与最终 signed boot 的分区填充关系已记录。历史 fastboot 状态不可替代当前 fresh preflight。
 - 模块风险：沿用既有有界研究，不重做模块考古；官方 ramdisk 未见模块元数据，A13 vendor 参考的 41 个 `.ko` 中 early direct confirmed=0、late candidates=38、unknown=3。exact target logical owner、ABI/vermagic、签名和加载时序仍未知，未加入 host `.ko`。
-- 关键文件：B1 manifest `[LOCAL_WSL_USER]/thyme_techpack_b1_boot_preparation_1/artifacts/b1_host_manifest.txt`；产物 `outputs/boot_b1_self_signed.img`、`outputs/boot_b1_payload.img`、`outputs/boot_b1_footer.vbmeta`、`outputs/b1_self_signed_vbmeta.img`；回读/AVB/控制组日志均在 `logs/`，配置和补丁来源仍在上一里程碑 kernel tree。
+- 关键文件：B1 manifest `/path/to/thyme-os4-build/thyme_techpack_b1_boot_preparation_1/artifacts/b1_host_manifest.txt`；产物 `outputs/boot_b1_self_signed.img`、`outputs/boot_b1_payload.img`、`outputs/boot_b1_footer.vbmeta`、`outputs/b1_self_signed_vbmeta.img`；回读/AVB/控制组日志均在 `logs/`，配置和补丁来源仍在上一里程碑 kernel tree。
 - 尚未解决：fresh Fastboot 当前设备状态/目标槽位/回读回退路径；官方 bootloader 是否接受本轮自有 AVB key、rollback 和 descriptor chain；模块 ABI/签名的设备级兼容性；用户对首次设备写入/重启实验的明确批准。
 - 安全与资源：未执行 adb/fastboot/reboot/flash，未修改设备分区；未触碰 Docker VHDX，未执行 `wsl --shutdown`。收口时 Windows 可用 RAM 约 8.70 GiB，C/D/E 可用约 102.70/181.45/185.10 GiB，红线未触发。
 - 替代：本条将上一条“boot/AVB/镜像组装未验证”更新为“B1 主机侧 boot/AVB/control-group preparation 已通过”；不替代设备 AVB 接受、模块 ABI、fresh preflight 或真机启动结论。
@@ -9683,9 +9683,9 @@
 - 状态：已完成（host-only；候选可检查；设备写入未开始）。
 - 改动/结论：正式切换到 `THYME-XIAOMI15-OS4-FIRST-BOOT-CANDIDATE`。复用持久化 WSL ext4 用户空间树和已链接的 techpack Image，没有重编内核、重新解包固定 kernel archive 或清空 O=。生成了面向 thyme 的 boot、vendor_boot、dtbo、AVB hashtree super 和 131072-byte 开发 vbmeta 链。
 - 用户空间来源：Xiaomi15/dada `OS4.0.0.8.XOCCNXM` 的 system/system_ext/product/mi_ext EROFS 已完成 identity、feature 和有限路径适配；mi_product 已提取但没有强行塞入官方 thyme 动态分区几何。system_dlkm/vendor_dlkm 的 dada 6.6/Android15 内容排除。vendor/odm 保留 exact-thyme Pixel A17 provider；没有复制 Xiaomi15 的低层驱动、firmware、6.6 kernel 或 DTB。
-- 启动链：`boot/boot.img` 使用 `[LOCAL_WSL_USER]/thyme_techpack_kernel_image_bringup_1/artifacts/Image` 替换 exact-thyme Pixel ramdisk/header；`vendor_boot/vendor_boot.img` 保留 Pixel 四 FDT 和 vendor ramdisk，仅加入三项 EROFS core、MIEXT ext4/EROFS、`avb=vbmeta` 和 17 条已有同机 overlay；`dtbo/dtbo.img` 与 Pixel exact-thyme provider 字节一致。
+- 启动链：`boot/boot.img` 使用 `/path/to/thyme-os4-build/thyme_techpack_kernel_image_bringup_1/artifacts/Image` 替换 exact-thyme Pixel ramdisk/header；`vendor_boot/vendor_boot.img` 保留 Pixel 四 FDT 和 vendor ramdisk，仅加入三项 EROFS core、MIEXT ext4/EROFS、`avb=vbmeta` 和 17 条已有同机 overlay；`dtbo/dtbo.img` 与 Pixel exact-thyme provider 字节一致。
 - AVB/super：`super/super_a_avb.img` 与 raw 版本使用同一 9126805504-byte device geometry，动态分区内置 EROFS hashtree/footer（`--do_not_generate_fec`，因为环境没有 `fec` 工具），lpmake/lpdump/lpunpack 通过；top `vbmeta/vbmeta.img` 和 child `vbmeta/vbmeta_system.img` 均为 131072 bytes，包含 `vbmeta_system` chain、boot/vendor_boot/dtbo/vendor/odm/mi_ext 及 system/system_ext/product hashtree descriptors。算法 `NONE`、flags `2`、无生产签名；设备是否接受未验证。
-- 验证：boot kernel/ramdisk round-trip、vendor_boot fstab/DTB/cpio round-trip、DTBO SHA256 对照、super lpdump 和 lpunpack 内容（EROFS AVB 输入逐字节、vendor/odm 按原文件长度前缀）通过；四个 EROFS AVB hashtree 的 `avbtool verify_image` 通过。候选清单为 WSL artifact `[LOCAL_WSL_USER]/thyme_xiaomi15_os4_first_boot_candidate_1/FIRST_BOOT_CANDIDATE_MANIFEST.tsv`，结果为 `HOST_PASS_WITH_RUNTIME_BOUNDARIES`。
+- 验证：boot kernel/ramdisk round-trip、vendor_boot fstab/DTB/cpio round-trip、DTBO SHA256 对照、super lpdump 和 lpunpack 内容（EROFS AVB 输入逐字节、vendor/odm 按原文件长度前缀）通过；四个 EROFS AVB hashtree 的 `avbtool verify_image` 通过。候选清单为 WSL artifact `/path/to/thyme-os4-build/thyme_xiaomi15_os4_first_boot_candidate_1/FIRST_BOOT_CANDIDATE_MANIFEST.tsv`，结果为 `HOST_PASS_WITH_RUNTIME_BOUNDARIES`。
 - 首错及修复：第一次 AVB 添加因 `--prop` 使用 `=` 而非工具要求的 `:` 停止；修正后通过。第二次 hashtree 因本地缺少 `fec` 停止；改为显式无 FEC 的开发候选并记录边界。随后发现 MIEXT EROFS 行未声明 `avb=vbmeta`，按既有 EROFS 探针补齐并重新生成最终候选。所有失败半成品均按 attempt 目录保留。
 - 尚未验证：VINTF、SELinux、linker/HAL、Android17 first-stage/second-stage 实机行为；真实 0B/J2S panel DTS（当前 kernel 仍有 `dsi_sim_vid`，不能称为真实面板适配）；模块 ABI/签名/加载时序；设备对开发 AVB、无 FEC hashtree 和新 logical extent 的接受；bootloader/槽位 fresh preflight、可靠回读/回退；任何真机启动。
 - 安全与资源：本轮没有 adb、fastboot、reboot、set_active、erase、format 或任何设备操作；未触碰 Docker VHDX，未执行 `wsl --shutdown`。启动前资源正常；完成大体积 AVB/super 回读后的最终快照为 Windows 可用 RAM 约 5.00 GiB、Commit 33.21/64.22 GiB（51.72%，已触发禁止新增重型任务门槛）、C/D/E 可用约 102/80.68/179 GiB，WSL ext4 约 721 GiB。后续应先恢复资源余量，不再启动新的重型构建或复制。
@@ -9695,11 +9695,11 @@
 ## 2026-09-19 21:45｜D盘空间只读归因核验
 
 - 状态：已完成（仅分析，未删除文件、未开始移植）。
-- 改动/结论：D 盘总容量约 650 GiB、可用约 80.68 GiB。项目主要位于 `[LOCAL_PATH] GiB）内；WSL `[LOCAL_WSL_USER] 逻辑占用约 114G，其中本轮 OS4 候选约 103G，包含 `super` 约 78G、`images` 约 14G、`userspace` 约 8.5G，techpack kernel 持久化构建树约 7.6G。`super` 中重复的 raw/sparse/AVB/unpacked/attempt 副本是本项目当前最大的可疑可回收来源，但本轮未删除。
+- 改动/结论：D 盘总容量约 650 GiB、可用约 80.68 GiB。项目主要位于 `[LOCAL_PATH] GiB）内；WSL `/path/to/thyme-os4-build` 逻辑占用约 114G，其中本轮 OS4 候选约 103G，包含 `super` 约 78G、`images` 约 14G、`userspace` 约 8.5G，techpack kernel 持久化构建树约 7.6G。`super` 中重复的 raw/sparse/AVB/unpacked/attempt 副本是本项目当前最大的可疑可回收来源，但本轮未删除。
 - 原因：用户要求先确认 D 盘占用来源并暂停移植；需要区分项目产物、Windows pagefile、Docker 数据和 WSL 其他内容。
 - 涉及文件：未修改业务文件；只读检查 `[LOCAL_PATH] 盘 pagefile 配置，以及 WSL 项目目录。
 - 验证：项目目录 `du -x` 约 114G；candidate 一级目录为 `super 78G / images 14G / userspace 8.5G / provider_images 1.4G`；Docker VHDX 约 62.33 GiB；Windows pagefile 为 `[LOCAL_PATH] 32 GiB、上限 48 GiB；Windows 可用 RAM 约 3.66 GiB，Commit 约 33.98/64.22 GiB。
-- 尚未验证：Ubuntu VHDX 中除 `[LOCAL_WSL_USER] 外约 117G 的具体归属；D 盘其他目录的完整分类；VHDX 是否适合压缩。停止过一次过慢的全盘递归扫描，没有改变文件。
+- 尚未验证：Ubuntu VHDX 中除 `/path/to/thyme-os4-build` 外约 117G 的具体归属；D 盘其他目录的完整分类；VHDX 是否适合压缩。停止过一次过慢的全盘递归扫描，没有改变文件。
 - 待处理：若要释放空间，先由用户确认精确可回收清单；优先审查 candidate 内过时 attempt/重复 super 中间副本，保留当前候选、来源、回退和 kernel 增量缓存。当前不执行删除、压缩、`wsl --shutdown` 或 Docker 清理。
 - 替代：无。
 
@@ -9708,7 +9708,7 @@
 - 状态：已完成（仅分析，未清理）。
 - 改动/结论：确认本项目文件位于 WSL2 的 `[LOCAL_PATH] 内，因此项目写入会推动该动态 VHDX 扩张。删除 WSL 内文件只能先释放 ext4 内部空间；宿主机看到的 VHDX 文件通常仍需单独 compact 才会缩小。用户截图中的 `VmmemWSL` 约 15.3 GB 是 WSL 运行时内存，不能直接当作磁盘占用。
 - 原因：解释 D 盘占用来源，并确认是否存在不影响当前候选来源和增量缓存的部分清理路径。
-- 涉及文件：无业务文件修改；关联 `[LOCAL_WSL_USER]/thyme_xiaomi15_os4_first_boot_candidate_1` 及 `[LOCAL_PATH]
+- 涉及文件：无业务文件修改；关联 `/path/to/thyme-os4-build/thyme_xiaomi15_os4_first_boot_candidate_1` 及 `[LOCAL_PATH]
 - 验证：candidate 约 103G，其中 `super` 约 78G，主要由最终/旧 attempt 的 raw、sparse、AVB 和 unpacked 副本组成；Windows 当前可用 RAM 约 3.66 GiB，Commit 约 33.98/64.22 GiB。
 - 尚未验证：每个候选副本的最终保留关系；压缩 VHDX 的实际回收量。
 - 待处理：如用户批准清理，先生成精确白名单，优先处理已确认废弃的 `*_attempt*` 和重复 `super` 中间副本；保留当前候选、来源用户空间、kernel O= 缓存、补丁和回退证据。当前不删除、不压缩、不执行 `wsl --shutdown`。
@@ -9727,7 +9727,7 @@
 ## 2026-09-19 22:03｜OS4候选失败副本部分清理
 
 - 状态：已完成（项目内定向清理；未压缩 VHDX、未开始移植）。
-- 改动/结论：在当前 OS4 候选目录内删除了已确认失败尝试和旧 AVB 中间副本：root 下旧 boot/vendor_boot/dtbo/vbmeta attempt 目录、`super/avb_images_attempt2_no_fec_tool`、`super/avb_images_attempt4_pre_mi_ext_avb`、`super/unpacked_avb_attempt4_pre_mi_ext_avb`，以及对应的 `super_a_avb_attempt4_pre_mi_ext_avb.{img,raw.img}`。清理前约 30G，清理后候选约 73G、整个 `[LOCAL_WSL_USER] 约 84G。
+- 改动/结论：在当前 OS4 候选目录内删除了已确认失败尝试和旧 AVB 中间副本：root 下旧 boot/vendor_boot/dtbo/vbmeta attempt 目录、`super/avb_images_attempt2_no_fec_tool`、`super/avb_images_attempt4_pre_mi_ext_avb`、`super/unpacked_avb_attempt4_pre_mi_ext_avb`，以及对应的 `super_a_avb_attempt4_pre_mi_ext_avb.{img,raw.img}`。清理前约 30G，清理后候选约 73G、整个 `/path/to/thyme-os4-build` 约 84G。
 - 原因：用户授权在不影响当前项目的前提下，优先清理确认废弃的 `*_attempt*` 和重复 super 副本。
 - 保留：当前 `boot/boot.img` 201326592 bytes、`vendor_boot/vendor_boot.img` 100663296 bytes、`dtbo/dtbo.img` 33554432 bytes、`vbmeta/vbmeta.img` 131072 bytes、`super/super_a_avb.img` 7684209428 bytes、`super/super_a_avb.raw.img` 9126805504 bytes；`userspace`、kernel source/O=/artifacts、补丁、logs、当前 unpacked/AVB 输入和三个小型 attempt 报告文本均保留。
 - 验证：删除目标目录和旧 super 文件不再存在；最终候选关键文件仍存在且尺寸未变；WSL `/` 可用空间由约 721G 增至约 751G。D 盘可用仍约 80.65 GiB，VHDX 约 231.14 GiB，说明内部删除尚未让宿主机文件变小。
@@ -9760,7 +9760,7 @@
 ## 2026-09-19 22:30｜官方 thyme native-base provenance 建立与 linker 风险复核
 
 - 状态：部分完成（host-only；仅分析和建立 provenance 清单，未修改诊断候选，未连接或写入设备）。
-- 改动/结论：在 `[LOCAL_WSL_USER]/thyme_native_base_1` 保留官方 A13 `super.img` 的 `vendor_a`/`odm_a` 提取物及 metadata，并新增 `work/stage_c_thyme_native_base_1/native_base_manifest.tsv`。官方 `vendor_a`（1,732,595,712 bytes）和 `odm_a`（134,217,728 bytes）的 SHA256 已记录；vendor 的 VINTF/init/SELinux/public libraries、ODM 的 precompiled SELinux 和 build.prop 已落盘。
+- 改动/结论：在 `/path/to/thyme-os4-build/thyme_native_base_1` 保留官方 A13 `super.img` 的 `vendor_a`/`odm_a` 提取物及 metadata，并新增 `work/stage_c_thyme_native_base_1/native_base_manifest.tsv`。官方 `vendor_a`（1,732,595,712 bytes）和 `odm_a`（134,217,728 bytes）的 SHA256 已记录；vendor 的 VINTF/init/SELinux/public libraries、ODM 的 precompiled SELinux 和 build.prop 已落盘。
 - 原因：按当前主提示词正式启动工作线 B，保留官方 thyme/Kona 硬件底层作为独立 native-base 来源，不把 Pixel A17 provider 误晋级为最终底包。
 - 关键发现：官方 A13 vendor manifest 与 Pixel A17 provider 的 HAL 集合不是 drop-in（例如 audio `@6.0` 对 `@7.0`，camera provider `@2.4` 与 Pixel A17 的服务集合不同）；官方身份是 thyme/Kona、first API 30，OS4 用户空间是 SDK 37，因此需要显式 Android17 VINTF/SELinux/HAL/linker bridge。
 - linker 复核：当前候选 `product/etc/linker.config.pb` 为 0 bytes；先前 bounded OS4 树也同样为 0 bytes，而 donor 只证明“存在过”并未提供 exact-thyme namespace。没有同 build 的 namespace/DT_NEEDED 证据前，不复制 system 或 Pixel vendor linker config，也不把它单独改成启动修复。
@@ -9772,7 +9772,7 @@
 ## 2026-09-19 22:38｜官方 A13 bootchain 与 AVB/fstab 来源落盘
 
 - 状态：已完成（host-only provenance；未修改设备和诊断候选）。
-- 改动/结论：从本地官方 `OS1.0.4.0.TGACNXM` 包解析 `boot.img`、`vendor_boot.img`，并将 kernel/ramdisk、vendor DTB/vendor ramdisk、官方 first-stage `fstab.qcom` 落到 `[LOCAL_WSL_USER]/thyme_native_base_1/official_a13/bootchain`；没有重新编译或重打包。
+- 改动/结论：从本地官方 `OS1.0.4.0.TGACNXM` 包解析 `boot.img`、`vendor_boot.img`，并将 kernel/ramdisk、vendor DTB/vendor ramdisk、官方 first-stage `fstab.qcom` 落到 `/path/to/thyme-os4-build/thyme_native_base_1/official_a13/bootchain`；没有重新编译或重打包。
 - 关键来源：官方 boot/vendor_boot 均为 header v3；官方 fstab 的 system/system_ext/product/vendor/odm/mi_ext 都是 ext4，包含原生 bind/overlay 合同。当前 OS4 候选的 EROFS 备选行是移植改动，不能混称为官方原样。
 - AVB 事实：官方顶层 vbmeta 为 SHA256_RSA2048、key sha1 `b2a02f1e56e366d727a1a8e089762fe0b91bbc84`，chain 到 `vbmeta_system`（rollback location 2）；top rollback index 0，vbmeta_system rollback index `1709251200`；官方 vendor/odm/mi_ext descriptors 带 FEC。该信息已写入 native-base manifest，后续 native candidate 必须显式决定保留或重建这些合同。
 - 验证：官方 boot/vendor_boot/dtbo/vbmeta 文件大小和 SHA256 已回读；vendor_boot vendor ramdisk gzip 解包后 `first_stage_ramdisk/fstab.qcom` 可读；没有 adb/fastboot/reboot/刷写。
@@ -9782,7 +9782,7 @@
 ## 2026-09-19 22:58｜官方 mi_ext_a 提取完成
 
 - 状态：已完成（host-only；native provenance 增补，未修改诊断候选和设备）。
-- 改动/结论：从官方 `super.img` 临时转换的 raw 中提取 `mi_ext_a` 到 `[LOCAL_WSL_USER]/thyme_native_base_1/official_a13/mi_ext/mi_ext_a.img`，提取后 raw 已删除；同步落盘只读 metadata。
+- 改动/结论：从官方 `super.img` 临时转换的 raw 中提取 `mi_ext_a` 到 `/path/to/thyme-os4-build/thyme_native_base_1/official_a13/mi_ext/mi_ext_a.img`，提取后 raw 已删除；同步落盘只读 metadata。
 - 结果：`mi_ext_a.img` 2,646,016 bytes，SHA256 `f7b11f06d8f8cc78d5faea74775fde41c56a269d9561212a4de74896b71942d0`。包含 thyme/OS1.0.4.0.TGACNXM build.prop、`init.miui.mi_ext.rc` 的 overlay 挂载、product/system 权限片段、约 2MB `userdebug_plat_sepolicy.cil`，以及 remount/su 路径。
 - 原因：native-base 不能只保存 vendor/odm；mi_ext 是官方 thyme 的 MIUI overlay/策略输入，后续与 Xiaomi15 OS4 `mi_ext` 必须做有界合同合并，不能直接把 donor mi_ext 覆盖成官方文件或反之。
 - 验证：`lpunpack -p mi_ext_a` 成功；ext2/ext4-family 文件系统、尺寸、哈希、metadata 内容已回读；临时 `super.raw.img` 不存在。没有 adb/fastboot/reboot/分区写入。
@@ -9868,7 +9868,7 @@
 ## 2026-09-19 23:51｜OS4 候选 super 空间有界盘点
 
 - 状态：已完成（仅分析，未删除、未转换、未复制、未操作 VHDX/Docker）。
-- 改动/结论：核对当前候选 `[LOCAL_WSL_USER]/thyme_xiaomi15_os4_first_boot_candidate_1/super` 的实际占用约 52,807,839,744 bytes（约 49.18 GiB allocated）。最终 payload 是 `super_a_avb.img`（7,684,209,428 bytes）；`avb_images/` 是当前 AVB lpmake 输入，四个 EROFS 文件与 `unpacked_avb` 对应文件逐字节一致。两份 raw 各 9,126,805,504 bytes，分别是 pre-AVB/final AVB sparse 的可再生成 raw 回读副本。
+- 改动/结论：核对当前候选 `/path/to/thyme-os4-build/thyme_xiaomi15_os4_first_boot_candidate_1/super` 的实际占用约 52,807,839,744 bytes（约 49.18 GiB allocated）。最终 payload 是 `super_a_avb.img`（7,684,209,428 bytes）；`avb_images/` 是当前 AVB lpmake 输入，四个 EROFS 文件与 `unpacked_avb` 对应文件逐字节一致。两份 raw 各 9,126,805,504 bytes，分别是 pre-AVB/final AVB sparse 的可再生成 raw 回读副本。
 - 分类：立即回收候选为 `super_a.raw.img` 与 `super_a_avb.raw.img`（按 ext4 实际分配块合计约 14.81 GiB，逻辑长度合计约 17.00 GiB；均可由保留 sparse payload 重新生成）；次级候选为 `unpacked/`（约 7.12 GiB）与 `unpacked_avb/`（约 7.17 GiB），它们是 lpunpack 展开视图，可由保留的 sparse/raw 或当前 AVB 输入重建。必须保留 `super_a_avb.img`、`avb_images/`、`super_a.img`（下一次 AVB 重建的 pre-AVB输入）、`images/`、`provider_images/`、userspace 和日志。
 - 证据：manifest/AVB contract 只把 `super_a_avb.img` 作为最终 super payload；`super_a_avb` 与 `unpacked_avb` 的 product/system/system_ext/mi_ext 已逐项 `cmp` 为 IDENTICAL；vendor/odm 展开文件与 provider source 为相同前缀加分区对齐填充。安全清理方案和占用清单已写入 `work/stage_c_thyme_native_base_1/super_space_audit.tsv`。
 - 验证：真实清理历史已核对：22:03 曾删除约 30G 已确认失败 attempt/旧 AVB 副本；22:12 用户授权后执行 `fstrim` 和唯一 Ubuntu VHDX compact，VHDX 231.14→202.29 GiB、宿主机回收约 28.85 GiB；本轮没有重复声称或执行这些动作。
@@ -9895,7 +9895,7 @@
 ## 2026-09-20 00:18｜Native-base SELinux 迁移切片正式化
 
 - 状态：部分完成（host-only；补丁可回放，未写回镜像、未连接设备）。
-- 改动/结论：在 `[LOCAL_WSL_USER]/thyme_native_base_1/selinux_migration_1` 建立独立输入树，复制 OS4 system/system_ext/product CIL、202604 mappings、官方 A13 `plat_pub_versioned.cil`/vendor CIL 及 platform/vendor contexts；官方原始 vendor CIL 保持不变。新增 `work/stage_c_thyme_native_base_1/selinux_migration_1/vendor_sepolicy_genfscon_allow.patch`，只删除两条共享路径旧 genfscon，并迁移五条直接依赖的 allow 目标。
+- 改动/结论：在 `/path/to/thyme-os4-build/thyme_native_base_1/selinux_migration_1` 建立独立输入树，复制 OS4 system/system_ext/product CIL、202604 mappings、官方 A13 `plat_pub_versioned.cil`/vendor CIL 及 platform/vendor contexts；官方原始 vendor CIL 保持不变。新增 `work/stage_c_thyme_native_base_1/selinux_migration_1/vendor_sepolicy_genfscon_allow.patch`，只删除两条共享路径旧 genfscon，并迁移五条直接依赖的 allow 目标。
 - 验证：`patch --dry-run` 通过；用 `patch -o` 回放后的 migrated CIL 与独立输入逐字节一致。Android37 `secilc -m -M true -G -N -c 30` 生成 1,614,972-byte policy，SHA-256 `493c9d5a89f846362f9a245f8e285d349b7276e05466d2c97aa2a0b2ef4859e5`；完整命令和日志在 `selinux_migration_1/compile/`。platform/system_ext/product/vendor contexts 的 Android17 `checkfc` 均返回 0，四套 file_contexts 也分别通过 `sefcontext_compile -r -p`。
 - 重要边界：成功命令带 `-N`，只代表跨代迁移诊断 policy 能生成，不代表最终 neverallow 或设备加载通过。严格 neverallow 门返回 `SECILC_EXIT=255`，当前日志尾部显示 A13 `_30_0` public policy 与 OS4 policy 仍有未迁移的 neverallow 冲突；这项严格失败没有被隐藏或当作成功。
 - owner 结论：`/power/mem_sleep` 的最终共享 owner 为 OS4 `sysfs_mem_sleep`，`/class/typec` 为 OS4 `sysfs_typec`；更具体的 `/class/typec/usbc0` vendor rule 保留。camera/GNSS/health/display binary 的 vendor file_contexts 与 service owner 对照已写入 `selinux_migration_1/owner_context_slice.tsv`。
@@ -9940,7 +9940,7 @@
 ## 2026-09-20 01:33｜复核已有 real-panel kernel artifact
 
 - 状态：已确认（host-only；未重新编译、未打包、未操作设备）。
-- 改动/结论：读取已有 `[LOCAL_WSL_USER]/thyme_kernel_real_panel_image_dtbo_build_artifact_1` 的 selector diff、预处理 DTS、构建 TSV 和产物哈希。该独立 artifact 的 `thyme-sm8250.dtsi` 将 `qcom,dsi-default-panel` 从 `dsi_sim_vid` 改为 `dsi_j2s_mp_42_02_0b_dsc_cmd`；实际 Image 为 53,467,160 bytes，SHA256 `c7bf0786921ecd71cccbd21c4de376e1bded6361a5355c128d0916a9bb27ad6f`，与当前 techpack Image（SHA256 `a1a6ce95f5a7ad8d1e3d78aa15912297ae70329f6f373e93237fbb7e6b93f58a`）不同。
+- 改动/结论：读取已有 `/path/to/thyme-os4-build/thyme_kernel_real_panel_image_dtbo_build_artifact_1` 的 selector diff、预处理 DTS、构建 TSV 和产物哈希。该独立 artifact 的 `thyme-sm8250.dtsi` 将 `qcom,dsi-default-panel` 从 `dsi_sim_vid` 改为 `dsi_j2s_mp_42_02_0b_dsc_cmd`；实际 Image 为 53,467,160 bytes，SHA256 `c7bf0786921ecd71cccbd21c4de376e1bded6361a5355c128d0916a9bb27ad6f`，与当前 techpack Image（SHA256 `a1a6ce95f5a7ad8d1e3d78aa15912297ae70329f6f373e93237fbb7e6b93f58a`）不同。
 - 验证：artifact 报告记录单次真实 `make` 返回 0，预处理 DTS 866,696 bytes，thyme DTBO 473,322 bytes 且与未修改基线不同；构建边界明确没有 modules/super/vbmeta/设备操作。当前 source tree 的 techpack selector 仍为 `dsi_sim_vid`，所以两套 Image provenance 不能混用。
 - 结论：已有 real-panel Image 可作为后续 native/diagnostic kernel 输入，但尚未接入 OS4 boot/vendor_boot/DTBO，也没有真实 0B/J2S 面板的设备启动证据；当前不重新编译。
 - 涉及文件：WSL `thyme_kernel_real_panel_image_dtbo_build_artifact_1/`、`日志/项目当前状态.md`。
@@ -9984,7 +9984,7 @@
 - 验证：变体完成 ramdisk 解包→cpio 重打包→mkbootimg→vendor_boot 再解包→ramdisk 回读；fstab 内容和 Pixel DTB 均字节级回读通过。冻结原 `vendor_boot.img` 未修改，当前 100,663,296 bytes、SHA256 `56985e8463b766208dfcd1a5e38e1201241d0d9f52e5abc03e43e074d22f3b2f`。
 - 改动/结论：从现有 candidate `super/unpacked/vendor_a.img`、`odm_a.img` 只物化 `/etc/vintf` 到 WSL `thyme_xiaomi15_os4_first_boot_vintf_materialization_1`。两者为 ext4，EROFS extractor 的首尝试被拒绝，随后使用 `debugfs rdump` 正确回读；没有复制整套 super。冻结 rootlike 的 vendor/odm 无实际 VINTF 树，基线 `checkvintf` 首错为 `No device manifest`。
 - 改动/结论：新增两个不写回镜像的 VINTF 诊断变体。prune-1 删除 11 个由 checkvintf 明确列出的 Dolby/Lineage/GNSS/Xiaomi fragment，错误从多组降到 6 个 HAL instance；prune-2 从 vendor `manifest.xml` 删除 5 个对应的 `audiohalext`、`qccsyshal`、`uim_remote_client`、`citsensorservice`、`touchfeature` HAL block。
-- 验证：prune-2 的 Android17 `checkvintf --check-compat` 返回 `COMPATIBLE`/exit 0；日志为 WSL `[LOCAL_WSL_USER]/thyme_xiaomi15_os4_first_boot_vintf_optional_prune_2/logs/checkvintf.log`。这只是静态 host 验证，仍未证明 init、二进制、SELinux、linker namespace 或设备运行时闭合。
+- 验证：prune-2 的 Android17 `checkvintf --check-compat` 返回 `COMPATIBLE`/exit 0；日志为 WSL `/path/to/thyme-os4-build/thyme_xiaomi15_os4_first_boot_vintf_optional_prune_2/logs/checkvintf.log`。这只是静态 host 验证，仍未证明 init、二进制、SELinux、linker namespace 或设备运行时闭合。
 - SELinux：读取当前正式 strict replay，`neverallow check failed` 仍为 227（180 `_30_0`、47 当前/非版本化）。本轮没有无来源新增 allow、删除 neverallow 或改写 native policy；现有两条 genfscon/五条 allow 迁移切片保留为 native-base 独立阻塞，按要求转向诊断候选启动接口。
 - 涉及文件：`work/stage_c_thyme_first_boot_startup_repairs_1/README.md`、两个 fstab/VINTF 变体脚本及其 WSL 输出、`日志/项目当前状态.md`。
 - 尚未验证：VINTF 差分尚未重新打包回 vendor/odm/super；fstab 变体尚未重新绑定 vendor_boot/top vbmeta；AVB、SELinux、linker/HAL 运行时和设备启动均未验证。prune 只适用于一次性诊断候选，不能直接升级为 native-base 最终方案。
@@ -9999,7 +9999,7 @@
 ## 2026-09-20 11:56｜官方 native-base VINTF 有界回读
 
 - 状态：部分完成（仅分析与小型 metadata materialization；未修改官方镜像、候选镜像或设备）。
-- 改动/结论：从官方 thyme A13 `vendor_a.img`、`odm_a.img` 只读回读 `/etc/vintf` 到 WSL `[LOCAL_WSL_USER]/thyme_native_base_1/vintf_materialization_1`，没有复制整套 vendor/odm。用现有 Xiaomi15 OS4 framework roots 运行 Android17 `checkvintf`。
+- 改动/结论：从官方 thyme A13 `vendor_a.img`、`odm_a.img` 只读回读 `/etc/vintf` 到 WSL `/path/to/thyme-os4-build/thyme_native_base_1/vintf_materialization_1`，没有复制整套 vendor/odm。用现有 Xiaomi15 OS4 framework roots 运行 Android17 `checkvintf`。
 - 验证：native-base 合同仍失败，首要错误为 vendor sepolicy version `30.0` 不满足 OS4 framework，找不到 FCM 5；此外列出 A13 health/power/wifi/GNSS、audiohalext 与多项 Xiaomi HAL instance 不在 OS4 matrix。该结果具体确认 native-base 不能靠简单替换 manifest 通过。
 - 边界：没有伪造 sepolicy version、删除 framework matrix、删除官方 native HAL 声明或把 A13 provider 宣称为 OS4 兼容。诊断候选 prune-2 的 `COMPATIBLE` 结果不转移到 native-base。
 - 涉及文件：WSL `thyme_native_base_1/vintf_materialization_1`、`work/stage_c_thyme_first_boot_startup_repairs_1/README.md`、`日志/项目当前状态.md`。
@@ -10008,7 +10008,7 @@
 ## 2026-09-20 12:33｜诊断候选 fstab/VINTF 增量镜像组装
 
 - 状态：已完成（host-only；未连接、重启或刷写设备）。
-- 改动/结论：在 WSL `[LOCAL_WSL_USER]/thyme_xiaomi15_os4_incremental_candidate_2` 建立独立候选。对 raw vendor/odm ext4 应用已验证的 prune-1/prune-2 差分：移除 11 个可暂缓 VINTF fragment，并在 `vendor/etc/vintf/manifest.xml` 原 inode（inode 910）内移除 5 个非当前 framework matrix 的 HAL block；原文件的 mode 0644、uid/gid 0/0 和 `security.selinux=u:object_r:vendor_configs_file:s0` 保留。原始冻结候选未改写。
+- 改动/结论：在 WSL `/path/to/thyme-os4-build/thyme_xiaomi15_os4_incremental_candidate_2` 建立独立候选。对 raw vendor/odm ext4 应用已验证的 prune-1/prune-2 差分：移除 11 个可暂缓 VINTF fragment，并在 `vendor/etc/vintf/manifest.xml` 原 inode（inode 910）内移除 5 个非当前 framework matrix 的 HAL block；原文件的 mode 0644、uid/gid 0/0 和 `security.selinux=u:object_r:vendor_configs_file:s0` 保留。原始冻结候选未改写。
 - 验证：真实 patched raw vendor/odm 的 Android17 `checkvintf --check-compat` 为 `COMPATIBLE`/exit 0，`e2fsck -fn` 两份均 exit 0。对最终 super A 经 `lpunpack` 回读的 vendor/odm 再跑 materialized checkvintf，仍为 `COMPATIBLE`/exit 0；回读文件与新 AVB vendor/odm 字节一致。未删除保留 HAL 的 init rc/binary，证据显示 GNSS、Dolby、touchfeature、Lineage health/livedisplay/powershare、Xiaomi service 等仍在镜像中，部分为 `class hal`/`late_start`，所以本结果不是“运行时服务已闭合”。
 - AVB：新 vendor 为 1,510,998,016 bytes、odm 为 36,700,160 bytes，分区容量和 top descriptor 一致；原供体 vendor/odm 为 FEC roots=2，本轮因无 `fec` 工具显式使用 `--do_not_generate_fec`，新镜像 FEC roots=0。新 vendor/odm、EROFS-primary vendor_boot 的 host `avbtool verify_image` 均通过；算法为 `NONE`。这是开发链的明确 FEC 差异，不是生产签名或 bootloader 接受证据。
 - vendor_boot：EROFS-primary raw payload 29,163,520 bytes，原冻结 payload 24,768,512 bytes，均包装为 100,663,296-byte 分区镜像；差额来自 ramdisk/fstab 变体、padding 和新 AVB footer。fstab、DTB、cpio 回读均 PASS。
@@ -10034,7 +10034,7 @@
 
 - 状态：已完成（真机实验已执行并记录，Agent 完成正式交接）。
 - 改动/结论：
-  1. 用户正式授权后，原执行 Agent（Codex）使用增量 Candidate 2（`[LOCAL_WSL_USER]/thyme_xiaomi15_os4_incremental_candidate_2`）开展了小米 10S（thyme）首次 HyperOS 4 真机实验。
+  1. 用户正式授权后，原执行 Agent（Codex）使用增量 Candidate 2（`/path/to/thyme-os4-build/thyme_xiaomi15_os4_incremental_candidate_2`）开展了小米 10S（thyme）首次 HyperOS 4 真机实验。
   2. 刷写及擦除已全部顺利执行，日志保存在 `work/stage_c_thyme_os4_first_device_experiment_1/run_20260920_1/`：
      - `flash super`：10/10 sparse chunks 全部 OKAY，exit=0，耗时 254.798s；
      - `flash vbmeta_system_a`、`boot_a`、`vendor_boot_a`、`dtbo_a`、`vbmeta_a` 全部 OKAY，exit=0；
@@ -10049,7 +10049,7 @@
   4. 归因与因果解释边界：不能仅凭稳定 Logo 断言 Bootloader 已进入自编内核执行，也不能排除 Bootloader 在特定阶段等待、内核在 Earlycon 前挂起，或 vendor/SELinux/挂载层阻塞；当前原因保持 `RUNTIME_NOT_CLOSED`，不直接断言单一模块为唯一根因。
   5. Antigravity Gemini 接手核实：
      - 宿主机 Windows PowerShell 与 WSL2 Ubuntu 26.04 环境完全正常；
-     - WSL 原生构建树 `[LOCAL_WSL_USER] 1（59G）、Candidate 2（12G）、techpack kernel 持久化树（7.6G）、real-panel 产物（723M）、官方 native-base 树（1.8G）及官方 A13 救援包全部完整完好；
+     - WSL 原生构建树 `/path/to/thyme-os4-build`（83G）、Candidate 1（59G）、Candidate 2（12G）、techpack kernel 持久化树（7.6G）、real-panel 产物（723M）、官方 native-base 树（1.8G）及官方 A13 救援包全部完整完好；
      - Windows 各盘剩余容量（C: 99.77GB, D: 101.04GB, E: 178.34GB）均高于 80GB 红线；Ubuntu VHDX 实际为 208.79 GiB；
      - 确认工作线 A（短期启动诊断）与工作线 B（长期自主适配，含 227 组严格 SELinux 归类：180 组 `_30_0`、47 组当前属性）；
      - 当前设备动作保持禁止，等待用户后续指令。
@@ -10062,7 +10062,7 @@
 - 状态：已完成（主机侧只读分析与安全空间释放完成；未触碰手机）。
 - 改动/结论：
   1. 技术认知纠偏：收紧内核诊断实验结论边界，明确单次实验不能 100% 排除全部内核问题；自建内核若在 PixelOS 运行仅证明特定环境可用，不直接等同于 HyperOS4 兼容；明确 API 30/33 与 A13 携带 30.0 策略的区别；确认 180 组旧版本化 SELinux 冲突不能靠单一 mapping 文件解决；明确 Fastboot 无法直接读 pstore 且无 panic 静态卡死不保证产出日志。
-  2. WSL 空间深度调查：查明除 `[LOCAL_WSL_USER]/root` 根下仍有 112G 历史 v04/B0 早期产物（如 `v04_b0_super_provenance_final8` 32G、`final7` 26G、`images_repro_final7` 16G、`super_sky/10s` raw/partitions 等）；仅作报告，未擅自删除。
+  2. WSL 空间深度调查：查明除 `/path/to/thyme-os4-build`（83G）外，`/root` 根下仍有 112G 历史 v04/B0 早期产物（如 `v04_b0_super_provenance_final8` 32G、`final7` 26G、`images_repro_final7` 16G、`super_sky/10s` raw/partitions 等）；仅作报告，未擅自删除。
   3. 安全释放项目空间：确认 Candidate 1 中 `super/unpacked` 与 `super/unpacked_avb` 为纯回读校验副本，予以安全删除，实测释放 **14.4 GiB**。WSL ext4 已用从 205G 降至 190G，可用升至 766G；Candidate 1 降至 45G，`[LOCAL_WSL_BUILD_DIR]` 降至 69G。未触碰唯一来源、正式镜像、内核构建树或救援资产。
   4. 历史 PixelOS 成功证据核验：复核 2026-09-13 实验（`C02~C07`），当时写入的是 `work/payload_pixel/` 原生 boot/vendor_boot/dtbo/vbmeta/vbmeta_system 与 `super_a.img`（6469630544 bytes）；实物全部完好在盘。
   5. 双组对照实验设计：
@@ -10070,7 +10070,7 @@
      - 组 2（自编内核）：在组 1 基础上仅将 boot 内核替换为自编译 techpack Image，详细记录由于替换 Image 带来的 mkbootimg 重新打包、内核尺寸变动及配套禁用 AVB（`--flags 2`）等级联变化，不作单字节变量伪假设。
   6. 内核 pstore/ramoops 源码与配置核查：查明 `.config` 中已开启 `CONFIG_PSTORE=y`、`CONFIG_PSTORE_RAM=y`、`CONFIG_PSTORE_CONSOLE=y`；小米源码 `fs/pstore/ram.c` 已打入 `ramoops_memreserve` early_param，固定保留物理地址 `0xB0000000`、大小 4MB；SM8250 defconfig cmdline 已传入 `ramoops_memreserve=4M`。确认该机制需开机进入具备 pstore 挂载点的系统或 Recovery 才能读取，Fastboot 无法读取，且内核在 earlycon 前死锁不产生 dump。
   7. SELinux 与 Native-base 剖析：从 227 组严格 inventory 中锁定代表性冲突（`xiaomimodemdebugservice_app` ptrace 18 组，`base_typeattr_474/478_30_0` 89 组，两条已解 genfscon），确认下一项直接修改点应为剔除无用 debug 域并规范化 A13→A17 typeattribute 映射桥。
-- 涉及文件：WSL `[LOCAL_WSL_USER]/source/kernel_sm8250_71b13e62_archive/fs/pstore/ram.c`、`out/.config`、`work/reports/20260913_PIXEL_A17_NATIVE_CONTROL_FULLSTACK_A_CLEAN_DATA_1*`、`日志/项目当前状态.md`、`日志/执行记录.md`。
+- 涉及文件：WSL `/path/to/thyme-os4-build/source/kernel_sm8250_71b13e62_archive/fs/pstore/ram.c`、`out/.config`、`work/reports/20260913_PIXEL_A17_NATIVE_CONTROL_FULLSTACK_A_CLEAN_DATA_1*`、`日志/项目当前状态.md`、`日志/执行记录.md`。
 - 尚未验证：组 1 与组 2 的实机刷写及表现；真实板级 ramoops 在硬件重启后的保留完整性。
 - 待处理：保持设备不连接，等待后续测试时机。
 
@@ -10078,17 +10078,17 @@
 
 - 状态：已完成（主机侧安全清理执行完成；未修改源码、未触碰手机）。
 - 改动/结论：
-  1. 第一批清理（可再生 raw super）：核验确认官方 A13 与天空 A16 的原始 sparse super 在 `[LOCAL_PROJECT_ROOT]\10S系统\` 下完整存在且随时可用 simg2img 重建，且无任何脚本引用 `[LOCAL_WSL_USER] `[LOCAL_WSL_USER] GiB）与 `[LOCAL_WSL_USER] GiB），实测释放 **17.0 GiB**。
-  2. 第二批清理（过时 B0 整包候选）：核验确认早期 B0 混合树路线早已在项目复盘中废弃，所有分析日志、JSON 对比及差分已在 Windows 侧完整归档，且无现行脚本依赖；安全删除 `[LOCAL_WSL_USER] GiB）、`[LOCAL_WSL_USER] GiB）、`[LOCAL_WSL_USER] GiB）、`[LOCAL_WSL_USER] GiB），实测释放 **80.0 GiB**。
-  3. 第三批评估与审慎保留：比对发现 `[LOCAL_WSL_USER] GiB）为 WSL 内唯一解包好的天空 OS3 逻辑分区，对后续小米私有 HAL 和触感逆向必不可少，予以完整保留；`[LOCAL_WSL_USER] GiB）保留作为官方 A13 在 WSL 原生 ext4 中的快速只读比对镜像，避免破坏逆向输入。
+  1. 第一批清理（可再生 raw super）：核验确认官方 A13 与天空 A16 的原始 sparse super 在 `[LOCAL_PROJECT_ROOT]\10S系统\` 下完整存在且随时可用 simg2img 重建，且无任何脚本引用 `/root/super_*.img`；安全删除 `/root/super_10s.raw.img`（8.5 GiB）与 `/root/super_sky.img`（8.5 GiB），实测释放 **17.0 GiB**。
+  2. 第二批清理（过时 B0 整包候选）：核验确认早期 B0 混合树路线早已在项目复盘中废弃，所有分析日志、JSON 对比及差分已在 Windows 侧完整归档，且无现行脚本依赖；安全删除 `/root/v04_b0_super_candidate_final6`（7.7 GiB）、`/root/v04_b0_images_repro_final7`（16 GiB）、`/root/v04_b0_super_provenance_final7`（26 GiB）、`/root/v04_b0_super_provenance_final8`（32 GiB），实测释放 **80.0 GiB**。
+  3. 第三批评估与审慎保留：比对发现 `/root/super_sky_partitions`（6.4 GiB）为 WSL 内唯一解包好的天空 OS3 逻辑分区，对后续小米私有 HAL 和触感逆向必不可少，予以完整保留；`/root/super_10s_partitions`（7.4 GiB）保留作为官方 A13 在 WSL 原生 ext4 中的快速只读比对镜像，避免破坏逆向输入。
   4. 清理总效果：本轮实测真实释放 **97.0 GiB**（连同上一轮 Candidate 1 unpacked 释放的 14.4 GiB，**累计安全释放 111.4 GiB**）。
   5. 后处理与状态：
      - 在 WSL 内部执行 `fstrim -v /`，成功向虚拟磁盘标记回收 851 GiB 空闲块；
      - 当前 WSL ext4（`/dev/sdd`）已用空间从 205 GiB 骤降至 **93 GiB（使用率仅 10%）**，可用空间升至 **864 GiB**；
-     - `/root` 目录从 195 GiB 降至 **83 GiB**（其中 `[LOCAL_WSL_USER] 为 69 GiB）；
+     - `/root` 目录从 195 GiB 降至 **83 GiB**（其中 `/path/to/thyme-os4-build` 为 69 GiB）；
      - Windows `[LOCAL_PATH] 当前大小 224,190,791,680 字节（约 208.79 GiB）；Windows D 盘可用空间 101.04 GB；
      - 未执行 `wsl --shutdown` 或管理员 diskpart compact；未触碰 Docker VHDX；全部关键资产（内核编译树/缓存、Image、Candidate 2、官方救援包、native-base、K40逆向包、PixelOS镜像）完整保留。
-- 涉及文件：WSL `[LOCAL_WSL_USER]/项目当前状态.md`、`日志/执行记录.md`。
+- 涉及文件：WSL `/root/`、`日志/项目当前状态.md`、`日志/执行记录.md`。
 - 尚未验证：后续在手机重新接入时的实机对照。
 - 待处理：保持手机不连接、不操作；按计划推进下一阶段技术任务。
 
@@ -10096,7 +10096,7 @@
 
 - 状态：已完成（主机侧分析、源码/二进制审计与严格验证完成；未触碰手机）。
 - 改动/结论：
-  1. 【历史资产核验】：澄清 `[LOCAL_WSL_USER] 中所谓的 `persist`。经核查 `tools/roundtrip_v04_full_b0_super_provenance_final7.sh` 及运行日志，该路径实为脚本参数 `PERSIST=1` 生成的中间暂存目录 `$TMPROOT/persist/`（内含 `super.raw` 与解包动态分区 `unpack/*.img`），意为“将验证产物持久化保留至磁盘”，与高通 Android 设备的 `/dev/block/bootdevice/by-name/persist` 校准分区毫无关联，属 100% 可再生临时测试文件。同时核实真机专属物理校准备份完好保存在 Windows 侧 `work/device_backup/20260909_232307/persist.img`（67,108,864 字节，SHA-256 `99ED3FC0EAB01BECD627A69CB4CA7E0B0774F9B0032C67F68C3EECAEBF5A26FA`），且官方原厂镜像 `10S系统/thyme_images_OS1.0.4.0.TGACNXM_13.0/images/persist.img` 亦完好无损，真机校准数据从未面临丢失风险。
+  1. 【历史资产核验】：澄清 `/root/v04_b0_super_provenance_final8` 中所谓的 `persist`。经核查 `tools/roundtrip_v04_full_b0_super_provenance_final7.sh` 及运行日志，该路径实为脚本参数 `PERSIST=1` 生成的中间暂存目录 `$TMPROOT/persist/`（内含 `super.raw` 与解包动态分区 `unpack/*.img`），意为“将验证产物持久化保留至磁盘”，与高通 Android 设备的 `/dev/block/bootdevice/by-name/persist` 校准分区毫无关联，属 100% 可再生临时测试文件。同时核实真机专属物理校准备份完好保存在 Windows 侧 `work/device_backup/20260909_232307/persist.img`（67,108,864 字节，SHA-256 `99ED3FC0EAB01BECD627A69CB4CA7E0B0774F9B0032C67F68C3EECAEBF5A26FA`），且官方原厂镜像 `10S系统/thyme_images_OS1.0.4.0.TGACNXM_13.0/images/persist.img` 亦完好无损，真机校准数据从未面临丢失风险。
   2. 【双控制组内核实验方案落地（A0/A1, B0/B1）】：
      - **A0（原生 PixelOS A17 控制组）**：全套采用 `work/payload_pixel/` 原始 boot/vendor_boot/dtbo/vbmeta/vbmeta_system 与 `work/diagnostic_candidates/.../super_a.img`（6.47GB）。内核为 4.19.325，AVB 为 release-keys 签名且 `flags=0`。已在 2026-09-13 取得真机进入系统的成功证据。
      - **A1（PixelOS 运行栈 + 自建 techpack 内核）**：使用自编译 `artifacts/Image`（4.19.325-cip131-st15-perf，53,467,160 字节，SHA-256 `[REDACTED_DEVICE_ID]...`）替换 PixelOS boot.img 内核，并用 Pixel 原始 ramdisk（3,556,389 字节）重打包。
@@ -10122,7 +10122,7 @@
   - `work/device_backup/20260909_232307/persist.img`
   - `10S系统/thyme_images_OS1.0.4.0.TGACNXM_13.0/images/*`
   - `work/payload_pixel/*`
-  - `[LOCAL_WSL_USER]/thyme_techpack_kernel_image_bringup_1/artifacts/Image`
+  - `/path/to/thyme-os4-build/thyme_techpack_kernel_image_bringup_1/artifacts/Image`
   - `work/stage_c_thyme_native_base_1/selinux_migration_1/*`
   - `work/stage_a_tmp_k40/*`
   - `OS4移植包_K40_12X/MiaoMiaoRom_红米k40_OS4.0.0.8/*`
@@ -10151,7 +10151,7 @@
   1. 【A0'/A1 内核对照镜像生成与主机验证】：
      - 已在 `work/control_experiments_pixel_a17_1/` 成功建立并完成主机校验：
        - `a0_prime/boot.img`（201,326,592 字节，SHA-256 `539efe2107cf2ef21864df6d74d4e645dc973f2d31cc23dc96e7e073a93b51af`）：采用 Pixel 原始内核（63,350,808 字节）+ Pixel 原始 ramdisk（3,556,389 字节），通过 `mkbootimg.py` 重打包并由 `avbtool` 追加 hash footer，对齐至 192MB。用于隔离重打包工具链与 `--flags 2` AVB 带来的影响；
-       - `a1/boot.img`（201,326,592 字节，SHA-256 `1e7a9cb4928e04b62357ff28082db37e92e87e96cd22b7b8f00e6415b1fc729e`）：与 A0' 完全一致的打包工具链、ramdisk 与 AVB footer，唯一变量为内核 Image 换为自编译 techpack 成果 `[LOCAL_WSL_USER]/thyme_techpack_kernel_image_bringup_1/artifacts/Image`（4.19.325-cip131-st15-perf，53,467,160 字节）；
+       - `a1/boot.img`（201,326,592 字节，SHA-256 `1e7a9cb4928e04b62357ff28082db37e92e87e96cd22b7b8f00e6415b1fc729e`）：与 A0' 完全一致的打包工具链、ramdisk 与 AVB footer，唯一变量为内核 Image 换为自编译 techpack 成果 `/path/to/thyme-os4-build/thyme_techpack_kernel_image_bringup_1/artifacts/Image`（4.19.325-cip131-st15-perf，53,467,160 字节）；
        - `dev_vbmeta/vbmeta.img`（8,192 字节，SHA-256 `ae8f1746cb1ef9323c6ce42f9744d865bb94a226fb7ea563fdf05dbeade04b54`）：`--flags 2`（关闭 boot/hashtree 校验）；
        - 两份镜像均通过 `unpack_bootimg.py` 回读解包核验，payload 字节与源文件 100% 逐字节一致。
   2. 【PixelOS vendor 模块真实状态定论】：
@@ -10188,9 +10188,9 @@
 - 涉及文件：
   - `work/control_experiments_pixel_a17_1/`
   - `work/port_v04_b0_image_inputs_final2/system_ext/framework/miui-services.jar`
-  - `[LOCAL_WSL_USER]/thyme_native_base_1/selinux_migration_1/`
-  - `[LOCAL_WSL_USER]/thyme_techpack_kernel_image_bringup_1/source/fs/pstore/ram.c`
-  - `[LOCAL_WSL_USER]/thyme_techpack_kernel_image_bringup_1/source/arch/arm64/boot/dts/vendor/qcom/kona.dtsi`
+  - `/path/to/thyme-os4-build/thyme_native_base_1/selinux_migration_1/`
+  - `/path/to/thyme-os4-build/thyme_techpack_kernel_image_bringup_1/source/fs/pstore/ram.c`
+  - `/path/to/thyme-os4-build/thyme_techpack_kernel_image_bringup_1/source/arch/arm64/boot/dts/vendor/qcom/kona.dtsi`
   - `日志/项目当前状态.md`、`日志/执行记录.md`
 - 验证：
   - `mkbootimg.py` 与 `unpack_bootimg.py` 双向 round-trip 验证通过；
@@ -10222,7 +10222,7 @@
   - `work/diagnostic_patch_vibrator_candidate2/miui-services.jar.orig`
   - `work/diagnostic_patch_vibrator_candidate2/classes.dex`
   - `work/reports/20260920_PIXEL_CONTROL_EXPERIMENT_APPLICATION_A0_A0PRIME_A1.md`
-  - WSL `[LOCAL_WSL_USER]/thyme_native_base_1/selinux_migration_1/experiments/exp_minimal_core_map/`
+  - WSL `/path/to/thyme-os4-build/thyme_native_base_1/selinux_migration_1/experiments/exp_minimal_core_map/`
   - `日志/项目当前状态.md`、`日志/执行记录.md`
 - 验证：
   - `avbtool info_image` 确认 `vbmeta_f3_desc.img` flags=3、全 10 项属性及 Chain 描述符完好；
@@ -10284,7 +10284,7 @@
   1. 【A0'/A1 内核对照镜像生成与主机验证】：
      - 已在 `work/control_experiments_pixel_a17_1/` 成功建立并完成主机校验：
        - `a0_prime/boot.img`（201,326,592 字节，SHA-256 `539efe2107cf2ef21864df6d74d4e645dc973f2d31cc23dc96e7e073a93b51af`）：采用 Pixel 原始内核（63,350,808 字节）+ Pixel 原始 ramdisk（3,556,389 字节），通过 `mkbootimg.py` 重打包并由 `avbtool` 追加 hash footer，对齐至 192MB。用于隔离重打包工具链与 `--flags 2` AVB 带来的影响；
-       - `a1/boot.img`（201,326,592 字节，SHA-256 `1e7a9cb4928e04b62357ff28082db37e92e87e96cd22b7b8f00e6415b1fc729e`）：与 A0' 完全一致的打包工具链、ramdisk 与 AVB footer，唯一变量为内核 Image 换为自编译 techpack 成果 `[LOCAL_WSL_USER]/thyme_techpack_kernel_image_bringup_1/artifacts/Image`（4.19.325-cip131-st15-perf，53,467,160 字节）；
+       - `a1/boot.img`（201,326,592 字节，SHA-256 `1e7a9cb4928e04b62357ff28082db37e92e87e96cd22b7b8f00e6415b1fc729e`）：与 A0' 完全一致的打包工具链、ramdisk 与 AVB footer，唯一变量为内核 Image 换为自编译 techpack 成果 `/path/to/thyme-os4-build/thyme_techpack_kernel_image_bringup_1/artifacts/Image`（4.19.325-cip131-st15-perf，53,467,160 字节）；
        - `dev_vbmeta/vbmeta.img`（8,192 字节，SHA-256 `ae8f1746cb1ef9323c6ce42f9744d865bb94a226fb7ea563fdf05dbeade04b54`）：`--flags 2`（关闭 boot/hashtree 校验）；
        - 两份镜像均通过 `unpack_bootimg.py` 回读解包核验，payload 字节与源文件 100% 逐字节一致。
   2. 【PixelOS vendor 模块真实状态定论】：
@@ -10321,9 +10321,9 @@
 - 涉及文件：
   - `work/control_experiments_pixel_a17_1/`
   - `work/port_v04_b0_image_inputs_final2/system_ext/framework/miui-services.jar`
-  - `[LOCAL_WSL_USER]/thyme_native_base_1/selinux_migration_1/`
-  - `[LOCAL_WSL_USER]/thyme_techpack_kernel_image_bringup_1/source/fs/pstore/ram.c`
-  - `[LOCAL_WSL_USER]/thyme_techpack_kernel_image_bringup_1/source/arch/arm64/boot/dts/vendor/qcom/kona.dtsi`
+  - `/path/to/thyme-os4-build/thyme_native_base_1/selinux_migration_1/`
+  - `/path/to/thyme-os4-build/thyme_techpack_kernel_image_bringup_1/source/fs/pstore/ram.c`
+  - `/path/to/thyme-os4-build/thyme_techpack_kernel_image_bringup_1/source/arch/arm64/boot/dts/vendor/qcom/kona.dtsi`
   - `日志/项目当前状态.md`、`日志/执行记录.md`
 - 验证：
   - `mkbootimg.py` 与 `unpack_bootimg.py` 双向 round-trip 验证通过；
@@ -10355,7 +10355,7 @@
   - `work/diagnostic_patch_vibrator_candidate2/miui-services.jar.orig`
   - `work/diagnostic_patch_vibrator_candidate2/classes.dex`
   - `work/reports/20260920_PIXEL_CONTROL_EXPERIMENT_APPLICATION_A0_A0PRIME_A1.md`
-  - WSL `[LOCAL_WSL_USER]/thyme_native_base_1/selinux_migration_1/experiments/exp_minimal_core_map/`
+  - WSL `/path/to/thyme-os4-build/thyme_native_base_1/selinux_migration_1/experiments/exp_minimal_core_map/`
   - `日志/项目当前状态.md`、`日志/执行记录.md`
 - 验证：
   - `avbtool info_image` 确认 `vbmeta_f3_desc.img` flags=3、全 10 项属性及 Chain 描述符完好；
@@ -10648,7 +10648,7 @@
      - 真机保持 A0' 正常可用状态，本轮严格限制为主机侧，未向设备刷入任何镜像。
   4. 最小配置修复实施：
      - 基线冻结：A1 Image（SHA-256 `[REDACTED_DEVICE_ID]...`）、A1 boot.img（SHA-256 `[REDACTED_DEVICE_ID]...`）保持原样；
-     - 在隔离构建目录 `[LOCAL_WSL_USER]/thyme_techpack_kernel_a1_fix_1/` 制作最小补丁：去除 `gap_patch` 引入的 `CONFIG_DRM_MSM`（及 8 项主线 PHY/HDCP 子项）、去除 `CONFIG_DEVTMPFS`（避免与 Android 早期 init 冲突）、去除 `CONFIG_DM_VERITY_AVB`（避免激进 panic）；
+     - 在隔离构建目录 `/path/to/thyme-os4-build/thyme_techpack_kernel_a1_fix_1/` 制作最小补丁：去除 `gap_patch` 引入的 `CONFIG_DRM_MSM`（及 8 项主线 PHY/HDCP 子项）、去除 `CONFIG_DEVTMPFS`（避免与 Android 早期 init 冲突）、去除 `CONFIG_DM_VERITY_AVB`（避免激进 panic）；
      - 完整保留 `CONFIG_TOOLS_SUPPORT_RELR=y`、`CONFIG_ARCH_HAS_RELR=y`、`CONFIG_RELR=y`、ThinLTO 以及 CAF SDE/DSI 显示驱动。
   5. 增量编译与产物验证：
      - 在 Ubuntu WSL 中配置 LLVM 21 工具链环境，执行受控单线程增量构建（耗时 2m59s，Exit 0）；
@@ -10657,7 +10657,7 @@
      - 重新打包生成 `work/control_experiments_pixel_a17_1/a1_fix/boot.img`（201,326,592 B，SHA-256 `ac66d615152dbf67a04c39c550aade40edfe25755e482ee885a80255e18c7fc0`），并追加 AVB hash footer；
      - 使用 `unpack_bootimg.py` 回读解包验证，内核与 ramdisk 哈希 100% 吻合。
 - 涉及文件：
-  - `[LOCAL_WSL_USER]/thyme_techpack_kernel_a1_fix_1/`
+  - `/path/to/thyme-os4-build/thyme_techpack_kernel_a1_fix_1/`
   - `work/control_experiments_pixel_a17_1/a1_fix/Image`
   - `work/control_experiments_pixel_a17_1/a1_fix/boot.img`
   - `work/control_experiments_pixel_a17_1/a1_fix/minimal_config_fix.patch`
@@ -10686,7 +10686,7 @@
   1. 硬链接构建缓存风险审查与消除：
      - 排查发现早期使用 `cp -al` 创建的实验树存在 17,775 个共享硬链接，且导致原始 `out/` 树中有 139 个构建元数据文件（`.cmd`, `.symversions`, `Module.symvers`, `.version`, `kernel/config_data.gz` 等）发生联动更新，确证硬链接隔离不充分；
      - 原始构建树与冻结基线未被删除或破坏：`thyme_techpack_kernel_image_bringup_1/out/arch/arm64/boot/Image`（SHA-256 `[REDACTED_DEVICE_ID]...`）与 `out/.config`（SHA-256 `[REDACTED_DEVICE_ID]...`）保持原样未变；
-     - 依据用户防线要求，在 WSL 860GB 充足空间下，通过 `cp -a` 重新建立 **0 共享硬链接的真正独立工作树** `[LOCAL_WSL_USER]/thyme_techpack_kernel_a1_fix_clean/`（18,178 个文件独立深拷贝）；
+     - 依据用户防线要求，在 WSL 860GB 充足空间下，通过 `cp -a` 重新建立 **0 共享硬链接的真正独立工作树** `/path/to/thyme-os4-build/thyme_techpack_kernel_a1_fix_clean/`（18,178 个文件独立深拷贝）；
      - 开机后自动检测到上次构建被打断，重新清理过期中间对象并执行独立构建，耗时 562s，Exit 0 顺利完成。
   2. 实际配置差分核验：
      - 精准关闭：`CONFIG_DRM_MSM`（及 8 项主线 PHY）、`CONFIG_DEVTMPFS`（避免与 Android 17 init 冲突）、`CONFIG_DM_VERITY_AVB`（避免激进 panic）；
@@ -10703,7 +10703,7 @@
      - `unpack_bootimg.py` 回读解包出的内核与 ramdisk 哈希 100% 吻合；
      - 更新 `SHA256SUMS.txt`，主机侧审计全部通过。
 - 涉及文件：
-  - `[LOCAL_WSL_USER]/thyme_techpack_kernel_a1_fix_clean/`
+  - `/path/to/thyme-os4-build/thyme_techpack_kernel_a1_fix_clean/`
   - `work/control_experiments_pixel_a17_1/a1_fix/Image`
   - `work/control_experiments_pixel_a17_1/a1_fix/boot.img`
   - `work/control_experiments_pixel_a17_1/a1_fix/fixed_image_config.txt`
@@ -10794,7 +10794,7 @@
      - 真机保持 A0' 正常可用状态，本轮严格限制为主机侧，未向设备刷入任何镜像。
   4. 最小配置修复实施：
      - 基线冻结：A1 Image（SHA-256 `[REDACTED_DEVICE_ID]...`）、A1 boot.img（SHA-256 `[REDACTED_DEVICE_ID]...`）保持原样；
-     - 在隔离构建目录 `[LOCAL_WSL_USER]/thyme_techpack_kernel_a1_fix_1/` 制作最小补丁：去除 `gap_patch` 引入的 `CONFIG_DRM_MSM`（及 8 项主线 PHY/HDCP 子项）、去除 `CONFIG_DEVTMPFS`（避免与 Android 早期 init 冲突）、去除 `CONFIG_DM_VERITY_AVB`（避免激进 panic）；
+     - 在隔离构建目录 `/path/to/thyme-os4-build/thyme_techpack_kernel_a1_fix_1/` 制作最小补丁：去除 `gap_patch` 引入的 `CONFIG_DRM_MSM`（及 8 项主线 PHY/HDCP 子项）、去除 `CONFIG_DEVTMPFS`（避免与 Android 早期 init 冲突）、去除 `CONFIG_DM_VERITY_AVB`（避免激进 panic）；
      - 完整保留 `CONFIG_TOOLS_SUPPORT_RELR=y`、`CONFIG_ARCH_HAS_RELR=y`、`CONFIG_RELR=y`、ThinLTO 以及 CAF SDE/DSI 显示驱动。
   5. 增量编译与产物验证：
      - 在 Ubuntu WSL 中配置 LLVM 21 工具链环境，执行受控单线程增量构建（耗时 2m59s，Exit 0）；
@@ -10803,7 +10803,7 @@
      - 重新打包生成 `work/control_experiments_pixel_a17_1/a1_fix/boot.img`（201,326,592 B，SHA-256 `ac66d615152dbf67a04c39c550aade40edfe25755e482ee885a80255e18c7fc0`），并追加 AVB hash footer；
      - 使用 `unpack_bootimg.py` 回读解包验证，内核与 ramdisk 哈希 100% 吻合。
 - 涉及文件：
-  - `[LOCAL_WSL_USER]/thyme_techpack_kernel_a1_fix_1/`
+  - `/path/to/thyme-os4-build/thyme_techpack_kernel_a1_fix_1/`
   - `work/control_experiments_pixel_a17_1/a1_fix/Image`
   - `work/control_experiments_pixel_a17_1/a1_fix/boot.img`
   - `work/control_experiments_pixel_a17_1/a1_fix/minimal_config_fix.patch`
@@ -10832,7 +10832,7 @@
   1. 硬链接构建缓存风险审查与消除：
      - 排查发现早期使用 `cp -al` 创建的实验树存在 17,775 个共享硬链接，且导致原始 `out/` 树中有 139 个构建元数据文件（`.cmd`, `.symversions`, `Module.symvers`, `.version`, `kernel/config_data.gz` 等）发生联动更新，确证硬链接隔离不充分；
      - 原始构建树与冻结基线未被删除或破坏：`thyme_techpack_kernel_image_bringup_1/out/arch/arm64/boot/Image`（SHA-256 `[REDACTED_DEVICE_ID]...`）与 `out/.config`（SHA-256 `[REDACTED_DEVICE_ID]...`）保持原样未变；
-     - 依据用户防线要求，在 WSL 860GB 充足空间下，通过 `cp -a` 重新建立 **0 共享硬链接的真正独立工作树** `[LOCAL_WSL_USER]/thyme_techpack_kernel_a1_fix_clean/`（18,178 个文件独立深拷贝）；
+     - 依据用户防线要求，在 WSL 860GB 充足空间下，通过 `cp -a` 重新建立 **0 共享硬链接的真正独立工作树** `/path/to/thyme-os4-build/thyme_techpack_kernel_a1_fix_clean/`（18,178 个文件独立深拷贝）；
      - 开机后自动检测到上次构建被打断，重新清理过期中间对象并执行独立构建，耗时 562s，Exit 0 顺利完成。
   2. 实际配置差分核验：
      - 精准关闭：`CONFIG_DRM_MSM`（及 8 项主线 PHY）、`CONFIG_DEVTMPFS`（避免与 Android 17 init 冲突）、`CONFIG_DM_VERITY_AVB`（避免激进 panic）；
@@ -10849,7 +10849,7 @@
      - `unpack_bootimg.py` 回读解包出的内核与 ramdisk 哈希 100% 吻合；
      - 更新 `SHA256SUMS.txt`，主机侧审计全部通过。
 - 涉及文件：
-  - `[LOCAL_WSL_USER]/thyme_techpack_kernel_a1_fix_clean/`
+  - `/path/to/thyme-os4-build/thyme_techpack_kernel_a1_fix_clean/`
   - `work/control_experiments_pixel_a17_1/a1_fix/Image`
   - `work/control_experiments_pixel_a17_1/a1_fix/boot.img`
   - `work/control_experiments_pixel_a17_1/a1_fix/fixed_image_config.txt`
@@ -10973,14 +10973,14 @@
      - 调度架构求真与保留：经源码与 Kconfig 深度审计，`CONFIG_SCHED_TUNE` 在上游与 `CONFIG_UCLAMP_TASK` 存在互斥依赖（`depends on !UCLAMP_TASK`）。而 K40（成功启动 HyperOS4 A17）与官方 thyme A13 均使用 `CONFIG_SCHED_WALT=y`、`CONFIG_SCHED_TUNE=y` 且关闭 `CONFIG_UCLAMP_TASK`。HyperOS 进程组依赖 `/dev/stune` 挂载点，强开 UCLAMP 反而会杀死 SchedTune。因此本版坚定保持与 K40 及官方 A13 一致的 WALT + SchedTune 架构；
      - 日志与内存安全确证：在源码 `fs/pstore/ram.c` 997 行直接确证高通平台原厂函数 `msm_reserve_ramoops_memory` 在 cmdline 包含 `ramoops_memreserve=4M` 时自动通过 `memblock_reserve` 将 `0xB0000000` 处的 4MB 动态预留为 ramoops 环形缓冲区，与 A0' dmesg 真实运行时日志 100% 吻合，证实该物理地址绝对安全且官方平台原生内置；同时查明 `Invalid compression size for deflate: 0` 仅因 `record_size=0` 导致压缩缓冲区跳过，并不影响 2MB 的 console 控制台环形日志。
   2. 独立干净构建：
-     - 在独立目录 `[LOCAL_WSL_USER]/thyme_techpack_kernel_a2_k40_clean/` 使用 LLVM 21 工具链编译，耗时 477.74 秒，一次性 Exit 0 成功生成 Image（大小 49,274,904 B，SHA-256 `c2b21ce8d917251c908b0b4fc548f6b50c8e2f11c323ff35c233f0651bbdf160`）；
+     - 在独立目录 `/path/to/thyme-os4-build/thyme_techpack_kernel_a2_k40_clean/` 使用 LLVM 21 工具链编译，耗时 477.74 秒，一次性 Exit 0 成功生成 Image（大小 49,274,904 B，SHA-256 `c2b21ce8d917251c908b0b4fc548f6b50c8e2f11c323ff35c233f0651bbdf160`）；
      - `extract-ikconfig` 二进制提取确认配置 100% 准确生效；
      - 打包生成 `a2_k40/boot.img`（201,326,592 B，SHA-256 `4bdb6253ca0b3d1654c3ea4377686b5afbf75407fac08174b37a68573d783048`），AVB footer 校验通过；
      - `unpack_bootimg.py` 回读比对内核与 ramdisk 哈希 100% 吻合。
   3. 待处理：
      - 制定 A2_k40 单变量 boot_a 刷写申请与真机对照实验方案，手机当前完好保持 PixelOS A0' 在线，等待用户独立授权。
 - 涉及文件：
-  - `[LOCAL_WSL_USER]/thyme_techpack_kernel_a2_k40_clean/`
+  - `/path/to/thyme-os4-build/thyme_techpack_kernel_a2_k40_clean/`
   - `work/control_experiments_pixel_a17_1/a2_k40/Image`
   - `work/control_experiments_pixel_a17_1/a2_k40/boot.img`
   - `work/control_experiments_pixel_a17_1/a2_k40/a2_k40_config.txt`
@@ -11052,7 +11052,7 @@
 - 改动/结论：
   1. **Candidate 3 Stage 1 最小主机侧产物合成**：
      - `boot.img`：直接复用已验证的 `A2_k40/boot_none.img`（201,326,592 B，SHA `16c981de73eb6f2317d9a0d246228e157d377843ce1b81c267705eabbb939617`），包含 A2_k40 内核（49,274,904 B，No-LTO，0模块）与 Candidate 2 原版 Android 17 boot ramdisk；
-     - `vbmeta.img`：在 `[LOCAL_WSL_USER]/thyme_xiaomi15_os4_candidate_3_stage1/vbmeta/` 生成独立新镜像（131,072 B，SHA `cc3d085bc7a132729eaedb9ab2c5f16d087d2e08577e2f5f84e50b4241648e06`），flags 严格设为 `3`（同时禁用 verity hashtree 与签名校验），boot 描述符精确更新为 A2_k40 真实尺寸（52,842,496 B）与新 SHA；
+     - `vbmeta.img`：在 `/path/to/thyme-os4-build/thyme_xiaomi15_os4_candidate_3_stage1/vbmeta/` 生成独立新镜像（131,072 B，SHA `cc3d085bc7a132729eaedb9ab2c5f16d087d2e08577e2f5f84e50b4241648e06`），flags 严格设为 `3`（同时禁用 verity hashtree 与签名校验），boot 描述符精确更新为 A2_k40 真实尺寸（52,842,496 B）与新 SHA；
      - 直接复用且无需重构的资产：`super_a_avb.img`（7,672,101,640 B，SHA `[REDACTED_DEVICE_ID]...`，免去高内存 lpmake 重建）、`vendor_boot.img`（SHA `[REDACTED_DEVICE_ID]...`）、`dtbo.img`（SHA `[REDACTED_DEVICE_ID]...`）、`vbmeta_system.img`（SHA `[REDACTED_DEVICE_ID]...`）。
   2. **DTB 拼接与逐节点比对定论（纠正 748 字节差异）**：
      - Candidate 2 DTB（1,424,196 B）与 A2_k40 编译 DTB（1,424,944 B）实差 748 字节；
@@ -11076,9 +11076,9 @@
 - 涉及文件：
   - `work/assemble_candidate_3_stage1.sh`
   - `work/inspect_dtbo_entries.py`
-  - `[LOCAL_WSL_USER]/thyme_xiaomi15_os4_candidate_3_stage1/boot/boot.img`
-  - `[LOCAL_WSL_USER]/thyme_xiaomi15_os4_candidate_3_stage1/vbmeta/vbmeta.img`
-  - `[LOCAL_WSL_USER]/thyme_xiaomi15_os4_candidate_3_stage1/SHA256SUMS.txt`
+  - `/path/to/thyme-os4-build/thyme_xiaomi15_os4_candidate_3_stage1/boot/boot.img`
+  - `/path/to/thyme-os4-build/thyme_xiaomi15_os4_candidate_3_stage1/vbmeta/vbmeta.img`
+  - `/path/to/thyme-os4-build/thyme_xiaomi15_os4_candidate_3_stage1/SHA256SUMS.txt`
   - `work/stage_c_thyme_os4_candidate_3_stage1/*`
   - `10S系统/thyme_images_OS1.0.4.0.TGACNXM_13.0/flash_all.bat`
   - `日志/项目当前状态.md`、`日志/执行记录.md`
@@ -11100,7 +11100,7 @@
   1. **消除路径与环境混用缺口**：
      - 将 Candidate 3 Stage 1 的 6 项镜像全部部署至 Windows NTFS 绝对路径 `[LOCAL_PROJECT_ROOT]\work\stage_c_thyme_os4_candidate_3_stage1\images\`；
      - 将 PixelOS A0' 恢复所需的 6 项镜像通过 0 额外磁盘占用硬链接归集至 `[LOCAL_PROJECT_ROOT]\work\restore_pixelos_a0_prime\images\`；
-     - 杜绝一切 WSL 内部路径（`[LOCAL_WSL_USER] 路径（`\\wsl$\...`）或相对路径混用。
+     - 杜绝一切 WSL 内部路径（`/root/...`）、UNC 路径（`\\wsl$\...`）或相对路径混用。
   2. **交付两套高鲁棒性生产级 PowerShell 脚本**：
      - `tools/flash_candidate3_stage1.ps1`
      - `tools/restore_pixelos_a0_prime.ps1`
@@ -11318,7 +11318,7 @@
   1. **PixelOS 原始 IKCONFIG 提取与核验**：
      - 使用 extract-ikconfig 对已验证可正常开机的原生 PixelOS 内核（63,350,808 B）进行二进制提取，确认与 work/pixel_native_config.txt 逐字节 100% 吻合（diff 为 0）；
   2. **建立完全独立且无硬链接的构建环境**：
-     - 在 WSL 中建立独立构建根目录 `[LOCAL_WSL_USER]/thyme_pixel_aligned_kernel_1/`，包含独立 source、out、logs 与 artifacts，与历史 A0/A1/A2 构建产物实现绝对物理隔离；
+     - 在 WSL 中建立独立构建根目录 `/path/to/thyme-os4-build/thyme_pixel_aligned_kernel_1/`，包含独立 source、out、logs 与 artifacts，与历史 A0/A1/A2 构建产物实现绝对物理隔离；
   3. **Kconfig 规范化与深度配置对齐**：
      - 注入 PixelOS 5,204 项配置并执行 make olddefconfig 规范化：
        - **5,179 项 (99.52%) 与 PixelOS 原生 100% 精确一致**；
@@ -11336,7 +11336,7 @@
   6. **零设备写入承诺**：
      - 全程未对真机执行任何 fastboot 刷写、擦除、重启或切槽指令；手机持续安全稳定运行于 PixelOS A0'（sys.boot_completed=1，ADB 在线）。
 - 涉及文件：
-  - `[LOCAL_WSL_USER]/thyme_pixel_aligned_kernel_1/`
+  - `/path/to/thyme-os4-build/thyme_pixel_aligned_kernel_1/`
   - `work/control_experiments_pixel_a17_1/a3_pixel_aligned/Image`
   - `work/control_experiments_pixel_a17_1/a3_pixel_aligned/boot.img`
   - `work/control_experiments_pixel_a17_1/a3_pixel_aligned/boot_none.img`
@@ -11405,7 +11405,7 @@
      - 溯源仓库：`https://github.com/Flicker-Android-Devices/kernel_xiaomi_sm8250.git`；
      - 分支：`sixteen-qpr2`；
      - 确切 Commit：`45b9b954f074f7bca3cd0aa462cc5c764d55b82f`（Author: Flicker372，Date: 2026-08-19 02:11:58 +0800，Subject: `ARM64: configs: xiaomi: update auto-generated defconfig for all devices`）；
-     - 源码克隆：已在 WSL `[LOCAL_WSL_USER]/thyme_pixelos_native_kernel_45b9b95/source` 独立检出；
+     - 源码克隆：已在 WSL `/path/to/thyme-os4-build/thyme_pixelos_native_kernel_45b9b95/source` 独立检出；
      - 默认配置：`make thyme_defconfig` 直出 `.config` 与 PixelOS 原生提取配置达成 **99.88% 吻合**（5,198/5,204 项完全相同，仅差 4 个编译探测串与 KSU 开关）。
   2. **与现有 LineageOS 源码树的历史与结构根本差异**：
      - **Git 历史无共同祖先**：`git merge-base` 返回 `NO COMMON ANCESTOR`。Flicker 树系基于由 ZhaoYueNan 全量导入的根提交 `367a8d2a9` 演进而来，总共 20 个 commits；
@@ -11416,7 +11416,7 @@
      - 在测试清华 AOSP 预编译仓库时，由于 partial clone 机制触发了 promisor remote 自动懒加载下载 15,042 个 git 对象，导致 `git show --stat` 命令在后台长时间执行下载。经确认后已果断使用 SIGKILL 终止阻塞进程（PID 628, 634, 635, 636, 654），并验证所有残留进程彻底退出；
      - 保持本地已有独立源码仓库完整无损，不重复克隆。
 - 涉及文件：
-  - `[LOCAL_WSL_USER]/thyme_pixelos_native_kernel_45b9b95/source`
+  - `/path/to/thyme-os4-build/thyme_pixelos_native_kernel_45b9b95/source`
   - `日志/执行记录.md`
   - `日志/项目当前状态.md`
 - 验证：
@@ -11441,7 +11441,7 @@
        - 4 项编译探测差异：`CONFIG_AS_VERSION`（210000 vs 210108）、`CONFIG_CC_VERSION_TEXT`（AOSP Clang vs Ubuntu Clang）、`CONFIG_CLANG_VERSION`（210000 vs 210108）、`CONFIG_LLD_VERSION`（210000 vs 210108）；
        - 2 项 KSU 差异：`CONFIG_KSU`（原生 y vs defconfig 未设置）、`CONFIG_KSU_DEBUG`（原生未设置 vs defconfig 因父项未启用而省略）。
   2. **A4 原生内核独立纯净编译完成**：
-     - 源码基线：`[LOCAL_WSL_USER]/thyme_pixelos_native_kernel_45b9b95/source`（提交 `45b9b954f074f7bca3cd0aa462cc5c764d55b82f`）；
+     - 源码基线：`/path/to/thyme-os4-build/thyme_pixelos_native_kernel_45b9b95/source`（提交 `45b9b954f074f7bca3cd0aa462cc5c764d55b82f`）；
      - 编译配置：`thyme_defconfig` 叠加 `vendor/thinlto.config`（确证闭合：`CONFIG_THINLTO=y`、`CONFIG_LTO_CLANG=y`、`CONFIG_CFI_CLANG=y`、`CONFIG_CFI_CLANG_SHADOW=y`）；
      - 工具链：本地 `Ubuntu Clang 21.1.8 + LLD 21.1.8 + LLVM_IAS=1`；
      - 并行度与资源：严格控制在 `-j4`，耗时 831 秒，无任何 OOM 或 Swap 挤占，干净返回 Exit 0；
@@ -11517,11 +11517,11 @@
 - 改动/结论：
   1. **精准获取 AOSP 官方原生 Clang 工具链快照**：
      - 确证 PixelOS A0' 真机运行内核 `/proc/version` 编译器特征：`Android (14054515, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349)`；
-     - 精确定位并完整下载 Google 官方 Android NDK r29 内置预编译工具链（747.25 MB，解压至 `[LOCAL_WSL_USER]/toolchains/clang-r563880c`）；
+     - 精确定位并完整下载 Google 官方 Android NDK r29 内置预编译工具链（747.25 MB，解压至 `/path/to/thyme-os4-build/toolchains/clang-r563880c`）；
      - 其编译器版本报告：`Android (13989888, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349)`；
      - **二者基于 100% 完全相同的 LLVM Git 提交（`5e96669f06077099aa41290cdb4c5e6fa0f59349`）**，彻底抹平编译器代码生成与 ABI 差异。
   2. **A5 原生内核独立纯净编译完成**：
-     - 源码基线：`[LOCAL_WSL_USER]/thyme_pixelos_native_kernel_45b9b95/source`（提交 `45b9b954f074f7bca3cd0aa462cc5c764d55b82f`，与 A4 完全同源）；
+     - 源码基线：`/path/to/thyme-os4-build/thyme_pixelos_native_kernel_45b9b95/source`（提交 `45b9b954f074f7bca3cd0aa462cc5c764d55b82f`，与 A4 完全同源）；
      - 编译配置：`thyme_defconfig` 叠加 `vendor/thinlto.config`（保持 ThinLTO + CFI 设置与 A4 严格一致）；
      - 工具链：Google 官方 AOSP `clang-r563880c` + `lld` + `LLVM_IAS=1`；
      - 并行度与资源：严格限定 `-j4`，耗时 650 秒，无 OOM / Swap 溢出，干净返回 Exit 0；
@@ -11600,7 +11600,7 @@
      - 溯源仓库：`https://github.com/Flicker-Android-Devices/kernel_xiaomi_sm8250.git`；
      - 分支：`sixteen-qpr2`；
      - 确切 Commit：`45b9b954f074f7bca3cd0aa462cc5c764d55b82f`（Author: Flicker372，Date: 2026-08-19 02:11:58 +0800，Subject: `ARM64: configs: xiaomi: update auto-generated defconfig for all devices`）；
-     - 源码克隆：已在 WSL `[LOCAL_WSL_USER]/thyme_pixelos_native_kernel_45b9b95/source` 独立检出；
+     - 源码克隆：已在 WSL `/path/to/thyme-os4-build/thyme_pixelos_native_kernel_45b9b95/source` 独立检出；
      - 默认配置：`make thyme_defconfig` 直出 `.config` 与 PixelOS 原生提取配置达成 **99.88% 吻合**（5,198/5,204 项完全相同，仅差 4 个编译探测串与 KSU 开关）。
   2. **与现有 LineageOS 源码树的历史与结构根本差异**：
      - **Git 历史无共同祖先**：`git merge-base` 返回 `NO COMMON ANCESTOR`。Flicker 树系基于由 ZhaoYueNan 全量导入的根提交 `367a8d2a9` 演进而来，总共 20 个 commits；
@@ -11611,7 +11611,7 @@
      - 在测试清华 AOSP 预编译仓库时，由于 partial clone 机制触发了 promisor remote 自动懒加载下载 15,042 个 git 对象，导致 `git show --stat` 命令在后台长时间执行下载。经确认后已果断使用 SIGKILL 终止阻塞进程（PID 628, 634, 635, 636, 654），并验证所有残留进程彻底退出；
      - 保持本地已有独立源码仓库完整无损，不重复克隆。
 - 涉及文件：
-  - `[LOCAL_WSL_USER]/thyme_pixelos_native_kernel_45b9b95/source`
+  - `/path/to/thyme-os4-build/thyme_pixelos_native_kernel_45b9b95/source`
   - `日志/执行记录.md`
   - `日志/项目当前状态.md`
 - 验证：
@@ -11636,7 +11636,7 @@
        - 4 项编译探测差异：`CONFIG_AS_VERSION`（210000 vs 210108）、`CONFIG_CC_VERSION_TEXT`（AOSP Clang vs Ubuntu Clang）、`CONFIG_CLANG_VERSION`（210000 vs 210108）、`CONFIG_LLD_VERSION`（210000 vs 210108）；
        - 2 项 KSU 差异：`CONFIG_KSU`（原生 y vs defconfig 未设置）、`CONFIG_KSU_DEBUG`（原生未设置 vs defconfig 因父项未启用而省略）。
   2. **A4 原生内核独立纯净编译完成**：
-     - 源码基线：`[LOCAL_WSL_USER]/thyme_pixelos_native_kernel_45b9b95/source`（提交 `45b9b954f074f7bca3cd0aa462cc5c764d55b82f`）；
+     - 源码基线：`/path/to/thyme-os4-build/thyme_pixelos_native_kernel_45b9b95/source`（提交 `45b9b954f074f7bca3cd0aa462cc5c764d55b82f`）；
      - 编译配置：`thyme_defconfig` 叠加 `vendor/thinlto.config`（确证闭合：`CONFIG_THINLTO=y`、`CONFIG_LTO_CLANG=y`、`CONFIG_CFI_CLANG=y`、`CONFIG_CFI_CLANG_SHADOW=y`）；
      - 工具链：本地 `Ubuntu Clang 21.1.8 + LLD 21.1.8 + LLVM_IAS=1`；
      - 并行度与资源：严格控制在 `-j4`，耗时 831 秒，无任何 OOM 或 Swap 挤占，干净返回 Exit 0；
@@ -11712,11 +11712,11 @@
 - 改动/结论：
   1. **精准获取 AOSP 官方原生 Clang 工具链快照**：
      - 确证 PixelOS A0' 真机运行内核 `/proc/version` 编译器特征：`Android (14054515, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349)`；
-     - 精确定位并完整下载 Google 官方 Android NDK r29 内置预编译工具链（747.25 MB，解压至 `[LOCAL_WSL_USER]/toolchains/clang-r563880c`）；
+     - 精确定位并完整下载 Google 官方 Android NDK r29 内置预编译工具链（747.25 MB，解压至 `/path/to/thyme-os4-build/toolchains/clang-r563880c`）；
      - 其编译器版本报告：`Android (13989888, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349)`；
      - **二者基于 100% 完全相同的 LLVM Git 提交（`5e96669f06077099aa41290cdb4c5e6fa0f59349`）**，彻底抹平编译器代码生成与 ABI 差异。
   2. **A5 原生内核独立纯净编译完成**：
-     - 源码基线：`[LOCAL_WSL_USER]/thyme_pixelos_native_kernel_45b9b95/source`（提交 `45b9b954f074f7bca3cd0aa462cc5c764d55b82f`，与 A4 完全同源）；
+     - 源码基线：`/path/to/thyme-os4-build/thyme_pixelos_native_kernel_45b9b95/source`（提交 `45b9b954f074f7bca3cd0aa462cc5c764d55b82f`，与 A4 完全同源）；
      - 编译配置：`thyme_defconfig` 叠加 `vendor/thinlto.config`（保持 ThinLTO + CFI 设置与 A4 严格一致）；
      - 工具链：Google 官方 AOSP `clang-r563880c` + `lld` + `LLVM_IAS=1`；
      - 并行度与资源：严格限定 `-j4`，耗时 650 秒，无 OOM / Swap 溢出，干净返回 Exit 0；
@@ -11757,7 +11757,7 @@
      - 测试镜像：`work/control_experiments_pixel_a17_1/a5_aosp_toolchain/boot.img`（201,326,592 B，SHA-256 `79e2085446e2d4648c9e02ac945668aa1ceb916ae18b15150a01baaa48acdd7b`）；
      - 刷入 `boot_a` 重启后，**突破小米第一屏（MI Logo），正常显示第二屏动画**；
      - **+15 秒** ADB 在线，**+26 秒** 顺利达成 `sys.boot_completed=1`；
-     - 运行内核核验：`/proc/version` 确认为 `Linux version 4.19.325-perf-g45b9b954f074 (root@Rock-Laptop) (Android (13989888, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0...)`；
+     - 运行内核核验：`/proc/version` 确认为 `Linux version 4.19.325-perf-g45b9b954f074 (root@[LOCAL_HOST]) (Android (13989888, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0...)`；
   2. **决定性科学结论（单变量受控实验终局证实）**：
      - A4 与 A5 采用完全相同的 Flicker 源码树（`45b9b954f074`）、完全相同的 `thyme_defconfig`、完全相同的 ThinLTO + CFI 配置，Kconfig 仅有 4 项编译器探测版本差异；
      - **A4（Ubuntu Host Clang 21.1.8 + LLD 21.1.8）卡死于第一屏，90 秒无响应**；
@@ -11778,7 +11778,7 @@
 - 验证：
   - Fastboot 单刷 boot_a 验证 exit 0；
   - 15s ADB 上线，26s `sys.boot_completed=1` 验证通过；
-  - 实机 `/proc/version` 确认为自建内核 `root@Rock-Laptop`；
+  - 实机 `/proc/version` 确认为自建内核 `root@[LOCAL_HOST]`；
   - 电池、系统服务、日志流 100% 正常。
 - 尚未验证：
   - 基于此 AOSP Clang 工具链编译 HyperOS4 适配内核并在 HyperOS4 运行栈中的启动表现。
@@ -11796,7 +11796,7 @@
   1. **A5 成功资产正式冻结**：
      - Image（53,436,440 B，SHA-256 `[REDACTED_DEVICE_ID]...`）、`boot.img`（201,326,592 B，SHA-256 `[REDACTED_DEVICE_ID]...`）、IKCONFIG（SHA-256 `88166422...`）、构建日志与实机运行日志（`work/reports/20260922_A5_PIXEL_SUCCESS/`）已固化，不覆盖 A5 与 A0' 原始恢复资产；
   2. **当前运行态 A5 + PixelOS 只读基础硬件审计**：
-     - 内核与命令行：`root@Rock-Laptop`，`msm_drm.dsi_display0=qcom,mdss_dsi_j2s_mp_42_02_0a_dsc_cmd:` 面板参数识别正常，`androidboot.cert=M2102J2SC`；
+     - 内核与命令行：`root@[LOCAL_HOST]`，`msm_drm.dsi_display0=qcom,mdss_dsi_j2s_mp_42_02_0a_dsc_cmd:` 面板参数识别正常，`androidboot.cert=M2102J2SC`；
      - 显示子系统：SurfaceFlinger 成功挂载内置屏幕（HWC Display 0），刷新率 60Hz；
      - 触控驱动：`fts`（FocalTech Touch System）注册成功（`/dev/input/event5`，`Classes: KEYBOARD | TOUCH | TOUCH_MT`，`Enabled: true`）；
      - 音频服务：AudioFlinger 处于活跃状态，多路混音器线程以 48000 Hz 正常待命；
@@ -12369,9 +12369,9 @@
      - 两者均导致 Bionic `abort()` 调用 `_Exit(127)`，在 107 微秒内使内核以 `exitcode=0x00007f00` panic。
 - 涉及文件：
   - `work/reports/20260923_CANDIDATE6_PANIC0_LOG_SALVAGE/pstore/console-ramoops-0`
-  - `[LOCAL_WSL_USER]/diff_rd2/init`
-  - `[LOCAL_WSL_USER]/init_symbols.txt`
-  - `[LOCAL_WSL_USER]/thyme_xiaomi15_os4_first_boot_candidate_1/super/avb_images/system.img`
+  - `/path/to/thyme-os4-build/diff_rd2/init`
+  - `/path/to/thyme-os4-build/init_symbols.txt`
+  - `/path/to/thyme-os4-build/thyme_xiaomi15_os4_first_boot_candidate_1/super/avb_images/system.img`
   - `日志/项目当前状态.md`
   - `日志/执行记录.md`
 - 验证：原始日志逐行核验；init AArch64 反汇编控制流闭环；PixelOS vs Candidate 6 镜像挂载逐项结构比对 100% 证实。
@@ -12385,7 +12385,7 @@
 - 改动/结论：
   1. **严格遵循单变量原则重构 system.img**：
      - 采用经过验证的 system.rootlike.raw.erofs（958,156,800 字节，Root NID 58），恢复包含真实 /system 目录的 Android 17 First Stage Init 标准 SAR 拓扑；
-     - 零修改合同（Zero-Mutation Contract）：比对 /system 内部全部 4,493 个文件及软链接，与 Candidate 6 的扁平内容逐字节一致，build.prop 0 差异，framework、app 与二进制 100% 保持原样；
+     - 零修改合同（Zero-Mutation Contract）：比对 /system 内部全部 4,493 个文件及软链接，与 Candidate 6 的扁平内容逐字节一致，uild.prop 0 差异，framework、app 与二进制 100% 保持原样；
      - 根目录下恢复标准符号链接：/init -> /system/bin/init、/bin -> /system/bin、/etc -> /system/etc；
      - 根目录下建立真实空挂载点目录：/product、/system_ext、/vendor、/mi_ext、/metadata（各包含 0 子项），彻底消除 SwitchRoot 后的自引用死循环（-ELOOP）；
      - 注入 AVB hashtree footer（Extent 1,092,616,192 字节，Salt [REDACTED_DEVICE_ID]...，Algorithm NONE，Do-not-generate-fec）。
@@ -12415,7 +12415,7 @@
   - work/stage_c_thyme_os4_candidate_7_panic0/images/
   - 日志/项目当前状态.md
   - 日志/执行记录.md
-- 验证：build_candidate7.py 构建退出码 0；precheck_candidate7.py 七大门禁静态验证全绿（Exit 0）；真机 ADB 在线检测全部通过。
+- 验证：uild_candidate7.py 构建退出码 0；precheck_candidate7.py 七大门禁静态验证全绿（Exit 0）；真机 ADB 在线检测全部通过。
 - 尚未验证：实机刷入 Candidate 7 后的物理启动日志与行为。
 - 待处理：向用户提交《Candidate 7 标准 SAR 拓扑重构与静态门禁验证报告》，等待人工明确授权后再决定后续实机操作。
 - 替代：无（本条作为 Candidate 6 根因闭环后的资产就绪推进记录）。
@@ -12781,7 +12781,7 @@
 - 状态：主机侧专用采集镜像已构建并核验；未执行获准的单次 RAM 启动，设备仍在 Fastboot，未读取 misc/BCB。
 - 改动/结论：
   1. 用户明确授权一次 Standalone RAM 临时启动，只读导出 misc/BCB；不包含 BCB 写入、PixelOS 启动或分区刷写。
-  2. 检查发现原 build_standalone_diag.py 默认会 rm -rf [LOCAL_WSL_USER] ramdisk/镜像。为保留历史资产，修改构建器要求显式全新 --out-dir，并使用唯一 WSL build root，已有路径即拒绝覆盖。旧生成文件 work/standalone_diag/wsl_build_ramdisk.sh 保持未改且未运行；仍含固定清理/输出路径，已在当前状态中标为不可直接运行。
+  2. 检查发现原 build_standalone_diag.py 默认会 rm -rf /root/standalone_diag_build、覆盖基础 ramdisk/镜像。为保留历史资产，修改构建器要求显式全新 --out-dir，并使用唯一 WSL build root，已有路径即拒绝覆盖。旧生成文件 work/standalone_diag/wsl_build_ramdisk.sh 保持未改且未运行；仍含固定清理/输出路径，已在当前状态中标为不可直接运行。
   3. 一次性 init 重挂载新 /dev tmpfs、仅创建 /dev/block 后运行 mdev -s；ramdisk 未包含 /etc/mdev.conf 或创建 /dev/block/by-name/misc 的逻辑。因此精确授权路径当前无法成立。依照用户条件，不发起 fastboot boot，不读取或猜测任何 sdaN。
   4. 专用镜像只在 /dev/block/by-name/misc 存在、为块设备且大小为 4,194,304 字节后才执行 dd if=，完整长度通过后计算 SHA-256；未设置回退路径。一次性镜像不采集 pstore/oops/dmesg，UMS 只导出 RAM 镜像并设 ro=1。
   5. 新镜像生成于 work/reports/20260925_MISC_BCB_READONLY/run_20260925_175216/standalone_build/，201,326,592 字节，SHA-256 5FECE6D263A2BE5BD3A3BF7DAACF02FE4AE66882D1B5E952EFF7757F89E722F。A5 kernel SHA 与 ramdisk 输入/解包输出一致，avbtool footer、NONE vbmeta 与 boot hash 验证通过。原 Standalone 镜像与 C13 console-ramoops 哈希保持不变。
@@ -12844,7 +12844,7 @@
   3. C13 pstore 保存一个 Recovery 内核/init 实例；Recovery 分支后的 AVB 和逻辑设备错误不能解释更早模式选择。`Writing BCB` 是 Recovery 用户空间运行后的结果，不证明启动前 BCB 已有相同请求。SELinux 新规则仍无真机验收。
   4. 改进 `tools/observe_candidate13_readonly.py`：每秒轮询 ADB/Fastboot、ADB 可达时流式记录全 buffer monotonic logcat，并异步采集启动属性、cmdline/kernel version、首份 dmesg、getenforce、ION 标签、/data mount 和相关服务 SELinux 标签。仅静态 AST/帮助与命令审阅；没有运行观察器。
 - 原因：C13 salvage 只保留 Recovery 启动现场；需要提高下一次普通启动中首条 Init、策略、fs_mgr/vold 错误被捕获的概率，且不改变待测 C13 的内核、策略模式、加密或启动参数。
-- 涉及文件：`work/reports/20260925_CANDIDATE13_ROOT_CAUSE_AND_NEXT_EXPERIMENT.md`；`tools/observe_candidate13_readonly.py`；`日志/项目当前状态.md`；本记录。六个逻辑分区派生提取物位于 WSL `[LOCAL_WSL_USER]/c13_audit/rootcause_lp_20260925_2145/extract_{c12,c13}_key_20260925/`。
+- 涉及文件：`work/reports/20260925_CANDIDATE13_ROOT_CAUSE_AND_NEXT_EXPERIMENT.md`；`tools/observe_candidate13_readonly.py`；`日志/项目当前状态.md`；本记录。六个逻辑分区派生提取物位于 WSL `/path/to/thyme-os4-build/c13_audit/rootcause_lp_20260925_2145/extract_{c12,c13}_key_20260925/`。
 - 验证：C13 Init 与输入 SHA-256 完全一致；C12/C13 分区提取哈希显示五个逻辑分区相同、仅 system_ext 不同；PixelOS ADB 只读复查为 `[REDACTED_DEVICE_ID]`、`thyme`、A 槽、`sys.boot_completed=1`、Android 17/SDK 37、内核 `4.19.325-perf-g45b9b954f074`、vold running、加密 `/data` F2FS rw、Verified Boot green/enforcing；Fastboot 列表为空且无 fastboot 写入进程。脚本 AST 与帮助文本通过静态检查，观察器未运行。
 - 尚未验证：C13 是否有未保存的首次普通启动、`fs_mgr_mount_all` 的具体失败对象和原因、`init_fatal_reboot_target=recovery` 是否参与、C13 的动态 SELinux 编译/加载、ION AVC、QSEECom、HAL 与 userdata 路径。
 - 待处理：未来实验先经单独授权刷回同一六镜像，保持 Fastboot 并先运行只读观察器；首次启动另需授权；失败后经单独 RAM 启动授权采集 pstore/pmsg/oops/dmesg，取证后再单独决定 PixelOS 恢复。不要确认 Recovery wipe；不重建 C13、不启动 Candidate 14。
@@ -12871,7 +12871,7 @@
 - 状态：补充主机侧静态核验完成；仅分析，未修改业务代码，未执行任何设备操作。
 - 改动/结论：从 pinned C13 `system_a` EROFS 重新提取 `system/lib64/libfs_mgr.so`，文件 SHA-256 与先前记录的 `eb3f772f940c5eddf22e14f85b1ae68dbd36ecc668011e4709d2e9377af9d877` 相同。ELF 动态符号表保留 `fs_mgr_mount_all`、`WasMetadataEncryptionInterrupted`、`fs_mgr_do_format` 等实现；C13 的 `/metadata` NEEDS_RECOVERY 文案存在。有限 AArch64 反汇编确认符号/代码存在，但未闭合 `fs_mgr_mount_all` 到格式化函数的完整调用链，也未证明该 `/metadata` 文案分支的精确 errno/状态条件。故仍只能说数据自动修复/格式化风险无法排除，不能说本次实际格式化已经发生。
 - 原因：把镜像内实际实现与 AOSP 通用实现分开，避免仅凭字符串或上游路径断言 Xiaomi 分支运行时行为。
-- 涉及文件：WSL `[LOCAL_WSL_USER]/c13_audit/fs_mgr_probe_20260925_2329/`；主报告第二节和验证边界；本记录。
+- 涉及文件：WSL `/path/to/thyme-os4-build/c13_audit/fs_mgr_probe_20260925_2329/`；主报告第二节和验证边界；本记录。
 - 验证：`extract.erofs` 从 pinned C13 `system_a.img` 提取；SHA-256、`file`、`readelf -Ws`、`nm -D -C`、AArch64 `objdump` 有限核对完成。无镜像构建、无分区操作。
 - 尚未验证：精确控制流调用关系、实际运行时条件、是否执行过 checker/format；这些需进一步有针对性的离线反汇编或新的受控运行日志。
 - 待处理：按主报告所述先解决数据保护阻塞，不因此放行 C13 或 C13.1。
@@ -12993,7 +12993,7 @@
 - 状态：主机侧最终预检完成；未修改 C14 镜像，未刷写、启动、擦除或恢复设备。
 - 改动/结论：此前基于 C13 外层 `vbmeta_system` 描述符差异而称 run5 system 来源不匹配，结论过早，现已纠正。当前 C13 sparse super 的 SHA-256 为 `8AFEFDDBCA2357D003DEF055418CC08A832B91EA08EDCB40DEECBEBD42FA2252`；从该 super 提取的实际 system_a 描述符与 C7 system SAR 的 image_size=958156800、salt 和 root digest=`a6a98047552927db5ed160a23f98d1ba455b7b74128dca7c8c1e0f2eeefb58dc` 完全一致。故 C14 run5 的 C7 system 内容基线与当前 C13 实际 system 内容相同，无需重建。C13 自身 vbmeta_system 的 system 描述符为 image_size=958091264、root digest=`0535596ddbc758b471ee96bcbdb0fee76d84ecbc3ab7d3fc936e3bf5fcb34ff5`，与实际 super 描述符不同；本地 AVB 常量确认 flags=2 为 VERIFICATION_DISABLED，顶层 vbmeta flags=3。将其记录为 C13 旧元数据差异，不将其误判为 C7 来源不一致。C14 新 vbmeta_system 的 system/system_ext 描述符与 run5 输出镜像匹配。
 - 原因：完成 C14 上机前对 C7 system 来源、C13 当前 super、AVB/LP 和刷写范围的最终针对性核验。
-- 涉及文件：`work/reports/20260926_CANDIDATE13_NETBPFLOAD_FAILURE_AND_C14_BUILD.md`；`日志/项目当前状态.md`；本记录；临时提取目录 `[LOCAL_WSL_USER]/c14_c13_system_source_20260926_run6/`（不含于公开仓库）。
+- 涉及文件：`work/reports/20260926_CANDIDATE13_NETBPFLOAD_FAILURE_AND_C14_BUILD.md`；`日志/项目当前状态.md`；本记录；临时提取目录 `/path/to/thyme-os4-build/c14_c13_system_source_20260926_run6/`（不含于公开仓库）。
 - 验证：C14 run5 最终 EROFS 的 fsck 检查、BPF init 触发和两条 ion_device allow 回读通过；super lpdump 显示 system_a、system_ext_a、product_a、vendor_a、odm_a、mi_ext_a；PowerShell 刷写脚本解析通过。默认 Dry-Run 对 vbmeta_system.img（131072 字节，SHA-256 `5347D67BEADC9A0F8DCE49B3C76DA3F34E3E60805F3974ED895990724740D744`）和 super.img（7684274964 字节，SHA-256 `112A0EB7FE6D13CD70848453528466219ADE18E3749D15F934854033E20B8093`）校验通过，计划仅写 `vbmeta_system_a`、`super`，无擦除、重启、回锁或其他分区写入。只读 Fastboot 为 serial `[REDACTED_DEVICE_ID]`、product=thyme、slot=a、unlocked=yes、is-userspace=no；ADB 未枚举。
 - 尚未验证：C14 未刷写/启动；是否绕过 bpfloader-failed、后续 Android 启动阶段及 SELinux HAL 实际效果均未知。PixelOS A0′ 未恢复或启动验证。
 - 待处理：等待用户明确授权 C14 两分区顺序刷写；写入后保持 Fastboot。首次启动及故障后 Standalone RAM 取证分别遵守独立授权边界。
@@ -13331,7 +13331,7 @@
 - 状态：首次构建在 WSL 复制/修改 C19 暂存 system tree 后，于主机打印 WSL 警告时遇到 GBK `UnicodeEncodeError` 中断；尚未生成 system、vbmeta_system 或 super 镜像。暂存树已保留。
 - 改动/结论：构建器增加安全终端输出编码回退及 `--resume`，允许验证并继续已完成的暂存树，不覆盖 C18 或 C19 已存在输入。暂存 `system/build.prop` 可读回唯一 `ro.surface_flinger.default_composition_pixel_format=2`。
 - 原因：WSL 在该 Windows 控制台返回含替换字符的 stderr，Python 默认 GBK stdout 编码无法打印；该问题与 EROFS/AVB 构建无关。
-- 涉及文件：`tools/build_candidate19_rgbx_egl.py`；WSL 暂存目录 `[LOCAL_WSL_USER]/c19_rgbx_egl_20260927_run1/system_tree/`。
+- 涉及文件：`tools/build_candidate19_rgbx_egl.py`；WSL 暂存目录 `/path/to/thyme-os4-build/c19_rgbx_egl_20260927_run1/system_tree/`。
 - 验证：修正后 Python AST 通过；WSL 中属性只出现一次。首次失败没有产生候选镜像或设备操作。
 - 尚未验证：恢复构建的 EROFS、AVB/LP 和最终六项镜像；本次中断后续任务将从保留暂存继续。
 - 安全边界：没有刷写、启动、RAM boot、数据清除或 Bootloader 状态修改；C18 输入未改。
@@ -13386,169 +13386,570 @@
 
 ## 2026-09-27 01:48｜C20 ANGLE 路由诊断构建与两分区刷写
 
-- 状态：Candidate 20 已完成主机构建、针对性静态验证和授权范围内的两分区刷写；设备保持 Bootloader Fastboot，尚未首次启动。
-- 改动/结论：从 C19 RGBX=2 基线构建 C20；system 默认属性与 `/data` 持久属性加载后的 init 动作统一使用 `persist.graphics.egl=angle`，新增 SurfaceFlinger/graphicsengine 的 linker `dlopen`/`dlerror` 诊断属性，并更新只读观察器以采集属性和可读的图形进程 maps。未替换 GPU/Vulkan/HWC/Gralloc，未扩展 SELinux。
-- 原因：C19 证明 format=2 请求仍无法匹配 EGLConfig，但实际 ANGLE/Adreno 后端没有被运行日志确定；ANGLE 库已在 system 中存在，C19 的 Adreno init 覆盖与持久属性可能冲突。
-- 涉及文件：`tools/build_candidate20_angle_diag.py`、`tools/flash_candidate20_angle_diag.ps1`、`tools/start_candidate20_observed_boot.ps1`、`tools/observe_candidate13_readonly.py`、`reports/candidate20/REPORT.md`、`reports/candidate20/BUILD_MANIFEST.json`、项目状态与工具说明。
-- 验证：最终 EROFS 检查和属性/init 回读通过；system AVB 描述符、继承的 product/system_ext 描述符及 LP 布局核验通过；从 super 提取的 system 与构建镜像逐字节一致。`super` 7,684,274,964 bytes，SHA-256 `9DAE08D2288E1F590DD803FDBDA79230A64136B2C3F529AB82E0D0B8F7946334`，10 个 sparse 写入块全部 OKAY；`vbmeta_system_a` 131,072 bytes，SHA-256 `E45FCEEC95592764E23DB54114DC6235A4AA6057EA0BB5C5518F10135E85B662`，写入 OKAY。刷后仍为 thyme/A/unlocked/Bootloader Fastboot。
-- 尚未验证：C20 首次启动、ANGLE 实际加载、EGLConfig 结果、Vulkan 与 EGL 故障关系、HyperOS 启动画面或桌面。
-- 边界：没有 reboot、擦除、切槽、BCB/misc 操作、其他分区写入或 Bootloader 回锁；PixelOS 未恢复。
-- 待处理：等待用户确认在现场观察后，先 ARMED C20 observer，再进行一次首次启动。公开材料不包含设备序列号、ROM 或分区镜像。
+- 状态：主机构建、静态验证及授权范围内的 C20 两分区刷写已完成；设备保持 Bootloader Fastboot，C20 尚未启动。
+- 改动/结论：基于 C19 RGBX=2 生成 C20。将 system 默认 persist.graphics.egl 和持久属性就绪后的 init 覆盖统一改为 angle；增加 SurfaceFlinger/graphicsengine 的按进程 linker dlopen/dlerror 诊断属性与 linker DEBUG 日志。更新只读观察器以记录这些属性并在 ADB 可用时保存图形进程 maps。未更换 GPU/Vulkan 库、未扩展 SELinux。
+- 原因：C19 实际 system libEGL.so 有 ANGLE 路由和 load-failure fatal 字符串，但后端身份未记录；成功路径 ALOGV 字符串在实际二进制中缺失。C19 43 次 format=2 EGLConfig abort 仍未解决。ANGLE 库已存在，选择一次有显式运行时路由及 linker 诊断能力的测试。
+- 涉及文件：tools/build_candidate20_angle_diag.py、tools/flash_candidate20_angle_diag.ps1、tools/start_candidate20_observed_boot.ps1、tools/observe_candidate13_readonly.py、work/stage_j_thyme_os4_candidate_20_angle_route_diag_run1/images/BUILD_MANIFEST.json、work/reports/20260927_CANDIDATE20_ANGLE_DIAG/REPORT.md、本日志目录。新增观察输出目录为 work/reports/20260927_CANDIDATE20_ANGLE_DIAG/observations/。
+- 验证：C20 EROFS fsck 通过；最终镜像回读确认 ANGLE 路由、RGBX=2、linker 属性和 init 动作一致且无 Adreno 覆盖。system AVB descriptor 校验通过；product/system_ext descriptor 沿用 C19。LP dump 通过；从 super 解包的 system_a 与 C20 system 镜像 1,092,616,192 bytes 逐字节一致。Python/PowerShell AST 通过。super 7,684,274,964 bytes SHA-256 9DAE08D2288E1F590DD803FDBDA79230A64136B2C3F529AB82E0D0B8F7946334，10/10 sparse 写入块 OKAY；vbmeta_system 131,072 bytes SHA-256 E45FCEEC95592764E23DB54114DC6235A4AA6057EA0BB5C5518F10135E85B662，写入 OKAY。
+- 尚未验证：C20 首次启动、ANGLE 实际运行时加载、EGLConfig 是否成功、Vulkan 与 EGL 故障关系、HyperOS 动画/桌面。Linker trace 可能受进程 dumpability 限制；无日志不等于未加载。
+- 设备状态与边界：刷后只读 Fastboot 查询为 [REDACTED_DEVICE_ID]、thyme、A 槽、unlocked=yes、非 userspace Fastboot；A 槽 unbootable=no/successful=no/retry=5。未发 reboot；未擦除 userdata/metadata；未写其他分区或 BCB；未切槽或回锁。
+- 待处理：Public GitHub 增量同步后，等待用户确认已在现场观察，再以 C20 observer ARMED 为前提启动一次。
+- 替代：替代“下一轮待评估 ANGLE 路由”状态；C19 启动结果和未识别实际 EGL 后端的历史结论继续保留。
+
+## 2026-09-27 02:06｜C20 公开资料同步与匿名访问验证
+
+- 状态：C20 公开资料已推送现有 Public 仓库，匿名访问验证通过。
+- 改动/结论：提交 C20 报告、构建清单、构建/刷写/启动/观察器脚本，更新项目 README、状态和工具说明。公开副本中的设备序列号改为显式运行时参数；未修改本地完整工程中的实验原件。
+- 原因：按项目授权完成 C20 实质性里程碑后的公开增量同步。
+- 涉及文件：公开仓库 `README.md`、`logs/PROJECT_STATUS.md`、`logs/EXECUTION_LOG.md`、`tools/`、`reports/candidate20/`。
+- 验证：暂存 10 个文件，约 2.09 MB；无镜像/原始分区数据，最大文件低于 100 MB；凭据、目标序列号和私人路径筛查无命中。匿名 GitHub API 确认 `visibility=public`、`main` 指向 `ce184134e607c7bf59177122aab617523d595ae8`；匿名原始 README、C20 报告、项目状态均 HTTP 200。提交：https://github.com/ROCK-VK/thyme-hyperos4-port/commit/ce184134e607c7bf59177122aab617523d595ae8
+- 尚未验证：C20 尚未首次启动，ANGLE 运行时加载及 EGLConfig 结果未知。
+- 待处理：等待用户现场确认后进行 C20 首次启动；观察器必须先 ARMED。
+- 替代：无。
 
 ## 2026-09-27 09:56｜C20 首次实机复验与全量 Standalone 取证
 
-- 状态：C20 启动尝试、取证和图形结果分析已完成；未进入 HyperOS 动画或桌面。完整 C20 原始证据已增量复制到公开副本，远端提交待完成。
-- 改动/结论：观察器先 ARMED，之后一次 `fastboot reboot` 返回成功；ADB 未上线。pstore 证明 First/Second Stage、APEX 激活、metadata key 使用和 `/data` F2FS 挂载成功。SurfaceFlinger 仍有 47 次 format=2 `no suitable EGLConfig found`。ANGLE/Adreno 后端未知；linker 诊断没有产生日志。graphicsengine 的 `vkEnumeratePhysicalDevices+4` SIGSEGV 与首条 EGL abort 相隔约 0.48 秒，因果未证。用户观察到米标常亮并手动返回 Fastboot。
-- 原因：完成 C20 ANGLE 路由与运行时诊断实验，取得真实 EGL 阻塞结果并保存故障现场。
-- 涉及文件：`reports/candidate20/REPORT.md`、`evidence/candidate20/standalone/run_20260927_094544/`、`evidence/candidate20/host-observations/run_20260927_093948/`、同步器与项目状态文件。
-- 验证：Standalone 源卷 8 文件、18,811,280 bytes；源与副本逐项大小/SHA-256 匹配，复制错误 0。C20 pmsg `827,191` bytes，SHA-256 `392510E7F46F4F8F440FAEF37FE1BCF235797EF05C585DC0D87B77AFE779BA83`。`oops.raw` 与 C19 同哈希，视为历史残留；Standalone dmesg 不作为 C20 日志。最近只读设备状态为 thyme/A/unlocked/Bootloader Fastboot、A 槽 unbootable=no/successful=no/retry=4；ADB 空。
-- 尚未验证：ANGLE 实际是否加载、EGLConfig 根因、Vulkan SIGSEGV 与 EGLConfig 的因果、HyperOS 动画/设置向导/桌面。
-- 安全边界：无刷写、擦除、userdata/metadata 清除、BCB/misc 修改、槽位状态修复、PixelOS 恢复或 Bootloader 回锁。
-- 待处理：完成 C20 原始证据的增量 Commit/Push；下一实验先静态验证只读 init 快照可把运行时 EGL 属性和图形进程 maps 写入 logd/pmsg，再决定是否构建 C21。
-- 替代：替代上一条“C20 尚未启动、等待现场确认”的当前状态；旧记录保留其记录时点的事实。
+- 状态：C20 启动尝试、取证和图形结果分析已完成；C20 未进入 HyperOS 动画或桌面。C20 原始证据公开同步待本条工作结束时完成。
+- 改动/结论：观察器先 ARMED，之后一次 `fastboot reboot` 返回成功；ADB 未上线。C20 pstore 证明 First/Second Stage、APEX 激活、metadata key 使用和 `/data` F2FS 挂载成功。SurfaceFlinger 仍有 47 次 format=2 `no suitable EGLConfig found`。ANGLE/Adreno 后端仍未知；linker 诊断没有产生日志。graphicsengine 的 `vkEnumeratePhysicalDevices+4` SIGSEGV 与首条 EGL abort 间隔约 0.48 秒，因果未证。用户看到米标常亮并手动返回 Fastboot。
+- 原因：完成 C20 ANGLE 路由与运行时诊断实验，确认是否解决 EGL 初始化阻塞并保存故障现场。
+- 涉及文件：`work/reports/20260927_CANDIDATE20_ANGLE_DIAG/REPORT.md`、`standalone/run_20260927_094544/`、`observations/run_20260927_093948/`、`日志/项目当前状态.md`。
+- 验证：Standalone 诊断卷 8 个文件、18,811,280 bytes；逐项大小与 SHA-256 匹配，复制错误 0。`oops.raw` 与 C19 完全同哈希，按历史残留处理；Standalone dmesg 不作为 C20 证据。最近只读 Fastboot 查询：唯一设备 [REDACTED_DEVICE_ID]、thyme、A 槽、unlocked=yes、非 userspace fastboot、unbootable=no、successful=no、retry=4；ADB 空。console 仅一个 Linux 启动头，最后 uptime 250.744s，无 kernel panic；日志结束和 Fastboot 返回原因未由日志解释。
+- 尚未验证：ANGLE 实际是否加载、EGLConfig 匹配失败的底层原因、Vulkan SIGSEGV 与 EGLConfig 的因果、HyperOS 动画/设置向导/桌面。
+- 安全边界：本轮只读设备查询、一次用户授权的 Candidate 启动和已长期授权的 Standalone RAM 取证；没有分区刷写/擦除、userdata/metadata 清除、misc/BCB 修改、槽位状态修复、PixelOS 恢复或 Bootloader 回锁。
+- 待处理：增量发布 C20 完整观察记录与 Standalone 全量导出；下一实验优先准备只读 init hook，把运行时 EGL 路由属性和图形进程 maps 摘要写入 logd/pmsg。无依据不替换 GPU/Vulkan/HWC/Gralloc。
+- 替代：替代本状态文件中“C20 已刷入、尚未启动”及“等待启动确认”的当前结论；保留 01:48 条目作为当时刷写结束状态的历史记录。
 
-## 2026-09-27 10:11｜C20 公开证据推送与匿名校验
+## 2026-09-27 10:11｜C20 原始证据公开推送与匿名校验
 
-- 状态：C20 完整诊断证据和实机报告已推送 Public 仓库；匿名访问校验通过。
-- 改动/结论：新增 `evidence/candidate20/` 19 个文件、18,886,374 bytes，并更新报告、状态、README、证据索引和按 Candidate 过滤的同步器。
-- 验证：公开 API 确认仓库 Public、默认分支 `main` 指向 commit `cab1a7847b08651466a8e2b04a5d9a58af0c1727`。匿名 README、报告、状态、manifest、console 与 pmsg 均 HTTP 200；远端 pmsg 为 827,191 bytes，SHA-256 与本地相同。C20 19 个原始文件与本地来源逐字节相同；凭据/策略排除 0。
-- 尚未验证：ANGLE 实际 EGL 后端、EGLConfig 根因、Vulkan 与 SurfaceFlinger 的因果关系和 HyperOS 动画/桌面。
-- 安全边界：没有上传 ROM、固件、Candidate 镜像或设备分区镜像；没有执行设备操作。
-- 待处理：下轮先静态验证只读 init hook 可安全记录 EGL 运行时属性和图形进程 maps 摘要至 pmsg。
-- 替代：更新 09:56 记录中“远端提交待完成”的状态；启动结论不变。
+- 状态：C20 完整原始诊断卷和主机观察记录已推送现有 Public 仓库；匿名访问验证通过。
+- 改动/结论：公开 `evidence/candidate20/` 共 19 个文件、18,886,374 bytes，包含完整 8 文件 THYME_DIAG 副本、导出清单/时间线和全部 7 个主机观察文件。同步器为原始证据增加按 Candidate 过滤同步选项，未重新遍历或改写 C13–C19 原始记录。
+- 原因：完成 C20 实质性启动取证后按用户授权公开原始证据，方便独立审核并保留逐文件来源。
+- 涉及文件：公开仓库 README、C20 报告/状态/执行记录、evidence 清单/索引/C20 原始证据、`scripts/sync_raw_startup_evidence.ps1` 与 `sync_from_local.ps1`；本地项目状态。
+- 验证：公开 repo API 确认 `visibility=public`、默认分支 `main`；main 指向 `cab1a7847b08651466a8e2b04a5d9a58af0c1727`。匿名 URL 获取 README、C20 报告、项目状态、证据清单及 console/pmsg 均 HTTP 200；远端 pmsg 827,191 bytes SHA-256 与本地一致。C20 源目录与 Git index 19 文件逐字节一致；最大文件为历史/诊断 `oops.raw` 16,777,216 bytes。凭据/分区镜像/超大文件排除 0。
+- 尚未验证：ANGLE 实际 EGL 后端、EGLConfig 故障根因、Vulkan 与 SurfaceFlinger 的因果关系及 HyperOS 启动画面。
+- 安全边界：本轮公开诊断日志按用户授权；未上传完整 ROM、固件或分区镜像，未修改设备状态。
+- 待处理：准备 C21 只读 EGL 运行时快照前，先验证 init hook 不阻塞 SurfaceFlinger 启动且能够把属性/maps 摘要写入 pmsg。
+- 替代：更新 09:56 条目中“公开同步待本条工作结束时完成”的待办状态；C20 启动与诊断结论不变。
 
 ## 2026-09-27 11:03｜K40 Skia Vulkan 路由 C21 构建与两分区刷写
 
 - 状态：C21 主机构建、必要静态检查及授权范围内的指定分区刷写已完成；设备保持 Bootloader Fastboot，C21 尚未首次启动。
-- 改动/结论：定点对照缓存的 K40 OS4.0.0.8 Android 17 包后，确认 K40 未替换 system EGL/SurfaceFlinger/RenderEngine，直接相关配置是 product 选择 debug.renderengine.backend=skiavkthreaded、debug.renderengine.vulkan=true、debug.hwui.renderer=skiavk。C20 pmsg 已证明 thyme 当前进入 SkiaGL chooseEglConfig() 并对 format=2 失败；EGL 的 Android META-EGL 前端信息不显示底层 ANGLE/Adreno 身份。C21 从 C20 system tree 只新增三项 debug 路由属性，保留 ANGLE、RGBX 与既有修复。
-- 原因：重复切换 EGL 路由及 format 未解除 C20 的 fatal；K40 成功配置通过切换 SurfaceFlinger 至 SkiaVk 避开失败的 SkiaGL EGLConfig 初始化，是当前最有依据的启动推进方案。C20 graphicsengine Vulkan 枚举 SIGSEGV 是已知风险，但其与 SkiaVk RenderEngine 的关系未证。
-- 涉及文件：tools/build_candidate21_k40_vk_renderengine.py、tools/flash_candidate21_k40_vk_renderengine.ps1、tools/start_candidate21_observed_boot.ps1、tools/observe_candidate13_readonly.py、reports/candidate21/REPORT.md、reports/candidate21/BUILD_MANIFEST.json。
-- 验证：最终 EROFS fsck、路由属性回读、AVB descriptor 对照及 LP 布局通过；C20 继承的 boot/vendor_boot/dtbo/vbmeta 大小与 SHA-256 一致。C21 super.img 7,684,274,964 bytes，SHA-256 C8BF3F895639C648D947E201E9E12EFCB7CCA33B63B0EAA807AE4672939EC2DF，Fastboot 10/10 sparse 块成功；vbmeta_system.img 131,072 bytes，SHA-256 E3A2807CE59CFAF93BEF7E08EE45A1D055DE1264FFEA8F6E8EED06893892AC74，写入成功。刷前后只读状态为 thyme、A 槽、unlocked、非 userspace Fastboot；刷后 A 槽 unbootable=no/successful=no/retry=4。
-- 尚未验证：C21 尚未启动；SkiaVk 实际选择、thyme Vulkan 初始化、后续 SurfaceFlinger 错误及 HyperOS 启动画面或后续界面待首启验证。C21 绕开 EGLConfig 路径，不会提供 EGLConfig 数量/匹配结果。
-- 安全边界：只刷写 super 和 vbmeta_system_a；没有 reboot、userdata/metadata 清除、其他分区写入、切槽、BCB 修改、硬件身份分区操作或 Bootloader 回锁。
-- 待处理：等待用户在场确认后启动 C21 observer 至 ARMED，再进行一次受控首次启动。
-- 替代：C20 的 ANGLE linker 诊断没有给出实际后端，C21 改用 K40 已采用的 SkiaVk RenderEngine 路由；C20 实际 EGL 后端和底层 EGLConfig 筛选根因仍未知。
+- 改动/结论：定点对照缓存的 K40 OS4.0.0.8 Android 17 包后，确认 K40 未替换 system EGL/SurfaceFlinger/RenderEngine，实际相关配置是在 product 选择 `debug.renderengine.backend=skiavkthreaded`、`debug.renderengine.vulkan=true`、`debug.hwui.renderer=skiavk`（另有 `ro.hwui.use_vulkan=true`）。C20 pmsg 已证明 thyme 当前进入 SkiaGL `chooseEglConfig()` 并对 format=2 失败；EGL 的 Android META-EGL 前端信息不显示底层 ANGLE/Adreno 身份。基于 K40 直接配置，C21 从 C20 system tree 只新增三项 debug 路由属性，保留 ANGLE、RGBX 与已有修复。
+- 原因：重复切换 EGL 路由及 format 已未解除 C20 的 fatal；K40 成功配置通过切换 SurfaceFlinger 至 SkiaVk 避开 EGLConfig 路径，是目前最有依据的启动推进方案。C20 的 `graphicsengine` Vulkan 枚举崩溃构成已知风险，但其与 SkiaVk RenderEngine 的关系未证，因此通过实机实验验证，不预先替换 thyme Vulkan vendor 库。
+- 涉及文件：`tools/build_candidate21_k40_vk_renderengine.py`、`tools/flash_candidate21_k40_vk_renderengine.ps1`、`tools/start_candidate21_observed_boot.ps1`、`tools/observe_candidate13_readonly.py`、`work/stage_k_thyme_os4_candidate_21_k40_vk_renderengine_run1/images/BUILD_MANIFEST.json`、`work/reports/20260927_CANDIDATE21_K40_VULKAN_RENDERENGINE/REPORT.md`、`日志/项目当前状态.md`。
+- 验证：Python AST 和新增 PowerShell 脚本 AST 通过。最终 EROFS fsck、路由属性回读、AVB hashtree/descriptor 对照及 LP 布局通过；C20 继承的 boot/vendor_boot/dtbo/vbmeta 大小与 SHA-256 一致。C21 `super.img` 为 7,684,274,964 bytes、SHA-256 `C8BF3F895639C648D947E201E9E12EFCB7CCA33B63B0EAA807AE4672939EC2DF`，Fastboot 10/10 sparse 块成功；`vbmeta_system.img` 为 131,072 bytes、SHA-256 `E3A2807CE59CFAF93BEF7E08EE45A1D055DE1264FFEA8F6E8EED06893892AC74`，写入成功。刷前后只读状态均为 `thyme`、A 槽、unlocked、非 userspace Fastboot；刷后 A 槽 `unbootable=no/successful=no/retry=4`。
+- 尚未验证：C21 尚未启动；SurfaceFlinger 实际是否采用 SkiaVk、thyme Vulkan 驱动能否初始化、是否出现 EGLConfig fatal/新错误、是否进入 HyperOS 动画或后续界面均待首启。C21 绕开 EGL 路径，不会给出 EGLConfig 数量或具体属性筛选结果。
+- 安全边界：只刷写 `super` 和 `vbmeta_system_a`；没有 fastboot reboot、userdata/metadata 清除、其他分区写入、切槽、BCB 修改、硬件身份分区操作或 Bootloader 回锁。
+- 待处理：公开同步 C21 报告、必要工具和状态增量；等待用户现场确认后先启动 C21 观察器至 `[ARMED]`，再执行一次受控首次启动。
+- 替代：更新 C20 执行记录中“下一轮先做 init snapshot hook”的待办优先级；该诊断 hook 本轮未构建。C20 实际 EGL 驱动及 EGLConfig 具体筛选根因仍未知。
+
+## 2026-09-27 11:14｜C21 公开增量推送与匿名验证
+
+- 状态：C21 公开资料已推送现有 Public 仓库；匿名可读性验证通过。
+- 改动/结论：新增 C21 K40 SkiaVk 路由报告、六镜像构建清单、构建/刷写/启动门控脚本；更新公开 README、状态、工具说明和观察器图形属性快照。公开副本的刷写/启动脚本要求显式传入设备序列号。未新增 C21 原始启动证据，因为 C21 尚未启动。
+- 原因：公开 C21 实质性构建/刷写里程碑，供外部审核并保留可追踪构建元数据。
+- 涉及文件：公开仓库 reports/candidate21、tools、README.md、logs；本地状态文件。
+- 验证：暂存 10 个文件，2,100,068 bytes；凭据、物理设备序列号和私人 Windows 路径筛查无命中；未加入 ROM、固件、分区镜像或设备原始备份。Commit 73aaa005ad9f46e632ce9e81cb5e3d4cc84c7a55 已推送到 main。匿名 GitHub API 确认 visibility=public、main 指向该 commit；README、项目状态、C21 报告、构建清单和构建脚本均返回 HTTP 200。本地公开仓库 main 与 origin/main 一致且工作树干净。
+- 尚未验证：C21 首次启动、SkiaVk 在 thyme 上的实际选择与 Vulkan 初始化。
+- 安全边界：本次仅更新本地日志；未启动设备或修改设备状态。设备最近只读查询为 thyme/A/unlocked/Bootloader Fastboot，A 槽 unbootable=no、retry=4。
+- 待处理：用户确认现场观察后，启动 C21 只读观察器并执行首次启动。
+- 替代：更新本执行记录中 C21 “公开同步待完成”的状态为已推送并匿名验证。
+
+## 2026-09-27 13:23｜准备 B/C 旧构建目录清理与 Ubuntu VHDX 压缩脚本
+
+- 状态：部分完成；固定白名单管理员脚本已创建并通过 PowerShell 语法解析，实际清理和 VHDX 压缩未执行。
+- 改动/结论：新增 tools/cleanup_reviewed_project_space_admin.ps1。脚本默认 Dry-Run；只有传入 -Execute 并输入确认词才删除用户审核通过的 27 个 E 盘旧 Candidate 构建目录及 15 个 Ubuntu 项目构建目录。完成 C 清理后只对 Ubuntu 执行根文件系统 trim、wsl --terminate Ubuntu 和 wsl --manage Ubuntu --compact，不调用全局 wsl --shutdown。
+- 原因：Codex 当前命令执行策略以 blocked by policy 拒绝了递归删除命令；为避免绕过该限制，改为交付一个路径固定、检查发行版注册路径且带二次确认的脚本，供用户在管理员 PowerShell 中审核运行。
+- 涉及文件：tools/cleanup_reviewed_project_space_admin.ps1、日志/项目当前状态.md。
+- 验证：PowerShell AST 语法错误 0；只读确认 C/D/E 分别有 79.36/45.79/134.35 GiB 可用。Ubuntu 唯一注册路径对应 [LOCAL_PATH] 261,116,395,520 bytes。删除被拦截后抽查 B 目标仍存在，D/E 可用空间未变化；没有执行压缩，没有触碰 [LOCAL_PATH]
+- 尚未验证：管理员 Dry-Run 输出、实际 B/C 清理、Ubuntu VHDX 压缩后的物理大小与 D 盘释放量。
+- 待处理：用户在管理员 PowerShell 先运行脚本预览；确认预览路径正确后加 -Execute 并输入确认词。后续 C/D/E 低于 50 GiB 的自动监控任务尚未配置。
+- 替代：无。
+
+## 2026-09-27 13:29｜修复管理员空间清理脚本的 Windows PowerShell 5.1 兼容性
+
+- 状态：脚本编码修复和双版本静态解析已完成；实际清理与压缩仍未执行。
+- 改动/结论：将 tools/cleanup_reviewed_project_space_admin.ps1 写为 UTF-8 BOM，避免 Windows PowerShell 5.1 将无 BOM UTF-8 中文按系统 ANSI 读取，导致字符串引号错位并把 Bash 片段中的 || 误当作 PowerShell 语法。
+- 原因：用户运行 Dry-Run 时报告解析错误；错误出现在脚本解析阶段，清理逻辑尚未执行。
+- 涉及文件：tools/cleanup_reviewed_project_space_admin.ps1、日志/项目当前状态.md。
+- 验证：Windows PowerShell 5.1 Parser 返回 PARSE_OK；当前 PowerShell Parser 错误数为 0；脚本头部 BOM 为 EF-BB-BF。
+- 尚未验证：管理员身份下的脚本预览、B/C 实际清理、Ubuntu VHDX 压缩；这些操作仍未执行。
+- 待处理：以同一 Windows 用户打开管理员 PowerShell，先预览，再按提示确认执行。自动低空间监控仍未配置。
+- 替代：修正 13:23 条目中“语法解析通过”的范围说明；此前解析仅在 PowerShell 7 验证，未覆盖 Windows PowerShell 5.1。
+
+## 2026-09-27 13:38｜修复空间清理脚本的 WSL stderr 与换行兼容
+
+- 状态：脚本修正及只读预览验证完成；实际 B/C 清理和 VHDX 压缩仍未执行。
+- 改动/结论：WSL 在退出码 0 时会向 stderr 输出 localhost 代理/NAT 提示。Windows PowerShell 5.1 将其包装为 NativeCommandError，旧脚本在 ErrorActionPreference=Stop 下中断。新增 Invoke-WslNative，分别捕获两条流，非零退出码仍失败；仅在退出码 0 且 Ubuntu 根路径预检标记存在时继续。fstrim、terminate、compact 也统一经过此调用。另将送入 Bash 的脚本文本规范为 LF，避免 CRLF 使 set -euo pipefail 失败。
+- 原因：用户运行 Dry-Run 时卡在 WSL 只读预检；Codex 复现了退出码为 0 的 WSL stderr，并在安全预览 harness 中发现 Windows 换行会令 Bash 拒绝 pipefail。
+- 涉及文件：tools/cleanup_reviewed_project_space_admin.ps1、日志/项目当前状态.md、日志/执行记录.md。
+- 验证：PowerShell 7 与 Windows PowerShell 5.1 全脚本 Parser 均通过；WinPS 5.1 的完整固定白名单只读 WSL 预览返回成功，15 个 C 组目标均解析，无越界路径、挂载点或不安全目标标记。预览合计约 139.48 GiB apparent size。当前 C/D/E 可用空间为 79.36/45.79/134.35 GiB；VHDX 261,116,395,520 bytes。B/C 抽样目录仍存在。
+- 尚未验证：用户管理员 PowerShell 中的完整脚本 Dry-Run 输出；实际删除、trim、Ubuntu 定向压缩及释放量。
+- 安全边界：未删除文件、未执行 fstrim/terminate/compact；未触碰 [LOCAL_PATH] 或其他发行版。
+- 待处理：用户管理员 PowerShell 重跑默认 Dry-Run；核对列表后按既有授权使用 -Execute 和确认词。自动低空间监控未配置。
+- 替代：修正 13:23/13:29 条目中“脚本已可运行”的描述；此前验证未覆盖 WSL 原生命令 stderr 和 Bash 换行。
+## 2026-09-27 13:52｜完成审核白名单清理，定向 Ubuntu VHDX 压缩遇到文件占用
+
+- 状态：B/C 白名单清理已完成；WSL 内可用空间增加约 139.48 GiB；宿主 D 盘 VHDX 压缩部分完成但未成功释放物理空间。
+- 改动/结论：用户在管理员 PowerShell 执行清理脚本并输入既定确认词。执行日志记录 27 个 E 盘目录和 15 个 Ubuntu 构建目录全部删除；fstrim / 成功。Ubuntu 仅被定向终止，未调用 wsl --shutdown。
+- 原因：删除完成后，旧脚本调用 wsl --manage Ubuntu --compact，实机 CLI 返回 Wsl/E_INVALIDARG；本机 wsl --help 的 --manage 选项没有 --compact。
+- 涉及文件：tools/cleanup_reviewed_project_space_admin.ps1、tools/compact_ubuntu_wsl_vhdx_admin.ps1、日志/space_cleanup_20260927_134513.log、日志/ubuntu_vhdx_compact_20260927_135235.log、本项目状态与执行记录。
+- 验证：WSL 内可用字节从 758,871,982,080 到 908,629,188,608；E 盘可用空间从 134.35 到 244.68 GiB；D 盘仍 45.79 GiB。VHDX 当前约 243.18 GiB。定向 DiskPart 选中了注册路径 [LOCAL_PATH] 与 docker-desktop 均显示 Stopped。
+- 尚未验证：是否通过全局 wsl --shutdown 释放共享 WSL 虚拟机持有的句柄后，DiskPart 能压缩该 VHDX。
+- 安全边界：未删除目标清单之外内容；未触碰 [LOCAL_PATH] 数据；未更改其他发行版、镜像、设备或系统分区。
+- 待处理：如用户允许影响范围为“当前没有运行发行版的 WSL 全局实例”，执行 wsl --shutdown 后再次只压缩已核验的 Ubuntu VHDX；否则保留现状。后续自动低空间监控尚未配置。
+- 替代：替代先前对 --manage ... --compact 命令有效性的假设；本机实际不接受该参数。
+## 2026-09-27 13:58｜处理 Ubuntu VHDX 句柄占用与管理员执行边界
+
+- 状态：白名单清理已完成；Ubuntu VHDX 尚未压缩，D 盘空间未释放。
+- 改动/结论：本机 WSL 2.7.7 的 wsl --help 不含 --compact；DiskPart 对唯一 Ubuntu VHDX 返回“另一个程序正在使用此文件”。新建 compact_ubuntu_wsl_vhdx_admin.ps1：要求管理员权限，核对 Ubuntu 注册路径，确认所有发行版停止且 Docker 进程/服务停止后，才执行一次 wsl --shutdown 并用 DiskPart 精确选择 Ubuntu VHDX。清理主脚本改为调用该专用压缩脚本。
+- 原因：原生 WSL compact 参数无效；定向 terminate 后 VHDX 仍被占用。Codex 主进程令牌不是管理员，Windows RunAs UAC 是实际系统权限边界。
+- 涉及文件：tools/cleanup_reviewed_project_space_admin.ps1、tools/compact_ubuntu_wsl_vhdx_admin.ps1、日志/项目当前状态.md、日志/执行记录.md。
+- 验证：两个脚本在 PowerShell 7 与 Windows PowerShell 5.1 Parser 均通过。一次管理员 DiskPart 只选择/查询 Ubuntu VHDX，压缩因文件占用失败；VHDX 大小未变。第二次 RunAs 在 UAC 阶段返回“操作已被用户取消”，未执行全局 WSL 关闭或第二次压缩。
+- 尚未验证：在所有发行版和 Docker 均停止时，wsl --shutdown 是否释放 Ubuntu VHDX 句柄并允许 DiskPart 压缩。
+- 安全边界：没有改动或删除 [LOCAL_PATH] 文件；没有全局关闭 WSL；无其他分区操作。
+- 待处理：如需完成物理 D 盘回收，用户可在管理员 PowerShell 运行 tools/compact_ubuntu_wsl_vhdx_admin.ps1 -Execute；仅当预检确认所有发行版、Docker 进程/服务都停止时，脚本才会尝试全局 WSL 关闭与单盘压缩。
+- 替代：修正“wsl --manage Ubuntu --compact 可用于此主机”的假设；实际 CLI 不接受该参数。
+## 2026-09-27 14:46｜修正 Ubuntu VHDX 压缩脚本以释放 WSL Service 句柄
+
+- 状态：脚本修正并完成静态解析；VHDX 物理压缩仍未完成。
+- 改动/结论：用户以管理员身份执行压缩脚本后，日志确认所有 WSL 发行版及 Docker 进程/服务停止，`wsl --shutdown` 成功；DiskPart 选中唯一目标 `[LOCAL_PATH] 后仍以 `-2147024809` 报“找不到关联的磁盘号/压缩请求无法执行”。目标 VHDX 仍为 261,114,298,368 bytes。`Get-DiskImage` 显示 Attached=False；Windows `WslService` 仍为 Running。暂定服务持有句柄是候选解释，尚未验证。
+- 原因：单独关闭 WSL 虚拟机后，DiskPart/VDS 仍报告 VHDX 文件占用；需要在不运行 WSL 或 Docker 的条件下释放 WSL 宿主服务句柄再压缩。
+- 涉及文件：`tools/compact_ubuntu_wsl_vhdx_admin.ps1`、`日志/项目当前状态.md`、`日志/执行记录.md`。
+- 验证：修正版增加 Docker 二次检查；停止 WslService 前确认 WSL 已关闭；确认服务进程退出、目标 VHDX 未附加后才执行 DiskPart；若服务此前为 Running，则 finally 中恢复。Windows PowerShell 5.1 与 PowerShell 7 Parser 均通过。未执行管理员压缩。
+- 尚未验证：停止 WslService 是否释放 VHDX 句柄并让 DiskPart 成功；D 盘物理空间尚未增加。
+- 安全边界：脚本只以 `[LOCAL_PATH] 为 DiskPart 目标，不选择或修改 Docker VHDX；发现 Docker 进程/服务活动时中止。
+- 待处理：在既有用户授权下，由管理员 PowerShell 运行修正版 `tools/compact_ubuntu_wsl_vhdx_admin.ps1 -Execute`；若仍失败，调查持锁进程，不重复盲试。
+- 替代：修正 13:58 当前压缩器方案；仅调用 `wsl --shutdown` 不足以使当前主机的 DiskPart 成功。
+## 2026-09-27 14:57｜确认 Ubuntu VHDX 已压缩并验证 WSL 可启动
+
+- 状态：B/C 白名单清理完成；Ubuntu VHDX 物理压缩已成功；Ubuntu WSL 启动冒烟检查通过。
+- 改动/结论：Windows `Microsoft-Windows-VHDMP-Operational` 事件 ID 51 记录 14:47:02 对唯一目标 `[LOCAL_PATH] 成功执行 `Compact VHD`。文件由此前 261,114,298,368 bytes（约 243.18 GiB）降至 117,139,570,688 bytes（约 109.09 GiB）；D 盘可用空间从约 45.79 GiB 增至 179.88 GiB。14:49 的重复 DiskPart 调用报虚拟磁盘已打开；其后一次 WSL 启动在共享冲突期间失败。VHDMP 记录到句柄关闭后，14:57 执行 `wsl -d Ubuntu -u root -- /bin/true` 返回 0，随后 `wsl --terminate Ubuntu` 返回 0。最后核验 D 盘可用 179.85 GiB、VHDX 约 109.13 GiB，Ubuntu 与 docker-desktop 均为 Stopped。
+- 原因：原截图中的非零退出码来自一次后续重复压缩；实际 VHDX 紧缩已在 14:47 成功完成，之后的错误是目标 VHD 打开状态冲突，不表示压缩未发生。此前的 WSL 挂载失败是共享句柄冲突期间的暂态，后续启动检查已成功。
+- 涉及文件：`tools/compact_ubuntu_wsl_vhdx_admin.ps1`、`日志/ubuntu_vhdx_compact_20260927_144251.log`、`日志/ubuntu_vhdx_compact_20260927_144918.log`、Windows VHDMP 事件日志、`日志/项目当前状态.md`。
+- 验证：目标路径事件 ID 51 成功记录；VHDX 文件物理长度与 D 盘剩余空间有对应变化；Ubuntu `/bin/true` exit 0；`wsl --terminate Ubuntu` exit 0；Ubuntu 与 docker-desktop 状态均为 Stopped。Docker 文件没有作为任何命令的操作目标。
+- 尚未验证：其他候选构建资产未做重新构建验证；低于 50 GiB 自动监控尚未创建。
+- 安全边界：未删除白名单外内容；未修改 [LOCAL_PATH] 内文件；未改动其他发行版 VHDX。
+- 待处理：不再重复压缩当前 VHDX。若以后 D 盘低于 50 GiB 的自动监控要落地，需单独实现有明确删除白名单和 Docker 隔离检查的调度任务。
+- 替代：修正 14:46 记录中的“尚未完成 VHDX 物理压缩”：VHDMP 事件证明压缩在 14:47 已成功；14:49 的重复压缩失败不推翻该成功证据。
+## 2026-09-27 14:58｜更正压缩重试归属并确认无需再次操作
+
+- 状态：补充执行归属与最终验证；没有再运行 DiskPart。
+- 改动/结论：核对 VHDMP 事件时间后确认，目标 VHDX 于 14:47:02 已成功 `Compact VHD`，早于 Codex 在 14:49 启动的管理员重试。该重试多余，目标已处于打开状态，DiskPart 因此失败。其后一次 Ubuntu 挂载检查遇到共享冲突；VHDMP 事件显示句柄之后关闭。14:57 的 Ubuntu `/bin/true` 检查返回 0，`wsl --terminate Ubuntu` 返回 0。
+- 原因：收到用户“已授权”后，Codex 没有先检查刚发生的 VHDMP 成功事件与最新文件大小，重复发起了压缩。
+- 涉及文件：`日志/项目当前状态.md`、`日志/执行记录.md`；设备侧之外的主机证据为 Windows VHDMP Operational 日志和 14:49/14:53 的本地命令结果。
+- 验证：VHDX 为 117,139,570,688 bytes（约 109.13 GiB）；D 盘可用 179.85 GiB；Ubuntu 可正常启动并执行 `/bin/true` 后成功终止；Ubuntu 与 docker-desktop 均为 Stopped。
+- 尚未验证：共享冲突的具体持有进程未唯一定位；当前无继续压缩必要。
+- 安全边界：不再重试压缩；没有选择或修改 [LOCAL_PATH] 中任何文件。
+- 待处理：无；将来需要重新压缩时，先查询 VHDMP 事件、VHDX 长度和 WSL 状态，确认未完成压缩再采取动作。
+- 替代：更正 14:57 记录中未说明重复尝试由 Codex 启动的内容；不改变“压缩在 14:47 已成功”的证据结论。
+## 2026-09-27 15:00｜整理已验证的磁盘清理与 WSL VHDX 回收步骤
+
+- 状态：复用流程已写入当前状态；仅更新日志，未执行新的清理、压缩或 WSL 关闭操作。
+- 改动/结论：将本次已证实的流程与失败经验整理到 `日志/项目当前状态.md`：按核准白名单清理；在目标 Ubuntu 执行 `fstrim /`；确认所有 WSL/Docker 工作负载停止后才 `wsl --shutdown`；DiskPart 只选注册路径对应的 Ubuntu VHDX；以 VHDMP Operational 事件 ID 51、VHDX 字节数和 D 盘余量判断压缩结果；最后用 Ubuntu `/bin/true` 做一次启动检查并终止。
+- 原因：本轮 VHDMP 于 14:47:02 明确记录目标 Ubuntu VHDX 的 `Compact VHD` 成功，而 14:49 的重复尝试因 VHD 已打开失败；随后出现短暂共享冲突，句柄释放后 Ubuntu 启动检查成功。重复尝试前未先检查最新事件和文件大小，是应避免的操作顺序错误。
+- 涉及文件：`日志/项目当前状态.md`、`日志/执行记录.md`。
+- 验证：当前状态流程与 13:52、14:42、14:47、14:49、14:53、14:57 的文件日志、VHDMP 事件和空间读数一致；明确标出实际成功事件的调用者未从记录中确认，未把 WslService 暂停写成必需步骤。
+- 尚未验证：低于 50 GiB 的自动监控/调度尚未创建；未来清理时需按新的空间状态再次核验白名单。
+- 安全边界：未执行新的清理或压缩；Docker VHDX 和 `[LOCAL_PATH] 文件没有被操作。
+- 待处理：后续清理先使用已审核清单，压缩前先核对 VHDMP 和 VHDX 当前状态；不重复执行已成功的压缩。
+- 替代：补充 14:57/14:58 记录中的可复用操作顺序；不改变其实际结果和验证级别。
+
+## 2026-09-27 17:04｜执行 C21 首次启动并启动主机观察
+
+- 状态：启动命令已执行；观察仍在进行，实际屏幕结果待用户确认。
+- 改动/结论：只读预检确认唯一设备 `[REDACTED_DEVICE_ID]`、`product=thyme`、当前 A 槽、Bootloader 解锁且为 Bootloader Fastboot；A 槽 `unbootable=no`、`successful=no`、重试计数 4。C21 观察器 ARMED 后执行一次 `fastboot reboot`，Fastboot 返回 exit 0。至 17:04:18，本地主机 USB PnP、ADB、Fastboot 均未重新枚举，未取得 Android 用户空间日志；这不能单独证明启动失败或屏幕状态。
+- 原因：用户明确要求继续并启动手机；项目状态显示 C21 已刷入且等待首次启动现场确认。
+- 涉及文件：`tools/start_candidate21_observed_boot.ps1`、`tools/observe_candidate13_readonly.py`；观察记录位于 `work/reports/20260927_CANDIDATE21_K40_VULKAN_RENDERENGINE/observations/run_20260927_165829/`。
+- 验证：观察器记录候选 `C21-k40-vk-renderengine`、USB present/ADB absent/Fastboot fastboot 的 ARMED 状态；启动脚本重新核对设备与 A 槽状态后执行一次 `fastboot reboot`，exit 0。时间线显示约 16 秒后 Fastboot 消失、约 21 秒后 USB 消失，随后至观察检查时仍为 absent。
+- 尚未验证：手机屏幕是否仍为米标、是否出现启动动画/设置向导/桌面；C21 的 SkiaVk 路由效果；故障日志。Standalone 尚未启动。
+- 待处理：依据用户现场屏幕观察决定继续等待或手动进入 Fastboot；如启动未推进，执行已授权的 Standalone 全量诊断卷备份后再分析。
+- 替代：无。
+
+## 2026-09-27 17:48｜完成 C21 Vulkan 故障取证并确定 C22 驱动配套实验
+
+- 状态：C21 故障现场已完整导出并分析；C22 方案已定向，构建尚未完成。
+- 改动/结论：用户观察到 C21 米标常亮并手动返回 Fastboot。Standalone 全量导出 8 个文件到 `work/reports/20260927_CANDIDATE21_K40_VULKAN_RENDERENGINE/standalone/run_20260927_170631/`；源/副本大小和 SHA-256 全部一致。pmsg 证明 First/Second Stage、APEX Bootstrap、`/data`、vold/密钥初始化推进；SurfaceFlinger 走 SkiaVk，但约 80 次以 `Could not initialize Vulkan RenderEngine!` fatal，栈在 `SkiaVkRenderEngine::createContexts()+944`。紧邻首次 fatal 前约 0.08 秒，graphicsengine 在 `vkEnumeratePhysicalDevices+4` 空指针 SIGSEGV；仅能确认时序相关，因果未确认。未出现 EGLConfig 失败、bootanimation、设置向导或桌面。console 延伸约 417 秒，无 kernel panic。
+- 关键修正：之前展开树 `work/port_v0_candidate/vendor` 中的 Vulkan 库并非 C21 实际所用版本。C21 构建脚本将 C1 `provider_images/vendor.img` 直接放入 super；从该实际输入提取的 ICD 为 2,232,960 bytes、SHA-256 `7d78c17c97c2e49d2b0cbc9046f04fb8d77e928445ce9f58e9c12b74888186ae`。后续兼容分析均以实际 C21 输入为准。
+- 原因：C21 首次获得了足以指向 Vulkan 用户态驱动初始化失败的真实日志；K40 OS4 Vulkan ICD 需要当前 C21 GSL 中不存在的接口。直接覆盖同名 K40 GSL/LLVM/Adreno Utils 还会删掉 C21 原 EGL/GLES 栈需要的导出符号。C22 采用独立 SONAME 的 K40 Vulkan 配套副本，并只让 Vulkan ICD 使用该配套组，保留原 EGL/GLES 文件。
+- 涉及文件：`work/reports/20260927_CANDIDATE21_K40_VULKAN_RENDERENGINE/REPORT.md`、`work/reports/20260927_CANDIDATE21_K40_VULKAN_RENDERENGINE/audit_umd_compat.py`、`日志/项目当前状态.md`、本条记录。C21 主机观察及 Standalone 原始数据均保留在独立目录。
+- 验证：C21 Standalone 8/8 文件大小与 SHA-256 核验通过；C21 pmsg/console 定点检查；对 C21 实际 Vulkan/GSL/LLVM/GLES 与 K40 Android 17 Vulkan 配套 ELF 执行 NEEDED、动态符号和架构相关依赖检查。K40 GSL 所需 `libdmabufheap.so`、`libbase.so`、`libsync.so` 可在 C21 system 中找到；K40 `libllvm-glnext` 动态加载 `libllvm-qgl.so`。ABI 差异记录由 `audit_umd_compat.py` 重现。
+- 尚未验证：C22 SONAME/NEEDED 修改后是否能在 Android linker vendor namespace 装载；K40 UMD 与 thyme 4.19 KGSL 的运行时兼容；C22 构建、AVB 关系及实机效果。
+- 安全边界：设备保持 Bootloader Fastboot；本轮没有执行刷写、启动、擦除、BCB/分区写入或 PixelOS 恢复。
+- 待处理：构建并静态检查 C22 vendor + root `vbmeta_a`，确认 super 中其余逻辑分区继承 C21；然后按既有 Candidate 权限准备指定分区刷写，刷后保持 Fastboot并等待现场确认启动。
+- 替代：修正项目内将 `work/port_v0_candidate/vendor` 展开树当作 C21 实际 vendor 二进制来源的潜在误认；C21 实际 build script/实际 provider image 优先。
+
+## 2026-09-27 18:18｜构建并刷入 C22 K40 Vulkan UMD 配套实验
+
+- 状态：C22 主机构建与指定分区刷写完成；设备保持 Bootloader Fastboot，尚未首次启动。
+- 改动/结论：基于 C21 实际 SurfaceFlinger SkiaVk 初始化 fatal 和实际 vendor Vulkan ICD 对 C21 GSL ABI 的缺口，构建 C22。只在 C1 vendor 私有副本中替换 K40 Android 17 Vulkan ICD，新增 K40 Vulkan 配套 GSL/Adreno Utils/glnext/qgl；GSL、Adreno Utils、glnext 使用独立 SONAME，Vulkan ICD 依赖指向这些隔离副本。保留 thyme 原 EGL/GLES 和硬件栈。只重建 vendor hashtree 并更新 root vbmeta 的 vendor descriptor。
+- 原因：C21 pmsg 真实记录约 80 次 `Could not initialize Vulkan RenderEngine!` fatal；K40 ICD 使用 C21 `libgsl.so` 未导出的接口。直接覆盖同名旧图形库可能破坏现有 GLES 依赖，因此采取仅由 Vulkan ICD 使用的配套方案。`system_ext_a` 从 C21 已构建的 raw super 中提取并原样复用，因为旧 C17 中间输入已不存在。
+- 涉及文件：`tools/build_candidate22_k40_vulkan_umd.py`、`tools/flash_candidate22_k40_vulkan_umd.ps1`、`tools/start_candidate22_observed_boot.ps1`、`work/stage_l_thyme_os4_candidate_22_k40_vk_umd_run5/`、`work/reports/20260927_CANDIDATE22_K40_VULKAN_UMD/REPORT.md`、本项目状态与本条记录。
+- 验证：C22 vendor `e2fsck -f -n` 通过；`avbtool verify_image` 成功验证 vendor footer/hashtree；新 vendor AVB digest `[REDACTED_DEVICE_ID]…c857` 与 root vbmeta 匹配，其他 root descriptor、header flags/rollback index 保持；LP `lpdump` 显示与 C21 相同 A 槽分区 extent，vendor_a 长度 1,510,998,016 bytes；boot/vendor_boot/dtbo/vbmeta_system 哈希与 C21 清单一致。PowerShell 刷写脚本解析通过。Fastboot 再次确认唯一设备 `[REDACTED_DEVICE_ID]`、thyme、A 槽、unlocked、非 userspace Fastboot、A 槽可启动。`super` 10/10 sparse 块和 `vbmeta_a` 写入均返回 `OKAY`；刷后只读状态仍为 Fastboot、A 槽、unbootable=no、successful=no、retry=3。
+- 镜像：`super.img` 7,701,892,056 bytes，SHA-256 `6145D602D17321EFF1AD55A7AC10B9314AF9E7C23C0BD60D681115CD54B1330D`；`vbmeta.img` 写入 `vbmeta_a`，131,072 bytes，SHA-256 `66A53C2EC38247193CC86B7F5DE887556864413D1142C3C1994645DE1E3BAB10`。
+- 尚未验证：C22 Vulkan UMD 在 thyme Linux 4.19/KGSL 的运行时兼容性；SurfaceFlinger 是否越过 Vulkan RenderEngine fatal；与 graphicsengine SIGSEGV 是否存在因果；bootanimation/设置向导/桌面是否出现。
+- 安全边界：仅写 `super`、`vbmeta_a`；没有 reboot、userdata/metadata 擦除、Bootloader 状态操作或其他分区写入。C22 仍未启动。
+- 待处理：等待用户现场确认；启动前运行 C22 只读观察器并通过 `start_candidate22_observed_boot.ps1` 做新鲜 ARMED/设备状态门控。实机失败后优先完整 Standalone 取证。
+- 失败尝试：run1–run4 的主机构建曾分别被脚本内 K40 SHA 字符串抄写错误、漏掉 vendor AVB footer 移除、已清理的旧 system_ext 中间文件路径、以及误将 lpdump extent 表示当十进制字节数的检查条件阻断；均在刷写前停止。修正后 run5 构建通过。失败批次没有设备写入；暂存目录尚未清理。
+- 替代：无；C22 是 C21 Vulkan 初始化阻塞的定点下一实验。
 
 
-## 2026-09-27 17:48｜C21 Vulkan RenderEngine 故障取证
+## 2026-09-27 18:35｜公开同步 C21 取证与 C22 实验资产
 
-- 状态：C21 首次启动和 Standalone 全量取证完成；未进入 HyperOS 启动画面。
-- 改动/结论：pmsg 证明 First/Second Stage、APEX Bootstrap、vold 与 `/data` 初始化推进。SurfaceFlinger 约 80 次以 `Could not initialize Vulkan RenderEngine!` 在 `SkiaVkRenderEngine::createContexts()` fatal；没有再看到 C20 的 EGLConfig fatal。另一个 `graphicsengine` 在 `vkEnumeratePhysicalDevices+4` 空指针崩溃，发生于首个 SurfaceFlinger fatal 前约 0.08 秒；因果未证。C21 实际 vendor Vulkan ICD 与展开工作树同名文件不同，后续 ABI 判断以实际 provider vendor 为准。
-- 原因：取得首次能够直接描述 SkiaVk RenderEngine 失败的用户空间日志；K40 Android 17 Vulkan ICD 需要 C21 `libgsl.so` 未导出的接口，直接同名覆盖还会破坏原 EGL/GLES 依赖。
-- 涉及文件：[C21 报告](../reports/candidate21/REPORT.md)、C21 host-observation 和 Standalone 文件树、`reports/candidate21/audit_umd_compat.py`。
-- 验证：本地 Standalone 原始导出 8 项与 THYME_DIAG 源清单大小/SHA-256 匹配。公开副本包括 19 个全部可访问 observer/Standalone 文件；按公开副本策略共替换序列号 72 处，本地原件不变；来源与发布版哈希记录在 `evidence/candidate21/PUBLIC_EVIDENCE_MANIFEST.csv`。
-- 尚未验证：SkiaVk 初始化失败的具体 Vulkan API/驱动运行时原因，以及 graphicsengine SIGSEGV 与 SurfaceFlinger fatal 的因果。
-- 待处理：以隔离 SONAME 的 K40 Android 17 Vulkan UMD 配套组构建 C22；保持用户数据和 thyme 原 EGL/GLES 栈。
+- 状态：C21 完整可访问取证副本、C21 实机报告、C22 构建/刷写/启动门控资料及当前状态已同步至现有 Public 仓库；匿名访问验证通过。设备仍在 Bootloader Fastboot，C22 尚未启动。
+- 改动/结论：公开仓库更新为 Candidate 22 已刷入、待首次启动；补入 C21 主机观察和 Standalone 全部 19 个可访问文件、C21 兼容性分析脚本、C22 构建清单/报告/脚本。C21 公共副本对设备序列号 72 处做了可追溯脱敏；本地未修改原件保留。此前 C21 报告和当前状态中的“C22 仍处于构建计划”及“C21 待启动”过时句子已修正。
+- 原因：让公开项目准确反映 C21 实际 Vulkan RenderEngine fatal、C22 实际构建及两分区刷写状态，并公开完整可访问的 C21 诊断材料。
+- 涉及文件：公开仓库 `evidence/candidate21/`、C21/C22 报告与清单、C22 三个工具脚本、README、evidence 索引、公开状态和执行记录；本地 `日志/项目当前状态.md`、`日志/执行记录.md`、C21 报告。
+- 验证：C21 19/19 文件的本地来源大小/SHA-256 与来源 manifest 一致；每份发布副本大小/SHA-256 与发布清单一致。公开仓库本次提交 35 个文件、22,243,877 bytes（约 21.21 MiB）；最大单文件为 16 MiB 历史 `oops.raw`。公开副本凭据模式、序列号、私人 Windows 路径扫描无命中；无完整 ROM/分区镜像或超过 100 MiB 文件。Python AST、C22 PowerShell parser 与 JSON manifest 解析通过。Commit `13a7fdecd2f29f85419c761dfc1c1666ba144f07` 已推送；GitHub API 确认 `visibility=public`、`main` 指向该提交。匿名 GET README、项目状态、C21/C22 报告与 C22 manifest 均 HTTP 200；C21 pmsg 远端下载 1,307,782 bytes，SHA-256 `2598AC31F2F8439B5F529B2E7A418800CA0614F925643A2E1C83B0D33F5F3A2E` 与公开清单一致。
+- 尚未验证：C22 K40 Vulkan UMD 在 thyme Linux 4.19/KGSL 上的运行效果、SurfaceFlinger 是否越过 Vulkan RenderEngine fatal、是否进入启动动画/设置向导/桌面。
+- 安全边界：本条只记录公开同步和主机文件更正；没有进行设备操作。C22 仍保持 Fastboot，未重启/擦除/改写分区。
+- 待处理：用户在场并明确准备观察后，先启动 C22 observer 并确认 ARMED，再执行一次受控启动。
+- 替代：修正当前状态和公开资料中 C21/C22 阶段的过时表述；历史执行记录保留其当时有效结论。
 
-## 2026-09-27 18:18｜C22 构建并刷入受限分区
+## 2026-09-27 20:22｜完成 C22 首启全量取证并定位 SurfaceFlinger 预热 fatal
 
-- 状态：C22 主机构建、必要静态验证和两分区刷写完成；设备保持 Bootloader Fastboot，C22 尚未启动。
-- 改动/结论：仅在私有 vendor 构建副本替换 Vulkan ICD、增加隔离 SONAME 的 K40 GSL/Adreno Utils/LLVM 配套副本；原 thyme EGL/GLES、Gralloc/HWC、内核及设备启动栈保留。只更新 root vbmeta 的 vendor descriptor。
-- 涉及文件：[C22 报告](../reports/candidate22/REPORT.md)、构建清单、构建/刷写/启动门控脚本。
-- 验证：vendor `e2fsck -f -n`、AVB footer/hashtree、root-vbmeta descriptor 与 LP 布局检查通过。按限定范围刷写 `super`（10/10 sparse 块 `OKAY`）和 `vbmeta_a`（`OKAY`）；刷后只读状态为 `thyme`、A 槽、Bootloader unlocked、非 userspace Fastboot，A 槽 `unbootable=no`、retry=3。
-- 镜像：C22 `super.img` 7,701,892,056 bytes，SHA-256 `6145D602D17321EFF1AD55A7AC10B9314AF9E7C23C0BD60D681115CD54B1330D`；`vbmeta.img` 写入 `vbmeta_a`，131,072 bytes，SHA-256 `66A53C2EC38247193CC86B7F5DE887556864413D1142C3C1994645DE1E3BAB10`。
-- 尚未验证：K40 UMD 在 thyme 4.19/KGSL 上的加载与运行；SurfaceFlinger 是否越过 Vulkan RenderEngine fatal；是否到达 bootanimation/设置向导/桌面。
-- 安全边界：未启动、未擦除 userdata/metadata，未写其他分区，未修改 BCB/硬件身份分区，未回锁 Bootloader。
-- 待处理：用户现场确认后，先 ARMED C22 只读观察器，再执行一次受控首次启动；失败后先完整保存 Standalone 现场。
+- 状态：C22 首次启动与故障后 Standalone 取证完成；C23 主机侧最小修复构建准备开始。设备当前为 Bootloader Fastboot。
+- 改动/结论：用户观察到米标常亮并手动返回 Fastboot。C22 pmsg 记录 89 次 `output buffer not gpu writeable`，首次于 `01-20 03:58:35.026`；首个调用栈经过 `SkiaRenderEngine::drawLayersInternal`、`RenderEngine::drawLayers`、`Cache::primeShaderCache`、`SkiaRenderEngine::primeCache`。日志含一次 First Stage 和一次 Second Stage，`/data`/vold 初始化推进；无 C21 的 Vulkan RenderEngine fatal、EGLConfig、`vkEnumeratePhysicalDevices` 或 graphicsengine 字符串。不能据此确认 K40 Vulkan ICD 的实际后端身份。
+- 原因：C22 已越过 C21 的 RenderEngine 创建 fatal；新的直接阻塞位于 SurfaceFlinger shader cache 可选预热路径。上游 Android 17 实现显示 `service.sf.prime_shader_cache` 默认 `1` 时调用 `primeCache()`；对应预热 buffer 申请 `HW_RENDER | HW_TEXTURE`，RenderEngine 对缺少 `HW_RENDER` 的输出 buffer fatal。实际 buffer usage 为什么缺位仍未查明。
+- 涉及文件：C22 原始取证 `work/reports/20260927_CANDIDATE22_K40_VULKAN_UMD/standalone/run_20260927_200710/`、观察记录 `.../observations/run_20260927_195701/`、C22 `REPORT.md`、本状态文件及本记录。
+- 验证：Standalone 诊断卷 8/8 可访问文件与主机副本大小/SHA-256 一致，零复制错误；console 1 个 Linux version、1 次 First Stage、1 次 Second Stage，延伸至约 462.109 秒且未见 kernel panic 证据；pmsg 时间戳范围 `01-20 03:58:18.399`–`04:05:56.089`。主机当前 Fastboot 只读查询确认唯一设备 `[REDACTED_DEVICE_ID]`、thyme、A 槽、解锁、非 userspace Fastboot、A 槽 unbootable=no、retry-count=2。
+- 尚未验证：K40 Vulkan UMD 是否被实际选中并成功初始化；跳过 primeCache 后常规图形 buffer 是否仍触发同类 fatal；是否出现 HyperOS 启动画面或后续 UI。
+- 安全边界：本轮未刷写、未启动第二次、未清 userdata/metadata、未修改其他分区或 Bootloader 状态。
+- 待处理：C23 只新增 `service.sf.prime_shader_cache=0`，使用 C22 Vulkan vendor 与其余修复；构建通过后仅刷 `super` 和 `vbmeta_system_a`，保持 Fastboot并等待用户现场确认首次启动。
+- 替代：替代 C22 报告/状态中“首次启动待验证”的旧结论；不推翻 C22 之前已验证的启动修复。
 
-## 2026-09-27 20:47 | C22 evidence publication and C23 build/flash
+## 2026-09-27 20:39｜构建并刷入 C23 SurfaceFlinger 预热绕过实验
 
-- Status: C22 complete accessible diagnostics and host observations are published; C23 is built and flashed, still waiting for the user's first-boot confirmation.
-- Result: C22 produced 19 accessible files (8 Standalone volume files and 11 host-observation files), totaling 20,729,013 bytes. Source and public copies match by size and SHA-256. The C22 pmsg identified repeated SurfaceFlinger output-buffer GPU-writability aborts during shader-cache prewarming; the underlying buffer-usage cause and runtime Vulkan backend remain unknown.
-- C23: the only system change is setting service.sf.prime_shader_cache=0 in system build.prop to bypass the observed optional prewarm path. EROFS, system AVB descriptor, retained descriptors, and LP layout were checked. The restricted flash wrote only super and vbmeta_system_a; both writes succeeded. C23 has not been booted.
-- Validation: Python AST and PowerShell parser checks passed for the published C23 builder and flash/start gates. The builder uses a script-relative project root; device serial must be passed explicitly. No rebuilt image was needed after those script-only changes.
-- Safety: no userdata/metadata erase, slot change, BCB edit, hardware identity partition write, or Bootloader relock. The device remains in Bootloader Fastboot.
-- Next: wait for the user to confirm they are present, then arm the C23 read-only observer before one controlled first boot.
+- 状态：C23 主机构建和指定分区刷写完成；设备保持 Bootloader Fastboot，C23 首次启动等待用户现场确认。
+- 改动/结论：C22 pmsg 的 89 次 SurfaceFlinger fatal 均为 `output buffer not gpu writeable`，调用栈落在 `Cache::primeShaderCache` / `SkiaRenderEngine::primeCache`。C23 只在 system `build.prop` 新增 `service.sf.prime_shader_cache=0`，跳过可选 shader cache 预热；保留 C22 K40 Vulkan UMD、C21 RenderEngine 路由和其他已验证修复。该改动不声称修复底层 buffer usage mismatch。
+- 原因：C22 已越过 C21 RenderEngine 创建 fatal，却被 shader 预热路径的输出 buffer usage fatal 阻断。此属性在 Android 17 上游 SurfaceFlinger 控制 `primeCache()` 调用，可最小化绕过以观察常规图形初始化是否继续。
+- 涉及文件：`tools/build_candidate23_sf_prime_skip.py`、`tools/flash_candidate23_sf_prime_skip.ps1`、`tools/start_candidate23_observed_boot.ps1`、`work/stage_m_thyme_os4_candidate_23_sf_prime_skip_run4/`、`work/reports/20260927_CANDIDATE23_SF_PRIME_SKIP/REPORT.md`、C22 `REPORT.md`、`日志/项目当前状态.md` 和本记录。C23 run1–run3 失败输出保留；run1 缺少已清理的 C15 scratch fs_config，run2/run3 因 AVB parser 返回 tuple 解包不匹配而主机侧停止，均未刷设备。
+- 验证：C23 EROFS `fsck.erofs` 通过；最终 EROFS 回读属性，新属性及继承图形属性各出现一次。`vbmeta_system` 只替换 system descriptor，product/system_ext descriptors 和 AVB header 元数据保持；lpdump 验证逻辑分区/extent。C22 boot、vendor_boot、dtbo、root vbmeta 沿用 manifest 中的尺寸/SHA。六镜像清单生成。受限刷写脚本仅写 `super` 与 `vbmeta_system_a`；super 10/10 sparse 块和 vbmeta_system 写入均返回 `OKAY`。刷后只读状态：唯一设备 `[REDACTED_DEVICE_ID]`、thyme、A 槽、unlocked、Bootloader Fastboot、A `unbootable=no`、`successful=no`、retry=2。
+- 镜像：`super.img` 7,701,892,056 bytes，SHA-256 `F0E252E232D12AEB8E84D9A56B77B39744D6972FD8E695618A10E89168209A15`；`vbmeta_system.img` 131,072 bytes，SHA-256 `B0FFDFD7FD492F17ABD6FDC0F3577C6F9C1976C8087B6A21E77191FA1A624F46`。
+- 尚未验证：C23 尚未首次启动；primeCache 是否被跳过、普通合成 buffer 是否成功、SurfaceFlinger 是否稳定、是否能进入 HyperOS 动画/设置向导/桌面均未知。C22 实际 Vulkan 后端身份仍未知。
+- 安全边界：只写 `super`、`vbmeta_system_a`；未执行 reboot、清 userdata/metadata、切槽、misc/BCB/其他分区操作或 Bootloader 状态操作。
+- 待处理：等待用户在场确认；先启动候选标签 `C23-sf-prime-skip` 的只读观察器并确认 ARMED，再执行一次受控首次启动。
+- 替代：C23 使用属性绕过 shader-cache prime 以获取下一阶段证据；不替代对实际 Vulkan、gralloc 输出 buffer usage 根因的后续诊断。
 
-## 2026-09-27 21:29｜C23 首次启动进入 Recovery 并完成全量取证
+## 2026-09-27 20:47｜C23 脚本路径与目标身份参数收敛
 
-- 状态：一次受控启动和故障后 Standalone 导出完成；未取得 C23 HyperOS 图形阶段证据。
-- 改动/结论：观察器 ARMED 后执行一次 fastboot reboot，返回码 0。主机看到 ADB unauthorized，无法取得 logcat；约 232 秒后 Fastboot 重新出现，用户报告屏幕进入 PixelOS Recovery。可见 console 只有一个 Recovery 启动实例：First Stage 跳过正常挂载，Recovery 开始；Recovery 随后记录 bootonce-bootloader 并清除 BCB。这不能说明 Recovery 被选择的起因，也不能证明此前是否有未保存的普通启动。未见 wipe 指令。
-- 涉及文件：C23 报告、Standalone 全量导出及主机观察目录；公开副本位于 reports/candidate23/REPORT.md 和 evidence/candidate23/。
-- 验证：THYME_DIAG 7 个可访问文件、17,117,150 bytes 全部复制，大小与 SHA-256 匹配，0 错误；无 pmsg，oops.raw 与 C22 历史残留相同，Standalone dmesg 属于诊断环境。公开累积 manifest 新增 C23 的 18 项源/发布大小和 SHA-256 记录。
-- 尚未验证：C23 是否进入普通 Android 后再转 Recovery；service.sf.prime_shader_cache=0、SurfaceFlinger/Vulkan/常规合成行为；HyperOS 动画、设置向导或桌面。
-- 安全边界：未刷写、擦除 userdata/metadata、改 BCB、切槽、恢复 PixelOS 或回锁。
-- 待处理：不重试 C23、不构建 C24；先针对性明确 Recovery 启动路径。设备随后由用户手动进入 Fastboot 并完成只读核验。
+- 状态：已完成静态检查；构建镜像和已刷写镜像未改变。
+- 改动/结论：C23 构建器改为从脚本位置解析项目根目录；C23 刷写/启动门控脚本不再内置设备序列号，改为要求显式传入已核验目标身份。
+- 原因：使公开脚本不依赖固定 Windows 项目路径，也避免把本机设备序列号写入脚本。
+- 涉及文件：tools/build_candidate23_sf_prime_skip.py、tools/flash_candidate23_sf_prime_skip.ps1、tools/start_candidate23_observed_boot.ps1。
+- 验证：Python AST 解析和两个 PowerShell Parser 检查通过。仅静态语法检查；未重跑构建，改动不影响已经生成和刷写的镜像。
+- 尚未验证：C23 尚未首次启动，运行时效果未知。
+- 待处理：等待用户现场确认后执行 C23 首次启动。
+## 2026-09-27 20:52｜C22 原始证据与 C23 状态公开同步
 
-## 2026-09-27 22:24｜C23 Recovery follow-up and A-slot budget restoration
+- 状态：公开增量已提交并推送；匿名访问验证通过。
+- 改动/结论：公开仓库新增 C22 主机观察及 Standalone 的全部 19 个可访问文件，并更新 C22 实机报告、C23 构建报告/六镜像清单/脚本、项目状态、索引和 README。C22 来源与公开副本的 19 项大小及 SHA-256 全部匹配。C23 报告尚未启动状态保持准确。
+- 原因：按用户授权发布完整原始诊断证据，并让公开项目反映 C22 新故障和 C23 已刷入待启动的状态。
+- 涉及文件：公开仓库 evidence/candidate22、reports/candidate22、reports/candidate23、tools、README 与 logs；本地项目状态和本执行记录。
+- 验证：C23 Python AST 与 PowerShell Parser 均通过；远端 main 指向 b90db9c32c34acf59fa49b45d360ed0f3578360c。匿名访问可读 README、项目状态、C23 报告、构建清单及 C22 发布清单；C22 原始文件已按 manifest 逐项验证。
+- 尚未验证：C23 首次启动和 SurfaceFlinger 常规图形合成行为。
+- 安全边界：未执行新的设备操作；无 ROM/分区镜像上传。C23 本轮没有清除 userdata/metadata、修改其他分区或回锁。
+- 待处理：保持 Fastboot，等用户确认在场后再进行 C23 首次启动。
+- 最新公开 Commit：https://github.com/ROCK-VK/thyme-hyperos4-port/commit/b90db9c32c34acf59fa49b45d360ed0f3578360c
 
-- Status: Recovery-path analysis, read-only BCB capture, and the single authorized A-slot reset are complete; device remains in Bootloader Fastboot awaiting the user's on-site startup confirmation.
-- Findings: C23 vendor_boot contains PixelOS A0′ Recovery properties, recovery binary, recovery fstab, Recovery init files, and UI libraries with matching per-file SHA-256. The current C23 super remains the HyperOS port. Its kernel command line sets androidboot.init_fatal_reboot_target=recovery, so an Init-fatal Recovery path is possible; no ordinary Android fatal was captured, so this is not a proven cause. Recovery's later bootonce-bootloader and BCB-clearing messages do not identify the original trigger.
-- Validation: Standalone read-only misc capture was 4 MiB; only the first 2 KiB BCB fields were parsed and were empty. Full misc.raw and raw diagnostic state remain local. A-slot before reset: retry=1, unbootable=no, successful=no; B retry=7. One fastboot set_active a returned OKAY; after reset A and B retry=7, A remains unsuccessful and bootable.
-- Safety: no C23 reboot, flash, userdata/metadata erase, BCB write, PixelOS restore, or Bootloader relock was performed in this follow-up.
-- Next: after the user confirms they are present, arm the C23-retest read-only observer and then perform one C23 boot.
+## 2026-09-27 21:29｜C23 首启进入 Recovery 并完成 Standalone 全量取证
 
-## 2026-09-28 15:24 | C23 retest reached a BootAnimation-related stage
+- 状态：C23 首次受控启动尝试和故障后 Standalone 全量导出已完成；C23 图形用户空间尚未得到有效验收。
+- 改动/结论：观察器先 ARMED，再执行一次 `fastboot reboot`（返回码 0）。主机记录 ADB 在约 56 秒变为 `unauthorized`，无法取得 logcat；约 232 秒 Fastboot 重新出现。用户观察到 PixelOS Recovery。保存的 `console-ramoops-0` 含一个 Linux 内核实例，First Stage 立即标记 `recovery mode`、跳过 first-stage mount；Recovery 于约 3.976 秒启动。Recovery 记录 `Boot command: bootonce-bootloader`，之后清 BCB；未见 wipe 指令。它不能解释 Bootloader 为什么选择 Recovery，也不能证明之前是否存在未保存的正常 Android 启动。
+- 原因：C23 原定验证的 SurfaceFlinger shader-cache 绕过没有获得普通 HyperOS 用户空间日志；必须区分可见 Recovery 现场与尚未保存的潜在首次启动失败。
+- 涉及文件：`work/reports/20260927_CANDIDATE23_SF_PRIME_SKIP/REPORT.md`、`observations/run_20260927_211900/`、`standalone/run_20260927_212336/`、本状态文件及本条记录。
+- 验证：Standalone SHA-256 `8A5803F09CBCB11056D8356F8D235C3C4450846244FA1B4033ABAAACB213E98B`；动态识别唯一 THYME_DIAG 卷 `F:\`，7 个可访问文件、17,117,150 bytes 全部复制，源/副本大小和 SHA-256 一致，0 错误。没有 pmsg；Standalone dmesg 属于诊断环境；`oops.raw` 与 C22 旧件 SHA-256 一致。观察器时间线覆盖 fastboot reboot、USB/ADB 变化及 THYME_DIAG 出现。
+- 尚未验证：Recovery 选择原因；C23 普通 Android 是否曾短暂启动后转 Recovery；`service.sf.prime_shader_cache=0` 是否生效；SurfaceFlinger、常规 Vulkan 合成、bootanimation/设置向导/桌面。
+- 安全边界：本轮只进行一次 C23 `fastboot reboot` 和已授权的 Standalone RAM 临时启动/只读导出；未刷写、擦除 userdata/metadata、修改 misc/BCB、切槽、恢复 PixelOS 或回锁。当前主机枚举 THYME_DIAG USB 存储，非 Fastboot。
+- 待处理：暂不构建 C24；在下一次普通启动前定点捕获启动模式/Bootloader 状态，必要时另行确认只读 BCB 获取范围。保留现场，不自动恢复或清数据。
+- 替代：替代 C23 构建记录中“C23 尚未启动、等待首次启动”的当时状态；构建结论与 C23 镜像内容不变。
 
-- Status: One controlled C23 reboot, user return to Fastboot, complete Standalone export, and targeted pstore review are complete.
-- Result: The retest did not enter Recovery. One console instance shows First Stage (~2.048s), Second Stage (~3.212s), enforcing SELinux, APEX, vold and successful F2FS /data initialization. pmsg records BootAnimation and BootAnimationShownTiming start time: 42129ms. The user still observed a steady Xiaomi logo; no setup wizard, desktop, or direct sys.boot_completed=1 sample was obtained. C22 shader-prewarm, EGLConfig, and Vulkan RenderEngine fatal signatures were absent in this captured pmsg window; runtime service.sf.prime_shader_cache=0 remains unverified.
-- Evidence: 8 Standalone-volume files (17,805,353 bytes) and 10 host-observation files were copied into new C23 retest directories. Source and public copies matched by size and SHA-256, with no copy/hash mismatches. oops.raw is unchanged historical content seen in C13-C22; Standalone dmesg belongs to the diagnostic environment. The device was read-only confirmed as thyme/A, unlocked Bootloader Fastboot, A retry=6 and B retry=7.
-- Remaining: Repeated netd SIGABRT and fingerprint-service SIGSEGV are present, but no evidence ties either to the missing UI. Do not infer that the shader-cache property caused the new progress. No C24 is built from this run alone.
-- Safety: No flash, data/metadata erase, BCB write, further slot operation, PixelOS restore, hardware-identity partition write, or Bootloader relock.
-- Report: [C23 retest](../reports/candidate23/C23_RETEST_20260928.md); raw files and host timeline: [C23 evidence](../evidence/candidate23/).
+## 2026-09-27 21:30｜用户手动返回 Fastboot 并完成只读复核
 
-## 2026-09-28 16:19 | C23 full boot-window retest remained at static Xiaomi logo
+- 状态：设备重新进入 Bootloader Fastboot；没有启动或写入设备。
+- 改动/结论：唯一设备 `[REDACTED_DEVICE_ID]`；Fastboot 返回 `product=thyme`、A 槽、`unlocked=yes`、`is-userspace=no`、A 槽 `unbootable=no`、`successful=no`、`retry-count=1`。C23 启动前 retry-count=2，本次启动后减少到 1。
+- 验证：`fastboot devices`、`getvar product/current-slot/unlocked/is-userspace/slot-unbootable:a/slot-successful:a/slot-retry-count:a` 全部为预期结果。
+- 安全边界：仅查询设备状态；未执行 reboot、刷写、擦除、切槽、misc/BCB 修改或回锁。
+- 待处理：保留 Fastboot。先解决当前 C23 启动进入 Recovery 的路径不确定性；不重试 C23、不构建 C24，直到形成有效诊断步骤。
 
-- Status: One complete boot observation, Standalone full export, and read-only Fastboot verification are complete; no partition was flashed and no data was erased.
-- Result: The observer was ARMED before one `fastboot reboot` at 15:47:14.282 HKT (OKAY). The user reports a static Xiaomi logo throughout and manually returned to Fastboot. Host Fastboot reappeared about 11m52.8s after reboot; ADB never appeared. pmsg spans about 697.883s and records a successful F2FS `/data` mount, fscrypt initialization, and `BootAnimationShownTiming start time: 40943ms`. This does not prove the visible HyperOS animation. No direct `sys.boot_completed=1`, `service.bootanim.exit`, SystemUI/SetupWizard/Launcher record was found.
-- Findings: The pmsg did not reproduce the prior EGLConfig, Vulkan RenderEngine, or output-buffer shader-cache fatal signatures; `service.sf.prime_shader_cache` was not sampled. It records 138 netd SIGABRTs, 137 fingerprint HAL SIGSEGVs, 74 audio.service SIGSEGVs and 23 `UltraFrameworkComponentFactoryImpl` ClassNotFoundException messages on a `SurfaceControl.<clinit>` stack. None is proven to explain the missing UI. C24 is not built.
-- Evidence: All 22 accessible Standalone and host-observation source files (20,764,672 bytes) were published with per-file source/public SHA-256 match. The 8 THYME_DIAG files total 20,433,856 bytes and copied with zero errors. Console spans kernel uptime 120.114755–702.552956s without a panic; the pmsg span is about 697.883s; `oops.raw` is unchanged historical residue.
-- Device: Final read-only state is thyme/A, unlocked Bootloader Fastboot, non-userspace. A retry fell from 6 to 5; A/B remain unbootable=no and unsuccessful=no; B retry=7.
-- Safety: No Candidate flash, userdata/metadata erase, set_active, BCB/misc write, PixelOS restore, hardware identity/secure partition write, or Bootloader relock.
-- Report: [C23 complete boot-window report](../reports/candidate23/C23_LONG_BOOT_RETEST_20260928.md); [long-window raw evidence](../evidence/candidate23/long_boot_retest/).
+## 2026-09-27 22:07｜C23 Recovery 配置核查与 BCB 只读取证
 
-## 2026-09-28 18:39 | C23 framework/display investigation and C24 diagnostic build/flash
+- 状态：定点核查与 Standalone 只读取证已完成；当时设备待从 THYME_DIAG 切回 Bootloader Fastboot。
+- 改动/结论：C23 vendor_boot 中的 PixelOS Recovery 属性、recovery binary、recovery fstab、Recovery init 配置及两个 UI 库与 PixelOS A0′ 基线逐文件 SHA-256 一致，解释了 Recovery 界面品牌，但当前 super 仍为 C23。C23 和 PixelOS vendor_boot 都含 `androidboot.init_fatal_reboot_target=recovery`；C23 另含 `androidboot.init_fatal_panic=true`。这说明 Init fatal 转 Recovery 是实际可用路径，但现有 console 只有 Recovery 实例，不能证明本次发生过普通 Android fatal。Recovery 中的 `bootonce-bootloader` 不能作为启动前原因。
+- 原因：C23 普通 Android 首次失败现场未保留；Recovery 随后清除 BCB。Fastboot 不提供可用的 boot/reboot reason 查询。
+- 涉及文件：`work/reports/20260927_CANDIDATE23_RECOVERY_RETEST/REPORT.md`、Standalone 副本 `standalone/run_20260927_220243/`、静态解包 `analysis_20260927_215951/`、本状态文件及本记录。
+- 验证：唯一 sysfs `PARTNAME=misc` 为 `/dev/sda11`、Major:Minor 8:11、容量 4,194,304 字节；完整只读副本 SHA-256 `2988e9feaec8c2c1bfeff1ed924e90f98c84e14c98efcc4b48f8d3ec6d778f51`。BCB 前 2 KiB 的 command/status/recovery/stage 均空。THYME_DIAG 的 5 个文件、4,197,473 bytes 全部复制且大小/SHA-256 一致。执行前 A 槽 retry=1、B=7。
+- 尚未验证：Recovery 的唯一触发原因、C23 是否曾先进入普通 Android、shader-cache 绕过及图形启动结果。
+- 安全边界：本阶段未写 misc/BCB、未刷写或清除分区、未恢复 PixelOS、未重启 C23、未回锁；完整 misc.raw 仅本地留存。
+- 待处理：等待用户将设备切回 Fastboot，完成限定的一次 A 槽启动预算恢复后停在 Fastboot，并等待用户现场确认再启动。
 
-- Status: C23 pmsg review, targeted K40 OS4 Android 17 comparison, C24 host build/static validation and restricted partition flash are complete. C24 has not booted; the phone remains in Bootloader Fastboot.
-- Findings: C23 pmsg spans about 697.883s and confirms `/data`/fscrypt, keystore2, and BootAnimation code activity, but contains no system_server phase, WMS enable-screen, SystemUI/HOME, bootanim exit, sampled boot-complete, or HWC/display present result. The user saw only the static Xiaomi logo and ADB never appeared. Framework-not-ready versus display-not-presented remains unresolved. Repeated netd, fingerprint and audio crashes and `UltraFrameworkComponentFactoryImpl` CNFE messages are not causally tied to the missing UI.
-- K40 comparison: C23/K40/donor `framework.jar`, `framework-res.apk`, `miui-framework.jar`, and `miui-services.jar` are identical. K40 `services.jar`, MiuiSystemUI and device overlays differ, but no directly applicable boot-ready or thyme display-present fix was identified. No K40 device-specific components were copied.
-- C24: diagnostic-only post-fs-data service samples boot properties, process IDs, WindowManager/ActivityManager, SurfaceFlinger/display, layers/latency and HOME resolution to logd/pmsg. It does not change SELinux, GPU routing, HWC/vendor, kernel, fstab, encryption or userdata. Runtime behavior and pmsg retention await first boot.
-- Build validation: The first build attempt stopped safely when a reused AVB extent assertion did not allow the 4096-byte system data-extent increase; no device access occurred. The second build updated the system descriptor. EROFS, AVB, LP, shell/Python/PowerShell syntax, and system_file xattr checks passed.
-- Flash: Only `super` (7,701,896,152 bytes; SHA-256 `2B84BD93ADFA85FC851A17937B7F96AB4176F01F3E3D00FFC2DB78766BA2CDD8`) and `vbmeta_system_a` (131,072 bytes; SHA-256 `1A67C4A2E22DA746E184B146D7DD65059D00FB501EE3642DA1BD2AEFCE706D08`) were written successfully. No first boot, data erase, slot/BCB change, PixelOS restore, other partition write, or relock occurred.
-- Device: 2026-09-28 18:39 HKT read-only status is thyme/A, unlocked Bootloader Fastboot (not userspace); A retry=4, B retry=7, both bootable and unsuccessful. A had previously been recorded with retry=5; no reboot or set_active was run during this C24 preparation, so the decrement cause is unknown.
-- Reports and scripts: [C24 diagnostic report](../reports/candidate24/C23_FRAMEWORK_DISPLAY_C24_DIAGNOSTIC_20260928.md), [build report](../reports/candidate24/BUILD_REPORT.md), [manifest](../reports/candidate24/BUILD_MANIFEST.json), and [tool notes](../tools/README.md).
-- Next: wait for the user to confirm they are present; arm the read-only observer with candidate tag `C24-framework-display-diag` before one C24 first boot.
+## 2026-09-27 22:24｜恢复 C23 A 槽启动预算并准备受控复验
 
-## 2026-09-28 19:04 | C23 actual BootAnimation and K40 resource check
+- 状态：本轮限定的 `set_active a` 已恰好执行一次；设备保持 Bootloader Fastboot，C23 复验尚未启动。
+- 改动/结论：执行前 A 槽 `unbootable=no / successful=no / retry=1`、B retry=7。唯一一次 `fastboot set_active a` 返回 `OKAY`；之后 A/B 均 `unbootable=no / successful=no / retry=7`。该操作只恢复 A 槽启动预算，不证明 C23 已修复，也未标记槽位成功。
+- 原因：将 A 槽重试次数恢复至默认值，避免在 retry=1 时进行盲目复验；既有证据没有要求完整重刷 PixelOS。
+- 涉及文件：`work/reports/20260927_CANDIDATE23_RECOVERY_RETEST/REPORT.md`、`C23_RETEST_PREFLIGHT.md`、本状态文件及本记录；设备查询/命令回执在本地 observations 目录。
+- 验证：执行后 Fastboot 只读结果为唯一设备 `[REDACTED_DEVICE_ID]`、`product=thyme`、A 槽、`unlocked=yes`、`is-userspace=no`；A/B retry=7、unbootable=no、successful=no。
+- 尚未验证：C23 是否进入正常 Android、`service.sf.prime_shader_cache=0` 是否生效、图形启动及 HyperOS UI。
+- 安全边界：本轮未执行 C23 reboot、刷写、userdata/metadata 擦除、BCB 写入、PixelOS 恢复或 Bootloader 回锁。
+- 待处理：用户确认在场后启动 `C23-retest` 观察器，等待 `[ARMED]`，再进行一次 C23 正常启动。
 
-- Status: Targeted read-only resource comparison completed; public report/status updated and pending this incremental push.
-- Findings: Read the actual product image shared by C23/C24 and extracted only `bootanimation.zip`. It contains five frames at 5 fps; decoded adjacent-frame differences are confined to the bottom progress dots (about 116–348 pixels), while the HyperOS logo itself is unchanged. The successful Android 17 K40 package uses a different 32-frame, 31.7 fps asset with different canvas parameters. This makes a nearly static-looking Android BootAnimation a plausible explanation for the user's visual report, but it does not prove an Android frame reached the physical panel or rule out Framework/HWC faults. The earlier expanded worktree copy was not the authoritative runtime asset; the actual product image is.
-- Evidence: C23/C24 product image SHA-256 `87955DBE97AC28B01A214273BD03F36B5886310DC3B2E4128B9F4661E1C3345E`; C23 bootanimation SHA-256 `44FE368CFD028F3CB89E7DCCAD75DF96EA9F77C3C1F417CE86C2853996721EB8`; K40 bootanimation SHA-256 `5F7E3851C891C569A6A8EF5B5E0AE4351D5EC7D8ADFF89D27A2B5D5FAC5D6368`.
-- Scope: No device operations, rebuild, or flash. The read-only mount was removed after extraction. C24 remains unbooted in Bootloader Fastboot, awaiting the user's on-site confirmation.
-- Remaining: C24 must sample actual system_server/WMS/UI state, BootAnimation layer and physical display present behavior.
-## 2026-09-28 20:25 | C24 first boot, framework/display diagnostic capture
 
-- Status: The single C24 boot, 16m43s host observation, Standalone full-volume export, and read-only device-state verification are complete. No rebuild, flash, data erase, PixelOS restore, or boot-control modification occurred.
-- Result: The user saw only the first splash (Xiaomi logo plus `powered by Android`) and never saw the HyperOS second screen with three progress dots. ADB never appeared. The user manually entered Fastboot. pmsg includes `BootAnimationShownTiming start time: 41015ms`, which proves BootAnimation-related code ran but not that a layer reached the physical display. No `C24BootDiag` marker was retained, so the diagnostic service's runtime status and sample count are unknown; system_server, WMS, SystemUI/HOME, bootanim exit, boot-complete and physical display present remain unknown.
-- Evidence: 29 host/Standalone source files (21,968,868 bytes) plus the report were copied to the public C24 evidence directory; source and published size/SHA-256 matched. Standalone THYME_DIAG contains 8 files (20,977,071 bytes), zero copy/hash mismatches. `oops.raw` matches C13–C23 historical content; Standalone `dmesg_diag_boot.txt` is from the diagnostic environment. No conventional credential patterns were found. Full report: `work/reports/20260928_C24_FRAMEWORK_DISPLAY_DIAG/C24首次实机取证报告_20260928.md`.
-- Device: A retry was 4 before and 3 after the single boot; current read-only status is thyme/A, unlocked Bootloader Fastboot, non-userspace; A unbootable=no/successful=no/retry=3, B no/no/retry=7.
-- Findings: No C24BootDiag samples can be used to conclude that Android services failed to start. A repeated SurfaceFlinger `{ find }` AVC for Xiaomi `IMiHwcExtension/default` also appeared in C23 and remains an unproven display-related clue. Earlier EGLConfig, Vulkan RenderEngine creation, shader-cache buffer and graphics allocator ion AVC signatures did not recur in this C24 pmsg.
-- Safety: No `set_active`, BCB/misc write, userdata/metadata erase, other partition write, PixelOS restore, hardware identity write, or Bootloader relock.
-- Report and evidence: [C24 first-boot report](../reports/candidate24/C24_FIRST_BOOT_EVIDENCE_20260928.md); [full host and Standalone evidence](../evidence/candidate24/framework_display/20260928_194944/). Current next step is to make diagnostic-service launch and output recoverable before another Candidate boot.
+## 2026-09-27 22:34｜公开同步 C23 Recovery 复验准备
 
-## 2026-09-28 22:52 HKT | Candidate 25 persistent first-screen diagnostic
+- 状态：公开增量已推送并完成匿名访问核验。
+- 改动/结论：将 C23 Recovery 原因核查、A 槽重试预算恢复结果及受控复验准备同步至现有公开仓库；公开副本不含完整 misc.raw、设备序列号或原始设备状态数据。
+- 涉及文件：公开仓库 `logs/PROJECT_STATUS.md`、`logs/EXECUTION_LOG.md`、`reports/candidate23/RECOVERY_RETEST_20260927.md`。
+- 验证：Commit `248c5a9a5833a31e565fd0dce03440b4754e2514` 已位于远程 `main`；匿名访问确认仓库为 Public，报告和状态文件可读取；暂存差异凭据/设备标识扫描无匹配，`git diff --cached --check` 通过。
+- 待处理：用户现场确认后才启动观察器并执行 C23-retest；当前没有启动设备。
 
-- Status: C25 built and flashed; the device remains in A-slot Bootloader Fastboot and has not booted C25.
-- Change: Replaced C24's sampler, which left no verifiable marker, with a bounded AArch64 helper. It emits an init trigger and periodic property/process/Framework/display samples to logd and a durable diagnostic directory under metadata. Sampling is capped at about 15 minutes, 512 KiB per file and 8 MiB total.
-- Recovery path: Added a Standalone option that discovers metadata from sysfs, validates the unique block device and exact capacity, mounts ext4 with ro,noload, verifies the read-only mount, and copies only the diagnostic subtree. Static ramdisk and BusyBox shell checks passed; no RAM boot or metadata read occurred.
-- K40 comparison: No directly applicable common Framework/WMS or HWC service-registration/label/policy fix was found. C25 adds no broad HWC permission and does not replace K40 hardware-specific components.
-- Build: C25 EROFS, AVB descriptor/hashtree, LP extents, CIL content and inherited input checks passed. Host CIL neverallow checks were enabled; the final Android policy retains the Android 17 policycap that the host libsepol cannot parse.
-- Flash: Only super (7,702,744,024 bytes, SHA-256 87022BC2BE868B1A3CF51F2B3A63C377BBA245BCEEA2BB72610D5A3270BDDF1F) and vbmeta_system_a (131,072 bytes, SHA-256 63B03D20B8EF718C70EF36F063DA57EDD858CE9D7570E490AFE48681A89104C7) were written. All ten super sparse chunks and vbmeta send/write returned OKAY. No partition readback was performed.
-- Device: Post-flash read-only checks confirm thyme/A, unlocked Bootloader Fastboot, non-userspace, A unbootable=no/successful=no/retry=3. No reboot, data erase, slot change, BCB write or other partition write.
-- Screen terminology: The user clarified that the centered Xiaomi logo plus powered by Android is the first screen; the HyperOS logo with dots is the second. Neither C24's pmsg marker nor this visual description proves that an Android frame reached the display.
-- Next: Wait for onsite confirmation, arm the C25 observer and then perform one C25 boot. Runtime diagnostic and visible HyperOS progress remain unverified.
+## 2026-09-28 15:24｜C23-retest 到达 BootAnimation 相关阶段并完成全量取证
 
-## 2026-09-28 22:58 HKT | Candidate 25 boot gate prepared
+- 状态：一次受控启动、用户手动返回 Fastboot、Standalone 全量复制和日志分析已完成。
+- 改动/结论：C23 本轮没有进入 Recovery。单个 console-ramoops 启动实例记录 First Stage（约 2.048s）、Second Stage（约 3.212s）、SELinux enforcing、APEX、metadata 与 /data/vold 初始化；F2FS /data 挂载成功。pmsg 约两分钟，记录 BootAnimation 及 BootAnimationShownTiming start time: 42129ms。用户现场只看到小米 Logo 常亮，未确认 HyperOS 动画、Setup Wizard 或桌面。没有 C22 output buffer not gpu writeable、EGLConfig 或 Vulkan RenderEngine fatal 的记录；但没有运行时属性采样，不能宣称 service.sf.prime_shader_cache=0 已被单独验证。
+- 原因：恢复 A 槽预算后的 C23-retest 首次取得普通 Android 后续阶段的有效 pstore，而先前 C23 尝试只保存到 Recovery。该变化不证明先前 Recovery 的根因，也不证明本轮重试预算恢复是原因。
+- 涉及文件：work/reports/20260927_CANDIDATE23_RECOVERY_RETEST/C23_RETEST_20260928.md；观察目录 observations/run_20260928_150900/；全量 Standalone 副本 standalone/run_20260928_151306/；本状态文件及本记录。
+- 验证：观察器在 Fastboot reboot 前已 ARMED；一次 reboot 返回 OKAY。Standalone 诊断卷动态识别为唯一 THYME_DIAG（本次盘符 F:），8 个文件共 17,805,353 bytes 全部复制，零错误，源/副本大小及 SHA-256 一致。oops.raw SHA-256 [REDACTED_DEVICE_ID]…E9BB66 与 C13–C22 历史内容一致，归类为历史持久残留；dmesg_diag_boot.txt 属于 Standalone。Fastboot 只读复核（2026-09-28 15:24 HKT）：唯一设备 [REDACTED_DEVICE_ID]、thyme/A、解锁、非 userspace；A unbootable=no / successful=no / retry=6，B no / no / 7。
+- 尚未验证：BootAnimation 是否持续正常显示、SurfaceFlinger 后续行为、service.sf.prime_shader_cache=0 运行时值、Setup Wizard/桌面及 sys.boot_completed=1。重复 netd SIGABRT 和指纹服务 SIGSEGV 的栈可识别，但与停留 Logo 的因果关系未知。
+- 安全边界：本轮仅执行一次获确认的 C23 fastboot reboot、既有授权的 Standalone RAM fastboot boot 和只读导出/查询；未刷写、擦除用户数据/metadata、写 misc/BCB、切槽、恢复 PixelOS、改硬件身份/校准分区或回锁。当前设备保持 Fastboot，刷入基线仍为 C23。
+- 待处理：不立即构建 C24、不清数据、不再次 set_active。下一步针对 BootAnimation 相关阶段之后缺少 UI/完成证据进行定点取证与最小诊断，之后依据新故障决定是否修改镜像。
+- 替代：更新“C23 未再次启动、等待受控复验”的当时状态；之前“只看到 Recovery、C23 图形阶段未验证”的结论仅代表先前那次尝试，本次新增证据不抹除旧记录。
+## 2026-09-28 15:37｜C23-retest 证据与项目状态公开同步
 
-- Added a C25-specific gate that verifies a fresh ARMED record, one expected Fastboot device, thyme/A/unlocked/non-userspace state and an eligible A slot.
-- Default mode only saves preboot state. A reboot requires both explicit Execute and UserWatchingConfirmed switches; the gate was syntax-parsed but not executed.
-- The phone remains in Fastboot. C25 first boot still awaits the user's onsite confirmation.
+- 状态：C23-retest 报告、完整证据增量、公开状态和 README 更新均已推送。
+- 改动/结论：公开增量包含 22 个 Standalone/主机观察源文件（17,914,069 bytes），逐文件 SHA-256 与本地原件一致；新增逐文件来源清单，更新 C23 retest 报告、evidence 索引、PROJECT_STATUS 和 README。原始本地取证未修改。
+- 验证：提交前扫描 staged 内容，没有发现私钥 PEM、GitHub token、AWS access key 或长 Bearer credential；没有提交 ROM、Candidate 镜像、userdata/metadata 或分区备份。文档差异检查通过；原始诊断文件的空白字符保持原样。远程 main 指向 131aace68157d7f9831927d2919d7629aeda8cbd，工作树干净；匿名网页可读仓库、报告、状态和原始 console。
+- 链接：https://github.com/ROCK-VK/thyme-hyperos4-port/commit/0fac20dbd431bd41afdb1606aa76c9186f847015；README 状态修订：https://github.com/ROCK-VK/thyme-hyperos4-port/commit/131aace68157d7f9831927d2919d7629aeda8cbd。
+- 尚未验证：GitHub Desktop UI 是否在当前前台窗口刷新显示该工作树；不影响远程 public/main 验证。
 
-## 2026-09-29 00:04 HKT｜C25 持久诊断结果与 run3 取证
+## 2026-09-28 15:45｜准备 C23 完整启动窗口复验
 
-- 状态：Standalone run3 只读取证完成；C25 启动结果定位到 Zygote 重启环，退出原因尚未知。
-- 结论：metadata 只读导出 2 个诊断文件，校验 mismatch=0。C25 helper 写入 56 个样本；连续 55 个后续样本显示 zygote/zygote_secondary/netd restarting，system_server/zygote64 与 UI/HOME 进程不存在；SurfaceFlinger/bootanimation 运行，BootAnimation layer 可列出，但无物理 display 成功 present 证据。采样未完成 900 秒，未记录 logcat/crash 首因。
-- 证据：完整可访问 THYME_DIAG 8 个文件共 4,272,050 bytes，源/公开副本大小与 SHA-256 8/8 一致；pstore 文件不存在。`misc.raw` 及其哈希、未脱敏原始 diag_status 未公开。
-- 设备：用户报告已手动返回 Fastboot；最新主机 `fastboot devices` 返回 0 台，未确认 USB Fastboot 枚举。未执行设备写入、清除、切槽、启动或恢复操作。
-- 空间：C/D/E 可用 76.91/119.56/176.47 GiB。E 上旧 C13.1 stage 删除请求被执行策略拒绝，未删除；D Ubuntu VHDX 本轮未压缩；Docker 未触碰。
-- 下一步：先恢复主机 Fastboot 只读枚举，再设计定点 Zygote logcat/crash 捕获；取得首条真实错误前不构建猜测性修复。
+- 状态：仅完成只读预检与观察器准备；尚未启动 C23。
+- 改动/结论：用户要求对当前 C23 再做一次完整启动观察。唯一设备 `[REDACTED_DEVICE_ID]`，product=`thyme`、A 槽、Bootloader 解锁、非 userspace Fastboot；A/B 均 `unbootable=no`、`successful=no`，A retry=6、B retry=7。未执行 `set_active`。
+- 原因：上一轮约 2 分 16 秒时用户手动进入 Fastboot，未达到本轮规定的 5 分钟静态米标观察下限及 8 分钟总窗口，需避免再次提前中断。
+- 涉及文件：`work/reports/20260928_C23_LONG_BOOT_RETEST/observations/run_20260928_154458/`；当前状态文件。
+- 验证：只读 Fastboot 查询与观察器本地依赖检查通过；观察器以 `C23-long-boot-retest` 标签记录 `[ARMED]`（2026-09-28 15:45:04 HKT），USB present、ADB absent、Fastboot online。观察器持续运行；启动命令尚未发出。
+- 尚未验证：本轮启动是否进入 HyperOS BootAnimation、Framework、设置向导或桌面；所有启动行为均待用户确认后进行。
+- 安全边界：未 reboot、刷写、擦除 userdata/metadata、切槽、修改 BCB 或恢复 PixelOS。
+- 待处理：等待用户明确回复“可以开始启动”。确认后只执行一次 `fastboot reboot`；静态米标前 5 分钟不人工进入 Fastboot，若仍静态且设备/观察正常则继续至 8 分钟。
+
+## 2026-09-28 16:19｜C23 完整开机窗口复验仍停留静态 Logo
+
+- 状态：一次完整启动观察、Standalone 全量取证和只读 Fastboot 复核已完成；没有刷写或数据清理。
+- 改动/结论：观察器 ARMED 后仅执行一次 `fastboot reboot`（15:47:14.282，OKAY）。用户报告全程静态小米 Logo；ADB 始终未上线。Fastboot 于启动命令后约 11 分 52.8 秒首次重新出现在主机时间线；用户确认是手动进入。pmsg 约覆盖 697.883 秒，记录 `/data` F2FS 挂载、fscrypt 初始化和 `BootAnimationShownTiming start time: 40943ms`。日志没有证明用户实际看到 HyperOS 动画；也未发现 `sys.boot_completed=1`、`service.bootanim.exit`、SystemUI、SetupWizard 或 Launcher 的直接记录。
+- 原因：验证上一轮 C23 观察是否因过早手动进入 Fastboot 截断启动。本轮超过 8 分钟完整观察，排除“只因两分钟时人为打断”作为本次未见第二屏的解释，但仍未找到静态 Logo 的根因。
+- 涉及文件：`work/reports/20260928_C23_LONG_BOOT_RETEST/REPORT.md`；观察目录 `observations/run_20260928_154458/`；全量 Standalone 副本 `standalone/run_20260928_160036/`；`日志/项目当前状态.md`。
+- 验证：THYME_DIAG 8 个文件、20,433,856 bytes 全部复制，0 错误，源/副本大小和 SHA-256 一致。console 记录 uptime 120.114755–702.552956s、未见 panic；pmsg 时间跨度约 697.883s。旧 EGLConfig、Vulkan RenderEngine、output-buffer fatal 均未重现；运行时 `service.sf.prime_shader_cache` 未采样。观察到 netd 138 次 SIGABRT、指纹 HAL 137 次 SIGSEGV、audio.service 74 次 SIGSEGV，以及 23 次 `UltraFrameworkComponentFactoryImpl` ClassNotFoundException；这些与界面停滞的因果未验证。最终 Fastboot 只读状态：thyme/A、unlocked、非 userspace；A retry 6→5，A/B 均 unbootable=no、successful=no，B retry=7。
+- 尚未验证：BootAnimation 实际呈现、框架 UI 启动位置、上述服务异常/类缺失是否阻止界面出现、shader-cache 绕过属性运行时值。未完成 K40 framework-JAR 对照；现有 K40 图形切片不含 framework JAR。
+- 待处理：不立即构建 C24；先对 pmsg 中框架启动/SurfaceControl 相关线索做定点核查，必要时只提取 K40 成功包对应的框架与启动配置。设备保持 Fastboot。
+- 安全边界：仅一次 C23 reboot、一次既有授权的 Standalone RAM 临时启动、只读槽位查询和文件导出；未刷写分区、擦除 userdata/metadata、set_active、写 misc/BCB、恢复 PixelOS 或回锁。
+- 替代：更新本轮“等待 8 分钟观察”的准备状态；不替代上一轮约 2 分钟的 C23-retest 历史结果。
+
+## 2026-09-28 16:25｜C23 完整启动窗口证据公开同步
+
+- 状态：报告、完整本轮诊断卷副本及主机观察记录已提交并推送至公开仓库。
+- 改动/结论：新增 22 项原始/观察证据（总计 20,764,672 bytes），每项本地源与公开副本的大小和 SHA-256 相符；更新 C23 长窗口报告、证据索引、公开项目状态及 README。
+- 验证：累计证据清单可解析，新增 22 行；提交 `b7bac6512df7f8948816e77841216a441ffb1124`。远端 `main` 与本地 HEAD 一致，匿名 HTTP 可读取仓库首页、README、报告、清单和原始 pmsg；公开副本工作树干净。
+- 尚未验证：GitHub Desktop 前台 UI 是否已经刷新；不影响远程公开访问和本地 Git 仓库验证。
+- 安全：没有上传 ROM、固件包、分区镜像或用户数据镜像；没有发现需排除的密码、私钥或可复用访问令牌。原始诊断内容按用户授权发布，`oops.raw` 明确标注为历史残留。
+- 链接：https://github.com/ROCK-VK/thyme-hyperos4-port/commit/b7bac6512df7f8948816e77841216a441ffb1124
+
+## 2026-09-28 18:39｜C23 Framework/显示断点定点调查并刷入诊断型 C24
+
+- 状态：C23 pmsg 定点分析、K40 OS4 Android 17 framework/UI/display 对照、C24 主机构建/静态验证及受限刷写已完成；C24 尚未启动，设备保持 Bootloader Fastboot。
+- 改动/结论：C23 pmsg 覆盖约 697.883 秒，证明 `/data`/fscrypt、keystore2 和 BootAnimation 代码推进；但没有 system_server 阶段、WMS enable-screen、SystemUI/HOME、`service.bootanim.exit`、`sys.boot_completed=1` 或 HWC/display present 结果。现场全程静态米标、ADB 未上线，故 Framework 未 ready 与物理显示未呈现仍无法区分。netd、fingerprint、audio 崩溃及 `UltraFrameworkComponentFactoryImpl` 缺失没有直接阻塞证据。K40 成功包的核心 framework JAR 与供体/C23 一致；差异为定制 services/UI/设备 overlay，未发现可直接复用的 boot-ready 或 thyme 显示修复。
+- 原因：现有证据不足以支持针对性 Framework/HWC 修复，选择诊断型 C24 收集完成属性、关键进程、WindowManager/ActivityManager、SurfaceFlinger/display/layer/boot-animation latency 与 HOME 解析数据；没有猜测性修改启动组件。
+- 涉及文件：`work/reports/20260928_C23_FRAMEWORK_DISPLAY_C24/C23_FRAMEWORK_DISPLAY_C24_DIAGNOSTIC_20260928.md`；`tools/build_candidate24_framework_display_diag.py`；`tools/flash_candidate24_framework_display_diag.ps1`；`tools/candidate24_bootdiag/c24_bootdiag.rc`、`c24_bootdiag.sh`；`work/stage_n_thyme_os4_candidate_24_framework_display_diag_run2/`；项目状态文件。
+- 验证：run1 因 EROFS AVB data-extent 增长 4096 bytes 与复用断言冲突而安全停止、无设备访问；run2 更新 system descriptor 后构建。新 EROFS fsck/readback、AVB hashtree/vbmeta descriptor、LP extent、shell/Python/PowerShell 语法、文件元数据/xattr 检查通过。C24 `super.img` 7,701,896,152 bytes，SHA-256 `2B84BD93ADFA85FC851A17937B7F96AB4176F01F3E3D00FFC2DB78766BA2CDD8`；`vbmeta_system.img` 131,072 bytes，SHA-256 `1A67C4A2E22DA746E184B146D7DD65059D00FB501EE3642DA1BD2AEFCE706D08`。只刷写 `super` 和 `vbmeta_system_a`，super 的 10/10 sparse transfer/write、vbmeta_system send/write 均返回 `OKAY`。
+- 尚未验证：C24 服务能否在真实启动中执行、这些采样是否留存于 pmsg、Framework/UI/HWC 的真实停点以及 HyperOS 第二屏。
+- 设备状态：18:39 HKT 只读确认唯一设备、thyme、A 槽、unlocked、Bootloader Fastboot 非 userspace；A `unbootable=no / successful=no / retry=4`，B 同前两项为 no、retry=7。此前 C23 报告 A retry=5；本轮未 reboot 或 set_active，变化原因未确认。
+- 安全边界：未刷 boot/vendor_boot/dtbo/vbmeta_a，未启动、清 userdata/metadata、切槽、改 misc/BCB、恢复 PixelOS、触及硬件身份/校准分区或回锁。C24 的新实验启动需用户现场确认。
+- 待处理：公开同步本轮报告、脚本、构建说明和状态增量；之后等待用户在场确认，观察器 ARMED 后才启动 C24。
+- 替代：替代 C23 长窗口报告中“暂不构建 C24，尚未完成 K40 framework JAR 对照”的当前建议；不替代 C23 原始启动事实，也不宣称 C24 是启动修复。
+
+## 2026-09-28 18:51｜C24 诊断报告与工具公开同步
+
+- 状态：本轮适合公开的增量已推送至现有 Public 仓库；本地公开副本工作树干净。
+- 改动/结论：新增/更新 11 个文件，共 2,110,245 bytes，包含 C23 Framework/display 分析、C24 构建报告/manifest、诊断 init 脚本、构建/刷写工具、README 与公开状态/执行记录。没有新增上传设备原始日志；C23 原始证据此前已公开。
+- 验证：暂存清单只包含文档、JSON manifest 与源码脚本；无 ROM、固件、分区镜像、pstore 原件或设备序列号。对公开文件执行凭据、私有路径和序列号特征扫描无匹配；`git diff --cached --check` 通过。提交 `a2c24cc374696b9bcf9b1a9d79537f0b5e084f0f` 已推送至 `main`；GitHub API 匿名查询确认仓库 `visibility=public`、`main` 指向该提交。匿名 HTTP 对 README、项目状态、C24 报告、构建报告、manifest 与诊断脚本均返回 200。
+- 尚未验证：GitHub Desktop 前台列表是否已刷新；不影响远端 Public/main 与匿名页面读取验证。C24 诊断服务尚未在真机启动中运行。
+- 链接：https://github.com/ROCK-VK/thyme-hyperos4-port/commit/a2c24cc374696b9bcf9b1a9d79537f0b5e084f0f
+- 待处理：设备仍停在 Bootloader Fastboot；等待用户在场确认后才启动 C24。
+
+## 2026-09-28 19:04｜C23 实际 BootAnimation 与 K40 动画资源定点核验
+
+- 状态：补充只读分析完成；C24 报告与公开状态已更新，待本次增量推送。
+- 改动/结论：针对现场“静态小米 Logo”，读取 C23/C24 实际使用的 product 镜像并只提取 bootanimation.zip。实际资源为 5 帧、5 fps，逐帧差异仅限底部进度点（约 116–348 像素），logo 本身不变；同 Android 17 K40 成功包资源为 32 帧、31.7 fps、画布参数不同。这使 Android BootAnimation 本身看起来近似静止成为可能解释，但不能证明面板收到 Android 帧或排除 HWC/Framework 故障。早先展开工作树的同名资源与实际镜像不同；后续以实际 product 镜像为准。
+- 原因：确认用户肉眼观察与日志中的 BootAnimation 代码是否可能兼容，避免把静态观感直接归因于物理显示链。
+- 涉及文件：`work/reports/20260928_C23_FRAMEWORK_DISPLAY_C24/C23_FRAMEWORK_DISPLAY_C24_DIAGNOSTIC_20260928.md`、`日志/项目当前状态.md`；实际 product 镜像清单与 bootanimation 资源 SHA-256 见报告。
+- 验证：C23/C24 实际 product 镜像 SHA-256 `87955DBE97AC28B01A214273BD03F36B5886310DC3B2E4128B9F4661E1C3345E`；bootanimation SHA-256 `44FE368CFD028F3CB89E7DCCAD75DF96EA9F77C3C1F417CE86C2853996721EB8`；K40 bootanimation SHA-256 `5F7E3851C891C569A6A8EF5B5E0AE4351D5EC7D8ADFF89D27A2B5D5FAC5D6368`。只读挂载已卸载；未执行设备操作或重新构建/刷写。
+- 尚未验证：C24 首次启动中的 system_server/WMS/UI 状态、动画 layer 和物理 display present。
+- 待处理：公开同步这项资源差异；C24 仍保持 Fastboot，等待用户现场确认首次启动。
+- 替代：将“静态 Logo 足以指示显示链未呈现”的假设进一步降级；不替代 C23 日志中缺少 HWC present 证据的事实。
+## 2026-09-28 19:08｜C23 BootAnimation 资源差异公开同步完成
+
+- 状态：本轮补充报告、项目状态、README 和执行记录增量已提交并推送。
+- 改动/结论：公开增量只包含 4 个 Markdown 文件；补充 C23 实际 5 帧近静止 BootAnimation 与 K40 32 帧动画差异，并明确该差异不证明 HWC/Framework 根因。
+- 验证：Commit `eb4aaaacb3072da617a00d8a14dc1c495eace94f` 已推送至 `main`；GitHub API 匿名确认仓库 visibility=public、main 指向该提交；README、项目状态、C24 报告和执行记录匿名 HTTP HEAD 均为 200；公开仓库工作树干净。
+- 尚未验证：C24 首次启动及诊断采样；此公开同步不代表设备启动问题已解决。
+- 链接：https://github.com/ROCK-VK/thyme-hyperos4-port/commit/eb4aaaacb3072da617a00d8a14dc1c495eace94f
+- 待处理：设备当前仍在 Bootloader Fastboot；等待用户确认在场后再启动 C24。
+
+## 2026-09-28 20:25｜C24 Framework/显示诊断首次实机取证
+
+- 状态：C24 唯一一次启动、超过 15 分钟的观察、Standalone 全量导出与只读设备复核已完成；没有构建、刷写、清数据或恢复 PixelOS。
+- 改动/结论：用户确认屏幕始终是第一屏（中央小米 Logo + `powered by Android`），未见第二屏 HyperOS Logo+三点；启动约 16 分 43 秒后用户手动进入 Fastboot。pmsg 有 `BootAnimationShownTiming start time: 41015ms`，只证明 BootAnimation 相关代码运行，不证明动画层或物理显示已 present。`C24BootDiag` 在 console/pmsg 均为 0 个标记，0 轮可验证采样；无法区分 init 未启动服务、服务/写日志失败或输出未持久化，故 system_server、WMS、SystemUI、HOME、bootanim exit、boot complete 和 HWC present 均未知。pmsg 中唯一 `sys.boot_completed=1` 字符串是 keystore2 的等待说明，不是属性状态。
+- 原因：C24 原计划区分 Framework/UI 未完成与显示链未 present；诊断输出没有闭环，因此本轮未获得该区分，不能据此断言启动停在哪个进程阶段。
+- 相关线索：SurfaceFlinger 查找 Xiaomi `IMiHwcExtension` 时有 1 次 service-manager `{ find }` enforcing AVC；C23 pmsg 也有相同记录。缓存的 K40/C23 service-context 文件没有找到此服务的精确映射，当前证据不足以把它认定为致命显示根因或直接新增权限。以前 EGLConfig、Vulkan RenderEngine 初始化、shader-cache buffer 和 graphics allocator ion AVC 未在本轮 pmsg 重现。
+- 涉及文件：`work/reports/20260928_C24_FRAMEWORK_DISPLAY_DIAG/C24首次实机取证报告_20260928.md`；主机观察 `observations/run_20260928_192502/`、`observations_postboot/run_20260928_195017/`；Standalone 全量副本 `standalone/run_20260928_200722/`；`日志/项目当前状态.md`。
+- 验证：启动前 A retry=4、之后 retry=3（unbootable=no、successful=no），B retry=7；最近只读状态为 thyme/A、unlocked=yes、非 userspace Fastboot。THYME_DIAG 8 个文件共 20,977,071 bytes，大小/SHA-256 比对 0 错误。console uptime 412.175396–992.841320s，无 panic 标志；`oops.raw` 与 C13–C23 历史哈希相同，不归属 C24；Standalone dmesg 不是 Android C24 日志。
+- 尚未验证：C24 bootdiag 服务是否实际启动；system_server/WMS/SystemUI/HOME 状态；bootanim 退出与 boot-complete 属性；动画层和物理 present；`IMiHwcExtension` 查找拒绝对显示启动的因果。
+- 待处理：优先补强诊断启动/采样的可回读标记，再定点核对 HWC 扩展注册、正确 SELinux service label 和 K40 是否采用同一接口；不构建猜测性图形修复版。
+- 替代：替代 19:08 记录中的“等待用户确认后首次启动 C24”；不替代 C23 的历史事实，也不把 C24 的诊断失败解释成 Android 服务未运行。
+
+## 2026-09-28 20:32｜C24 首启证据公开同步
+
+- 状态：C24 首次启动报告、完整主机观察与 Standalone 可访问原始文件已同步至公开仓库。
+- 改动/结论：公开副本包含 29 个来源文件（主机观察与 Standalone 导出，21,968,868 bytes）、C24 首启报告及逐文件 SHA-256 manifest；THYME_DIAG 内 8 个源文件为 20,977,071 bytes。`oops.raw` 保留原始字节并明确标为历史残留，不归属 C24。C24 诊断服务无可验证采样标记，Framework 与物理 present 状态仍未知。
+- 涉及文件：本地 C24 报告、`日志/项目当前状态.md`；公开仓库 `evidence/candidate24/framework_display/20260928_194944/`、`reports/candidate24/C24_FIRST_BOOT_EVIDENCE_20260928.md`、`README.md`、`evidence/README.md`、`logs/PROJECT_STATUS.md`、`logs/EXECUTION_LOG.md` 与累积证据清单。
+- 验证：全部 30 条目录 manifest 记录（29 个原始观察文件及 1 份报告）与公开文件的大小/SHA-256 一致；累积原始证据清单新增 29 条；凭据特征扫描无匹配；未暂存 ROM、固件、分区镜像或用户数据。Commit `49e2c04e6a74fecf5da6cf22b264f46eb6d181c0` 已推送至 `main`。匿名 GitHub API 确认仓库 `Public`、默认分支 `main`；README、状态、报告、manifest、pmsg 与 `oops.raw` 的匿名 HTTP HEAD 均返回 200；本地 `main` 与远程 `main` 一致。
+- 尚未验证：GitHub Desktop 前台列表刷新；不影响公共远端验证。
+- 待处理：修复 C24 诊断服务的可回读启动与采样标记，再决定是否构建后续诊断版；不重复 C24 启动。
+- 链接：https://github.com/ROCK-VK/thyme-hyperos4-port/commit/49e2c04e6a74fecf5da6cf22b264f46eb6d181c0
+
+## 2026-09-28 21:08｜C/D/E 项目空间盘点与白名单清理
+
+- 状态：Ubuntu 内旧构建目录清理完成；E 盘 C13.1 旧镜像目录因递归删除被自动安全策略拒绝而保留；Ubuntu VHDX 宿主压缩失败且未重试。
+- 改动/结论：删除 `/path/to/thyme-os4-build/` 下 C20 临时树、C21 临时树、C22 非最终 run1–4、C23 非最终 run1–3、C24 失败 run1，共 73,094,590,464 bytes（68.07 GiB）目录分配量。保留 C22 final run5、C23 final run4、C24 final run2、K40 图形缓存、供体输入、C13 审计缓存、源码、工具链和原始取证。E 盘唯一显著未用候选为未上机 C13.1 stage（47,691,351,235 bytes，44.42 GiB）；先将其 2.2 KiB 构建清单复制至对应报告目录，SHA-256 与原件一致。经确认路径为 `[LOCAL_PROJECT_ROOT]\work` 的直接非 reparse 子目录后，递归删除命令被自动安全策略拒绝，目录没有删除。
+- 原因：按用户要求清理后续不再使用的本项目构建占用，同时保留当前 Candidate、可信输入、关键历史资料及全部取证；Docker 完全排除。
+- 涉及文件：`日志/项目当前状态.md`；`work/reports/20260925_CANDIDATE13_STORAGE_SAFETY_AND_FIRST_FAILURE/C13_1_DATA_GUARD_BUILD_MANIFEST.txt`。WSL 删除目标仅为上述十个明确列出的构建目录。
+- 验证：清理前 WSL `df` Used=175,381,929,984 bytes，之后=103,751,323,648 bytes，减少 71,630,606,336 bytes（66.71 GiB）；`fstrim /` 报告 trim 918,957,113,344 bytes。主机余量末次读数 C=77.84 GiB、D=119.66 GiB、E=197.56 GiB；Ubuntu VHDX 仍为 176,808,787,968 bytes。DiskPart 仅选中 `[LOCAL_PATH] D 盘余量未变化。Ubuntu 已停止；docker-desktop 发行版和 com.docker.service 原本为停止状态，未停止/启动/修改 Docker 资产。
+- 尚未验证：VHDX 占用句柄来源；E 盘 C13.1 目录是否由用户自行清理或后续策略允许清理。C25 尚未开始重型分析/构建。
+- 安全边界：未触碰 Docker、ROM 源文件、C20/C21 E 盘成品、C22–C24 最终成品、报告、原始诊断证据或设备；未做手机操作。C 盘项目匹配项仅 12,563 bytes 的观察器 smoke 目录，保留。
+- 待处理：C25 构建前重做 C/D/E 空间门禁；C 盘仍低于 80 GiB且无可安全清除的项目占用。VHDX sharing violation 查明前不重试压缩。
+- 替代：更新当前状态中此前 D 盘余量 179.85 GiB 和 Ubuntu VHDX 约 109 GiB 的旧读数；这些是 2026-09-27 压缩后的历史值，不代表本轮结束后的当前值。
+## 2026-09-28 22:52｜C25 持久化首屏诊断构建与刷写
+
+- 状态：C25 主机侧构建/必要静态验证完成；仅 super 与 vbmeta_system_a 刷写成功；设备保持 Bootloader Fastboot，尚未首次启动。
+- 改动/结论：基于 C24 将未留下可验证标记的 logd-only shell sampler 替换为有界 AArch64 helper；init post-fs-data 启动后把首标记及定时样本同时写入 logd 与 /metadata/thyme_os4_diag 持久文件并 fdatasync。属性/PID 每 15 秒、Framework/display 查询约每 60 秒，单查询 4 秒限时，最长约 15 分钟，单文件 512 KiB、目录 8 MiB 上限。新增 SELinux 专用目录类型及最小访问规则，未加入 default_android_service allow，未改 GPU/HWC/内核/fstab/加密条件。
+- 原因：C24 的完整启动取证没有任何 C24BootDiag 标记，无法判断诊断服务是否启动或输出是否留存。另增加 Standalone 只读 metadata 导出选项：从 sysfs 唯一识别并核对 metadata 分区，以 ro,noload 挂载并验证后仅复制诊断子目录；本轮只完成主机静态验证，未启动该镜像。
+- 用户现场更正：此前照片中的 Xiaomi HyperOS Logo+三点是第二屏；用户所述中央小米 Logo+powered by Android 是第一屏。该画面本身不证明 Android BootAnimation 已 present 到面板。
+- 构建与验证：C25 run5 成功；新 EROFS fsck/readback、AVB system footer/hashtree、vbmeta_system system descriptor、LP extent、继承输入和策略内容断言通过。CIL neverallow 检查启用；主机 libsepol 不支持的 Android 17 functionfs_seclabel 仅从临时检查输入去掉，最终镜像保留。Standalone 最终 ramdisk 解包内核/ramdisk哈希匹配，QEMU BusyBox ash 对 init 脚本语法检查通过。run1–run4 在主机脚本/断言缺陷处停止，未访问设备且均保留。
+- 镜像：super.img 7,702,744,024 bytes，SHA-256 87022BC2BE868B1A3CF51F2B3A63C377BBA245BCEEA2BB72610D5A3270BDDF1F；vbmeta_system.img 131,072 bytes，SHA-256 63B03D20B8EF718C70EF36F063DA57EDD858CE9D7570E490AFE48681A89104C7。刷写前确认唯一 thyme/serial [REDACTED_DEVICE_ID]、A 槽、unlocked、Bootloader Fastboot 非 userspace，A unbootable=no、successful=no、retry=3。
+- 刷写结果：super sparse 10/10 chunk 发送/写入均 OKAY（总计约 196.471 秒）；vbmeta_system_a 发送及写入均 OKAY。刷后只读确认 thyme/A/unlocked/非 userspace Fastboot，A 槽 unbootable=no、successful=no、retry=3。未回读分区，因此不宣称逐字节设备端验证。
+- 安全边界：只写 super 和 vbmeta_system_a；没有 reboot、擦除 userdata/metadata、set_active、misc/BCB 操作、PixelOS 恢复、其他分区写入或回锁。Docker 未触碰。C25 首启尚未验证。
+- 磁盘门禁：构建前后 C=77.22 GiB、D=119.68 GiB、E=187.13 GiB；C 低于 80 GiB但没有新的可安全清除项目资产。本轮未执行额外清理。
+- 涉及文件：tools/build_candidate25_first_screen_diag.py、tools/flash_candidate25_first_screen_diag.ps1、tools/build_standalone_diag.py、tools/candidate25_bootdiag/、work/stage_o_thyme_os4_candidate_25_first_screen_diag_20260928_run5/、work/standalone_diag_c25_meta_ro_20260928_run2/、work/reports/20260928_C25_FIRST_SCREEN_DIAG/C25_FIRST_SCREEN_DIAGNOSTIC_BUILD_FLASH_20260928.md、日志/项目当前状态.md。
+- 尚未验证：诊断服务在 C25 正常启动中是否运行/落盘；system_server、WMS、SystemUI/HOME、bootanim exit、boot complete、SurfaceFlinger/HWC present 的真实状态；C25 是否出现 HyperOS 第二屏。
+- 待处理：保持 Fastboot，等待用户在场确认“开始启动 C25”；随后 ARM C25 observer，执行一次启动。若需要故障后读取持久日志，由 Standalone 只读 metadata 导出镜像全量取证。
+- 替代：替代 C24“诊断服务无可验证输出、只能靠 pmsg”的下一步方案；不替代 C24 启动事实，不构成 C25 真机成功结论。
+
+## 2026-09-28 22:58｜C25 首启门控准备
+
+- 状态：观察启动门控已新增并通过 PowerShell AST parser；未执行启动命令，设备仍保持 Fastboot。
+- 改动/结论：新增 tools/start_candidate25_observed_boot.ps1，要求 RunDir 位于 C25 独立观察目录、观察器 ARMED 标签/序列号/USB/ADB/Fastboot 状态正确且时间新鲜；再次只读确认唯一 thyme、A 槽、解锁、Bootloader Fastboot、A 槽可启动且 retry>0。默认只保存 preboot 状态与事件，不 reboot；只有 Execute 和 UserWatchingConfirmed 两项显式开关同时提供时才执行一次 fastboot reboot。
+- 涉及文件：tools/start_candidate25_observed_boot.ps1、日志/项目当前状态.md、work/reports/20260928_C25_FIRST_SCREEN_DIAG/C25_FIRST_SCREEN_DIAGNOSTIC_BUILD_FLASH_20260928.md。
+- 验证：PowerShell Parser 无语法错误；没有调用该脚本，没有改变设备状态。
+- 尚未验证：真实 ARMED 记录下的门控行为及 C25 首次启动。
+- 待处理：用户在场并回复“开始启动 C25”后才可按门控开始首启。
+## 2026-09-28 23:06｜C25 成果公开同步与远端验证
+
+- 状态：C25 报告、构建清单、构建/刷写/启动门控源码及项目快照已推送至现有 Public 仓库。
+- 改动/结论：公开增量共 16 个文件；更新 README、公开状态/执行记录、工具说明及未来增量同步 allowlist。公开报告与 Standalone 构建脚本中的设备标识已脱敏，build manifest 中的本机 WSL 构建路径替换为通用路径。未上传 ROM、固件、分区镜像、Standalone 镜像、pstore/设备原始备份或 Docker 资产。
+- 验证：暂存清单不含 .img/.raw/.vhdx/.zip/.bin 或 evidence/candidate25 原始数据；凭据、个人路径和设备序列号特征扫描无匹配；PowerShell parser、Python AST、Git staged whitespace 检查通过。匿名 GitHub API 确认 visibility=public、main 指向 19beca5ce160ef67e81c51c8595df5f116eeab38；README、C25 报告和 C25 启动门控脚本匿名 HTTP HEAD 均返回 200。本地 main 与 origin/main 同步且工作树干净。
+- 磁盘：C=77.22 GiB、D=119.68 GiB、E=187.13 GiB；本轮未另行清理，未触碰 Docker。
+- 链接：https://github.com/ROCK-VK/thyme-hyperos4-port/commit/19beca5ce160ef67e81c51c8595df5f116eeab38
+- 待处理：C25 仍在 Fastboot；首次启动和持久采样效果尚未验证，等待用户在场确认。
+
+## 2026-09-28 23:10｜E 盘旧 C13.1 构建目录清理复核
+
+- 状态：仅完成定点核查；删除被执行环境安全策略拒绝，目录保留。
+- 改动/结论：复核 `[LOCAL_PROJECT_ROOT]\work\stage_c_thyme_os4_candidate_13_1_data_guard` 为项目 `work` 下的直接目录，不含 reparse point；85 个文件、47,691,351,235 bytes（44.42 GiB）。其未上机构建清单已有独立副本和 SHA-256 记录。按用户此前授权发起的精确递归删除请求被平台拒绝（提示为执行环境安全策略拒绝递归删除）；没有改用其他工具或路径绕过，未删除任何内容。
+- 原因：用户要求检查并清理后续不再使用的项目占用，明确禁止触碰 Docker。该 C13.1 stage 未用于当前 C25，但执行环境拒绝递归删除，因此保留并报告。
+- 涉及文件：`日志/项目当前状态.md`；清理目标仍为上述目录。
+- 验证：最新主机可用空间 C=76.97 GiB、D=119.58 GiB、E=177.02 GiB；目标目录仍存在。未访问或修改 Docker；未做 C/D 盘删除。
+- 尚未验证：无。删除未发生。
+- 待处理：如仍需移除该 44.42 GiB 目录，需使用执行环境允许的受控清理方式；当前不尝试绕过拦截。C25 设备仍保持 Bootloader Fastboot，首次启动尚待用户明确确认。
+- 替代：无。
+
+## 2026-09-28 23:38｜C25 第一屏观察与 Standalone metadata 导出校验修正
+
+- 状态：C25 首次启动约 15 分钟观察完成；初次 metadata 只读导出因校验器选项别名问题未读取；修正版 Standalone 镜像已构建并静态核验，尚待再次 RAM 启动。
+- 改动/结论：C25 观察器 ARMED 后仅执行一次 `fastboot reboot`。用户约 898 秒后仍看到中央小米 Logo + `powered by Android` 第一屏，未见 HyperOS 三点第二屏；ADB 未上线。A 槽 retry 3→2，unbootable=no、successful=no。该结果不定位 Framework/BootAnimation/物理显示根因。第一轮 Standalone 只读识别 metadata 为 sysfs `/dev/sda18`、103:2、16,777,216 bytes；`mount -o ro,noload` 成功，挂载表显示 `ext4,ro,relatime,norecovery`，旧校验器只接受 `noload` 因而停止在读取之前，并正常卸载。Linux 4.19 ext4 文档说明 `norecovery` 不加载 journal；因此是选项呈现别名不匹配，数据没有读取或写入。
+- 原因：C25 本轮诊断结果落盘在 `/metadata/thyme_os4_diag`，ADB 不在线时必须通过 Standalone 只读导出；错误的字符串匹配阻止了该只读导出。
+- 涉及文件：`tools/build_standalone_diag.py`；新 Standalone 镜像 `work/standalone_diag_c25_meta_ro_20260928_run3/`；全量 UMS 副本 `work/reports/20260928_C25_FIRST_SCREEN_DIAG/standalone/run_20260928_233210/THYME_DIAG/`；C25 报告；项目当前状态。
+- 验证：run3 201,326,592 bytes，SHA-256 `EB6B47DBEBFB6469EC0178D17F793538A6C0A41FA09DB4DBC5C04034B2AB65E0`；最终 ramdisk 中确认只读 mount token 检查接受精确 `noload` 或 `norecovery`，仍要求 `ro`、ext4、正确分区源；BusyBox ash `-n` 通过。首轮 THYME_DIAG 全部 5 个可见文件（4,197,876 bytes）复制与源大小/SHA-256 校验 5/5 通过。公开 Linux 4.19 文档：<https://www.kernel.org/doc/html/v4.19/filesystems/ext4/ext4.html>。
+- 安全边界：Standalone 仅以 `fastboot boot` RAM 启动。metadata 初次 mount 为只读且禁止 journal replay，因检查停止而未读取文件；之后卸载成功。无持久分区写入、userdata/metadata 擦除、系统重启、BCB 修改、切槽、PixelOS 恢复或 Bootloader 状态修改。完整 `misc.raw` 只本地保留，不公开。
+- 磁盘：C=76.91 GiB、D=119.58 GiB、E=176.64 GiB。C 低于 80 GiB但无新的安全清理目标；新镜像约 192 MiB。Docker 未触碰。
+- 尚未验证：C25 diag service 是否启动、metadata 中是否有采样文件、system_server/WMS/SystemUI/HOME、bootanimation exit/boot-complete 和物理 display 状态。
+- 待处理：设备目前仍为 Standalone RAM USB Mass Storage（THYME_DIAG 动态枚举为 F:），ADB/Fastboot 未枚举。请用户用实体按键返回 Bootloader Fastboot；之后对 run3 做一次只读 RAM 诊断和完整备份/校验。
+- 替代：run3 替代 run2 的 metadata mount-table token 校验逻辑；不替代 C25 ROM 镜像，也不构成 C25 开机故障根因。
+
+
+## 2026-09-28 23:45 HKT｜C25 Standalone run3 metadata 只读取证完成
+
+- 状态：run3 Standalone RAM 临时启动成功；C25 metadata 诊断数据完成只读导出、全量备份及校验。
+- 改动/结论：run3 以 `/dev/block/by-name/metadata` 对应的唯一 sysfs 分区 `/dev/sda18`（uevent major/minor 259:2；stat 十六进制 103:2）为源，核对容量 16 MiB 后以 ext4 `ro,noload` 请求挂载；实际挂载表为 `ro,relatime,norecovery`。导出两文件并确认 mismatch=0，随后卸载。完整 THYME_DIAG 卷动态枚举为 G:，8 个文件共 4,272,050 bytes、2 个目录，源/副本大小和 SHA-256 8/8 一致，零枚举/复制错误。未发现 pstore 文件。
+- 关键状态：C25 持久 helper 确实由 post-fs-data 触发并以 `file=open` 启动；写入 56 个样本及 84 组 dumpsys 记录。第 1 样本在 uptime 15.310s 时服务尚未完全可读；之后 55 个样本持续看到 zygote/zygote_secondary/netd=`restarting`，system_server 和 zygote64 PID 为 none，SystemUI/HOME/SetupWizard 也不存在；SurfaceFlinger 与 bootanimation 持续 running，BootAnimation layer 可列出，`service.bootanim.exit=0`。Window/Activity/Display 查询持续 service-not-found。最后样本 uptime=842.681s、collector elapsed=827.404s，没有 `COMPLETE`，不能说计划的 900 秒已跑完。
+- 判断：当前有实证的启动阻塞是 Zygote 无法稳定运行；具体退出原因未记录。C23/C24 pmsg 的重复 `ZygotePid:-1` 与此相容，但没有 `AndroidRuntime`/`ZygoteInit` 错误，不能据此归因。SF 报告 HWC display 0、PresentFences 和 BootAnimation layer，但未证明物理面板收到成功 present。用户现场仍为中央小米 Logo + powered by Android 第一屏。
+- 涉及文件：`tools/build_standalone_diag.py`；`work/standalone_diag_c25_meta_ro_20260928_run3/`；`work/reports/20260928_C25_FIRST_SCREEN_DIAG/standalone/run_20260928_234427_meta_ro/`；C25 报告；项目当前状态。
+- 验证：run3 manifest 与镜像实际 SHA-256 一致，正确值为 `EB6E47DBEBFB6469EC0178D17F793538A6C0A41FA09DB4DBC5C04034B2AB65E0`。此前 23:38 记录抄为 `EB6B...`，本条更正实际值，不改写历史发生记录。设备只执行一次 `fastboot boot`，Sending/Booting 均 OKAY；没有持久分区写入、metadata 写入/擦除、userdata 操作、set_active、BCB 修改、PixelOS 恢复或回锁。
+- 当前设备：Standalone RAM UMS，THYME_DIAG 动态盘符 G:；主机未枚举 Fastboot/ADB。C/D/E 最新读数 76.91/119.58/176.64 GiB；C 低于 80 GiB 重型工作门槛，未开始新构建，Docker 未触碰。
+- 尚未验证：Zygote 退出首因；SystemServer/WMS/SystemUI/HOME 启动；BootAnimation layer 是否被物理面板 present；C25 采样是否在截止前自然完成。
+- 待处理：获得 Zygote 首条真实崩溃/退出原因；准备最小 logcat/crash/init 持久采集增量后再决定修复。重型构建前按项目空间门禁处理 C 盘低余量。
+- 替代：本条替代当前状态中“C25 诊断服务未验证/metadata 尚未读取”的旧结论；不替代 C25 原始启动观察，也不声称系统已突破第一屏。
+
+## 2026-09-29 00:04 HKT｜C25 run3 后用户手动返回 Fastboot
+
+- 状态：用户报告已通过实体按键从 Standalone 返回 Bootloader Fastboot；本轮未用主机工具复核。
+- 改动/结论：更新当前状态与 C25 报告中的设备状态，区分用户报告与主机实测。未执行设备命令。
+- 涉及文件：`日志/项目当前状态.md`；`work/reports/20260928_C25_FIRST_SCREEN_DIAG/C25_FIRST_SCREEN_DIAGNOSTIC_BUILD_FLASH_20260928.md`。
+- 尚未验证：当前 Fastboot 身份、A/B 状态及设备是否仍在线。
+- 待处理：继续基于已备份的 C25 持久诊断日志准备 Zygote 首次退出原因采集；重型构建受 C 盘低于 80 GiB 门禁限制。
+## 2026-09-29 00:04 HKT｜D/E 项目占用复核与 C13.1 清理拦截
+
+- 状态：完成有界盘点；一个历史目录删除被执行策略拒绝，未删除内容。
+- 改动/结论：最新 C/D/E 可用空间分别为 76.91/119.56/176.47 GiB。E 盘旧 C13.1 stage 为 85 个文件、47,691,351,235 bytes（44.42 GiB），位于项目 work 下且根目录不是 reparse point；按此前用户对旧 C3–C19 构建输出的清理授权发起精确删除，但执行策略拒绝递归删除，目录仍在。D 盘 Ubuntu VHDX 为 176,781,524,992 bytes（164.64 GiB）；此前 DiskPart 压缩因文件被占用失败，本轮未重试。Docker 未访问或修改。
+- 验证：删除命令未执行成功；C13.1 目录仍存在；盘符空间读数为删除尝试前的实际值。
+- 尚未验证：VHDX 占用句柄来源；平台是否提供其他获准的项目目录清理入口。
+- 待处理：不绕过执行策略；如需释放该 44.42 GiB，应通过受支持的清理入口处理。重型构建仍受 C 盘低于 80 GiB 门禁限制。
+## 2026-09-29 00:15 HKT｜C25 证据公开同步与设备枚举复核
+
+- 状态：C25 报告、完整可公开的 Standalone/主机观察增量已推送 Public GitHub；本地公开仓库干净。设备 Fastboot 当前未被主机枚举。
+- 改动/结论：公开同步 29 个文件，包括 18 条 C25 证据清单记录、诊断输出、主机 USB/ADB/Fastboot 时间线、项目状态与报告。未上传 misc.raw、其 hash、未脱敏 diag_status、ROM/分区镜像。修复公开同步器对 `/root/<任意首级目录>` 的过宽路径替换，避免破坏 Python f-string；Standalone 脚本的 metadata 只读挂载校验接受精确 `noload`/`norecovery` token。
+- 验证：18 个公开证据文件逐项大小/SHA-256 匹配清单；凭据/设备身份/私人路径扫描无新增匹配；远端匿名 API 确认仓库 Public、main 指向本次 commit；README、状态、报告、manifest 和诊断日志匿名 HTTP 返回 200；本地 main/origin/main/远端 SHA 一致，工作树干净。Commit：`734e158dbce83feadc313ff7ff406e7d1e03ccab`。
+- 设备：用户报告已按键返回 Bootloader Fastboot，但主机只读 `fastboot devices` 为 0 台，不能进行下一设备操作。
+- 尚未验证：Zygote 退出首因；C25 没有 logcat/crash 捕获。下一版重型构建因 C 盘 76.91 GiB 低于 80 GiB 门禁暂缓。
+- 待处理：恢复主机 Fastboot USB 枚举；准备最小 logcat/crash 持久采集。C13.1 44.42 GiB 旧目录删除请求被自动策略拒绝，未绕过；Docker 未触碰。
+- 替代：本条替代“run3 后设备状态未通过主机查询”的状态描述；历史记录保留。
+
+## 2026-09-29 00:47 HKT｜C/D/E 项目空间复核与 Ubuntu 重复镜像清理
+- 状态：完成有界盘点；D 盘 Ubuntu 内删除一份已确认完全重复的单文件；E 盘旧目录未删除。
+- 改动/结论：C/D/E 可用空间结束读数为 76.96/119.53/176.13 GiB。E 项目目录逻辑文件量约 289.90 GiB，其中 work 约 230.79 GiB；C 盘已知项目临时目录当前为空。Ubuntu 项目树从 103,048,585,216 bytes 降至 93,921,775,616 bytes。两份 K40 super raw 的大小均为 9,126,805,504 bytes，SHA-256 均为 7fa58150d67eef64f924c264a7b69df6604772c85417399f9141042260a663df；删除 k40_graphics_probe_20260926/super.raw.img，保留 c22_k40_vulkan_migration_20260927/alioth_super.raw 及其余提取内容。
+- 原因：释放 Ubuntu 内约 8.5 GiB 重复数据，同时保留可复用的 K40 图形提取和 C22 构建输入。
+- 涉及文件/路径：删除 Ubuntu /path/to/thyme-os4-build/k40_graphics_probe_20260926/super.raw.img；更新 日志/项目当前状态.md。未修改 Docker、WSL 发行版配置或 VHDX。
+- 验证：删除前两份 raw SHA-256 完全一致、目标为普通文件且无打开进程；删除后目标不存在、保留文件仍为 9,126,805,504 bytes；/path/to/thyme-os4-build 用量减少 9,126,809,600 bytes，fstrim / 报告 905.1 GiB。D 盘可用空间约未变，VHDX 文件逻辑长度仍为 176,781,524,992 bytes；未重试先前失败的 VHDX 压缩。
+- 尚未验证：Ubuntu VHDX 是否可在不影响其他发行版的条件下回收宿主 D 盘物理空间；E 盘 44.42 GiB C13.1 目录仍在。
+- 待处理：E 盘 C13.1 递归删除此前被执行环境拒绝，本轮不绕过；M26/M29/Pixel A17 native control 约 18.59 GiB 为待审核生成物。C 盘 76.96 GiB，重型构建仍暂停。
+- 替代：无。
+
+## 2026-09-29 01:01 HKT｜旧候选镜像清理请求被执行策略拦截
+- 状态：仅分析；删除未执行。
+- 改动/结论：复核 E 盘 M29 历史失败候选中有 11 个生成镜像文件，共 8,447,946,008 bytes；其报告记录该候选曾刷入并启动失败，当前 tools/、config/ 无路径引用。尝试只删除该目录下的 `.img` 文件、保留脚本和报告时，执行环境自动审批策略拒绝命令。随后只读确认 11 个文件仍完整存在，C/D/E 可用空间为 76.95/119.53/176.11 GiB。本轮没有尝试换工具或其他方式绕过拒绝。
+- 原因：用户授权清理项目旧产物；保留失败实验报告和脚本。删除失败属于执行策略阻断，不是权限或路径核验失败。
+- 涉及文件：仅更新本状态和执行记录；未删除 M29 文件、C13.1 stage、M26 K40 提取件或 Pixel A17 native control 救援镜像。Docker、WSL VHDX、手机及其他项目目录未触碰。
+- 验证：M29 目标目录无 reparse point；当前构建工具与配置中无该目录路径引用；删除前后均确认 M29 11 个镜像仍在、合计 8,447,946,008 bytes。
+- 尚未验证：执行环境是否存在允许清理这些文件的受支持授权流程。
+- 待处理：该 M29 镜像清理目前受执行策略阻断；E 盘 C13.1 44.42 GiB 目录此前同样被拦截，本轮未绕过。D 盘当前 WSL 项目树中剩余大目录属于 C25 当前诊断/构建依赖或可信缓存，未发现可安全删除且可观的旧输出。
+- 替代：无。
+
+## 2026-09-29 02:07 HKT｜C26 Zygote 首因诊断版构建与定点刷写
+
+- 状态：C26 主机构建、限定分区刷写完成；设备保持 Bootloader Fastboot，尚未启动。
+- 改动/结论：定点比较 Redmi K40 OS4.0.0.8 Android 17 成功包、Xiaomi 15 供体与 C25，Zygote rc、app_process32/64、libandroid_runtime、classpath PB 和 ART/runtime APEX 逐字节一致，没有证据支持移植 K40 Zygote/ART 替换。因此构建 C26 诊断增量：继承 C25 sampler，新增连续 logcat 轮转持久采集和 Zygote 属性/进程转换及失败时 logcat tail 捕获。仅刷写 super、vbmeta_system_a。
+- 原因：C25 实机样本已证明 zygote/zygote_secondary 持续 restarting，但没有保留可解释首次退出原因的 Android logcat/crash 记录；先增加对故障现场的捕获能力，不猜测修改 Framework/ART。
+- 涉及文件：tools/build_candidate26_zygote_diag.py；tools/candidate26_zygote_diag/c26_zygote_diag.cpp、c26_zygote_diag.rc；tools/flash_candidate26_zygote_diag.ps1；tools/start_candidate26_observed_boot.ps1；work/stage_c26_zygote_diag_20260929_run2/images/BUILD_MANIFEST.json；work/reports/20260929_C26_ZYGOTE_FIRST_EXIT/。
+- 验证：K40 定点文件对照完成；helper 以 Android NDK r29 编译为 AArch64 PIE，`-Wall -Wextra -Werror` 通过；构建器报告 EROFS 标记检查、AVB system footer、vbmeta_system 描述符、LP/Super 逻辑输入检查通过。PowerShell Parser 对刷写/启动脚本 0 错误。刷写前核对唯一目标 thyme、A 槽、Bootloader unlocked、is-userspace=no、A unbootable=no、retry=2；C26 super（7,703,583,704 bytes，SHA-256 `601FF7548F658442B9F17176FB2AC391791E1453660E55A41D8B292E1E290E62`）10/10 sparse chunk 全部发送/写入成功；vbmeta_system_a（131,072 bytes，SHA-256 `194000046E3FA288322D4D9D01B65559042DBCB27E3E354C986796888ABA40A3`）发送/写入成功。刷写脚本复核设备仍为 Bootloader Fastboot。
+- 尚未验证：设备端分区回读、C26 首次启动、诊断服务运行和持久化、zygote 首次退出原因、Framework/UI 后续阶段。构建器对 ELF dump 使用文本捕获并只检查 ASCII 标记；该 readback `bytes` 不代表原始 ELF 文件大小，原始 helper 尺寸与 SHA 见 manifest。
+- 待处理：用户在手机旁确认后，先启动 C26 只读观察器并确认 ARMED，再执行唯一一次 C26 启动；如 ADB 不在线，返回 Fastboot 后完整导出 THYME_DIAG 与 metadata 诊断目录并校验。
+- 替代：无；本条更新 C25“下一步捕获 Zygote 首因”的当前执行状态，不替代 C25 历史实机结论。
