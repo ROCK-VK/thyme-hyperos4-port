@@ -13525,3 +13525,21 @@
 - Findings: No C24BootDiag samples can be used to conclude that Android services failed to start. A repeated SurfaceFlinger `{ find }` AVC for Xiaomi `IMiHwcExtension/default` also appeared in C23 and remains an unproven display-related clue. Earlier EGLConfig, Vulkan RenderEngine creation, shader-cache buffer and graphics allocator ion AVC signatures did not recur in this C24 pmsg.
 - Safety: No `set_active`, BCB/misc write, userdata/metadata erase, other partition write, PixelOS restore, hardware identity write, or Bootloader relock.
 - Report and evidence: [C24 first-boot report](../reports/candidate24/C24_FIRST_BOOT_EVIDENCE_20260928.md); [full host and Standalone evidence](../evidence/candidate24/framework_display/20260928_194944/). Current next step is to make diagnostic-service launch and output recoverable before another Candidate boot.
+
+## 2026-09-28 22:52 HKT | Candidate 25 persistent first-screen diagnostic
+
+- Status: C25 built and flashed; the device remains in A-slot Bootloader Fastboot and has not booted C25.
+- Change: Replaced C24's sampler, which left no verifiable marker, with a bounded AArch64 helper. It emits an init trigger and periodic property/process/Framework/display samples to logd and a durable diagnostic directory under metadata. Sampling is capped at about 15 minutes, 512 KiB per file and 8 MiB total.
+- Recovery path: Added a Standalone option that discovers metadata from sysfs, validates the unique block device and exact capacity, mounts ext4 with ro,noload, verifies the read-only mount, and copies only the diagnostic subtree. Static ramdisk and BusyBox shell checks passed; no RAM boot or metadata read occurred.
+- K40 comparison: No directly applicable common Framework/WMS or HWC service-registration/label/policy fix was found. C25 adds no broad HWC permission and does not replace K40 hardware-specific components.
+- Build: C25 EROFS, AVB descriptor/hashtree, LP extents, CIL content and inherited input checks passed. Host CIL neverallow checks were enabled; the final Android policy retains the Android 17 policycap that the host libsepol cannot parse.
+- Flash: Only super (7,702,744,024 bytes, SHA-256 87022BC2BE868B1A3CF51F2B3A63C377BBA245BCEEA2BB72610D5A3270BDDF1F) and vbmeta_system_a (131,072 bytes, SHA-256 63B03D20B8EF718C70EF36F063DA57EDD858CE9D7570E490AFE48681A89104C7) were written. All ten super sparse chunks and vbmeta send/write returned OKAY. No partition readback was performed.
+- Device: Post-flash read-only checks confirm thyme/A, unlocked Bootloader Fastboot, non-userspace, A unbootable=no/successful=no/retry=3. No reboot, data erase, slot change, BCB write or other partition write.
+- Screen terminology: The user clarified that the centered Xiaomi logo plus powered by Android is the first screen; the HyperOS logo with dots is the second. Neither C24's pmsg marker nor this visual description proves that an Android frame reached the display.
+- Next: Wait for onsite confirmation, arm the C25 observer and then perform one C25 boot. Runtime diagnostic and visible HyperOS progress remain unverified.
+
+## 2026-09-28 22:58 HKT | Candidate 25 boot gate prepared
+
+- Added a C25-specific gate that verifies a fresh ARMED record, one expected Fastboot device, thyme/A/unlocked/non-userspace state and an eligible A slot.
+- Default mode only saves preboot state. A reboot requires both explicit Execute and UserWatchingConfirmed switches; the gate was syntax-parsed but not executed.
+- The phone remains in Fastboot. C25 first boot still awaits the user's onsite confirmation.

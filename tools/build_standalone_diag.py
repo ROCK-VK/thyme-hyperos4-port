@@ -7,10 +7,12 @@ import hashlib
 import shutil
 from datetime import datetime
 
-REPO_ROOT = "[LOCAL_PROJECT_ROOT]"
+REPO_ROOT = "e:/RVK/10S_OS4"
 DEFAULT_OUT_DIR = os.path.join(REPO_ROOT, "work", "standalone_diag")
 parser = argparse.ArgumentParser(description="Build a Standalone Diag image into a new, isolated output directory.")
 parser.add_argument("--out-dir", required=True, help="New output directory; existing paths are refused to preserve prior artifacts.")
+parser.add_argument("--export-c25-metadata", action="store_true",
+                    help="Add a read-only, sysfs-identified export of /metadata/thyme_os4_diag.")
 args = parser.parse_args()
 OUT_DIR = os.path.abspath(args.out_dir)
 if os.path.exists(OUT_DIR):
@@ -22,7 +24,7 @@ if drive.lower() != "e:":
 OUT_DIR_WSL = "/mnt/e/" + out_tail.lstrip("\\/").replace("\\", "/")
 BUILD_TAG_SOURCE = os.path.relpath(OUT_DIR, REPO_ROOT)
 BUILD_TAG = "".join(c if c.isalnum() or c in "_-" else "_" for c in BUILD_TAG_SOURCE)
-WSL_BUILD_ROOT = f"[LOCAL_WSL_USER]
+WSL_BUILD_ROOT = f"/root/thyme_standalone_{BUILD_TAG}"
 
 A5_KERNEL = os.path.join(REPO_ROOT, "work", "control_experiments_pixel_a17_1", "a5_aosp_toolchain", "Image")
 BUSYBOX_BIN = os.path.join(REPO_ROOT, "work", "bin", "busybox.static")
@@ -66,7 +68,7 @@ ln -s ../bin usr/bin
 ln -s ../bin usr/sbin
 
 # Copy busybox static
-cp /path/to/thyme-os4-local/work/bin/busybox.static bin/busybox
+cp /mnt/e/RVK/10S_OS4/work/bin/busybox.static bin/busybox
 chmod 755 bin/busybox
 
 # Create symlinks for all applets
@@ -277,7 +279,7 @@ echo 0x00 > "$GADGET/bDeviceSubClass"
 echo 0x00 > "$GADGET/bDeviceProtocol"
 
 /bin/mkdir -p "$GADGET/strings/0x409"
-echo "[REDACTED_DEVICE_ID]" > "$GADGET/strings/0x409/serialnumber"
+echo "THYME-DIAG" > "$GADGET/strings/0x409/serialnumber"
 echo "Sony" > "$GADGET/strings/0x409/manufacturer"
 echo "MicroVault" > "$GADGET/strings/0x409/product"
 
@@ -330,6 +332,121 @@ find . ! -name . | sort | cpio -o -H newc -R 0:0 | lz4 -l -12 --favor-decSpeed >
 cp "$BUILD_ROOT/standalone_diag_ramdisk.lz4" "__OUT_DIR_WSL__/standalone_diag_ramdisk.lz4"
 echo "WSL Ramdisk repacking complete: $(ls -l $BUILD_ROOT/standalone_diag_ramdisk.lz4)"
 """
+
+C25_METADATA_EXPORT = r'''# Optional C25 persistent diagnostic export. The source is never mounted writable.
+META_MOUNT=/mnt/metadata_c25_ro
+META_SOURCE=/metadata/thyme_os4_diag
+META_MATCH_COUNT=0
+META_MATCH_EVENT=
+for UEVENT in /sys/class/block/*/uevent; do
+    [ -f "$UEVENT" ] || continue
+    EVENT_PARTNAME=$(/bin/sed -n 's/^PARTNAME=//p' "$UEVENT" 2>> "$STATUS_LOG")
+    [ "$EVENT_PARTNAME" = "metadata" ] || continue
+    META_MATCH_COUNT=$((META_MATCH_COUNT + 1))
+    META_MATCH_EVENT=$UEVENT
+done
+echo "[C25] exact PARTNAME=metadata matches: $META_MATCH_COUNT" >> "$STATUS_LOG"
+if [ "$META_MATCH_COUNT" -ne 1 ]; then
+    echo "[C25][STOP] metadata identity is not unique; no metadata device read or mount attempted" >> "$STATUS_LOG"
+else
+    EVENT_MAJOR=$(/bin/sed -n 's/^MAJOR=//p' "$META_MATCH_EVENT" 2>> "$STATUS_LOG")
+    EVENT_MINOR=$(/bin/sed -n 's/^MINOR=//p' "$META_MATCH_EVENT" 2>> "$STATUS_LOG")
+    EVENT_DEVNAME=$(/bin/sed -n 's/^DEVNAME=//p' "$META_MATCH_EVENT" 2>> "$STATUS_LOG")
+    SYSFS_BLOCK_NAME=${META_MATCH_EVENT%/uevent}
+    SYSFS_BLOCK_NAME=${SYSFS_BLOCK_NAME##*/}
+    case "$EVENT_MAJOR:$EVENT_MINOR" in *[!0-9:]*|:|*:|*:*:*) EVENT_FIELDS_VALID=0 ;; *) EVENT_FIELDS_VALID=1 ;; esac
+    case "$EVENT_DEVNAME" in ''|*/*|.|..) EVENT_FIELDS_VALID=0 ;; esac
+    [ "$EVENT_DEVNAME" = "$SYSFS_BLOCK_NAME" ] || EVENT_FIELDS_VALID=0
+    META_NODE="/dev/$EVENT_DEVNAME"
+    SYSFS_SIZE="/sys/class/block/$SYSFS_BLOCK_NAME/size"
+    if [ "$EVENT_FIELDS_VALID" -ne 1 ]; then
+        echo "[C25][STOP] metadata uevent fields are malformed or inconsistent; no read attempted" >> "$STATUS_LOG"
+    elif [ ! -e "$META_NODE" ] || [ ! -b "$META_NODE" ] || [ ! -r "$SYSFS_SIZE" ]; then
+        echo "[C25][STOP] kernel-derived metadata block node or sysfs size is unavailable; no alternate node tried" >> "$STATUS_LOG"
+    else
+        NODE_DEV=$(/bin/stat -c '%t:%T' "$META_NODE" 2>> "$STATUS_LOG")
+        NODE_MAJOR_HEX=${NODE_DEV%%:*}
+        NODE_MINOR_HEX=${NODE_DEV#*:}
+        case "$NODE_DEV" in *:*) NODE_VALID=1 ;; *) NODE_VALID=0 ;; esac
+        case "$NODE_MAJOR_HEX:$NODE_MINOR_HEX" in *[!0-9a-fA-F:]*|:|*:|*:*:*) NODE_VALID=0 ;; esac
+        NODE_MAJOR_HEX=$(printf '%s' "$NODE_MAJOR_HEX" | /bin/tr 'ABCDEF' 'abcdef')
+        NODE_MINOR_HEX=$(printf '%s' "$NODE_MINOR_HEX" | /bin/tr 'ABCDEF' 'abcdef')
+        EXPECTED_MAJOR_HEX=$(printf '%x' "$EVENT_MAJOR" 2>> "$STATUS_LOG") || EXPECTED_MAJOR_HEX=invalid
+        EXPECTED_MINOR_HEX=$(printf '%x' "$EVENT_MINOR" 2>> "$STATUS_LOG") || EXPECTED_MINOR_HEX=invalid
+        SECTORS=$(/bin/cat "$SYSFS_SIZE" 2>> "$STATUS_LOG")
+        case "$SECTORS" in ''|*[!0-9]*) SECTORS_VALID=0 ;; *) SECTORS_VALID=1 ;; esac
+        if [ "$SECTORS_VALID" -eq 1 ]; then SYSFS_BYTES=$((SECTORS * 512)); else SYSFS_BYTES=0; fi
+        META_BYTES=$(/bin/blockdev --getsize64 "$META_NODE" 2>> "$STATUS_LOG") || META_BYTES=0
+        echo "[C25] metadata uevent PARTNAME=metadata DEVNAME=$EVENT_DEVNAME MAJOR=$EVENT_MAJOR MINOR=$EVENT_MINOR node=$NODE_DEV expected=$EXPECTED_MAJOR_HEX:$EXPECTED_MINOR_HEX sysfs_bytes=$SYSFS_BYTES node_bytes=$META_BYTES" >> "$STATUS_LOG"
+        if [ "$NODE_VALID" -ne 1 ] || [ "$NODE_MAJOR_HEX" != "$EXPECTED_MAJOR_HEX" ] || [ "$NODE_MINOR_HEX" != "$EXPECTED_MINOR_HEX" ] || [ "$SECTORS_VALID" -ne 1 ] || [ "$SYSFS_BYTES" -le 0 ] || [ "$META_BYTES" != "$SYSFS_BYTES" ]; then
+            echo "[C25][STOP] metadata block identity or capacity disagrees with sysfs; no mount or read attempted" >> "$STATUS_LOG"
+        elif [ -e "$META_MOUNT" ] || [ -L "$META_MOUNT" ]; then
+            echo "[C25][STOP] metadata mountpoint already exists; refusing to reuse unexpected path" >> "$STATUS_LOG"
+        else
+            /bin/mkdir -p "$META_MOUNT" 2>> "$STATUS_LOG"
+            if /bin/mount -t ext4 -o ro,noload "$META_NODE" "$META_MOUNT" 2>> "$STATUS_LOG"; then
+                MOUNT_INFO=$(/bin/awk -v target="$META_MOUNT" '$2 == target { count++; source=$1; fstype=$3; opts=$4 } END { if (count == 1) printf "%s|%s|%s", source, fstype, opts; else exit 1 }' /proc/mounts 2>> "$STATUS_LOG")
+                MOUNT_SOURCE=${MOUNT_INFO%%|*}
+                MOUNT_REST=${MOUNT_INFO#*|}
+                MOUNT_FSTYPE=${MOUNT_REST%%|*}
+                MOUNT_OPTS=${MOUNT_REST#*|}
+                case ",$MOUNT_OPTS," in *,ro,*) META_IS_RO=1 ;; *) META_IS_RO=0 ;; esac
+                case ",$MOUNT_OPTS," in *,noload,*) META_NOLOAD=1 ;; *) META_NOLOAD=0 ;; esac
+                echo "[C25] metadata mount source=$MOUNT_SOURCE fstype=$MOUNT_FSTYPE options=$MOUNT_OPTS" >> "$STATUS_LOG"
+                if [ "$MOUNT_SOURCE" != "$META_NODE" ] || [ "$MOUNT_FSTYPE" != "ext4" ] || [ "$META_IS_RO" -ne 1 ] || [ "$META_NOLOAD" -ne 1 ]; then
+                    echo "[C25][STOP] mount table does not confirm the requested ext4 ro,noload mount; no metadata files read" >> "$STATUS_LOG"
+                elif [ ! -d "$META_MOUNT/thyme_os4_diag" ]; then
+                    echo "[C25] /metadata/thyme_os4_diag is absent; no diagnostic files to export" >> "$STATUS_LOG"
+                else
+                    C25_DEST=/tmp/dumps/C25_metadata
+                    /bin/mkdir -p "$C25_DEST"
+                    if /bin/cp -a "$META_MOUNT/thyme_os4_diag/." "$C25_DEST/" 2>> "$STATUS_LOG"; then
+                        VERIFY_FILE=/tmp/dumps/C25_METADATA_COPY_VERIFY.txt
+                        : > "$VERIFY_FILE"
+                        echo "source=$META_MOUNT/thyme_os4_diag mount=ext4,ro,noload" >> "$VERIFY_FILE"
+                        /bin/find "$META_MOUNT/thyme_os4_diag" -type f -print | /bin/sort > /tmp/c25_metadata_file_list
+                        COPY_COUNT=0
+                        COPY_ERRORS=0
+                        while IFS= read -r SOURCE_FILE; do
+                            [ -n "$SOURCE_FILE" ] || continue
+                            RELATIVE_FILE=${SOURCE_FILE#"$META_MOUNT/thyme_os4_diag/"}
+                            DEST_FILE="$C25_DEST/$RELATIVE_FILE"
+                            SOURCE_BYTES=$(/bin/wc -c < "$SOURCE_FILE")
+                            DEST_BYTES=$(/bin/wc -c < "$DEST_FILE" 2>> "$STATUS_LOG") || DEST_BYTES=0
+                            SOURCE_SHA=$(/bin/sha256sum "$SOURCE_FILE" 2>> "$STATUS_LOG" | /bin/cut -d ' ' -f 1)
+                            DEST_SHA=$(/bin/sha256sum "$DEST_FILE" 2>> "$STATUS_LOG" | /bin/cut -d ' ' -f 1)
+                            if [ "$SOURCE_BYTES" = "$DEST_BYTES" ] && [ -n "$SOURCE_SHA" ] && [ "$SOURCE_SHA" = "$DEST_SHA" ]; then
+                                RESULT=OK
+                            else
+                                RESULT=MISMATCH
+                                COPY_ERRORS=$((COPY_ERRORS + 1))
+                            fi
+                            echo "$RESULT path=$RELATIVE_FILE source_bytes=$SOURCE_BYTES dest_bytes=$DEST_BYTES source_sha256=$SOURCE_SHA dest_sha256=$DEST_SHA" >> "$VERIFY_FILE"
+                            COPY_COUNT=$((COPY_COUNT + 1))
+                        done < /tmp/c25_metadata_file_list
+                        echo "[C25] metadata export files=$COPY_COUNT mismatch=$COPY_ERRORS verify=/tmp/dumps/C25_METADATA_COPY_VERIFY.txt" >> "$STATUS_LOG"
+                    else
+                        echo "[C25][ERROR] Copy from read-only metadata mount failed" >> "$STATUS_LOG"
+                    fi
+                fi
+                if /bin/umount "$META_MOUNT" 2>> "$STATUS_LOG"; then
+                    echo "[C25] read-only metadata mount unmounted" >> "$STATUS_LOG"
+                else
+                    echo "[C25][ERROR] Unable to unmount read-only metadata mount" >> "$STATUS_LOG"
+                fi
+            else
+                echo "[C25][ERROR] ext4 ro,noload metadata mount failed; no source files read" >> "$STATUS_LOG"
+            fi
+        fi
+    fi
+fi
+'''
+
+if args.export_c25_metadata:
+    marker = "# 4. Build a 64MB FAT32 UMS image in RAM"
+    if wsl_script_content.count(marker) != 1:
+        raise SystemExit("Could not place the optional C25 metadata export in the Standalone init script.")
+    wsl_script_content = wsl_script_content.replace(marker, C25_METADATA_EXPORT + "\n" + marker, 1)
 
 with open(wsl_script_path, "w", encoding="utf-8", newline="\n") as f:
     f.write(wsl_script_content.replace("__BUILD_ROOT__", WSL_BUILD_ROOT).replace("__OUT_DIR_WSL__", OUT_DIR_WSL))

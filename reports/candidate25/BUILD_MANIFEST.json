@@ -1,0 +1,226 @@
+{
+  "candidate": "Candidate 25 persistent first-screen/framework diagnostic",
+  "base": "Candidate 24 Framework/UI/display readiness diagnostic",
+  "changes": [
+    "Removed C24's unverified logd-only shell sampler and replaced it with a bounded AArch64 native helper, explicitly launched in the existing shell SELinux domain.",
+    "post-fs-data creates only /metadata/thyme_os4_diag, relabels it, records C25_INIT_TRIGGER.txt, and starts the helper. The helper creates a unique C25 log before queries; each line is fdatasync'd and also sent to logd.",
+    "The helper samples boot properties/process IDs every 15 seconds and bounded WMS/AM/SurfaceFlinger/display/layers/HOME dumps about once per minute for 15 minutes. Every query records timeout, exit/signal, spawn error, denial count, truncation and matching lines; persistent per-file cap is 512 KiB and directory cap is 8 MiB.",
+    "Added a dedicated SELinux file type limited to the C25 metadata directory and explicit shell access to the three sampled boot-property types and binder calls to system_server/SurfaceFlinger. No default_android_service access was added.",
+    "The platform CIL+202604 mapping digest was regenerated. The actual C22 vendor input has no precompiled policy/hash; init uses the dynamic CIL compile path."
+  ],
+  "evidence_basis": [
+    "C24 ran for about 16m43s and pmsg/console contained zero C24BootDiag markers. The C24 script emitted only logd records; the service had no explicit seclabel and no persistent file, so absence cannot distinguish service-start failure from log/pstore retention.",
+    "The C24 shell service used /system/bin/sh without an explicit SELinux service context. C25's explicit existing shell context makes its process domain deterministic; a native bounded helper avoids a long-lived shell interpreter.",
+    "C23/C24 system_server, WMS, SystemUI/HOME, bootanim exit, boot complete and physical display state remain unknown; C25's primary result is a durable, bounded sample file readable by Standalone.",
+    "The targeted K40 Android 17 package has no IMiHwcExtension service-context/provider chain matching the C23/C24 AVC. No broad allow or speculative HWC change is included."
+  ],
+  "limits": [
+    "The helper runs as the existing shell SELinux domain with an explicit init service seclabel; it writes only the separately labeled C25 directory under metadata and queries already exposed Android services.",
+    "Sampling uses bounded 4-second commands and can perturb timing slightly; no graphics, HWC, kernel, boot, fstab, encryption, userdata, or hardware settings are changed.",
+    "The persistent C25 log is written under metadata, not userdata and not encryption-key/metadata records. No filesystem formatting or encryption metadata operation occurs.",
+    "Static host policy compilation omits one unsupported policycap only in its temporary compiler input; the final system image retains the original Android 17 policycap and device init dynamically compiles the shipped CIL."
+  ],
+  "retained_from_c24": [
+    "C23 shader-cache bypass, C21 SkiaVk profile, C22 isolated K40 Vulkan UMD stack, C13/C16/C17 policy fixes, C14 BPF bypass, fstab and encrypted /data path, enforcing SELinux, and thyme kernel/vendor/device stack.",
+    "C24 ANGLE/RGBX and all C23 first-screen/display behavior retained; no C24 logd-only diagnostic service remains imported."
+  ],
+  "checks": [
+    "C24 small inherited images checked against its manifest; unchanged C24 super was size-checked but not rehashed.",
+    "Native helper compiled for AArch64 Android API 35 as PIE; libc++ is statically linked so only system-provided liblog is an added dynamic dependency.",
+    "Platform CIL compiled without -N (neverallow checks enabled) using a temporary check copy that omits only unsupported functionfs_seclabel policycap; final shipped CIL retains that policycap.",
+    "New system EROFS fsck passed; final EROFS readback asserted init trigger/service, helper, policy rules, runtime file contexts, updated policy/mapping digest and retained C24 boot property.",
+    "avbtool verified the new system footer/hashtree; vbmeta_system contains only the updated system descriptor, preserving all other descriptor and header fields.",
+    "LP repacked with the same C24 non-system logical partition inputs and geometry; lpdump extent checks passed."
+  ],
+  "policy": {
+    "c24_init_import_removed": "import /system/etc/init/c24_bootdiag.rc",
+    "c25_init_import_added": "import /system/etc/init/c25_bootdiag.rc",
+    "c24_shell_sampler_removed": [
+      "/path/to/thyme-os4-build/c25_first_screen_diag_20260928_run5/system_tree/system/etc/init/c24_bootdiag.rc",
+      "/path/to/thyme-os4-build/c25_first_screen_diag_20260928_run5/system_tree/system/bin/c24_bootdiag.sh"
+    ],
+    "policy_before_sha256": "795B0E01D1B51F0386A26314A25931DB37CEBF0CD62195B3CB259B355D22EEE2",
+    "policy_after_sha256": "25E1258BAD2C587C40A79FE41820FE05E8318768B204B80B5346BE76FAFEFCBF",
+    "policy_insertion": {
+      "policy_before_sha256": "795B0E01D1B51F0386A26314A25931DB37CEBF0CD62195B3CB259B355D22EEE2"
+    },
+    "plat_sepolicy_and_mapping_sha256": "a2ebd43aebbb49647be9d8e68fa7dc79b9d07cea9484f622f2cc76692c19d3ed",
+    "mapping_file": "system/etc/selinux/mapping/202604.cil",
+    "file_context_additions": [
+      "/system/bin/c25_bootdiag u:object_r:shell_exec:s0",
+      "/system/etc/init/c25_bootdiag\\.rc u:object_r:system_file:s0",
+      "/metadata/thyme_os4_diag(/.*)? u:object_r:c25_diag_data_file:s0"
+    ],
+    "dynamic_policy_evidence": "C22 vendor_c22.img /etc/selinux has no precompiled_sepolicy or precompiled hash; final C25 plat CIL is dynamically compiled by init."
+  },
+  "policy_compile_check": {
+    "secilc": "/usr/bin/secilc",
+    "passed": true,
+    "neverallow_checks_enabled": true,
+    "compatibility_note": "The Ubuntu host libsepol lacks only the Android 17 functionfs_seclabel policycap; the temporary check input omits that declaration. Final image retains it, and vendor lacks precompiled policy so device init dynamically compiles the unmodified Android 17 CIL."
+  },
+  "native_helper": {
+    "bytes": 2347512,
+    "sha256": "849052B7AD1DC33AEC7D227E04F246A9A2E4504BFC7F6783057C5557A7505028",
+    "architecture": "AArch64",
+    "needed": [
+      "liblog.so"
+    ],
+    "cxx_runtime": "statically linked libc++",
+    "source_sha256": "8BA4ACB4453D93F3638165847472A12774D411A0D4ED4ACCA19B102E093311FE"
+  },
+  "system_build": {
+    "file_contexts_for_image": [
+      "/system/system/bin/c25_bootdiag u:object_r:shell_exec:s0",
+      "/system/system/etc/init/c25_bootdiag\\.rc u:object_r:system_file:s0"
+    ],
+    "new_fs_config_paths": [
+      "system/system/bin/c25_bootdiag",
+      "system/system/etc/init/c25_bootdiag.rc"
+    ],
+    "final_erofs_readback": {
+      "/system/etc/init/hw/init.rc": {
+        "contains": "import /system/etc/init/c25_bootdiag.rc",
+        "bytes": 80910
+      },
+      "/system/etc/init/c25_bootdiag.rc": {
+        "contains": "start c25_bootdiag",
+        "bytes": 389
+      },
+      "/system/bin/c25_bootdiag": {
+        "contains": "C25BootDiag",
+        "bytes": 3049032
+      },
+      "/system/etc/selinux/plat_sepolicy.cil": {
+        "contains": "c25_diag_data_file",
+        "bytes": 3302494
+      },
+      "/system/etc/selinux/plat_file_contexts": {
+        "contains": "/metadata/thyme_os4_diag",
+        "bytes": 50672
+      },
+      "/system/etc/selinux/plat_sepolicy_and_mapping.sha256": {
+        "contains": "a2ebd43aebbb49647be9d8e68fa7dc79b9d07cea9484f622f2cc76692c19d3ed",
+        "bytes": 65
+      },
+      "/system/build.prop": {
+        "contains": "service.sf.prime_shader_cache=0",
+        "bytes": 13337
+      }
+    },
+    "system_image_bytes": 1092616192,
+    "system_image_sha256": "779786C628E8B142D06AAD8D6552F1FB312FED02074E026E1E3295AF050261D8"
+  },
+  "vbmeta_system_update": {
+    "base_sha256": "1A67C4A2E22DA746E184B146D7DD65059D00FB501EE3642DA1BD2AEFCE706D08",
+    "system_image_size_before": 958160896,
+    "system_image_size_after": 959000576,
+    "system_tree_size": 7561216,
+    "system_root_digest": "46d975781d032919a26209f0aa7330bc2cb3a748d7e01f0c4223bfc0e518078e",
+    "flags": 2,
+    "rollback_index": 0,
+    "rollback_index_location": 2,
+    "unchanged_other_descriptors": [
+      "product",
+      "system_ext"
+    ]
+  },
+  "logical_input_hashes": {
+    "vendor_c22.img": {
+      "bytes": 1510998016,
+      "sha256": "FCEAFEE5B5909D7BE9BBEC48D9E8720F37798DDEEBDBF193424FB3A095CBA675"
+    },
+    "system_ext_a.img": {
+      "bytes": 942669824,
+      "sha256": "6B63E58346DA5B2FEBA7F51980CCEBF886D5991DD07F91541FE4D9F1485CDAD5"
+    },
+    "mi_ext.img": {
+      "bytes": 202375168,
+      "sha256": "43ED8FC0D1848F5D53BFB7206AC91FE5E5ED4E3F71E958D49F2EEA4C9C8B4BCE"
+    },
+    "odm.img": {
+      "bytes": 35758080,
+      "sha256": "075E4A17DC4CA716399166388B1C175060D5CBB31139B2ACBD9E5B2DEE352E22"
+    },
+    "product.img": {
+      "bytes": 4387241984,
+      "sha256": "87955DBE97AC28B01A214273BD03F36B5886310DC3B2E4128B9F4661E1C3345E"
+    }
+  },
+  "flash_scope_prepared": [
+    "super",
+    "vbmeta_system_a"
+  ],
+  "c24_baseline": {
+    "checked_images": {
+      "boot.img": {
+        "bytes": 201326592,
+        "sha256": "E5A016056D5C93C7A886980A7C062617EC44DC06A48417D7DD0F4476708A6368"
+      },
+      "vendor_boot.img": {
+        "bytes": 100663296,
+        "sha256": "02333B82BA936F1BAAB1ECAB744632C70F8FC16688A206C7041EF319F112A137"
+      },
+      "dtbo.img": {
+        "bytes": 33554432,
+        "sha256": "50E1AC0EDCBD333778217AA6FE8D972F6FF85ADD0DAE8A015A6642C2172DD886"
+      },
+      "vbmeta.img": {
+        "bytes": 131072,
+        "sha256": "66A53C2EC38247193CC86B7F5DE887556864413D1142C3C1994645DE1E3BAB10"
+      },
+      "vbmeta_system.img": {
+        "bytes": 131072,
+        "sha256": "1A67C4A2E22DA746E184B146D7DD65059D00FB501EE3642DA1BD2AEFCE706D08"
+      }
+    },
+    "logical_input_hashes": {
+      "vendor_c22.img": {
+        "bytes": 1510998016,
+        "sha256": "FCEAFEE5B5909D7BE9BBEC48D9E8720F37798DDEEBDBF193424FB3A095CBA675"
+      },
+      "system_ext_a.img": {
+        "bytes": 942669824,
+        "sha256": "6B63E58346DA5B2FEBA7F51980CCEBF886D5991DD07F91541FE4D9F1485CDAD5"
+      },
+      "mi_ext.img": {
+        "bytes": 202375168,
+        "sha256": "43ED8FC0D1848F5D53BFB7206AC91FE5E5ED4E3F71E958D49F2EEA4C9C8B4BCE"
+      },
+      "odm.img": {
+        "bytes": 35758080,
+        "sha256": "075E4A17DC4CA716399166388B1C175060D5CBB31139B2ACBD9E5B2DEE352E22"
+      },
+      "product.img": {
+        "bytes": 4387241984,
+        "sha256": "87955DBE97AC28B01A214273BD03F36B5886310DC3B2E4128B9F4661E1C3345E"
+      }
+    }
+  },
+  "images": {
+    "boot.img": {
+      "bytes": 201326592,
+      "sha256": "E5A016056D5C93C7A886980A7C062617EC44DC06A48417D7DD0F4476708A6368"
+    },
+    "vendor_boot.img": {
+      "bytes": 100663296,
+      "sha256": "02333B82BA936F1BAAB1ECAB744632C70F8FC16688A206C7041EF319F112A137"
+    },
+    "dtbo.img": {
+      "bytes": 33554432,
+      "sha256": "50E1AC0EDCBD333778217AA6FE8D972F6FF85ADD0DAE8A015A6642C2172DD886"
+    },
+    "vbmeta.img": {
+      "bytes": 131072,
+      "sha256": "66A53C2EC38247193CC86B7F5DE887556864413D1142C3C1994645DE1E3BAB10"
+    },
+    "vbmeta_system.img": {
+      "bytes": 131072,
+      "sha256": "63B03D20B8EF718C70EF36F063DA57EDD858CE9D7570E490AFE48681A89104C7"
+    },
+    "super.img": {
+      "bytes": 7702744024,
+      "sha256": "87022BC2BE868B1A3CF51F2B3A63C377BBA245BCEEA2BB72610D5A3270BDDF1F"
+    }
+  }
+}

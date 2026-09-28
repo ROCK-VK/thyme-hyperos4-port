@@ -76,3 +76,12 @@ The original workflow used Windows 11, WSL Ubuntu, local Android platform-tools,
 - `candidate24_bootdiag/` contains the init service and script. It samples boot completion, boot-animation/service properties, process PIDs, WindowManager/ActivityManager, SurfaceFlinger/display state and HOME resolution to logd/pmsg for up to 15 minutes. Actual execution and pmsg retention remain unverified until C24 boots.
 - `flash_candidate24_framework_display_diag.ps1` requires an explicit `-Serial` and `-Execute`; it writes only `super` and `vbmeta_system_a` and does not reboot or erase data.
 - See [C24 diagnostic report](../reports/candidate24/C23_FRAMEWORK_DISPLAY_C24_DIAGNOSTIC_20260928.md), [build report](../reports/candidate24/BUILD_REPORT.md), and [manifest](../reports/candidate24/BUILD_MANIFEST.json).
+
+## Candidate 25
+
+- build_candidate25_first_screen_diag.py replaces the C24 unverified logd-only sampler with a bounded persistent Framework/display sampler. ROM inputs and generated images are not included.
+- candidate25_bootdiag contains the native AArch64 helper, init service and narrow CIL fragment. Samples are capped and written to logd plus a dedicated metadata directory; real startup behavior remains unverified until C25 boots.
+- flash_candidate25_first_screen_diag.ps1 requires an explicit serial and Execute switch; it writes only super and vbmeta_system_a and never reboots.
+- start_candidate25_observed_boot.ps1 verifies a fresh C25 ARMED record and current device/slot state. It defaults to no reboot; a single reboot requires both Execute and UserWatchingConfirmed.
+- build_standalone_diag.py supports --export-c25-metadata to add a sysfs-identified, capacity-checked, read-only metadata diagnostic export path. The separate generated Standalone image is not in this repository.
+- See the [C25 build and flash report](../reports/candidate25/C25_FIRST_SCREEN_DIAGNOSTIC_BUILD_FLASH_20260928.md).

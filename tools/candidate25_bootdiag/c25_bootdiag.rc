@@ -1,0 +1,13 @@
+service c25_bootdiag /system/bin/c25_bootdiag
+    class core
+    user shell
+    group shell log readproc
+    disabled
+    oneshot
+    seclabel u:r:shell:s0
+
+on post-fs-data
+    mkdir /metadata/thyme_os4_diag 0770 root shell
+    restorecon_recursive /metadata/thyme_os4_diag
+    write /metadata/thyme_os4_diag/C25_INIT_TRIGGER.txt "candidate=C25 action=post-fs-data"
+    start c25_bootdiag

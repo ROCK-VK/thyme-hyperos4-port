@@ -6,15 +6,23 @@ Last updated: 2026-09-28 (Hong Kong time)
 
 Port the Xiaomi 15 (`dada`) HyperOS 4 / Android 17 userspace to Xiaomi Mi 10S (`thyme`). The immediate goal is to pass graphics initialization and reach the boot animation, setup wizard, or desktop.
 
-**Current stage: C24 completed one observed boot lasting about 16m43s. The user saw only the first Xiaomi splash (central Xiaomi logo + `powered by Android`), never the HyperOS second screen with three dots, then manually entered Fastboot. ADB never appeared. pmsg records BootAnimation code activity, but the planned C24BootDiag sampler left no marker. Framework/UI progress, boot-animation completion and HWC/panel present remain unknown; do not infer that system_server or WMS failed solely from missing samples. C24 is still installed. No C25 built.**
+**Current stage: C25 persistent first-screen/framework diagnostic is built and flashed to super plus vbmeta_system_a. The device remains in A-slot Bootloader Fastboot and C25 has not booted. Its init-start marker and bounded samples persist to logd and /metadata/thyme_os4_diag; runtime behavior is unverified. The user clarified that the Xiaomi logo with powered by Android is the first screen, not the HyperOS second screen with dots. C24 did not retain a valid sampler marker, so Framework/UI and physical display present remain unknown.**
 
 ## Device and flashed build
 
-- Latest read-only state (2026-09-28 after the C24 Standalone export and final Fastboot recheck): one device, thyme, A slot, unlocked, Bootloader Fastboot (not userspace). A: unbootable=no, successful=no, retry=3; B: unbootable=no, successful=no, retry=7. A retry was 4 immediately before the one C24 boot and 3 afterward; no set_active was run.
-- C24 wrote only `super` and `vbmeta_system_a`. The inherited boot, vendor_boot, dtbo and root vbmeta were not rewritten.
-- C23 had an earlier Recovery-only attempt and a 2026-09-28 retest. The retest observer was ARMED before one fastboot reboot; user observed a steady Xiaomi logo and manually returned to Fastboot. ADB did not come online.
-- The phone is currently in Bootloader Fastboot on C24. PixelOS has not been restored; no userdata/metadata erase, BCB edit, hardware identity write, or Bootloader relock occurred in this C24 experiment.
+- Latest read-only Fastboot state after C25 flash: product thyme, A slot, unlocked, Bootloader Fastboot (not userspace); A unbootable=no, successful=no, retry=3. No device serial is published.
+- C25 wrote only super and vbmeta_system_a. Both Fastboot operations returned OKAY; super transfer/write completed for 10/10 sparse chunks. No partition readback was performed. boot, vendor_boot, dtbo and root vbmeta were not rewritten.
+- C25 has not booted. No userdata/metadata erase, set_active, BCB/misc write, PixelOS restore, other partition write, or Bootloader relock occurred.
+- The user described the centered Xiaomi logo plus powered by Android as the first screen. The HyperOS logo with three progress dots is the second screen and was not observed.
+- [C25 build/flash report](../reports/candidate25/C25_FIRST_SCREEN_DIAGNOSTIC_BUILD_FLASH_20260928.md), [build report](../reports/candidate25/BUILD_REPORT.md), and [manifest](../reports/candidate25/BUILD_MANIFEST.json).
 
+## C25 persistent first-screen diagnostic
+
+- Replaces C24's sampler with an AArch64 native bounded helper, launched after post-fs-data using an explicit existing shell SELinux domain. It writes an init trigger and samples to both logd and a durable directory under metadata, calling fdatasync on persistent records.
+- Samples properties/process IDs every 15 seconds and bounded Framework/display dumps about once per minute for up to 15 minutes. Queries time out after four seconds; per-file and aggregate output caps are 512 KiB and 8 MiB.
+- A separately built Standalone diagnostic image can identify metadata only through sysfs, verify its identity/capacity, mount it ro,noload, verify read-only state and copy only the diagnostic subtree. The new image has not been booted on the device.
+- C25 does not alter GPU/HWC, kernel, fstab, encryption, userdata or hardware partitions. Targeted K40 comparison did not show a directly applicable Framework/HWC fix; no broad IMiHwcExtension allow was added.
+- Runtime service startup, persistence, Framework readiness, boot-animation exit, boot completion, and physical display present all await the C25 boot.
 ## C22 result
 
 - C22 reached First/Second Stage, APEX, vold and `/data` initialization. SurfaceFlinger then aborted 89 times with `output buffer not gpu writeable` in `Cache::primeShaderCache` / `SkiaRenderEngine::primeCache`.
@@ -68,8 +76,7 @@ Port the Xiaomi 15 (`dada`) HyperOS 4 / Android 17 userspace to Xiaomi Mi 10S (`
 - There is no C23 SurfaceFlinger, Skia, Vulkan, or shader-cache log. The effect of `service.sf.prime_shader_cache=0`, normal composition, and any progress to HyperOS UI are unknown.
 
 ## Next step
-Do not repeat C24. First repair the diagnostic service's observable/readback path with explicit init-start, first-sample, periodic-sample and completion markers that are demonstrably recoverable from pstore/Standalone. Then perform a targeted read-only check of Xiaomi HWC extension registration, service label and client fallback; compare K40 only if the same interface exists. Do not grant a broad SELinux rule from the one AVC alone. Current device is A-slot Bootloader Fastboot, A retry=3; no `set_active` or boot-control change is warranted by current evidence.
-
+C25 is flashed and remains in Bootloader Fastboot. Wait for the user to be onsite and explicitly confirm starting C25. Then create a fresh host observation run labelled C25-first-screen-diag, verify its ARMED record, and use the C25 start gate for one fastboot reboot. Observe for about 15 minutes. If ADB is absent or the first screen remains, the user returns to Fastboot; capture the full THYME_DIAG volume first, then use the separate Standalone image to read and export only /metadata/thyme_os4_diag with a verified read-only mount. Do not infer Framework or physical-display state until the C25 sampler itself is confirmed to have started and produced records.
 ## Public evidence
 The evidence index covers user-authorized C13–C24 diagnostic evidence. C24 host observations and the complete accessible Standalone export are published with per-file source/public sizes and SHA-256 in the cumulative evidence manifest. Complete `misc.raw` and partition backups remain local. No ROMs, firmware packages, partition images, userdata/metadata images, credentials, or hardware-identity partition backups are included.
 

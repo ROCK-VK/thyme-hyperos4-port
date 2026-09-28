@@ -6,11 +6,12 @@
 
 ## 当前状态（2026-09-28）
 
-- **C24 已完成一次约 16 分 43 秒的诊断启动。** 用户全程看到第一屏中央小米 Logo 和 `powered by Android`，没有看到带三个进度点的 HyperOS 第二屏；随后用户手动进入 Fastboot。ADB 未上线。pmsg 有 BootAnimation 代码路径记录，但没有 `C24BootDiag` 采样标记，因此 system_server/WMS/SystemUI/HOME、bootanim exit、boot-complete 和 HWC present 状态仍未知。C24 没有证明是 Framework 卡住还是显示链未更新；详见 [C24 首次启动取证报告](reports/candidate24/C24_FIRST_BOOT_EVIDENCE_20260928.md) 与[完整原始证据](evidence/candidate24/framework_display/20260928_194944/)。
-- K40 OS4 Android 17 定点比较未发现可直接复用的通用 Framework/WindowManager/boot-animation 修复；其核心 framework JAR 与 Xiaomi 15 供体/C23 一致，目标 overlay 未移植。netd、指纹、audio 和 `UltraFrameworkComponentFactoryImpl` 异常没有被证明是当前界面阻塞原因。
-- C24 仅写入 `super` 与 `vbmeta_system_a`；未清除 userdata/metadata。其诊断服务计划写入 logd/pmsg，但本轮没有找到任何可验证采样标记。最近只读状态为 thyme/A、解锁的 Bootloader Fastboot；A retry=3、B retry=7。未恢复 PixelOS，也未构建 C25。
-- 重点资料：[C24 首次启动取证报告](reports/candidate24/C24_FIRST_BOOT_EVIDENCE_20260928.md)、[C24 完整原始证据](evidence/candidate24/framework_display/20260928_194944/)、[C23 Framework/UI 与显示断点、C24 诊断准备报告](reports/candidate24/C23_FRAMEWORK_DISPLAY_C24_DIAGNOSTIC_20260928.md)、[C24 构建报告](reports/candidate24/BUILD_REPORT.md)、[C24 构建清单](reports/candidate24/BUILD_MANIFEST.json)、[项目状态](logs/PROJECT_STATUS.md)。
-
+- **C25 已基于 C24 构建并刷写，尚未首次启动。** 仅写入 super 与 vbmeta_system_a，手机保持 thyme / A 槽 / 已解锁的 Bootloader Fastboot。刷写命令成功；没有分区回读，因此不称为逐字节读回验证。
+- C25 是首屏与 Framework/display 诊断版：以有界 AArch64 helper 替代 C24 未留下标记的 logd-only sampler，将启动标记和约 15 分钟属性、进程、WMS/AM/SurfaceFlinger/display/HOME 采样同步保存到 logd 与 /metadata/thyme_os4_diag。该诊断服务尚未在真机验证。
+- 用户澄清：中央小米 Logo + powered by Android 是第一屏；带 Xiaomi HyperOS Logo 与三个点的图片是第二屏。此前观察只确认第一屏，不能当作已看到 HyperOS 第二屏。
+- C24 的采样标记缺失，system_server、WMS、SystemUI/HOME、boot-animation exit、boot-complete 和物理 display present 仍未知。K40 定点对照没有找到可直接套用的通用 Framework/HWC 修复；C25 不带宽泛 HWC SELinux allow，也不替换 K40 硬件专属组件。
+- 未清除 userdata/metadata，未修改 boot-control/BCB/硬件身份分区，未回锁，也未启动 C25。首次启动需用户在场确认。
+- 重点资料：[C25 构建/刷写报告](reports/candidate25/C25_FIRST_SCREEN_DIAGNOSTIC_BUILD_FLASH_20260928.md)、[C25 构建报告](reports/candidate25/BUILD_REPORT.md)、[C25 清单](reports/candidate25/BUILD_MANIFEST.json)、[当前项目状态](logs/PROJECT_STATUS.md)。
 ## 设备与来源
 
 | 角色 | 设备/平台 | 用途 |
@@ -41,6 +42,8 @@ K40 对照资料显示，成功包的 vendor_boot ramdisk 与原包不同，并�
 - **C23**：仅关闭可选 SurfaceFlinger shader-cache 预热。首次尝试保存到 Recovery；后续启动推进到 `/data`/fscrypt 和 BootAnimation shown-timing 日志阶段，但两轮均未见用户实际进入 HyperOS 动画、Setup Wizard 或桌面。长窗口 pmsg 未复现 C22 的 shader-cache fatal，但运行时属性值未采样；静态 Logo 的新根因仍未知。最新报告和完整原始证据见上方链接。
 - **C24**：基于 C23 的 framework/display 诊断变体；仅完成一次约 16 分 43 秒启动，用户看到第一屏小米 Logo + `powered by Android`，未见 HyperOS 第二屏。ADB 未上线，pmsg 无诊断服务标记；Framework/UI 状态和物理 present 仍未知。A retry 由 4 降至 3。详见[首次启动报告](reports/candidate24/C24_FIRST_BOOT_EVIDENCE_20260928.md)和[完整原始证据](evidence/candidate24/framework_display/20260928_194944/)。
 
+
+- **C25**：以持久化、限额的 AArch64 helper 取代 C24 未留标记的 logd-only sampler；采样同时写入 logd 与 metadata 下的专用诊断目录。已刷写 super 和 vbmeta_system_a，尚未首启，诊断运行效果待实机确认。见 [C25 报告](reports/candidate25/C25_FIRST_SCREEN_DIAGNOSTIC_BUILD_FLASH_20260928.md)。
 
 具体阶段和证据等级以项目状态文件及 Candidate 报告为准，旧报告的“计划/待验证”不会自动成为当前结论。
 

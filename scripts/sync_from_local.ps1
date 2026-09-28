@@ -39,6 +39,12 @@ $Allowlist = @(
     @{ Source='tools/build_candidate17_graphics_allocator_open.py'; Destination='tools/build_candidate17_graphics_allocator_open.py' }
     @{ Source='tools/build_candidate18_native_adreno.py'; Destination='tools/build_candidate18_native_adreno.py' }
     @{ Source='tools/build_standalone_diag.py'; Destination='tools/build_standalone_diag.py' }
+    @{ Source='tools/build_candidate25_first_screen_diag.py'; Destination='tools/build_candidate25_first_screen_diag.py' }
+    @{ Source='tools/flash_candidate25_first_screen_diag.ps1'; Destination='tools/flash_candidate25_first_screen_diag.ps1' }
+    @{ Source='tools/start_candidate25_observed_boot.ps1'; Destination='tools/start_candidate25_observed_boot.ps1' }
+    @{ Source='tools/candidate25_bootdiag/c25_bootdiag.cpp'; Destination='tools/candidate25_bootdiag/c25_bootdiag.cpp' }
+    @{ Source='tools/candidate25_bootdiag/c25_bootdiag.rc'; Destination='tools/candidate25_bootdiag/c25_bootdiag.rc' }
+    @{ Source='tools/candidate25_bootdiag/c25_policy_fragment.cil'; Destination='tools/candidate25_bootdiag/c25_policy_fragment.cil' }
     @{ Source='tools/flash_candidate13.ps1'; Destination='tools/flash_candidate13.ps1' }
     @{ Source='tools/flash_candidate14_bpf_bootstrap_bypass.ps1'; Destination='tools/flash_candidate14_bpf_bootstrap_bypass.ps1' }
     @{ Source='tools/flash_candidate15_angle_egl.ps1'; Destination='tools/flash_candidate15_angle_egl.ps1' }
@@ -83,6 +89,9 @@ $Allowlist = @(
     @{ Source='work/reports/20260927_CANDIDATE19_RGBX_EGL/REPORT.md'; Destination='reports/candidate19/REPORT.md' }
     @{ Source='work/stage_i_thyme_os4_candidate_19_rgbx_egl_run1/images/BUILD_MANIFEST.json'; Destination='reports/candidate19/BUILD_MANIFEST.json' }
     @{ Source='work/reports/20260927_CANDIDATE23_SF_PRIME_SKIP/REPORT.md'; Destination='reports/candidate23/REPORT.md' }
+    @{ Source='work/reports/20260928_C25_FIRST_SCREEN_DIAG/C25_FIRST_SCREEN_DIAGNOSTIC_BUILD_FLASH_20260928.md'; Destination='reports/candidate25/C25_FIRST_SCREEN_DIAGNOSTIC_BUILD_FLASH_20260928.md' }
+    @{ Source='work/stage_o_thyme_os4_candidate_25_first_screen_diag_20260928_run5/BUILD_REPORT.md'; Destination='reports/candidate25/BUILD_REPORT.md' }
+    @{ Source='work/stage_o_thyme_os4_candidate_25_first_screen_diag_20260928_run5/images/BUILD_MANIFEST.json'; Destination='reports/candidate25/BUILD_MANIFEST.json' }
     @{ Source='work/reports/20260926_CANDIDATE13_NETBPFLOAD_EVIDENCE_EXCERPT.txt'; Destination='reports/boot-logs/candidate13_netbpfload_failure_excerpt.txt' }
     @{ Source='@STORAGE_SAFETY_REPORT'; Destination='reports/candidate13/20260925_CANDIDATE13_STORAGE_SAFETY_AND_FIRST_FAILURE.md' }
     @{ Source='work/reports/20260924_CANDIDATE10_WARMDTB_LOG_SALVAGE/pstore/console-ramoops-0'; Destination='reports/boot-logs/candidate10_console-ramoops.txt' }
@@ -142,6 +151,12 @@ foreach ($Entry in $Allowlist) {
     $Text = ConvertTo-PublicText $Text
     if ($Entry.Destination -eq 'tools/build_candidate18_native_adreno.py') {
         $Text = $Text.Replace('[LOCAL_WSL_USER]/10s_os4_build', '/path/to/thyme-os4-build')
+    }
+    if ($Entry.Destination -in @('tools/build_candidate25_first_screen_diag.py','reports/candidate25/BUILD_MANIFEST.json')) {
+        $Text = $Text.Replace('[LOCAL_WSL_USER]/10s_os4_build', '/path/to/thyme-os4-build')
+    }
+    if ($Entry.Destination -eq 'tools/build_standalone_diag.py') {
+        $Text = $Text.Replace('[REDACTED_DEVICE_ID]', 'THYME-DIAG')
     }
     if ($Entry.Destination -match '_pmsg-ramoops\.txt$') { $Text = $Text.Replace([string][char]0, '') }
     [IO.File]::WriteAllText($DestinationPath, $Text, [Text.UTF8Encoding]::new($false))
