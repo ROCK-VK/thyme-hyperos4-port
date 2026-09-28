@@ -1,0 +1,4 @@
+Source: the unique host volume labeled THYME_DIAG, exposed by the Standalone RAM diagnostic environment.
+dmesg_diag_boot.txt is the Standalone diagnostic kernel log, not the preceding C24-framework-display-diag kernel log.
+Salvaged boot label: C24-framework-display-diag.
+Export started (UTC): 2026-09-28T12:07:36.894+00:00

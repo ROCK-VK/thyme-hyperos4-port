@@ -1,0 +1,11 @@
+candidate=C24-framework-display-diag
+command=fastboot -s 1384e684 reboot
+started_local=2026-09-28 19:49:44.233 +08:00
+precommand_fastboot_state=single target 1384e684
+1384e684               fastboot
+
+finished_local=2026-09-28 19:49:44.270 +08:00
+exit_code=0
+output:
+Rebooting                                          OKAY [  0.000s]
+Finished. Total time: 0.000s

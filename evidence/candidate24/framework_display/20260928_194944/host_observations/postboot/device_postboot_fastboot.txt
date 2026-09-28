@@ -1,0 +1,33 @@
+postboot_host_local=2026-09-28 20:06:43.353 +08:00
+command=fastboot devices -l
+1384e684               fastboot
+command=fastboot -s 1384e684 getvar product
+product: thyme
+Finished. Total time: 0.002s
+command=fastboot -s 1384e684 getvar current-slot
+current-slot: a
+Finished. Total time: 0.002s
+command=fastboot -s 1384e684 getvar unlocked
+unlocked: yes
+Finished. Total time: 0.001s
+command=fastboot -s 1384e684 getvar is-userspace
+is-userspace: no
+Finished. Total time: 0.002s
+command=fastboot -s 1384e684 getvar slot-unbootable:a
+slot-unbootable:a: no
+Finished. Total time: 0.003s
+command=fastboot -s 1384e684 getvar slot-successful:a
+slot-successful:a: no
+Finished. Total time: 0.005s
+command=fastboot -s 1384e684 getvar slot-retry-count:a
+slot-retry-count:a: 3
+Finished. Total time: 0.004s
+command=fastboot -s 1384e684 getvar slot-unbootable:b
+slot-unbootable:b: no
+Finished. Total time: 0.004s
+command=fastboot -s 1384e684 getvar slot-successful:b
+slot-successful:b: no
+Finished. Total time: 0.003s
+command=fastboot -s 1384e684 getvar slot-retry-count:b
+slot-retry-count:b: 7
+Finished. Total time: 0.003s

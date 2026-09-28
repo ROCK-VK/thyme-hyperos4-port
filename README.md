@@ -2,14 +2,14 @@
 
 **Xiaomi 15 (dada) HyperOS 4 / Android 17 移植至 Xiaomi Mi 10S (thyme)**
 
-这是一个实验性 Android 移植工程。当前首要目标是让小米 10S 越过 HyperOS 4 图形初始化并进入启动动画、设置向导或桌面。仓库保存可审核的脚本、补丁、项目日志与用户授权公开的 C13–C23 原始启动诊断证据；不提供 ROM 下载。
+这是一个实验性 Android 移植工程。当前首要目标是让小米 10S 越过 HyperOS 4 图形初始化并进入启动动画、设置向导或桌面。仓库保存可审核的脚本、补丁、项目日志与用户授权公开的 C13–C24 原始启动诊断证据；不提供 ROM 下载。
 
 ## 当前状态（2026-09-28）
 
-- **C23 的 11 分 52 秒完整观察仍只有静态小米 Logo。** pmsg 证明 `/data`/fscrypt、keystore2 和 BootAnimation 代码推进，但没有 system_server 阶段、WindowManager/SystemUI/HOME、bootanim exit、boot-complete 或 HWC/display present 的直接记录；因此 Framework/UI 未完成与物理显示链未更新仍无法区分。C23 实际 BootAnimation 资源只有 5 帧，HyperOS 标志不变、只在底部进度点略有变化，所以静态感也可能来自动画内容，不能单独证明面板未更新。ADB 未上线。
+- **C24 已完成一次约 16 分 43 秒的诊断启动。** 用户全程看到第一屏中央小米 Logo 和 `powered by Android`，没有看到带三个进度点的 HyperOS 第二屏；随后用户手动进入 Fastboot。ADB 未上线。pmsg 有 BootAnimation 代码路径记录，但没有 `C24BootDiag` 采样标记，因此 system_server/WMS/SystemUI/HOME、bootanim exit、boot-complete 和 HWC present 状态仍未知。C24 没有证明是 Framework 卡住还是显示链未更新；详见 [C24 首次启动取证报告](reports/candidate24/C24_FIRST_BOOT_EVIDENCE_20260928.md) 与[完整原始证据](evidence/candidate24/framework_display/20260928_194944/)。
 - K40 OS4 Android 17 定点比较未发现可直接复用的通用 Framework/WindowManager/boot-animation 修复；其核心 framework JAR 与 Xiaomi 15 供体/C23 一致，目标 overlay 未移植。netd、指纹、audio 和 `UltraFrameworkComponentFactoryImpl` 异常没有被证明是当前界面阻塞原因。
-- 已构建并刷入**诊断型 C24**，只写 `super` 与 `vbmeta_system_a`；没有改其他引导镜像或清除 userdata/metadata。C24 新增 post-fs-data 诊断服务，计划采样启动属性、关键进程、WindowManager/ActivityManager、SurfaceFlinger/display/HOME 状态到 logd/pmsg。C24 尚未启动，采样运行/留存和启动改善均未验证。设备保持 thyme/A Bootloader Fastboot、Bootloader 解锁，等待现场确认首次启动。
-- 重点资料：[C23 Framework/UI 与显示断点、C24 诊断报告](reports/candidate24/C23_FRAMEWORK_DISPLAY_C24_DIAGNOSTIC_20260928.md)、[C24 构建报告](reports/candidate24/BUILD_REPORT.md)、[C24 构建清单](reports/candidate24/BUILD_MANIFEST.json)、[C23 完整开机观察](reports/candidate23/C23_LONG_BOOT_RETEST_20260928.md)、[C23 原始证据和哈希清单](evidence/candidate23/long_boot_retest/)、[项目状态](logs/PROJECT_STATUS.md)。
+- C24 仅写入 `super` 与 `vbmeta_system_a`；未清除 userdata/metadata。其诊断服务计划写入 logd/pmsg，但本轮没有找到任何可验证采样标记。最近只读状态为 thyme/A、解锁的 Bootloader Fastboot；A retry=3、B retry=7。未恢复 PixelOS，也未构建 C25。
+- 重点资料：[C24 首次启动取证报告](reports/candidate24/C24_FIRST_BOOT_EVIDENCE_20260928.md)、[C24 完整原始证据](evidence/candidate24/framework_display/20260928_194944/)、[C23 Framework/UI 与显示断点、C24 诊断准备报告](reports/candidate24/C23_FRAMEWORK_DISPLAY_C24_DIAGNOSTIC_20260928.md)、[C24 构建报告](reports/candidate24/BUILD_REPORT.md)、[C24 构建清单](reports/candidate24/BUILD_MANIFEST.json)、[项目状态](logs/PROJECT_STATUS.md)。
 
 ## 设备与来源
 
@@ -39,7 +39,7 @@ K40 对照资料显示，成功包的 vendor_boot ramdisk 与原包不同，并�
 - **C21**：K40 threaded SkiaVk 路由绕开 EGLConfig fatal；实机因 Vulkan RenderEngine 初始化 fatal 未进入启动动画。
 - **C22**：以 K40 Android 17 Vulkan UMD 及隔离 GSL/LLVM/Adreno Utils 依赖配套替换 Vulkan ICD；实机越过 RenderEngine 创建 fatal，后在 Skia shader-cache 预热因输出 buffer usage 检查反复 abort。
 - **C23**：仅关闭可选 SurfaceFlinger shader-cache 预热。首次尝试保存到 Recovery；后续启动推进到 `/data`/fscrypt 和 BootAnimation shown-timing 日志阶段，但两轮均未见用户实际进入 HyperOS 动画、Setup Wizard 或桌面。长窗口 pmsg 未复现 C22 的 shader-cache fatal，但运行时属性值未采样；静态 Logo 的新根因仍未知。最新报告和完整原始证据见上方链接。
-- **C24**：基于 C23 的 framework/display 诊断变体；post-fs-data 后定期记录启动属性、关键 PID、WindowManager/ActivityManager、SurfaceFlinger/display 与 HOME 解析信息到 logd/pmsg。仅完成主机侧构建检查和 `super`/`vbmeta_system_a` 刷写，尚未启动；不是已验证的启动修复。K40 成功包采用不同的 32 帧/31.7fps BootAnimation，而 C23 仅 5 帧/5fps；该目标动画资产差异待 C24 状态采样后再评估。报告见 [`C24 诊断准备`](reports/candidate24/C23_FRAMEWORK_DISPLAY_C24_DIAGNOSTIC_20260928.md)。
+- **C24**：基于 C23 的 framework/display 诊断变体；仅完成一次约 16 分 43 秒启动，用户看到第一屏小米 Logo + `powered by Android`，未见 HyperOS 第二屏。ADB 未上线，pmsg 无诊断服务标记；Framework/UI 状态和物理 present 仍未知。A retry 由 4 降至 3。详见[首次启动报告](reports/candidate24/C24_FIRST_BOOT_EVIDENCE_20260928.md)和[完整原始证据](evidence/candidate24/framework_display/20260928_194944/)。
 
 
 具体阶段和证据等级以项目状态文件及 Candidate 报告为准，旧报告的“计划/待验证”不会自动成为当前结论。
@@ -52,11 +52,11 @@ logs/              当前状态和按时间追加的执行记录
 tools/             精选构建、预检、刷写和诊断脚本
 patches/           可审阅的最小策略补丁
 reports/           K40 对照与 Candidate 分析报告
-evidence/          C13–C23 Standalone 诊断卷及 USB/ADB/Fastboot 主机观察记录
+evidence/          C13–C24 Standalone 诊断卷及 USB/ADB/Fastboot 主机观察记录
 scripts/           带明确文件白名单的本地增量同步脚本
 ```
 
-建议阅读顺序：先看 [C24 Framework/display 诊断报告](reports/candidate24/C23_FRAMEWORK_DISPLAY_C24_DIAGNOSTIC_20260928.md)、[C23 SurfaceFlinger 预热绕过报告](reports/candidate23/REPORT.md)、[C22 实机故障报告](reports/candidate22/REPORT.md) 和 [C21 K40 SkiaVk 路由报告](reports/candidate21/REPORT.md)，再按以下历史材料阅读：
+建议阅读顺序：先看 [C24 首次启动取证报告](reports/candidate24/C24_FIRST_BOOT_EVIDENCE_20260928.md)、[C24 Framework/display 诊断准备报告](reports/candidate24/C23_FRAMEWORK_DISPLAY_C24_DIAGNOSTIC_20260928.md)、[C23 SurfaceFlinger 预热绕过报告](reports/candidate23/REPORT.md)、[C22 实机故障报告](reports/candidate22/REPORT.md) 和 [C21 K40 SkiaVk 路由报告](reports/candidate21/REPORT.md)，再按以下历史材料阅读：
 
 1. [C20 ANGLE 路由与运行时诊断报告](reports/candidate20/REPORT.md)
 2. [当前项目状态](logs/PROJECT_STATUS.md)
@@ -70,7 +70,7 @@ scripts/           带明确文件白名单的本地增量同步脚本
 10. [C13 首次启动证据摘要](reports/boot-logs/candidate13_netbpfload_failure_excerpt.txt)
 11. [C13 Second Stage 取证准备](reports/candidate13/20260926_CANDIDATE13_SECOND_STAGE_CAPTURE_PREP.md)
 12. [K40 三方移植分析](reports/k40/20260918_K40_THREE_WAY_PORT_REVERSE_ENGINEERING_1.md)
-13. [C13–C23 原始启动诊断证据索引](evidence/README.md)
+13. [C13–C24 原始启动诊断证据索引](evidence/README.md)
 ## 脚本与构建
 
 `tools/` 中保留了历史 Candidate 构建/预检流程、C13 SELinux 审核、只读启动观察器、启动门控、Standalone 日志导出工具和 PixelOS A0′ 恢复脚本。C18–C23 构建脚本记录定点图形启动实验；C22 配套 K40 Android 17 Vulkan UMD，C23 跳过触发 C22 fatal 的可选 shader-cache 预热；C24 增加 Framework/display 启动诊断。Candidate 刷写脚本可能写入设备分区；启动脚本要求观察器 ARMED 和用户在场确认。脚本本身不构成设备操作许可。它们依赖本机 WSL 环境、外部 ROM 输入和原工程中的暂存资产。本仓库没有完整输入镜像，**不能仅凭 clone 一键复现完整 ROM 构建**。脚本来源及设备操作分类见 [`tools/README.md`](tools/README.md)。
@@ -89,7 +89,7 @@ git diff --stat
 
 ## 为什么不提供完整镜像
 
-小米 15 原包、K40 成功移植包、PixelOS、展开后的 Android 系统树以及 Candidate 构建镜像都可能包含专有固件、厂商 HAL、应用或其他第三方内容。它们不属于本公开仓库的分发范围。这里不提供完整 ROM 或固件分发。按用户授权，evidence/ 保存 C13–C23 诊断日志和主机观察记录；C21 副本对设备序列号做了可追溯脱敏，C22/C23 公开原始诊断文件保持原字节并附来源/发布 SHA-256 manifest；misc、persist、modemst、EFS/NV、校准与设备身份分区备份，以及 userdata/metadata 分区镜像仍不公开。
+小米 15 原包、K40 成功移植包、PixelOS、展开后的 Android 系统树以及 Candidate 构建镜像都可能包含专有固件、厂商 HAL、应用或其他第三方内容。它们不属于本公开仓库的分发范围。这里不提供完整 ROM 或固件分发。按用户授权，evidence/ 保存 C13–C24 诊断日志和主机观察记录；C21 副本对设备序列号做了可追溯替换，C22–C24 公开诊断证据按逐文件 SHA-256 清单记录；misc、persist、modemst、EFS/NV、校准与设备身份分区备份，以及 userdata/metadata 分区镜像仍不公开。
 
 仓库不附加统一开源许可证。项目代码与随附报告的权利状态应由各自作者/来源确定；不对小米固件、第三方 ROM 或厂商二进制授予任何许可证。
 

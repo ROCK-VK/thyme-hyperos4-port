@@ -1,0 +1,9 @@
+{"candidate": "C24-framework-display-diag", "event": "observer_started", "host_utc": "2026-09-28T11:25:02.865+00:00", "serial": "1384e684"}
+{"elapsed_seconds": 2.283, "event": "usb_pnp_state_change", "host_utc": "2026-09-28T11:25:05.147+00:00", "output": "initial PnP query pending", "state": "query_pending"}
+{"elapsed_seconds": 2.283, "event": "adb_state_change", "host_utc": "2026-09-28T11:25:05.149+00:00", "output": "List of devices attached |  | * daemon not running; starting now at tcp:5037 | * daemon started successfully", "state": "absent"}
+{"elapsed_seconds": 2.283, "event": "fastboot_state_change", "host_utc": "2026-09-28T11:25:05.150+00:00", "output": "1384e684               fastboot", "state": "fastboot"}
+{"adb_state": "absent", "candidate": "C24-framework-display-diag", "elapsed_seconds": 5.334, "event": "observer_armed", "fastboot_state": "fastboot", "host_utc": "2026-09-28T11:25:08.200+00:00", "usb_pnp_state": "present"}
+{"elapsed_seconds": 5.334, "event": "usb_pnp_state_change", "host_utc": "2026-09-28T11:25:08.201+00:00", "output": "{\"state\":\"present\",\"devices\":[{\"Status\":\"OK\",\"Class\":\"AndroidUsbDeviceClass\",\"FriendlyName\":\"Android Bootloader Interface\",\"InstanceId\":\"USB\\\\VID_18D1&PID_D00D\\\\1384E684\"}]}", "state": "present"}
+{"elapsed_seconds": 1481.805, "event": "fastboot_state_change", "host_utc": "2026-09-28T11:49:44.670+00:00", "output": "", "state": "absent"}
+{"elapsed_seconds": 1487.805, "event": "usb_pnp_state_change", "host_utc": "2026-09-28T11:49:50.670+00:00", "output": "{\"state\":\"absent\",\"devices\":[]}", "state": "absent"}
+{"elapsed_seconds": 1800.86, "event": "observer_window_completed", "host_utc": "2026-09-28T11:55:03.725+00:00"}

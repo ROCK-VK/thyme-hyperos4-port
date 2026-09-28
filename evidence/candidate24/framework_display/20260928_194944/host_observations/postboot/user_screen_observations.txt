@@ -1,0 +1,2 @@
+2026-09-28 20:01:58.522 +08:00 source=user: 米标静止，无小点，下方显示 'powered by android'。
+2026-09-28 20:04:25.699 +08:00 source=user clarification: 当前所见是第一屏（中央小米 Logo，下方 'powered by android'）；用户确认第二屏是 'Xiaomi HyperOS' Logo 下方三个小点。当前尚未看到第二屏。
