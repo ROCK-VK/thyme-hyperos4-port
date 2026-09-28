@@ -1,0 +1,25 @@
+=================================================
+  THYME STANDALONE DIAGNOSTIC ENVIRONMENT v1.1   
+=================================================
+Boot Time (UTC): Tue Jan 20 15:14:17 UTC 1970
+Kernel: Linux version 4.19.325-perf-g45b9b954f074 (root@Rock-Laptop) (Android (13989888, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349), LLD 21.0.0 (/mnt/disks/build-disk/src/googleplex-android/llvm-r563880-release/out/llvm-project/llvm 5e96669f06077099aa41290cdb4c5e6fa0f59349)) #1 SMP PREEMPT Tue Sep 22 15:06:57 CST 2026
+Cmdline: ramoops_memreserve=4M rcupdate.rcu_expedited=1 rcu_nocbs=0-7 kpti=off androidboot.console=ttyMSM0 androidboot.fstab_suffix=qcom androidboot.hardware=qcom androidboot.init_fatal_reboot_target=recovery androidboot.memcg=1 androidboot.usbcontroller=a600000.dwc3 cgroup.memory=nokmem,nosocket deferred_probe_timeout=300 iptable_raw.raw_before_defrag=1 ip6table_raw.raw_before_defrag=1 loop.max_part=7 lpm_levels.sleep_disabled=1 msm_rtb.filter=0x237 reboot=panic_warm service_locator.enable=1 androidboot.init_fatal_panic=true androidboot.selinux=permissive androidboot.verifiedbootstate=orange androidboot.keymaster=1  androidboot.bootdevice=1d84000.ufshc androidboot.fstab_suffix=default androidboot.boot_devices=soc/1d84000.ufshc androidboot.serialno=1384e684 androidboot.secureboot=1 androidboot.hwversion=A.9.0 androidboot.cpuid=0x4bea70bf androidboot.hwc=CN androidboot.hwlevel=MP androidboot.baseband=mdm msm_drm.dsi_display0=qcom,mdss_dsi_j2s_mp_42_02_0a_dsc_cmd: androidboot.oled_panel_id=0B androidboot.oled_pmic_id=0A androidboot.oled_wp=01f4020909030105 androidboot.slot_suffix=_a rootwait ro init=/init androidboot.dtbo_idx=10 androidboot.dtb_idx=0 androidboot.force_normal_boot=1 androidboot.ramdump=disable block2mtd.block2mtd=/dev/block/sda15,2097152 mtdoops.mtddev=0 mtdoops.record_size=2097152 mtdoops.dump_oops=0 printk.always_kmsg_dump=1 androidboot.profile_vendor_id=0B androidboot.dp=0x0 androidboot.cert=M2102J2SC
+PID 1: 1 (sh on busybox)
+Dev nodes created successfully
+[OK] /sys/fs/pstore mounted successfully
+[OK] pstore records copied to RAM: 2
+total 856
+drwxr-xr-x    2 0        0               80 Jan 20 15:14 .
+drwxr-xr-x    3 0        0               80 Jan 20 15:14 ..
+-r--r--r--    1 0        0           607398 Jan 20 15:14 console-ramoops-0
+-r--r--r--    1 0        0           262852 Jan 20 15:14 pmsg-ramoops-0
+cbcb5309b8b662bfcb9d589b272c46cab7bda9fa004fc08464cb6320174669b3  /tmp/dumps/pstore/console-ramoops-0
+4349ff509831d1d64d33be6cc0a9f25d048a5cc4469bf365773fd72268d0b628  /tmp/dumps/pstore/pmsg-ramoops-0
+[INFO] Waiting for oops block device (/dev/block/sda15)...
+[OK] /dev/block/sda15 verified ready after 1 checks
+[INFO] Extracting raw oops partition from /dev/block/sda15 (strictly read-only)...
+[OK] oops.raw extracted size: 16777216 bytes
+7d1e254bbeb4803d79fdf96f673ef4dc9c7d0eae68df3019c2384b3439e4bb66  /tmp/dumps/oops.raw
+[OK] Saved dmesg_diag_boot.txt (2085 lines)
+[INFO] Formatting 64MB FAT32 RAM disk image...
+[OK] Mounted FAT32 RAM disk, copying dump files...

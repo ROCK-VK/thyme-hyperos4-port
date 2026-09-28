@@ -1,0 +1,34 @@
+Captured before C23-retest fastboot reboot; read-only getvars only.
+Local time: 2026-09-28 15:09:33 +08:00
+> fastboot devices -l
+1384e684               fastboot
+> fastboot getvar product
+product: thyme
+Finished. Total time: 0.005s
+> fastboot getvar current-slot
+current-slot: a
+Finished. Total time: 0.005s
+> fastboot getvar unlocked
+unlocked: yes
+Finished. Total time: 0.004s
+> fastboot getvar is-userspace
+is-userspace: no
+Finished. Total time: 0.005s
+> fastboot getvar slot-unbootable:a
+slot-unbootable:a: no
+Finished. Total time: 0.003s
+> fastboot getvar slot-successful:a
+slot-successful:a: no
+Finished. Total time: 0.003s
+> fastboot getvar slot-retry-count:a
+slot-retry-count:a: 7
+Finished. Total time: 0.003s
+> fastboot getvar slot-unbootable:b
+slot-unbootable:b: no
+Finished. Total time: 0.003s
+> fastboot getvar slot-successful:b
+slot-successful:b: no
+Finished. Total time: 0.003s
+> fastboot getvar slot-retry-count:b
+slot-retry-count:b: 7
+Finished. Total time: 0.003s

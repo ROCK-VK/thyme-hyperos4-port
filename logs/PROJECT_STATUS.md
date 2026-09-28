@@ -1,19 +1,19 @@
 # THYME-OS4 Project Status
 
-Last updated: 2026-09-27 (Hong Kong time)
+Last updated: 2026-09-28 (Hong Kong time)
 
 ## Goal and current stage
 
 Port the Xiaomi 15 (`dada`) HyperOS 4 / Android 17 userspace to Xiaomi Mi 10S (`thyme`). The immediate goal is to pass graphics initialization and reach the boot animation, setup wizard, or desktop.
 
-**Current stage: C23 has had one controlled attempt and only Recovery console evidence was saved; the cause remains unresolved. An Init-fatal-to-Recovery path is configured, but no ordinary Android fatal was captured. The current BCB fields are empty after Recovery cleared BCB. A-slot retry budget has been restored to 7; the phone remains in Bootloader Fastboot, waiting for the user to confirm they are present before a C23 retest.**
+**Current stage: The C23 retest entered normal Android First/Second Stage, completed data initialization, and logged a BootAnimationShownTiming event. The user still observed a steady Xiaomi logo; setup wizard/desktop and sys.boot_completed=1 remain unconfirmed. Device is in Bootloader Fastboot after the user manually returned it.**
 
 ## Device and flashed build
 
-- Latest read-only state: the device is thyme, A slot, unlocked, Bootloader Fastboot, not userspace Fastboot. A slot is unbootable=no, successful=no, retry count 7; B slot retry count 7. The one explicitly authorized fastboot set_active a returned OKAY. C23 has not been restarted.
+- Latest read-only state (2026-09-28 15:24 HKT): unique device 1384e684, thyme, A slot, unlocked, Bootloader Fastboot (not userspace). A: unbootable=no, successful=no, retry=6; B: unbootable=no, successful=no, retry=7. C23 retest consumed one A-slot attempt; no second set_active was run.
 - C23 wrote only `super` and `vbmeta_system_a`. The inherited boot, vendor_boot, dtbo and root vbmeta were not rewritten.
-- One C23 `fastboot reboot` was executed after the observer was ARMED. No userdata/metadata erase, slot change, BCB edit, other partition write, hardware identity change, PixelOS restore, or Bootloader relock occurred.
-- The phone is currently in Fastboot. Do not treat the C23 build or flash as a successful Android boot.
+- C23 had an earlier Recovery-only attempt and a 2026-09-28 retest. The retest observer was ARMED before one fastboot reboot; user observed a steady Xiaomi logo and manually returned to Fastboot. ADB did not come online.
+- The phone is currently in Bootloader Fastboot on C23. PixelOS has not been restored; no userdata/metadata erase, BCB edit, other partition write, hardware identity write, or Bootloader relock occurred in this retest.
 
 ## C22 result
 
@@ -30,6 +30,13 @@ Port the Xiaomi 15 (`dada`) HyperOS 4 / Android 17 userspace to Xiaomi Mi 10S (`
 - Host checks passed for final EROFS readback, system AVB descriptor, retained product/system_ext descriptors, and LP layout. The build manifest lists all six image identities. Only `super` and `vbmeta_system_a` were flashed successfully.
 - [C23 report](../reports/candidate23/REPORT.md), [build report](../reports/candidate23/BUILD_REPORT.md), and [six-image manifest](../reports/candidate23/BUILD_MANIFEST.json).
 
+## C23 retest (2026-09-28)
+
+- The console contains one normal Linux/Init instance: First Stage about 2.048s, Second Stage about 3.212s, enforcing SELinux, APEX, metadata and /data/vold initialization; F2FS /data mounted successfully. Console continues to about 126s.
+- pmsg spans about two minutes and contains BootAnimation plus BootAnimationShownTiming start time: 42129ms. This is evidence of a BootAnimation-related stage, not proof of the visible screen contents, setup wizard, desktop, or boot completion. The user reported only the steady Xiaomi logo.
+- The captured pmsg does not reproduce C22 output buffer not gpu writeable, primeShaderCache, EGLConfig, or Vulkan RenderEngine fatal messages. This is positive stage evidence, but runtime service.sf.prime_shader_cache=0 was not sampled; its effect is not independently verified.
+- pmsg contains repeated netd SIGABRT in libnetd_updatable_init.cfi+576 and Xiaomi fingerprint-service SIGSEGV at fault address 0xd0 in libudfpshandler.so. Neither is proven to have blocked BootAnimation/UI. No additional broad fix is justified from this run alone.
+- The standalone export has 8 source files (17,805,353 bytes), all copied and SHA-256 matched. oops.raw matches C13-C22 historical content; Standalone dmesg is diagnostic-system output. See [C23 retest report](../reports/candidate23/C23_RETEST_20260928.md) and [full retest evidence](../evidence/candidate23/).
 ## Validated history and remaining uncertainty
 
 - C13 reached Android First/Second Stage, APEX, vold and `/data`; C14 bypassed the BPF/kernel-version restart gate.
@@ -40,10 +47,10 @@ Port the Xiaomi 15 (`dada`) HyperOS 4 / Android 17 userspace to Xiaomi Mi 10S (`
 - There is no C23 SurfaceFlinger, Skia, Vulkan, or shader-cache log. The effect of `service.sf.prime_shader_cache=0`, normal composition, and any progress to HyperOS UI are unknown.
 
 ## Next step
-Keep the device in Fastboot. After the user confirms they are beside the phone and ready to observe, start the read-only observer with candidate label C23-retest, wait for ARMED, then perform one controlled C23 boot. Do not build C24 or clear userdata/metadata without a concrete need.
+Keep C23 in Fastboot; do not repeat set_active or blindly reboot. Do not build C24 or clear userdata/metadata yet. The next work should explain the gap between the BootAnimation timing event and the steady logo/no confirmed setup wizard or desktop, using a targeted method that can capture post-boot progress. The Recovery trigger from the earlier C23 attempt remains unknown.
 If C23 re-enters Recovery, save that evidence and do not confirm wipe prompts; the current Recovery path remains unproven as the root cause.
 
 ## Public evidence
 The evidence index covers user-authorized C13–C23 diagnostic evidence. C23's accessible raw export and host observations are published with per-file source/public sizes and SHA-256 in the cumulative evidence manifest. The Recovery follow-up report is linked below; complete `misc.raw` and raw diagnostic state containing device identifiers remain local. No ROMs, firmware packages, partition images, userdata/metadata images, credentials, or hardware-identity partition backups are included.
 
-C23 Recovery follow-up: [recovery cause and A-slot retest preparation](../reports/candidate23/RECOVERY_RETEST_20260927.md).
+C23 Recovery follow-up: [recovery cause and A-slot retest preparation](../reports/candidate23/RECOVERY_RETEST_20260927.md). Latest retest: [normal boot and BootAnimation evidence](../reports/candidate23/C23_RETEST_20260928.md).

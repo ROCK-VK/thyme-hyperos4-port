@@ -1,0 +1,12 @@
+{"candidate": "C23-retest", "event": "observer_started", "host_utc": "2026-09-28T07:09:00.177+00:00", "serial": "1384e684"}
+{"elapsed_seconds": 2.596, "event": "usb_pnp_state_change", "host_utc": "2026-09-28T07:09:02.772+00:00", "output": "initial PnP query pending", "state": "query_pending"}
+{"elapsed_seconds": 2.596, "event": "adb_state_change", "host_utc": "2026-09-28T07:09:02.774+00:00", "output": "List of devices attached |  | * daemon not running; starting now at tcp:5037 | * daemon started successfully", "state": "absent"}
+{"elapsed_seconds": 2.596, "event": "fastboot_state_change", "host_utc": "2026-09-28T07:09:02.775+00:00", "output": "1384e684               fastboot", "state": "fastboot"}
+{"adb_state": "absent", "candidate": "C23-retest", "elapsed_seconds": 6.674, "event": "observer_armed", "fastboot_state": "fastboot", "host_utc": "2026-09-28T07:09:06.859+00:00", "usb_pnp_state": "present"}
+{"elapsed_seconds": 6.674, "event": "usb_pnp_state_change", "host_utc": "2026-09-28T07:09:06.860+00:00", "output": "{\"state\":\"present\",\"devices\":[{\"Status\":\"OK\",\"Class\":\"AndroidUsbDeviceClass\",\"FriendlyName\":\"Android Bootloader Interface\",\"InstanceId\":\"USB\\\\VID_18D1&PID_D00D\\\\1384E684\"}]}", "state": "present"}
+{"elapsed_seconds": 45.681, "event": "fastboot_state_change", "host_utc": "2026-09-28T07:09:45.857+00:00", "output": "", "state": "absent"}
+{"elapsed_seconds": 51.683, "event": "usb_pnp_state_change", "host_utc": "2026-09-28T07:09:51.860+00:00", "output": "{\"state\":\"absent\",\"devices\":[]}", "state": "absent"}
+{"elapsed_seconds": 180.762, "event": "fastboot_state_change", "host_utc": "2026-09-28T07:12:00.938+00:00", "output": "1384e684               fastboot", "state": "fastboot"}
+{"elapsed_seconds": 186.737, "event": "usb_pnp_state_change", "host_utc": "2026-09-28T07:12:06.913+00:00", "output": "{\"state\":\"present\",\"devices\":[{\"Status\":\"OK\",\"Class\":\"AndroidUsbDeviceClass\",\"FriendlyName\":\"Android Bootloader Interface\",\"InstanceId\":\"USB\\\\VID_18D1&PID_D00D\\\\1384E684\"}]}", "state": "present"}
+{"elapsed_seconds": 247.751, "event": "fastboot_state_change", "host_utc": "2026-09-28T07:13:07.927+00:00", "output": "", "state": "absent"}
+{"elapsed_seconds": 300.802, "event": "observer_window_completed", "host_utc": "2026-09-28T07:14:00.978+00:00"}

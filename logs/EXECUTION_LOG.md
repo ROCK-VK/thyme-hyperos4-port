@@ -13477,3 +13477,12 @@
 - Validation: Standalone read-only misc capture was 4 MiB; only the first 2 KiB BCB fields were parsed and were empty. Full misc.raw and raw diagnostic state remain local. A-slot before reset: retry=1, unbootable=no, successful=no; B retry=7. One fastboot set_active a returned OKAY; after reset A and B retry=7, A remains unsuccessful and bootable.
 - Safety: no C23 reboot, flash, userdata/metadata erase, BCB write, PixelOS restore, or Bootloader relock was performed in this follow-up.
 - Next: after the user confirms they are present, arm the C23-retest read-only observer and then perform one C23 boot.
+
+## 2026-09-28 15:24 | C23 retest reached a BootAnimation-related stage
+
+- Status: One controlled C23 reboot, user return to Fastboot, complete Standalone export, and targeted pstore review are complete.
+- Result: The retest did not enter Recovery. One console instance shows First Stage (~2.048s), Second Stage (~3.212s), enforcing SELinux, APEX, vold and successful F2FS /data initialization. pmsg records BootAnimation and BootAnimationShownTiming start time: 42129ms. The user still observed a steady Xiaomi logo; no setup wizard, desktop, or direct sys.boot_completed=1 sample was obtained. C22 shader-prewarm, EGLConfig, and Vulkan RenderEngine fatal signatures were absent in this captured pmsg window; runtime service.sf.prime_shader_cache=0 remains unverified.
+- Evidence: 8 Standalone-volume files (17,805,353 bytes) and 10 host-observation files were copied into new C23 retest directories. Source and public copies matched by size and SHA-256, with no copy/hash mismatches. oops.raw is unchanged historical content seen in C13-C22; Standalone dmesg belongs to the diagnostic environment. The device was read-only confirmed as thyme/A, unlocked Bootloader Fastboot, A retry=6 and B retry=7.
+- Remaining: Repeated netd SIGABRT and fingerprint-service SIGSEGV are present, but no evidence ties either to the missing UI. Do not infer that the shader-cache property caused the new progress. No C24 is built from this run alone.
+- Safety: No flash, data/metadata erase, BCB write, further slot operation, PixelOS restore, hardware-identity partition write, or Bootloader relock.
+- Report: [C23 retest](../reports/candidate23/C23_RETEST_20260928.md); raw files and host timeline: [C23 evidence](../evidence/candidate23/).

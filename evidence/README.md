@@ -17,7 +17,7 @@
 - candidate20/standalone 与 host-observations：C20 ANGLE 路由诊断实验的完整诊断卷导出和主机观察记录；包含 console、pmsg、oops、Standalone dmesg、diag_status、设备生成文件、导出清单和启动观察时间线。
 - candidate21/standalone 与 host-observations：C21 全部可访问 Standalone 导出文件及主机观察目录，共 19 个源文件；包括 console、pmsg、历史 oops.raw、Standalone dmesg、diag_status、导出元数据、空 logcat 文件及系统生成文件。公开副本序列号脱敏，逐文件源/公开哈希见该 Candidate 的发布清单。
 - candidate22/standalone 与 host-observations：C22 的 8 个诊断卷文件和 11 个主机观察文件，共 19 项。完整保留本轮实际存在的文件及目录结构；源与公开副本逐文件大小/SHA-256 一致。Standalone dmesg 属于诊断环境，`oops.raw` 为历史/诊断残留，不能作为 C22 Android 启动日志。
-- candidate23/standalone 与 host-observations：C23 的全部 7 个可访问诊断卷文件和 7 个主机观察文件。C23 console 记录进入 Recovery 分支；没有 pmsg，`oops.raw` 与 C22 历史残留相同，Standalone dmesg 属于诊断环境。C23 logcat 文件为空，ADB 曾为 `unauthorized`。
+- candidate23/standalone 与 host-observations：包含 2026-09-27 首次 Recovery 现场，以及 2026-09-28 retest 的 8 个诊断卷文件和 10 个主机观察文件。retest console 证明正常 First/Second Stage 与 /data 初始化，pmsg 记录 BootAnimationShownTiming；用户仍只看到静态小米 Logo，桌面未确认。首次尝试的 Recovery 原因仍未知。
 
 每个 Standalone 导出保留当时实际存在的原始 console-ramoops、pmsg-ramoops、oops.raw、Standalone dmesg、diag_status、源端校验文件、主机导出时间线和清单。缺失的文件不会补造。
 
