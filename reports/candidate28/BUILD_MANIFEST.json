@@ -1,0 +1,294 @@
+{
+  "candidate": "Candidate 28 Recovery/Zygote persistent startup diagnostics",
+  "base": "Candidate 27 netd-to-Zygote restart-cycle fix and diagnostic",
+  "changes": [
+    "Replaces only the C27 diagnostic helper/RC with C28 diagnostics; C27 system behavior and netd callback removal remain unchanged.",
+    "Adds init built-in metadata markers for post-fs-data, netd/zygote/bootanim/surfaceflinger service transitions, boot-complete, sys.powerctl, shutdown, and immediately before the two existing --bad_nv Recovery actions. Their conditions and commands are unchanged.",
+    "Fixes the C27 helper's first-write gap: logger status START is written and fsync'd immediately after status open, before statvfs/pipe/fork; helper PID and child PID are persisted before the child launch gate opens; exec errno is reported through a dedicated pipe; wait status validity, exit code, signal, stderr and stop reason are captured.",
+    "Uses one logcat output file, existing shell SELinux domain and the C26-proven -b all buffer selection; no -r/-n rotation; 8-minute and metadata-aware 24 MiB caps with periodic file sync."
+  ],
+  "evidence_basis": [
+    "C27 init's post-fs-data marker was present, but four helper-created diagnostic files were zero bytes. C27 source created the logger status file before statvfs/plan completion and wrote START only after those steps; the watcher also opened its event/tail files and sampled properties before its first START record.",
+    "C26's shell-domain logcat invocation produced about 8.56 MB in metadata, proving that logd access and the target metadata path worked in that run. C27 did not preserve enough status to distinguish pre-write termination, write/fsync failure, or abrupt reset; this remains unknown.",
+    "Final C27 init tree has exactly two explicit rebootrecovery --bad_nv actions in system/etc/init/hw/init.rc, gated by the vendor-radio/SSR and radio write-cache properties. C27 did not save their runtime values. Other scanned RC reboot_on_failure paths request normal reboot or bootloader, not an explicit Recovery target. The trigger cause remains unconfirmed."
+  ],
+  "diagnostic_limits": [
+    "Init write markers are separate files but init's built-in write does not expose an fsync result; marker absence cannot by itself distinguish an untriggered action from a very early interruption.",
+    "C28 has not been run on the device. Its init markers, helper launch, logd access, persistence, and ability to capture sys.powerctl remain unverified until the next authorized startup.",
+    "The targeted K40 system cache does not include system/etc/init/hw/init.rc. No K40 statement is made about these two triggers; C28 does not alter them."
+  ],
+  "recovery_path_scan": {
+    "source": "work/reports/20260929_C28_RECOVERY_ZYGOTE_DIAGNOSTIC/c27_recovery_init_scan.json",
+    "direct_recovery_actions": [
+      {
+        "rc": "/system/etc/init/hw/init.rc",
+        "trigger": "persist.vendor.radio.write.cache=1 && persist.vendor.ssr.restart_level=ALL_ENABLE",
+        "command": "rebootrecovery --bad_nv"
+      },
+      {
+        "rc": "/system/etc/init/hw/init.rc",
+        "trigger": "persist.radio.write.cache=1",
+        "command": "rebootrecovery --bad_nv"
+      }
+    ],
+    "C27_runtime_trigger_values": "not recorded",
+    "root_cause": "unconfirmed; C28 adds pre-action markers without changing either condition"
+  },
+  "tree_changes": {
+    "init_rc": {
+      "c25_import_retained": true,
+      "c27_import_removed": true,
+      "c28_import_added": true,
+      "explicit_recovery_markers": [
+        "C28_RECOVERY_BAD_NV_VENDOR.txt",
+        "C28_RECOVERY_BAD_NV_RADIO.txt"
+      ],
+      "rebootrecovery_count_before_after": [
+        2,
+        2
+      ],
+      "recovery_conditions_changed": false
+    },
+    "old_diagnostic_files_removed": [
+      "system/etc/init/c27_zygote_diag.rc",
+      "system/bin/c27_zygote_diag"
+    ],
+    "new_diagnostic_files_added": [
+      "system/etc/init/c28_recovery_diag.rc",
+      "system/bin/c28_recovery_diag"
+    ],
+    "old_file_contexts_removed": [
+      "/system/bin/c27_zygote_diag u:object_r:shell_exec:s0",
+      "/system/etc/init/c27_zygote_diag\\.rc u:object_r:system_file:s0"
+    ],
+    "new_file_contexts_added": [
+      "/system/bin/c28_recovery_diag u:object_r:shell_exec:s0",
+      "/system/etc/init/c28_recovery_diag\\.rc u:object_r:system_file:s0"
+    ],
+    "netd_service_definitions": 1,
+    "netd_to_zygote_callbacks_absent": [
+      "onrestart restart zygote",
+      "onrestart restart zygote_secondary"
+    ],
+    "plat_sepolicy_sha256": "25E1258BAD2C587C40A79FE41820FE05E8318768B204B80B5346BE76FAFEFCBF",
+    "plat_sepolicy_changed": false
+  },
+  "tree_delta": {
+    "removed": [
+      "system/bin/c27_zygote_diag",
+      "system/etc/init/c27_zygote_diag.rc"
+    ],
+    "added": [
+      "system/bin/c28_recovery_diag",
+      "system/etc/init/c28_recovery_diag.rc"
+    ],
+    "modified": [
+      "system/etc/init/hw/init.rc",
+      "system/etc/selinux/plat_file_contexts"
+    ],
+    "unexpected_changes": []
+  },
+  "runtime_helper": {
+    "bytes": 2366160,
+    "sha256": "FBC5FD0B74DFD676E9DB2E6ABBE0C42239CED07B4E49A92437EB5C31AC882255",
+    "architecture": "AArch64",
+    "needed": [
+      "liblog.so"
+    ],
+    "cxx_runtime": "statically linked libc++",
+    "source_sha256": "04FB55F06F4B7E5596B3D1513F58AB22E912AC15447920A7D5FD9AE46659875B"
+  },
+  "system_build": {
+    "file_context_additions": [
+      "/system/system/bin/c25_bootdiag u:object_r:shell_exec:s0",
+      "/system/system/etc/init/c25_bootdiag\\.rc u:object_r:system_file:s0",
+      "/system/system/bin/c28_recovery_diag u:object_r:shell_exec:s0",
+      "/system/system/etc/init/c28_recovery_diag\\.rc u:object_r:system_file:s0"
+    ],
+    "new_fs_config_paths": [
+      "system/system/bin/c28_recovery_diag",
+      "system/system/etc/init/c28_recovery_diag.rc"
+    ],
+    "final_erofs_readback": {
+      "/system/etc/init/hw/init.rc": {
+        "tokens": [
+          "import /system/etc/init/c28_recovery_diag.rc",
+          "persist.vendor.radio.write.cache=1",
+          "persist.vendor.ssr.restart_level=ALL_ENABLE",
+          "persist.radio.write.cache=1",
+          "C28_RECOVERY_BAD_NV_VENDOR.txt",
+          "C28_RECOVERY_BAD_NV_RADIO.txt",
+          "rebootrecovery --bad_nv"
+        ],
+        "bytes": 81332,
+        "sha256": "5CED132A9A2DE88F538BF16FFE8B7D69C0DD10E065F585292A6289E865243096"
+      },
+      "/system/etc/init/c28_recovery_diag.rc": {
+        "tokens": [
+          "C28_POST_FS_DATA.txt",
+          "C28_NETD_RUNNING.txt",
+          "C28_NETD_RESTARTING.txt",
+          "C28_ZYGOTE_RUNNING.txt",
+          "C28_ZYGOTE_RESTARTING.txt",
+          "C28_ZYGOTE_SECONDARY_RUNNING.txt",
+          "C28_BOOT_COMPLETED.txt",
+          "C28_SYS_POWERCTL.txt",
+          "C28_SHUTDOWN.txt",
+          "start c28_logcat",
+          "start c28_zygote_watch",
+          "seclabel u:r:shell:s0"
+        ],
+        "bytes": 4311,
+        "sha256": "886BC3A7C67EAAA31B0B616DE144C8567AEE77A8E12D2611D0842D04023A1B05"
+      },
+      "/system/etc/init/netd.rc": {
+        "tokens": [
+          "service netd /system/bin/netd"
+        ],
+        "bytes": 2319,
+        "sha256": "CE706B53205492835BE972DE4381DC601297E4C0B211D3889C9C9E150428C5EE"
+      },
+      "/system/etc/selinux/plat_file_contexts": {
+        "tokens": [
+          "/system/bin/c28_recovery_diag",
+          "/system/etc/init/c28_recovery_diag\\.rc"
+        ],
+        "bytes": 50792,
+        "sha256": "B57235F75FA0545867CC316679A80A4C1E5A21D11E0AA3BFA00BD769E4FECA53"
+      },
+      "/system/bin/c28_recovery_diag": {
+        "tokens": [
+          "C28ZygoteDiag",
+          "C28_LOGCAT_START",
+          "C28_LOGCAT_CHILD",
+          "C28_LOGCAT_EXEC_FAILED",
+          "child_exit_code",
+          "file_sync_error"
+        ],
+        "bytes": 2366160,
+        "sha256": "FBC5FD0B74DFD676E9DB2E6ABBE0C42239CED07B4E49A92437EB5C31AC882255"
+      }
+    },
+    "system_image_bytes": 1092616192,
+    "system_image_sha256": "28EA9B0CA7DBCD78301533C2487DC1D215163C41DA3BFA76A50AC8065167C583",
+    "netd_callbacks_retained_as_removed": true,
+    "no_selinux_cil_change": true
+  },
+  "vbmeta_system_update": {
+    "base_sha256": "B0FFDFD7FD492F17ABD6FDC0F3577C6F9C1976C8087B6A21E77191FA1A624F46",
+    "system_image_size_before": 958156800,
+    "system_image_size_after": 959852544,
+    "system_tree_size": 7565312,
+    "system_root_digest": "7ce8d7afbefce3391241b05392ba988cdc3aa69d8f5a8b31dbaab660ac9598bf",
+    "flags": 2,
+    "rollback_index": 0,
+    "rollback_index_location": 2,
+    "unchanged_other_descriptors": [
+      "product",
+      "system_ext"
+    ]
+  },
+  "logical_input_hashes": {
+    "vendor_c22.img": {
+      "bytes": 1510998016,
+      "sha256": "FCEAFEE5B5909D7BE9BBEC48D9E8720F37798DDEEBDBF193424FB3A095CBA675"
+    },
+    "system_ext_a.img": {
+      "bytes": 942669824,
+      "sha256": "6B63E58346DA5B2FEBA7F51980CCEBF886D5991DD07F91541FE4D9F1485CDAD5"
+    },
+    "mi_ext.img": {
+      "bytes": 202375168,
+      "sha256": "43ED8FC0D1848F5D53BFB7206AC91FE5E5ED4E3F71E958D49F2EEA4C9C8B4BCE"
+    },
+    "odm.img": {
+      "bytes": 35758080,
+      "sha256": "075E4A17DC4CA716399166388B1C175060D5CBB31139B2ACBD9E5B2DEE352E22"
+    },
+    "product.img": {
+      "bytes": 4387241984,
+      "sha256": "87955DBE97AC28B01A214273BD03F36B5886310DC3B2E4128B9F4661E1C3345E"
+    }
+  },
+  "flash_scope_prepared": [
+    "super",
+    "vbmeta_system_a"
+  ],
+  "images": {
+    "boot.img": {
+      "bytes": 201326592,
+      "sha256": "E5A016056D5C93C7A886980A7C062617EC44DC06A48417D7DD0F4476708A6368"
+    },
+    "vendor_boot.img": {
+      "bytes": 100663296,
+      "sha256": "02333B82BA936F1BAAB1ECAB744632C70F8FC16688A206C7041EF319F112A137"
+    },
+    "dtbo.img": {
+      "bytes": 33554432,
+      "sha256": "50E1AC0EDCBD333778217AA6FE8D972F6FF85ADD0DAE8A015A6642C2172DD886"
+    },
+    "vbmeta.img": {
+      "bytes": 131072,
+      "sha256": "66A53C2EC38247193CC86B7F5DE887556864413D1142C3C1994645DE1E3BAB10"
+    },
+    "vbmeta_system.img": {
+      "bytes": 131072,
+      "sha256": "BE82309DE7892151F3111E551E02BD90FB2F256C30A2803C1D77DAB692F00359"
+    },
+    "super.img": {
+      "bytes": 7703600088,
+      "sha256": "6B292A91F71C0800255D694BE04C816715DEBC44ADEA8A8CE7B018CB695F24CF"
+    }
+  },
+  "c27_baseline": {
+    "checked_images": {
+      "boot.img": {
+        "bytes": 201326592,
+        "sha256": "E5A016056D5C93C7A886980A7C062617EC44DC06A48417D7DD0F4476708A6368"
+      },
+      "vendor_boot.img": {
+        "bytes": 100663296,
+        "sha256": "02333B82BA936F1BAAB1ECAB744632C70F8FC16688A206C7041EF319F112A137"
+      },
+      "dtbo.img": {
+        "bytes": 33554432,
+        "sha256": "50E1AC0EDCBD333778217AA6FE8D972F6FF85ADD0DAE8A015A6642C2172DD886"
+      },
+      "vbmeta.img": {
+        "bytes": 131072,
+        "sha256": "66A53C2EC38247193CC86B7F5DE887556864413D1142C3C1994645DE1E3BAB10"
+      },
+      "vbmeta_system.img": {
+        "bytes": 131072,
+        "sha256": "19B1ECD7128874989792C1B3F5173E6F4A8D2E0AC08734D35338AFAD674FA881"
+      }
+    },
+    "logical_input_hashes": {
+      "vendor_c22.img": {
+        "bytes": 1510998016,
+        "sha256": "FCEAFEE5B5909D7BE9BBEC48D9E8720F37798DDEEBDBF193424FB3A095CBA675"
+      },
+      "system_ext_a.img": {
+        "bytes": 942669824,
+        "sha256": "6B63E58346DA5B2FEBA7F51980CCEBF886D5991DD07F91541FE4D9F1485CDAD5"
+      },
+      "mi_ext.img": {
+        "bytes": 202375168,
+        "sha256": "43ED8FC0D1848F5D53BFB7206AC91FE5E5ED4E3F71E958D49F2EEA4C9C8B4BCE"
+      },
+      "odm.img": {
+        "bytes": 35758080,
+        "sha256": "075E4A17DC4CA716399166388B1C175060D5CBB31139B2ACBD9E5B2DEE352E22"
+      },
+      "product.img": {
+        "bytes": 4387241984,
+        "sha256": "87955DBE97AC28B01A214273BD03F36B5886310DC3B2E4128B9F4661E1C3345E"
+      }
+    }
+  },
+  "host_storage_gate": {
+    "C_free_gib": 78.26,
+    "D_free_gib": 214.59,
+    "E_free_gib": 258.44
+  }
+}

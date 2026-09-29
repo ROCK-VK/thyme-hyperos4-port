@@ -14031,3 +14031,18 @@
 - 只读 Fastboot 状态：thyme，A 槽、unlocked、非 userspace；A retry=6、unbootable=no、successful=no；B retry=7。无刷写、擦除、set_active 或 BCB 写入。
 - 原始 misc.raw、旧 oops.raw、完整镜像未公开。公开文本日志已脱敏设备序列号、CPUID、主机名和本机路径；文件来源及源/公开副本 SHA-256 见 C27 evidence manifest。
 - 报告：reports/C27_FIRST_BOOT_AND_RECOVERY_REPORT.md；证据：evidence/candidate27/first-boot-20260929/。下一步先解决诊断输出留存，不凭空构建 C28。
+
+## 2026-09-29 19:05 HKT｜C28 Recovery/Zygote 留证构建与受限刷写
+
+- 状态：主机侧构建和静态检查完成；仅刷写 super 与 vbmeta_system_a；设备保持 Bootloader Fastboot，C28 尚未启动。
+- 改动/结论：C27 init 扫描发现两条显式 rebootrecovery --bad_nv action，分别受 vendor-radio/SSR 与 radio write-cache 属性控制；C27 未记录触发值或 sys.powerctl，因此 Recovery 原因仍未确认。C28 在原命令前写独立 init marker，并增加 post-fs-data、netd/Zygote/bootanim/SurfaceFlinger 状态、sys.boot_completed、sys.powerctl 与 shutdown marker。C27 移除的 netd→Zygote onrestart 回调保持移除。
+- logger：修正零字节诊断的早期留证缺口；打开状态文件后立即写 START 并 fsync，记录 helper/child PID，使用 exec errno pipe，保存退出状态/信号/stderr/停止原因；单文件有界 logcat，不使用轮转，最多约 8 分钟/24 MiB。
+- 原因：C27 的 post-fs-data marker 证明正常 init 到达该阶段，但 logcat/Zygote 文件均为零字节，使 netd、Zygote、system_server 和 Recovery 请求来源无法判断。C28 以 init 内建 marker 与早期持久状态提高下一次启动的可解释性，不改变 C27 启动条件。
+- 涉及文件：tools/build_candidate28_recovery_diag.py；tools/candidate28_recovery_diag/c28_recovery_diag.cpp、c28_recovery_diag.rc；tools/flash_candidate28_recovery_diag.ps1；work/stage_c28_recovery_zygote_diag_20260929_run4/；work/reports/20260929_C28_RECOVERY_ZYGOTE_DIAGNOSTIC/；日志/项目当前状态.md。
+- 验证：构建成功；C++ NDK -Wall -Wextra -Werror、AArch64 ELF/依赖、EROFS fsck/readback、helper 原始字节 readback、init marker、file_context、netd callback 负向断言、system AVB hashtree、vbmeta_system descriptor、LP 输入/布局检查通过。受限刷写脚本语法与 Dry-Run 通过。实际唯一设备 [设备序列号已脱敏]，product=thyme、A 槽、unlocked=yes、is-userspace=no、A retry=6/unbootable=no；super 10 个 sparse chunk 均完成并返回 OKAY，vbmeta_system_a 发送/写入返回 OKAY。刷后重新核验同一 Fastboot 设备与槽位状态。
+- 镜像：super 7,703,600,088 bytes，SHA-256 6B292A91F71C0800255D694BE04C816715DEBC44ADEA8A8CE7B018CB695F24CF；vbmeta_system.img 131,072 bytes，SHA-256 BE82309DE7892151F3111E551E02BD90FB2F256C30A2803C1D77DAB692F00359。
+- 尚未验证：C28 首启；marker 与诊断服务能否在快速 Recovery 前留存；C27 两条 --bad_nv action 的运行时条件；netd restart 后 Zygote 状态、system_server 阶段、Recovery 请求原因。任何构建验证不等同于设备启动验证。
+- 设备边界：未执行 reboot、userdata/metadata 擦除、set_active、切槽、misc/BCB 操作、其他分区写入、PixelOS 恢复或 Bootloader 回锁。
+- 磁盘：C/D/E 分别约 77.76/206.15/250.92 GiB 可用；不触发低于 50 GiB 门槛，未清理，Docker 未访问。
+- 待处理：等待用户现场确认 C28 首次启动。设备保持 Bootloader Fastboot。
+- 替代：更新当前状态中“C27 已刷写、C28 不构建”的旧阶段判断；旧历史条目保留为当时事实。

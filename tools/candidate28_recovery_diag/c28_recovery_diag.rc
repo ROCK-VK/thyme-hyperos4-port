@@ -1,0 +1,89 @@
+service c28_logcat /system/bin/c28_recovery_diag --logcat
+    class core
+    user shell
+    group shell log
+    disabled
+    oneshot
+    seclabel u:r:shell:s0
+
+service c28_zygote_watch /system/bin/c28_recovery_diag --watch
+    class core
+    user shell
+    group shell log readproc
+    disabled
+    oneshot
+    seclabel u:r:shell:s0
+
+on post-fs-data
+    write /metadata/thyme_os4_diag/C28_POST_FS_DATA.txt "candidate=C28 event=post-fs-data bootreason=${ro.boot.bootreason} slot=${ro.boot.slot_suffix} netd=${init.svc.netd} zygote=${init.svc.zygote} zygote_secondary=${init.svc.zygote_secondary} radio_write_cache=${persist.radio.write.cache} vendor_radio_write_cache=${persist.vendor.radio.write.cache} vendor_ssr_restart_level=${persist.vendor.ssr.restart_level}"
+    start c28_logcat
+    start c28_zygote_watch
+
+on property:init.svc.netd=running
+    write /metadata/thyme_os4_diag/C28_NETD_RUNNING.txt "candidate=C28 service=netd state=running"
+
+on property:init.svc.netd=restarting
+    write /metadata/thyme_os4_diag/C28_NETD_RESTARTING.txt "candidate=C28 service=netd state=restarting"
+
+on property:init.svc.netd=stopping
+    write /metadata/thyme_os4_diag/C28_NETD_STOPPING.txt "candidate=C28 service=netd state=stopping"
+
+on property:init.svc.netd=stopped
+    write /metadata/thyme_os4_diag/C28_NETD_STOPPED.txt "candidate=C28 service=netd state=stopped"
+
+on property:init.svc.zygote=running
+    write /metadata/thyme_os4_diag/C28_ZYGOTE_RUNNING.txt "candidate=C28 service=zygote state=running"
+
+on property:init.svc.zygote=restarting
+    write /metadata/thyme_os4_diag/C28_ZYGOTE_RESTARTING.txt "candidate=C28 service=zygote state=restarting"
+
+on property:init.svc.zygote=stopping
+    write /metadata/thyme_os4_diag/C28_ZYGOTE_STOPPING.txt "candidate=C28 service=zygote state=stopping"
+
+on property:init.svc.zygote=stopped
+    write /metadata/thyme_os4_diag/C28_ZYGOTE_STOPPED.txt "candidate=C28 service=zygote state=stopped"
+
+on property:init.svc.zygote_secondary=running
+    write /metadata/thyme_os4_diag/C28_ZYGOTE_SECONDARY_RUNNING.txt "candidate=C28 service=zygote_secondary state=running"
+
+on property:init.svc.zygote_secondary=restarting
+    write /metadata/thyme_os4_diag/C28_ZYGOTE_SECONDARY_RESTARTING.txt "candidate=C28 service=zygote_secondary state=restarting"
+
+on property:init.svc.zygote_secondary=stopping
+    write /metadata/thyme_os4_diag/C28_ZYGOTE_SECONDARY_STOPPING.txt "candidate=C28 service=zygote_secondary state=stopping"
+
+on property:init.svc.zygote_secondary=stopped
+    write /metadata/thyme_os4_diag/C28_ZYGOTE_SECONDARY_STOPPED.txt "candidate=C28 service=zygote_secondary state=stopped"
+
+on property:init.svc.bootanim=running
+    write /metadata/thyme_os4_diag/C28_BOOTANIM_RUNNING.txt "candidate=C28 service=bootanim state=running"
+
+on property:init.svc.bootanim=stopped
+    write /metadata/thyme_os4_diag/C28_BOOTANIM_STOPPED.txt "candidate=C28 service=bootanim state=stopped"
+
+on property:init.svc.surfaceflinger=running
+    write /metadata/thyme_os4_diag/C28_SURFACEFLINGER_RUNNING.txt "candidate=C28 service=surfaceflinger state=running"
+
+on property:init.svc.surfaceflinger=stopped
+    write /metadata/thyme_os4_diag/C28_SURFACEFLINGER_STOPPED.txt "candidate=C28 service=surfaceflinger state=stopped"
+
+on property:init.svc.c28_logcat=running
+    write /metadata/thyme_os4_diag/C28_LOGCAT_SERVICE_RUNNING.txt "candidate=C28 service=c28_logcat state=running"
+
+on property:init.svc.c28_logcat=stopped
+    write /metadata/thyme_os4_diag/C28_LOGCAT_SERVICE_STOPPED.txt "candidate=C28 service=c28_logcat state=stopped"
+
+on property:init.svc.c28_zygote_watch=running
+    write /metadata/thyme_os4_diag/C28_WATCH_SERVICE_RUNNING.txt "candidate=C28 service=c28_zygote_watch state=running"
+
+on property:init.svc.c28_zygote_watch=stopped
+    write /metadata/thyme_os4_diag/C28_WATCH_SERVICE_STOPPED.txt "candidate=C28 service=c28_zygote_watch state=stopped"
+
+on property:sys.boot_completed=1
+    write /metadata/thyme_os4_diag/C28_BOOT_COMPLETED.txt "candidate=C28 sys.boot_completed=1"
+
+on property:sys.powerctl=*
+    write /metadata/thyme_os4_diag/C28_SYS_POWERCTL.txt "candidate=C28 sys.powerctl=${sys.powerctl} bootreason=${ro.boot.bootreason}"
+
+on shutdown
+    write /metadata/thyme_os4_diag/C28_SHUTDOWN.txt "candidate=C28 event=shutdown bootreason=${ro.boot.bootreason}"

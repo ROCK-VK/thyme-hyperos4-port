@@ -2,17 +2,16 @@
 
 **Xiaomi 15 (dada) HyperOS 4 / Android 17 移植至 Xiaomi Mi 10S (thyme)**
 
-这是一个实验性 Android 移植工程。当前首要目标是让小米 10S 越过 HyperOS 4 启动阻塞并进入启动动画、设置向导或桌面。仓库保存可审核的脚本、补丁、项目日志与用户授权公开的 C13–C25 启动诊断证据；不提供 ROM 下载。
+这是一个实验性 Android 移植工程。当前首要目标是让小米 10S 越过 HyperOS 4 启动阻塞并进入启动动画、设置向导或桌面。仓库保存可审核的脚本、补丁、项目日志与用户授权公开的 C13–C27 启动诊断证据；不提供 ROM 下载。
 
 ## 当前状态（2026-09-29）
 
-- **C26 Zygote 首因诊断版已构建并刷写，设备当前保持 Bootloader Fastboot，尚未启动。** 本轮只写入 `super` 和 `vbmeta_system_a`，未擦除数据或修改槽位状态。
-- C25 的 55 个连续持久样本显示 zygote/zygote_secondary 长时间处于 restarting，system_server/zygote64 PID 不存在；未保存 Zygote 退出首因。C25 完整取证见 [`evidence/candidate25/run_20260928_234427_meta_ro/`](evidence/candidate25/run_20260928_234427_meta_ro/)及[C25 报告](reports/candidate25/C25_FIRST_SCREEN_DIAGNOSTIC_BUILD_FLASH_20260928.md)。
-- C26 继承 C25 sampler，新增有界 logd 全 buffer 持久轮转采集，以及 Zygote 属性/进程状态转换记录和退出时 logcat tail；是否能在真机成功运行与留存仍待验证。
-- K40 OS4.0.0.8 Android 17 成功包、Xiaomi 15 供体与 C25 的定点 Zygote/ART 比较未发现可直接移植的不同实现；因此 C26 是诊断增量，不是猜测性运行时替换。
-- 下一步需等待用户在手机旁确认，再启动只读观察器、确认 ARMED 后执行一次 C26 启动。预期第一优先级是取得 Zygote 首次退出日志；不得把主机侧构建检查写成真机启动成功。
-- 本轮没有清除 userdata/metadata、修改 boot-control/BCB/硬件身份分区或回锁 Bootloader。设备端没有分区回读；刷写结论基于 Fastboot 命令成功。
-- 重点资料：[C26 构建/刷写状态](reports/candidate26/C26_BUILD_FLASH_STATUS.md)、[C26 构建清单](reports/candidate26/BUILD_MANIFEST.json)、[当前项目状态](logs/PROJECT_STATUS.md)。
+- C28 Recovery/Zygote 诊断版已构建并刷写，设备当前保持 Bootloader Fastboot，尚未启动。本轮仅写入 super 与 vbmeta_system_a，未清数据或修改槽位。
+- C27 已证明 init 到达 post-fs-data，但诊断文件全为 0 字节；netd/Zygote/system_server 状态和进入 Recovery 的起因仍未知。
+- 对最终 C27 可达 init 配置的定点扫描发现两条显式 rebootrecovery --bad_nv action，分别受 radio write-cache 条件控制；C27 没有保存触发值或 sys.powerctl，故触发原因未确认。
+- C28 增加 init 内建 post-fs-data、netd/Zygote、bootanim/SurfaceFlinger、boot-complete、sys.powerctl、shutdown 和 Recovery action 前置 marker，并修正 logger 的早期持久写入与子进程错误留存。未改变 C27 的 netd→Zygote callback 修复。
+- C28 尚未实机启动验证。首次启动须先 ARMED 观察器并等待用户现场确认；若进入 Recovery，先保存完整诊断卷和 metadata，再分析。
+- C28 构建/刷写报告：[报告](reports/candidate28/FLASH_AND_HANDOFF_REPORT.md)，[构建清单](reports/candidate28/BUILD_MANIFEST.json)，[当前项目状态](logs/PROJECT_STATUS.md)。
 ## 设备与来源
 
 | 角色 | 设备/平台 | 用途 |
@@ -45,7 +44,9 @@ K40 对照资料显示，成功包的 vendor_boot ramdisk 与原包不同，并�
 
 
 - **C25**：有界 AArch64 helper 同时向 logd 和 metadata 持久目录写样本；实机验证到 Zygote/zygote_secondary restarting、system_server PID 不存在，SurfaceFlinger 与 BootAnimation layer 存在，但物理 present 未证明。Zygote 退出原因待采集。见 [C25 报告](reports/candidate25/C25_FIRST_SCREEN_DIAGNOSTIC_BUILD_FLASH_20260928.md)及[本轮导出与主机观察证据](evidence/candidate25/run_20260928_234427_meta_ro/)。
-- **C26**：基于 C25 新增持久 logcat 采集和 Zygote 重启状态/tail 诊断。仅主机构建和限定分区刷写已完成，尚未启动、尚无 C26 实机诊断结果。见 [C26 构建/刷写状态](reports/candidate26/C26_BUILD_FLASH_STATUS.md)。
+- **C26**：基于 C25 新增持久 logcat 采集和 Zygote 重启状态/tail 诊断。真机 logcat 记录 netd 因 Android 25Q2+ 不支持 Linux 4.19 而 SIGABRT；之后 PID 1 向两个 Zygote 进程组发 SIGKILL。netd 是否导致 Zygote 首退未单独证实。
+- **C27**：删除 netd 的两条 Zygote onrestart 回调以隔离重启链。首启到达 post-fs-data 后进入 Recovery，但 logger 输出为零字节，Zygote 修复效果及 Recovery 原因未知。
+- **C28**：在 C27 基础上增加 init 持久 marker 和早期状态写入的受限 logger，保留 C27 启动行为。已构建并仅刷写 super、vbmeta_system_a；仍在 Fastboot，尚未启动。构建/刷写报告见 [C28 报告](reports/candidate28/FLASH_AND_HANDOFF_REPORT.md)，源码和清单见 [C28 tools](tools/candidate28_recovery_diag/) 与 [构建清单](reports/candidate28/BUILD_MANIFEST.json)。
 
 具体阶段和证据等级以项目状态文件及 Candidate 报告为准，旧报告的“计划/待验证”不会自动成为当前结论。
 

@@ -1,0 +1,98 @@
+{
+  "system": {
+    "source": "/root/10s_os4_build/c27_netd_zygote_cycle_break_20260929_run1/system_tree/system/etc/init",
+    "rc_file_count": 87,
+    "hits": [
+      "/system/etc/init/apexd.rc:8: reboot_on_failure reboot,apexd-failed",
+      "/system/etc/init/apexd.rc:18: reboot_on_failure reboot,bootloader,bootstrap-apexd-failed",
+      "/system/etc/init/blank_screen.rc:5: shutdown critical",
+      "/system/etc/init/bootstat.rc:46: # only once per device hard reboot. Possible values:",
+      "/system/etc/init/bootstat.rc:51: #                                         triggers (e.g. due to userspace reboot) won't retrigger",
+      "/system/etc/init/bootstat.rc:56: # bootstat --record_boot_complete will be called only once per full reboot.",
+      "/system/etc/init/hw/init.rc:122: # Run apexd-bootstrap so that APEXes that provide critical libraries",
+      "/system/etc/init/hw/init.rc:387: # For Pre-reboot Dexopt",
+      "/system/etc/init/hw/init.rc:635: # Run boringssl self test for each ABI.  Any failures trigger reboot to firmware.",
+      "/system/etc/init/hw/init.rc:639: reboot_on_failure reboot,boringssl-self-check-failed",
+      "/system/etc/init/hw/init.rc:646: reboot_on_failure reboot,boringssl-self-check-failed",
+      "/system/etc/init/hw/init.rc:653: reboot_on_failure reboot,boringssl-self-check-failed",
+      "/system/etc/init/hw/init.rc:660: reboot_on_failure reboot,boringssl-self-check-failed",
+      "/system/etc/init/hw/init.rc:1123: # create location to store pre-reboot information",
+      "/system/etc/init/hw/init.rc:1717: # on shutdown",
+      "/system/etc/init/hw/init.rc:1725: critical",
+      "/system/etc/init/hw/init.rc:1728: shutdown critical",
+      "/system/etc/init/hw/init.rc:1750: shutdown critical",
+      "/system/etc/init/hw/init.rc:1794: rebootrecovery --bad_nv",
+      "/system/etc/init/hw/init.rc:1796: rebootrecovery --bad_nv",
+      "/system/etc/init/hw/init.zygote32.rc:23: critical window=${zygote.critical_window.minute:-off} target=zygote-fatal",
+      "/system/etc/init/hw/init.zygote64.rc:23: critical window=${zygote.critical_window.minute:-off} target=zygote-fatal",
+      "/system/etc/init/hw/init.zygote64_32.rc:10: onrestart restart zygote",
+      "/system/etc/init/keystore2.rc:16: # Reboot to bootloader if Keystore crashes more than 4 times before `sys.boot_completed`.",
+      "/system/etc/init/keystore2.rc:17: critical window=0",
+      "/system/etc/init/lmkd.rc:6: critical",
+      "/system/etc/init/lmkd.rc:55: #on property:persist.device_config.lmkd_native.thrashing_limit_critical=*",
+      "/system/etc/init/mmd.rc:5: critical",
+      "/system/etc/init/mtectrl.rc:36: on shutdown && property:ro.arm64.memtag.bootctl_supported=1 && property:arm64.memtag.bootctl_loaded=*",
+      "/system/etc/init/netbpfload.rc:51: reboot_on_failure reboot,netbpfload-missing",
+      "/system/etc/init/netd.rc:13: reboot_on_failure reboot,netd1shot-fail",
+      "/system/etc/init/perfetto.rc:153: # a trace on the next reboot) and we don't want to immediately start a trace",
+      "/system/etc/init/servicemanager.rc:5: critical",
+      "/system/etc/init/servicemanager.rc:21: shutdown critical",
+      "/system/etc/init/vold.rc:7: shutdown critical",
+      "/system/etc/init/vold.rc:10: reboot_on_failure reboot,vold-failed"
+    ]
+  },
+  "system_ext": {
+    "image": "/root/10s_os4_build/c28_c27_lp_rc_audit_20260929/system_ext_a.img",
+    "bytes": 942669824,
+    "sha256": "6B63E58346DA5B2FEBA7F51980CCEBF886D5991DD07F91541FE4D9F1485CDAD5",
+    "rc_file_count": 49,
+    "hits": [
+      "/etc/init/hwservicemanager.rc:5: critical",
+      "/etc/init/hwservicemanager.rc:12: shutdown critical",
+      "/etc/init/hyper_bpfloader.rc:45: # bpfloader succeeding is critical to system health, since a failure will",
+      "/etc/init/hyper_bpfloader.rc:47: # recovery is a full kernel reboot.",
+      "/etc/init/hyper_bpfloader.rc:73: # 2. comment out 'reboot_on_failure reboot,bpfloader-failed' below",
+      "/etc/init/hyper_bpfloader.rc:74: # 3. rebuild/reflash/reboot",
+      "/etc/init/hyper_bpfloader.rc:79: #   $ adb reboot; sleep 1; adb wait-for-device; adb root; sleep 1; adb wait-for-device; adb logcat -s 'bpfloader:*' 'LibBpfLoader:*' 'NetBpfLoad:*' 'NetBpfLoader:*'",
+      "/etc/init/hyper_bpfloader.rc:90: reboot_on_failure reboot,hyper-bpfloader-failed"
+    ]
+  },
+  "product": {
+    "image": "/root/10s_os4_build/c28_c27_lp_rc_audit_20260929/product_a.img",
+    "bytes": 4387241984,
+    "sha256": "87955DBE97AC28B01A214273BD03F36B5886310DC3B2E4128B9F4661E1C3345E",
+    "rc_file_count": 6,
+    "hits": []
+  },
+  "vendor": {
+    "image": "/root/10s_os4_build/c28_c27_lp_rc_audit_20260929/vendor_a.img",
+    "bytes": 1510998016,
+    "sha256": "FCEAFEE5B5909D7BE9BBEC48D9E8720F37798DDEEBDBF193424FB3A095CBA675",
+    "rc_file_count": 99,
+    "hits": [
+      "/etc/init/init/android.hardware.biometrics.fingerprint-service.xiaomi.rc:9: shutdown critical",
+      "/etc/init/init/android.hardware.ir-service.lineage.rc:14: shutdown critical",
+      "/etc/init/init/android.hardware.light-service.lineage.rc:263: shutdown critical",
+      "/etc/init/init/boringssl_self_test.rc:6: reboot_on_failure reboot,boringssl-self-check-failed",
+      "/etc/init/init/boringssl_self_test.rc:12: reboot_on_failure reboot,boringssl-self-check-failed",
+      "/etc/init/init/hw/init.qcom.rc:716: #    shutdown critical",
+      "/etc/init/init/vendor.qti.rmt_storage.rc:10: shutdown critical",
+      "/etc/init/init/vendor.sensors.sscrpcd.rc:37: shutdown critical",
+      "/etc/init/init/vndservicemanager.rc:10: shutdown critical"
+    ]
+  },
+  "odm": {
+    "image": "/root/10s_os4_build/c28_c27_lp_rc_audit_20260929/odm_a.img",
+    "bytes": 36700160,
+    "sha256": "46AE3BFBBF1BB14DE348D04B9D2569B7EE239A7E293F5D0FF78C1EF54604C347",
+    "rc_file_count": 3,
+    "hits": []
+  },
+  "mi_ext": {
+    "image": "/root/10s_os4_build/c28_c27_lp_rc_audit_20260929/mi_ext_a.img",
+    "bytes": 202375168,
+    "sha256": "43ED8FC0D1848F5D53BFB7206AC91FE5E5ED4E3F71E958D49F2EEA4C9C8B4BCE",
+    "rc_file_count": 1,
+    "hits": []
+  }
+}
