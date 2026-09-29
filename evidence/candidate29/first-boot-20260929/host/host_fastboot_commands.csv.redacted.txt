@@ -1,0 +1,3 @@
+host_utc,event,command,exit_code,details
+"2026-09-29T14:47:34.8187489+00:00","command_start","fastboot -s <device-id-redacted> reboot","","candidate=C29; product=thyme; slot=a; retry=5"
+"2026-09-29T14:47:34.8555394+00:00","command_finished","fastboot -s <device-id-redacted> reboot",0,"command returned"

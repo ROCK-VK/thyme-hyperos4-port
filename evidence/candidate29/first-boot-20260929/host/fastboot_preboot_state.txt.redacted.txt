@@ -1,0 +1,10 @@
+candidate=C29-pid1-zygote-diag
+observer_armed_utc=09/29/2026 22:46:43
+fastboot_preboot_utc=2026-09-29T14:47:34.8050237+00:00
+product=thyme
+current_slot=a
+unlocked=yes
+is_userspace=no
+slot_unbootable_a=no
+slot_successful_a=no
+slot_retry_count_a=5

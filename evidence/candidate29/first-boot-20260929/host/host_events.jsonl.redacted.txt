@@ -1,0 +1,10 @@
+{"candidate": "C29-pid1-zygote-diag", "event": "observer_started", "host_utc": "2026-09-29T14:46:37.927+00:00", "serial": "<device-id-redacted>"}
+{"elapsed_seconds": 0.098, "event": "usb_pnp_state_change", "host_utc": "2026-09-29T14:46:38.024+00:00", "output": "initial PnP query pending", "state": "query_pending"}
+{"elapsed_seconds": 0.098, "event": "adb_state_change", "host_utc": "2026-09-29T14:46:38.026+00:00", "output": "List of devices attached", "state": "absent"}
+{"elapsed_seconds": 0.098, "event": "fastboot_state_change", "host_utc": "2026-09-29T14:46:38.026+00:00", "output": "<device-id-redacted>               fastboot", "state": "fastboot"}
+{"adb_state": "absent", "candidate": "C29-pid1-zygote-diag", "elapsed_seconds": 6.053, "event": "observer_armed", "fastboot_state": "fastboot", "host_utc": "2026-09-29T14:46:43.981+00:00", "usb_pnp_state": "present"}
+{"elapsed_seconds": 6.053, "event": "usb_pnp_state_change", "host_utc": "2026-09-29T14:46:43.981+00:00", "output": "{\"state\":\"present\",\"devices\":[{\"Status\":\"OK\",\"Class\":\"AndroidUsbDeviceClass\",\"FriendlyName\":\"Android Bootloader Interface\",\"InstanceId\":\"USB\\\\VID_18D1&PID_D00D\\\\<device-id-redacted>\"}]}", "state": "present"}
+{"elapsed_seconds": 57.092, "event": "fastboot_state_change", "host_utc": "2026-09-29T14:47:35.019+00:00", "output": "????????????           fastboot", "state": "absent"}
+{"elapsed_seconds": 64.072, "event": "usb_pnp_state_change", "host_utc": "2026-09-29T14:47:41.998+00:00", "output": "{\"state\":\"absent\",\"devices\":[]}", "state": "absent"}
+{"elapsed_seconds": 454.201, "event": "fastboot_state_change", "host_utc": "2026-09-29T14:54:12.127+00:00", "output": "<device-id-redacted>               fastboot", "state": "fastboot"}
+{"elapsed_seconds": 459.201, "event": "usb_pnp_state_change", "host_utc": "2026-09-29T14:54:17.127+00:00", "output": "{\"state\":\"present\",\"devices\":[{\"Status\":\"OK\",\"Class\":\"AndroidUsbDeviceClass\",\"FriendlyName\":\"Android Bootloader Interface\",\"InstanceId\":\"USB\\\\VID_18D1&PID_D00D\\\\<device-id-redacted>\"}]}", "state": "present"}

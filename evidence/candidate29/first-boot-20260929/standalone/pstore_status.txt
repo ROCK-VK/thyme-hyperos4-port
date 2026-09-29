@@ -1,0 +1,6 @@
+capture_started_utc=Wed Jan 21 23:16:10 UTC 1970
+mount=success options=ro
+copied=console-ramoops-0 bytes=224259 sha256=3d502b6d0ef9e80eddbfc02befedd88d050ff2abdbf71210fe3632bb4908034e
+record_count=1
+capture_finished_utc=Wed Jan 21 23:16:10 UTC 1970
+dmesg_standalone_source=Standalone diagnostic kernel; not the preceding Android boot

@@ -1,0 +1,8 @@
+{
+  "candidate": "C29-pid1-zygote-diag",
+  "observer_started_utc": "2026-09-29T14:46:37.926+00:00",
+  "serial": "<device-id-redacted>",
+  "observation_seconds": 900,
+  "run_dir": "<local-project-json>\\work\\reports\\20260929_C29_PID1_ZYGOTE_FATAL_DIAGNOSTIC\\observations\\run_20260929_224637",
+  "host_timezone": "中国标准时间"
+}

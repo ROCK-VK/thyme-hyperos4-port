@@ -14095,3 +14095,22 @@
 - 公开提交：C29 首次同步提交 02db3953b0ba11015b3790e50bd22c811e2b7809。GitHub main 与本地 HEAD 一致；仓库首页、C29 报告及项目状态匿名 HTTP 状态均为 200。
 - 安全筛查：公开增量不含设备序列号、本机路径、凭据、ROM、分区镜像、原始 metadata/misc 或设备备份。公开状态页序列号已脱敏。
 - 验证：提交前 diff --check 通过，拟提交清单共 9 个文件，公开仓库工作树在首次推送后干净。
+
+## 2026-09-29 23:27 HKT｜C29 首启与 pstore 归属结果
+
+- 状态：C29 完成一次正式启动；两轮 Standalone 导出及第二次只读 pstore/metadata 取证完成；未构建或刷写新 Candidate。
+- 结论：用户看到静态 Xiaomi 第一屏，ADB 未上线。C29 metadata markers 证明 primary/secondary zygote、netd 曾进入 running；primary zygote 与 netd 曾进入 restarting；logger 曾 stopped。markers 无可靠时间顺序，C29 event/logcat status 文件为 0 bytes；system_server PID、fatal backtrace 与 C29 Android pstore 均未取得，根因未定位。
+- pstore：RAM 临时启动专用 Standalone 后，全量复制 THYME_DIAG 的 40 个文件，0 个复制错误，每个源/副本大小及 SHA-256 匹配。唯一 console-ramoops 含 Standalone 内核 cmdline、Standalone 专属日志与触屏事件，故属于先前 Standalone 会话，不是 C29。无 pmsg；Standalone dmesg 不是 C29 dmesg。
+- metadata：两个 16 MiB raw 的设备端 sidecar 与主机副本分别匹配；彼此仅 8 字节不同，原因未知。只在额外主机工作副本恢复 journal，后续只读 fsck 干净；C29 markers/空文件与首次恢复结果逐字节相同。原始 metadata/misc 未改写、未公开。
+- 设备：C29 启动前 A retry=5，启动后最后读回 A retry=4/unbootable=no/successful=no，B retry=7 未变。Standalone RAM 启动后主机看到诊断 UMS；Fastboot 未确认。无刷写、set_active、擦除或持久分区写入。
+- 涉及文件：本地 C29 首启与 pstore 报告、两轮 Standalone 导出；公开增量 `reports/C29_FIRST_BOOT_AND_PSTORE_CLASSIFICATION_REPORT.md` 与 `evidence/candidate29/first-boot-20260929/`。
+- 公开范围：发布完整 C29 专属 markers、主机观察记录和 pstore/Standalone 诊断文本副本；序列号及私人主机路径脱敏并提供原始/公开 SHA 清单。未发布 metadata.raw、misc.raw、校验 sidecar、ROM/分区镜像；既有 C25–C28 证据不重复。
+- 待处理：定点确认 C29 event/logcat 输出为空的实现路径，之后再决定是否需要新诊断版本；当前不构建 C30、不重启 C29。
+
+## 2026-09-29 23:35 HKT｜C29 logger 文件名证明 helper 到达创建阶段
+
+- 状态：仅分析，未修改 Candidate 或设备。
+- 结论：C29 event 文件名由 `WatchServices()/EnsureEvents()` 生成，logcat status 文件名中的 boot_id、`u15291` 和 PID `1027` 由 `RunLogcat()/OpenUniqueFile()` 生成。结合文件实际存在及唯一 C29 boot_id，证明两个 helper 至少执行到 unique-file 创建/打开阶段；它们并非完全未启动。
+- 限制：两个输出文件为 0 bytes，不能从现有文件分辨首条 write/fdatasync 失败、创建后立即退出/被终止或其他存储问题。没有 errno、AVC、stderr 或 Android pmsg。该源码发现不证明 C29 启动根因，也不证明 system_server 已启动。
+- 涉及文件：公开 C29 helper 源码、`reports/C29_FIRST_BOOT_AND_PSTORE_CLASSIFICATION_REPORT.md`、`evidence/candidate29/first-boot-20260929/`、项目状态。
+- 待处理：定点检查 shell SELinux 和 metadata 写入/同步路径；无直接错误前不构建 C30。
