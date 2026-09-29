@@ -41,7 +41,7 @@ C28 也证实 zygote 曾从 running 进入 restarting，但 marker 没有时间�
 14. 是否需要 C29：需要。C28 的状态 marker 和 logcat 空文件无法回答关键顺序和进程身份。
 15. C29 新增实验变量：仅为诊断留证机制，Android 启动策略保持不变；不修改 critical 配置、secondary callback、netd 行为或 SELinux 策略。
 16. A 槽 retry：刷写前、写入时和刷写后均为 5；A unbootable=no、successful=no。B retry=7、unbootable=no、successful=no。
-17. GitHub 最新 commit：见本报告公开同步后的仓库提交链接。
+17. C29 报告及工具首次公开同步于 commit 02db3953b0ba11015b3790e50bd22c811e2b7809。
 
 ## C29 诊断改动
 

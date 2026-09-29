@@ -14087,3 +14087,11 @@
 - 刷后只读状态：product=thyme、A 槽、unlocked=yes、is-userspace=no；A retry=5/unbootable=no/successful=no，B retry=7/unbootable=no/successful=no。未执行 reboot、set_active、擦除、misc/BCB 写入或回锁。
 - 新增 reports/C29_PID1_FATAL_ROOT_CAUSE_AND_FLASH_REPORT.md、reports/C29_PID1_ZYGOTE_DIAGNOSTIC_BUILD_REPORT.md、C29 builder/受限 flash 脚本和诊断源码。未上传系统镜像、完整 ROM、原始 metadata/misc 或设备备份。
 - 下一步：先启动 C29 观察器并确认 ARMED；等用户现场确认后才启动一次 C29。故障后先完整备份 THYME_DIAG，再以 C29 有序记录判断重启因果。
+
+
+## 2026-09-29 21:50 HKT｜C29 公开同步与远程验证
+
+- 状态：C29 报告、构建记录、manifest、构建/受限刷写脚本和诊断源码已推送至公开仓库；远程可读验证通过。
+- 公开提交：C29 首次同步提交 02db3953b0ba11015b3790e50bd22c811e2b7809。GitHub main 与本地 HEAD 一致；仓库首页、C29 报告及项目状态匿名 HTTP 状态均为 200。
+- 安全筛查：公开增量不含设备序列号、本机路径、凭据、ROM、分区镜像、原始 metadata/misc 或设备备份。公开状态页序列号已脱敏。
+- 验证：提交前 diff --check 通过，拟提交清单共 9 个文件，公开仓库工作树在首次推送后干净。
