@@ -1,0 +1,3 @@
+{"host_utc":"2026-09-29T08:21:20.2638915+00:00","event":"preboot_state","candidate":"C27-netd-zygote-cycle-break","serial":"[REDACTED_DEVICE_SERIAL]","product":"thyme","current_slot":"a","unlocked":"yes","is_userspace":"no","slot_unbootable_a":"no","slot_successful_a":"no","slot_retry_count_a":7,"observer_armed_utc":"2026-09-29T16:20:47.799+08:00"}
+{"host_utc":"2026-09-29T08:21:20.2911557+00:00","event":"candidate_boot_command","candidate":"C27-netd-zygote-cycle-break","command":"fastboot reboot","serial":"[REDACTED_DEVICE_SERIAL]"}
+{"host_utc":"2026-09-29T08:21:20.3256976+00:00","event":"candidate_boot_command_returned","candidate":"C27-netd-zygote-cycle-break","exit_code":0}

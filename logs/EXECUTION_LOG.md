@@ -14023,3 +14023,11 @@
 - 尚未验证：C27 首次启动及 Android 启动效果。
 - 待处理：等待用户现场确认并明确授权首次启动 C27。
 - 替代：更新 C27 刷写后“等待处理 A 槽启动预算”的当前待办；刷写时 retry=1 的历史记录仍保留。
+## 2026-09-29｜C27 首启 Recovery 与只读取证
+
+- C27 observer 已 ARMED，只执行一次 fastboot reboot（返回 0）；启动前 A retry=7。用户现场报告 Logo→黑屏→Logo→PixelOS Recovery；主机约 78 秒见 ADB unauthorized，无可用 shell/logcat。
+- Standalone 全量诊断卷 7 个可访问文件源/副本大小与 SHA-256 匹配；Recovery console 一份、无 pmsg。Recovery 约 1.789 秒进入 recovery mode，约 3.109 秒 Recovery 自己读取并写 boot-recovery BCB；该操作不是启动前 BCB 证据。
+- metadata 通过只读导出，14 个 metadata 内容文件逐项匹配。C27 post-fs-data marker 存在；logger status、zygote events/tails 均为零字节，没有 C27 logcat。netd→Zygote 修复和 system_server 进度尚未验证，转 Recovery 原因未知。
+- 只读 Fastboot 状态：thyme，A 槽、unlocked、非 userspace；A retry=6、unbootable=no、successful=no；B retry=7。无刷写、擦除、set_active 或 BCB 写入。
+- 原始 misc.raw、旧 oops.raw、完整镜像未公开。公开文本日志已脱敏设备序列号、CPUID、主机名和本机路径；文件来源及源/公开副本 SHA-256 见 C27 evidence manifest。
+- 报告：reports/C27_FIRST_BOOT_AND_RECOVERY_REPORT.md；证据：evidence/candidate27/first-boot-20260929/。下一步先解决诊断输出留存，不凭空构建 C28。

@@ -1,0 +1,11 @@
+{
+  "candidate": "C27-netd-zygote-cycle-break",
+  "armed_utc": "2026-09-29T08:20:47.799+00:00",
+  "elapsed_seconds": 6.416,
+  "serial": "[REDACTED_DEVICE_SERIAL]",
+  "usb_pnp_state": "present",
+  "usb_pnp_output": "{\"state\":\"present\",\"devices\":[{\"Status\":\"OK\",\"Class\":\"AndroidUsbDeviceClass\",\"FriendlyName\":\"Android Bootloader Interface\",\"InstanceId\":\"USB\\\\VID_18D1&PID_D00D\\\\[REDACTED_DEVICE_SERIAL]\"}]}",
+  "adb_state": "absent",
+  "fastboot_state": "fastboot",
+  "run_dir": "work\\reports\\20260929_C27_NETD_ZYGOTE_CYCLE_BREAK\\observations\\run_20260929_162041"
+}

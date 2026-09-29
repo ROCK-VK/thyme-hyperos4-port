@@ -1,0 +1,8 @@
+{
+  "candidate": "C27-netd-zygote-cycle-break",
+  "observer_started_utc": "2026-09-29T08:20:41.383+00:00",
+  "serial": "[REDACTED_DEVICE_SERIAL]",
+  "observation_seconds": 1200,
+  "run_dir": "work\\reports\\20260929_C27_NETD_ZYGOTE_CYCLE_BREAK\\observations\\run_20260929_162041",
+  "host_timezone": "中国标准时间"
+}
