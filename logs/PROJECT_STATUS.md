@@ -22,6 +22,7 @@
 - 第一次静态 CIL 检查拦截了通用 `/proc` 读取；移除后 `secilc`/neverallow、AArch64 helper、EROFS、fsck、AVB/vbmeta_system 和 LP 关系验证通过。
 - C30 实际 canary、logger 持久写、zygote/netd 时间顺序、system_server PID 与 critical escalation 尚未实机验证。没有证据要求关闭 Zygote critical 或修改 secondary callback。
 - 本轮报告及源码在 `reports/candidate30/` 和 `tools/`。仓库不分发完整 ROM、Candidate 镜像或原始 metadata/misc 备份。
+- C29 审计、C30 主机报告及源码已于 2026-09-30 同步到公开 main；仓库与匿名访问已验证。
 
 ## 下一步
 后续若获准进入设备阶段，先确认退出 UMS 并只读核对 Fastboot、设备身份与槽位。测试 C30 前需相应的刷写/启动授权；故障后第一次 RAM boot 使用 Unified First-Response Standalone，优先保存 pstore，再导出 metadata/misc，完成全量主机校验后分析。

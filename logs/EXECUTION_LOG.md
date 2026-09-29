@@ -14123,3 +14123,11 @@
 - Standalone：run2 首次响应脚本优先复制 pstore，随后 sysfs 身份核验 raw-read metadata/misc，单独保存 Standalone dmesg，最后生成完整 manifest。主机语法/镜像内容检查通过，设备 RAM 启动未验证。
 - 限制：本轮未查询设备，最新可靠 A retry=4；设备模式未知，可能 UMS。未执行 Candidate flash/boot、set_active、reboot、清除或修改数据分区。
 - 细节、inode 表和镜像 SHA-256：`reports/candidate30/C29_WRITE_ROOT_CAUSE_AND_C30_DECISION.md` 与 `reports/candidate30/C30_HOST_BUILD_REPORT.md`。
+
+## 2026-09-30｜C29 审计与 C30 诊断资产公开同步
+
+- 状态：公开增量已推送至 `main`。
+- 改动/结论：发布 C29 metadata/xattr/SELinux 审计、Unified First-Response Standalone 主机侧准备、C30 诊断实现和构建报告。内容提交：`64feca7ad7092878b156eb7bd329642d663002ac`。
+- 验证：匿名 GitHub API 显示仓库为 Public，`main` 与内容提交一致；README、状态、报告和关键源码可匿名读取。
+- 保护：未上传 ROM/分区镜像、raw metadata/misc 或设备身份序列号。
+- 尚未验证：C30 设备端 canary、logger 和服务时序；本次未执行设备操作。
