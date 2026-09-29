@@ -1,0 +1,22 @@
+service c30_diag /system/bin/c30_diag
+    class core
+    user shell
+    group shell log
+    disabled
+    oneshot
+
+on post-fs-data
+    write /metadata/thyme_os4_diag/C30_INIT_POST_FS_DATA.txt "candidate=C30 event=post-fs-data bootreason=${ro.boot.bootreason} slot=${ro.boot.slot_suffix}"
+    start c30_diag
+
+on property:init.svc.c30_diag=running
+    write /metadata/thyme_os4_diag/C30_INIT_HELPER_RUNNING.txt "candidate=C30 service=c30_diag state=running bootreason=${ro.boot.bootreason} slot=${ro.boot.slot_suffix} pid=${init.svc_debug_pid.c30_diag}"
+
+on property:init.svc.c30_diag=stopped
+    write /metadata/thyme_os4_diag/C30_INIT_HELPER_STOPPED.txt "candidate=C30 service=c30_diag state=stopped bootreason=${ro.boot.bootreason} slot=${ro.boot.slot_suffix} pid=${init.svc_debug_pid.c30_diag}"
+
+on property:sys.boot_completed=1
+    write /metadata/thyme_os4_diag/C30_INIT_BOOT_COMPLETED.txt "candidate=C30 sys.boot_completed=1 slot=${ro.boot.slot_suffix}"
+
+on property:sys.powerctl=*
+    write /metadata/thyme_os4_diag/C30_INIT_SYS_POWERCTL.txt "candidate=C30 sys.powerctl=${sys.powerctl} bootreason=${ro.boot.bootreason}"

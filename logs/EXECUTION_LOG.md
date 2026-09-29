@@ -14114,3 +14114,12 @@
 - 限制：两个输出文件为 0 bytes，不能从现有文件分辨首条 write/fdatasync 失败、创建后立即退出/被终止或其他存储问题。没有 errno、AVC、stderr 或 Android pmsg。该源码发现不证明 C29 启动根因，也不证明 system_server 已启动。
 - 涉及文件：公开 C29 helper 源码、`reports/C29_FIRST_BOOT_AND_PSTORE_CLASSIFICATION_REPORT.md`、`evidence/candidate29/first-boot-20260929/`、项目状态。
 - 待处理：定点检查 shell SELinux 和 metadata 写入/同步路径；无直接错误前不构建 C30。
+
+## 2026-09-30｜C29 诊断写入审计与 C30 主机侧准备
+
+- 状态：离线审计、Unified First-Response Standalone run2 构建与 C30 主机侧构建完成；无设备操作。
+- 结论：C29 events/status 为 0 bytes/0 blocks；实际目录/文件 xattr 与预期相符，C29 shell write/append、目录创建权限和 type transition 存在；C26 同路径/type 曾有非空输出。首个 write、fdatasync 持久化、helper 首写前退出仍无法从 C29 证据区分。
+- C30：专用诊断域、三个 canary 与 init marker；修正了 neverallow 拦截的通用 `/proc` 访问，system_server PID 改从 logcat 提取。最终 secilc/neverallow 与 EROFS/AVB/LP 构建检查通过。C30 尚未刷写或运行。
+- Standalone：run2 首次响应脚本优先复制 pstore，随后 sysfs 身份核验 raw-read metadata/misc，单独保存 Standalone dmesg，最后生成完整 manifest。主机语法/镜像内容检查通过，设备 RAM 启动未验证。
+- 限制：本轮未查询设备，最新可靠 A retry=4；设备模式未知，可能 UMS。未执行 Candidate flash/boot、set_active、reboot、清除或修改数据分区。
+- 细节、inode 表和镜像 SHA-256：`reports/candidate30/C29_WRITE_ROOT_CAUSE_AND_C30_DECISION.md` 与 `reports/candidate30/C30_HOST_BUILD_REPORT.md`。

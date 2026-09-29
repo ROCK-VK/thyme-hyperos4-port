@@ -13,7 +13,18 @@ parser = argparse.ArgumentParser(description="Build a Standalone Diag image into
 parser.add_argument("--out-dir", required=True, help="New output directory; existing paths are refused to preserve prior artifacts.")
 parser.add_argument("--export-c25-metadata", action="store_true",
                     help="Add a read-only, sysfs-identified export of /metadata/thyme_os4_diag.")
+parser.add_argument("--export-metadata-raw", action="store_true",
+                    help="Copy the uniquely sysfs-identified 16 MiB metadata block partition to RAM for read-only host-side analysis.")
+parser.add_argument("--capture-pstore", action="store_true",
+                    help="Mount pstore read-only and copy available records into the RAM diagnostic volume.")
+parser.add_argument("--unified-first-response", action="store_true",
+                    help="Build a one-shot first-response image: copy pstore first, then raw metadata, misc, Standalone dmesg, and a full payload manifest.")
 args = parser.parse_args()
+if args.unified_first_response:
+    if args.export_c25_metadata:
+        raise SystemExit("Unified first-response mode uses raw metadata capture; do not combine it with the C25 ext4 export.")
+    args.capture_pstore = True
+    args.export_metadata_raw = True
 OUT_DIR = os.path.abspath(args.out_dir)
 if os.path.exists(OUT_DIR):
     raise SystemExit(f"Refusing to overwrite existing output directory: {OUT_DIR}")
@@ -247,7 +258,7 @@ echo "[INFO] Formatting 64MB FAT32 RAM disk image..." >> "$STATUS_LOG"
 /bin/mkdir -p /mnt/fat
 if /bin/mount -t vfat /dev/loop0 /mnt/fat 2>> "$STATUS_LOG"; then
     echo "[OK] Mounted FAT32 RAM disk, copying dump files..." >> "$STATUS_LOG"
-    /bin/cp -r /tmp/dumps/* /mnt/fat/
+    /bin/cp -a /tmp/dumps/. /mnt/fat/
     /bin/sync
     /bin/umount /mnt/fat
     echo "[OK] FAT32 RAM disk successfully populated with logs and unmounted cleanly" >> "$STATUS_LOG"
@@ -391,6 +402,9 @@ else
                 MOUNT_FSTYPE=${MOUNT_REST%%|*}
                 MOUNT_OPTS=${MOUNT_REST#*|}
                 case ",$MOUNT_OPTS," in *,ro,*) META_IS_RO=1 ;; *) META_IS_RO=0 ;; esac
+                # ext4 may report the requested noload flag as its equivalent
+                # norecovery name in /proc/mounts. Accept either exact option,
+                # while continuing to require ro and the verified source/type.
                 case ",$MOUNT_OPTS," in *,noload,*|*,norecovery,*) META_NOLOAD=1 ;; *) META_NOLOAD=0 ;; esac
                 echo "[C25] metadata mount source=$MOUNT_SOURCE fstype=$MOUNT_FSTYPE options=$MOUNT_OPTS" >> "$STATUS_LOG"
                 if [ "$MOUNT_SOURCE" != "$META_NODE" ] || [ "$MOUNT_FSTYPE" != "ext4" ] || [ "$META_IS_RO" -ne 1 ] || [ "$META_NOLOAD" -ne 1 ]; then
@@ -442,11 +456,173 @@ else
 fi
 '''
 
+C28_METADATA_RAW_EXPORT = r'''# Optional C28 full raw metadata capture. Source access is read-only (dd if= only).
+META_RAW_EXPECTED_BYTES=16777216
+META_RAW_MATCH_COUNT=0
+META_RAW_EVENT=
+for UEVENT in /sys/class/block/*/uevent; do
+    [ -f "$UEVENT" ] || continue
+    EVENT_PARTNAME=$(/bin/sed -n 's/^PARTNAME=//p' "$UEVENT" 2>> "$STATUS_LOG")
+    [ "$EVENT_PARTNAME" = "metadata" ] || continue
+    META_RAW_MATCH_COUNT=$((META_RAW_MATCH_COUNT + 1))
+    META_RAW_EVENT=$UEVENT
+done
+echo "[C28] exact PARTNAME=metadata matches: $META_RAW_MATCH_COUNT" >> "$STATUS_LOG"
+if [ "$META_RAW_MATCH_COUNT" -ne 1 ]; then
+    echo "[C28][STOP] metadata identity is not unique; no raw read attempted" >> "$STATUS_LOG"
+else
+    META_RAW_MAJOR=$(/bin/sed -n 's/^MAJOR=//p' "$META_RAW_EVENT" 2>> "$STATUS_LOG")
+    META_RAW_MINOR=$(/bin/sed -n 's/^MINOR=//p' "$META_RAW_EVENT" 2>> "$STATUS_LOG")
+    META_RAW_DEVNAME=$(/bin/sed -n 's/^DEVNAME=//p' "$META_RAW_EVENT" 2>> "$STATUS_LOG")
+    META_RAW_SYSFS_NAME=${META_RAW_EVENT%/uevent}
+    META_RAW_SYSFS_NAME=${META_RAW_SYSFS_NAME##*/}
+    case "$META_RAW_MAJOR:$META_RAW_MINOR" in *[!0-9:]*|:|*:|*:*:*) META_RAW_FIELDS_VALID=0 ;; *) META_RAW_FIELDS_VALID=1 ;; esac
+    case "$META_RAW_DEVNAME" in ''|*/*|.|..) META_RAW_FIELDS_VALID=0 ;; esac
+    [ "$META_RAW_DEVNAME" = "$META_RAW_SYSFS_NAME" ] || META_RAW_FIELDS_VALID=0
+    META_RAW_NODE="/dev/$META_RAW_DEVNAME"
+    META_RAW_SIZE_PATH="/sys/class/block/$META_RAW_SYSFS_NAME/size"
+    if [ "$META_RAW_FIELDS_VALID" -ne 1 ] || [ ! -e "$META_RAW_NODE" ] || [ ! -b "$META_RAW_NODE" ] || [ ! -r "$META_RAW_SIZE_PATH" ]; then
+        echo "[C28][STOP] metadata uevent or block node is invalid; no raw read attempted" >> "$STATUS_LOG"
+    else
+        META_RAW_NODE_DEV=$(/bin/stat -c '%t:%T' "$META_RAW_NODE" 2>> "$STATUS_LOG")
+        META_RAW_NODE_MAJOR_HEX=${META_RAW_NODE_DEV%%:*}
+        META_RAW_NODE_MINOR_HEX=${META_RAW_NODE_DEV#*:}
+        case "$META_RAW_NODE_DEV" in *:*) META_RAW_NODE_VALID=1 ;; *) META_RAW_NODE_VALID=0 ;; esac
+        case "$META_RAW_NODE_MAJOR_HEX:$META_RAW_NODE_MINOR_HEX" in *[!0-9a-fA-F:]*|:|*:|*:*:*) META_RAW_NODE_VALID=0 ;; esac
+        META_RAW_NODE_MAJOR_HEX=$(printf '%s' "$META_RAW_NODE_MAJOR_HEX" | /bin/tr 'ABCDEF' 'abcdef')
+        META_RAW_NODE_MINOR_HEX=$(printf '%s' "$META_RAW_NODE_MINOR_HEX" | /bin/tr 'ABCDEF' 'abcdef')
+        META_RAW_EXPECTED_MAJOR_HEX=$(printf '%x' "$META_RAW_MAJOR" 2>> "$STATUS_LOG") || META_RAW_EXPECTED_MAJOR_HEX=invalid
+        META_RAW_EXPECTED_MINOR_HEX=$(printf '%x' "$META_RAW_MINOR" 2>> "$STATUS_LOG") || META_RAW_EXPECTED_MINOR_HEX=invalid
+        META_RAW_SECTORS=$(/bin/cat "$META_RAW_SIZE_PATH" 2>> "$STATUS_LOG")
+        case "$META_RAW_SECTORS" in ''|*[!0-9]*) META_RAW_SECTORS_VALID=0 ;; *) META_RAW_SECTORS_VALID=1 ;; esac
+        if [ "$META_RAW_SECTORS_VALID" -eq 1 ]; then META_RAW_SYSFS_BYTES=$((META_RAW_SECTORS * 512)); else META_RAW_SYSFS_BYTES=0; fi
+        META_RAW_NODE_BYTES=$(/bin/blockdev --getsize64 "$META_RAW_NODE" 2>> "$STATUS_LOG") || META_RAW_NODE_BYTES=0
+        echo "[C28] metadata PARTNAME=metadata DEVNAME=$META_RAW_DEVNAME MAJOR=$META_RAW_MAJOR MINOR=$META_RAW_MINOR node=$META_RAW_NODE_DEV sysfs_bytes=$META_RAW_SYSFS_BYTES node_bytes=$META_RAW_NODE_BYTES expected_bytes=$META_RAW_EXPECTED_BYTES" >> "$STATUS_LOG"
+        if [ "$META_RAW_NODE_VALID" -ne 1 ] || [ "$META_RAW_NODE_MAJOR_HEX" != "$META_RAW_EXPECTED_MAJOR_HEX" ] || [ "$META_RAW_NODE_MINOR_HEX" != "$META_RAW_EXPECTED_MINOR_HEX" ] || [ "$META_RAW_SECTORS_VALID" -ne 1 ] || [ "$META_RAW_SYSFS_BYTES" != "$META_RAW_EXPECTED_BYTES" ] || [ "$META_RAW_NODE_BYTES" != "$META_RAW_EXPECTED_BYTES" ]; then
+            echo "[C28][STOP] metadata device identity or exact capacity check failed; no raw read attempted" >> "$STATUS_LOG"
+        elif [ -e /tmp/dumps/metadata.raw ] || [ -e /tmp/dumps/metadata.raw.partial ]; then
+            echo "[C28][STOP] metadata output path already exists; refusing overwrite" >> "$STATUS_LOG"
+        else
+            /bin/dd if="$META_RAW_NODE" of=/tmp/dumps/metadata.raw.partial bs=4096 count=4096 status=none 2>> "$STATUS_LOG"
+            META_RAW_DD_STATUS=$?
+            if [ "$META_RAW_DD_STATUS" -ne 0 ]; then
+                echo "[C28][STOP] metadata read failed with status $META_RAW_DD_STATUS" >> "$STATUS_LOG"
+            else
+                META_RAW_CAPTURED_BYTES=$(/bin/wc -c < /tmp/dumps/metadata.raw.partial)
+                if [ "$META_RAW_CAPTURED_BYTES" != "$META_RAW_EXPECTED_BYTES" ]; then
+                    echo "[C28][STOP] metadata read size mismatch ($META_RAW_CAPTURED_BYTES); partial file retained only in RAM" >> "$STATUS_LOG"
+                else
+                    META_RAW_SOURCE_SHA=$(/bin/sha256sum "$META_RAW_NODE" 2>> "$STATUS_LOG" | /bin/cut -d ' ' -f 1)
+                    META_RAW_COPY_SHA=$(/bin/sha256sum /tmp/dumps/metadata.raw.partial 2>> "$STATUS_LOG" | /bin/cut -d ' ' -f 1)
+                    if [ -z "$META_RAW_SOURCE_SHA" ] || [ -z "$META_RAW_COPY_SHA" ] || [ "$META_RAW_SOURCE_SHA" != "$META_RAW_COPY_SHA" ]; then
+                        echo "[C28][STOP] source/copy SHA-256 mismatch; raw partial retained only in RAM source_sha256=$META_RAW_SOURCE_SHA copy_sha256=$META_RAW_COPY_SHA" >> "$STATUS_LOG"
+                    else
+                        /bin/mv /tmp/dumps/metadata.raw.partial /tmp/dumps/metadata.raw
+                        printf 'source_sha256=%s source=%s\ncopy_sha256=%s copy=metadata.raw\n' "$META_RAW_SOURCE_SHA" "$META_RAW_NODE" "$META_RAW_COPY_SHA" > /tmp/dumps/metadata.raw.sha256
+                        echo "[C28][OK] read-only raw metadata copy bytes=$META_RAW_CAPTURED_BYTES source_sha256=$META_RAW_SOURCE_SHA copy_sha256=$META_RAW_COPY_SHA" >> "$STATUS_LOG"
+                    fi
+                fi
+            fi
+        fi
+    fi
+fi
+'''
+
 if args.export_c25_metadata:
     marker = "# 4. Build a 64MB FAT32 UMS image in RAM"
     if wsl_script_content.count(marker) != 1:
         raise SystemExit("Could not place the optional C25 metadata export in the Standalone init script.")
     wsl_script_content = wsl_script_content.replace(marker, C25_METADATA_EXPORT + "\n" + marker, 1)
+
+if args.export_metadata_raw:
+    marker = ("# 3. Discover exactly one misc partition from kernel sysfs uevent data."
+              if args.unified_first_response else
+              "# 4. Build a 64MB FAT32 UMS image in RAM")
+    if wsl_script_content.count(marker) != 1:
+        raise SystemExit("Could not place the optional C28 raw metadata export in the Standalone init script.")
+    wsl_script_content = wsl_script_content.replace(marker, C28_METADATA_RAW_EXPORT + "\n" + marker, 1)
+
+if args.capture_pstore:
+    marker = ("# Do not fabricate UFS partition device numbers; only kernel-discovered nodes are used."
+              if args.unified_first_response else
+              "# 3. Discover exactly one misc partition from kernel sysfs uevent data.")
+    if wsl_script_content.count(marker) != 1:
+        raise SystemExit("Could not place the optional read-only pstore capture in the Standalone init script.")
+    pstore_capture = r'''# Optional pstore capture. The mount is read-only; all copied files remain in RAM.
+PSTORE_STATUS=/tmp/dumps/pstore_status.txt
+PSTORE_MOUNT=/sys/fs/pstore
+/bin/mkdir -p "$PSTORE_MOUNT" /tmp/dumps/pstore
+echo "capture_started_utc=$(date -u)" > "$PSTORE_STATUS"
+if /bin/mount -t pstore -o ro pstore "$PSTORE_MOUNT" >> "$PSTORE_STATUS" 2>&1; then
+    echo "mount=success options=ro" >> "$PSTORE_STATUS"
+    PSTORE_COUNT=0
+    for PSTORE_FILE in "$PSTORE_MOUNT"/*; do
+        [ -f "$PSTORE_FILE" ] || continue
+        PSTORE_NAME=${PSTORE_FILE##*/}
+        if /bin/cp -p "$PSTORE_FILE" "/tmp/dumps/pstore/$PSTORE_NAME" 2>> "$PSTORE_STATUS"; then
+            PSTORE_SOURCE_BYTES=$(/bin/wc -c < "$PSTORE_FILE") || PSTORE_SOURCE_BYTES=invalid
+            PSTORE_COPY_BYTES=$(/bin/wc -c < "/tmp/dumps/pstore/$PSTORE_NAME") || PSTORE_COPY_BYTES=invalid
+            PSTORE_SOURCE_HASH=$(/bin/sha256sum "$PSTORE_FILE" 2>> "$PSTORE_STATUS" | /bin/cut -d ' ' -f 1)
+            PSTORE_COPY_HASH=$(/bin/sha256sum "/tmp/dumps/pstore/$PSTORE_NAME" 2>> "$PSTORE_STATUS" | /bin/cut -d ' ' -f 1)
+            if [ -n "$PSTORE_SOURCE_HASH" ] && [ "$PSTORE_SOURCE_BYTES" = "$PSTORE_COPY_BYTES" ] && [ "$PSTORE_SOURCE_HASH" = "$PSTORE_COPY_HASH" ]; then
+                echo "copied=$PSTORE_NAME source_bytes=$PSTORE_SOURCE_BYTES copy_bytes=$PSTORE_COPY_BYTES source_sha256=$PSTORE_SOURCE_HASH copy_sha256=$PSTORE_COPY_HASH verified=yes" >> "$PSTORE_STATUS"
+                PSTORE_COUNT=$((PSTORE_COUNT + 1))
+            else
+                echo "copy_verification_failed=$PSTORE_NAME source_bytes=$PSTORE_SOURCE_BYTES copy_bytes=$PSTORE_COPY_BYTES source_sha256=$PSTORE_SOURCE_HASH copy_sha256=$PSTORE_COPY_HASH" >> "$PSTORE_STATUS"
+            fi
+        else
+            echo "copy_failed=$PSTORE_NAME" >> "$PSTORE_STATUS"
+        fi
+    done
+    echo "record_count=$PSTORE_COUNT" >> "$PSTORE_STATUS"
+    /bin/umount "$PSTORE_MOUNT" 2>> "$PSTORE_STATUS" || true
+else
+    echo "mount=failed; no pstore path was read" >> "$PSTORE_STATUS"
+fi
+echo "capture_finished_utc=$(date -u)" >> "$PSTORE_STATUS"
+'''
+    if not args.unified_first_response:
+        pstore_capture += r'''/bin/dmesg > /tmp/dumps/dmesg_standalone.txt 2>> "$PSTORE_STATUS" || true
+echo "dmesg_standalone_source=Standalone diagnostic kernel; not the preceding Android boot" >> "$PSTORE_STATUS"
+'''
+    wsl_script_content = wsl_script_content.replace(marker, pstore_capture + "\n" + marker, 1)
+
+if args.unified_first_response:
+    marker = "# 4. Build a 64MB FAT32 UMS image in RAM"
+    if wsl_script_content.count(marker) != 1:
+        raise SystemExit("Could not place unified first-response finalization before UMS image creation.")
+    finalize_capture = r'''# Unified first-response finalization: this is the Standalone kernel's own dmesg.
+/bin/dmesg > /tmp/dumps/standalone_dmesg.txt 2>> "$STATUS_LOG" || true
+echo "standalone_dmesg_source=Standalone diagnostic kernel; not the preceding Android Candidate" >> "$STATUS_LOG"
+echo "unified_payload_manifest=FILE_MANIFEST.tsv sha256_manifest=SHA256SUMS.txt" >> "$STATUS_LOG"
+
+# Inventory every payload file before exposing the RAM diagnostic volume.
+# FILE_MANIFEST.tsv lists all payloads; SHA256SUMS.txt also covers FILE_MANIFEST.tsv.
+MANIFEST=/tmp/dumps/FILE_MANIFEST.tsv
+SUMS=/tmp/dumps/SHA256SUMS.txt
+: > "$MANIFEST"
+/bin/find /tmp/dumps -type f ! -name FILE_MANIFEST.tsv ! -name SHA256SUMS.txt -print | /bin/sort > /tmp/diag_manifest_paths
+while IFS= read -r SOURCE_FILE; do
+    [ -n "$SOURCE_FILE" ] || continue
+    RELATIVE_FILE=${SOURCE_FILE#/tmp/dumps/}
+    FILE_BYTES=$(/bin/wc -c < "$SOURCE_FILE") || FILE_BYTES=0
+    FILE_SHA=$(/bin/sha256sum "$SOURCE_FILE" 2>> "$STATUS_LOG" | /bin/cut -d ' ' -f 1)
+    if [ -z "$FILE_SHA" ]; then
+        echo "manifest_error=$RELATIVE_FILE" >> "$STATUS_LOG"
+        continue
+    fi
+    printf '%s\t%s\t%s\n' "$RELATIVE_FILE" "$FILE_BYTES" "$FILE_SHA" >> "$MANIFEST"
+done < /tmp/diag_manifest_paths
+: > /tmp/SHA256SUMS.payload.tmp
+/bin/find /tmp/dumps -type f ! -name SHA256SUMS.txt -print | /bin/sort > /tmp/diag_checksum_paths
+while IFS= read -r SOURCE_FILE; do
+    [ -n "$SOURCE_FILE" ] || continue
+    RELATIVE_FILE=${SOURCE_FILE#/tmp/dumps/}
+    (cd /tmp/dumps && /bin/sha256sum "$RELATIVE_FILE") >> /tmp/SHA256SUMS.payload.tmp 2>> "$STATUS_LOG" || true
+done < /tmp/diag_checksum_paths
+/bin/mv /tmp/SHA256SUMS.payload.tmp "$SUMS"
+'''
+    wsl_script_content = wsl_script_content.replace(marker, finalize_capture + "\n" + marker, 1)
 
 with open(wsl_script_path, "w", encoding="utf-8", newline="\n") as f:
     f.write(wsl_script_content.replace("__BUILD_ROOT__", WSL_BUILD_ROOT).replace("__OUT_DIR_WSL__", OUT_DIR_WSL))

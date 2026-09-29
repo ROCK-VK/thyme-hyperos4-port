@@ -1,28 +1,29 @@
 # THYME-OS4 项目当前状态
 
+更新时间：2026-09-30
+
 ## 项目目标与阶段
-将 Xiaomi 15（dada）的 HyperOS 4 / Android 17 移植到 Xiaomi Mi 10S（thyme）。当前要定位 C29 第一屏后的 Android 启动阻塞；还没有 system_server、Framework/UI 或 C29 fatal 的直接证据。
+将 Xiaomi 15（dada）的 HyperOS 4 / Android 17 移植到 Xiaomi Mi 10S（thyme）。当前重点是让诊断留证可靠，并确定 PID 1、Zygote 与 system_server 的真实启动顺序。
 
-## 当前 Candidate 与实机状态
-- C29 已刷入并只正式启动过一次；用户全程看到静态 Xiaomi Logo，ADB 未上线。
-- 启动前 A 槽 retry=5；启动后最后读回 A retry=4、unbootable=no、successful=no。B retry=7 未变。没有执行 set_active。
-- 经授权使用 `fastboot boot` RAM 启动 Standalone pstore 诊断镜像后，当前主机看到 THYME_DIAG USB Mass Storage；Fastboot/ADB 目标设备未枚举。因此当前 Bootloader Fastboot 尚未由主机确认。
+## Candidate 与设备状态
+- 设备上最后确认的 Candidate 是 C29；本轮没有刷写或启动新 Candidate。
+- C29 正式启动后用户看到 Xiaomi 第一屏，ADB 未上线；A 槽最近可靠记录 retry=4、unbootable=no、successful=no。本轮没有查询设备，因此当前设备模式未确认，可能仍为 THYME_DIAG UMS。
+- 本轮未执行 reboot、set_active、刷写、擦除或持久分区修改。
 
-## C29 新证据
-- metadata 主机副本 journal recovery 找回 init markers：primary/secondary zygote 和 netd 曾进入 running；primary zygote 与 netd 也曾进入 restarting；C29 logcat service 曾 stopped。
-- markers 无可靠顺序时间；event log 和 logcat status 文件为 0 bytes。无 system_server PID、fatal backtrace、boot-complete 状态或 C29 Android pstore 记录。
-- 专门 pstore 采集成功，记录数 1：console-ramoops-0。内核与 Standalone 自身标记证明它属于前一 Standalone 会话；没有 pmsg。Standalone dmesg 不是 Candidate 启动日志。
-- 两次 metadata raw 的设备端/主机哈希各自匹配，raw 间有 8 字节差异，原因未确定；恢复出的 C29 marker 与空输出逐字节相同。raw metadata/misc 仅保存在本地。
-- 本地报告：`work/reports/20260929_C29_PID1_ZYGOTE_FATAL_DIAGNOSTIC/C29_FIRST_BOOT_AND_PSTORE_CLASSIFICATION_REPORT.md`；公开证据：`evidence/candidate29/first-boot-20260929/`。
+## C29 零字节留证结果
+- C29 event 与 logcat status inode 已创建，但恢复后的 size/blocks 为 0/0。
+- 诊断目录、文件和 init markers 的真实 SELinux type 为 `c25_diag_data_file`；C29 平台策略包含 shell 所需文件 write/append、目录 add_name 权限及 type transition，host neverallow 检查通过。
+- C26 同目录、同 type 的 events/logcat 曾非空，因此没有证据支持“该 type 一直不可写”。C29 首次 write 失败、fdatasync 未持久化、或 helper 在 payload 前退出仍无法区分；不扩大 shell 权限。
+- inode 详情和限制见 [`C29 写入审计与 C30 决策`](../reports/candidate30/C29_WRITE_ROOT_CAUSE_AND_C30_DECISION.md)。
 
-## 当前判断与下一步
-- 可确认 init 服务状态曾到达 Zygote/netd running/restarting；不能确认顺序、因果、system_server 是否 fork，或屏幕停留原因。
-- C29 的 marker 成功，helper 已创建输出文件但 event/logcat 内容仍为空；应定点核查 shell 域对 `/metadata/thyme_os4_diag` 的写入/同步权限、文件标签和可得 AVC，解释首条数据为何未留存。无新直接错误前不构建 C30，也不重复启动 C29。
-- 如需后续设备操作，先确认 Standalone UMS 已退出且 Bootloader Fastboot 被主机枚举；保持 A 槽，不切槽、不 set_active。
+## 诊断与构建资产
+- Unified First-Response Standalone run2 已主机侧构建，尚未设备 RAM 启动。顺序为只读 pstore 复制及 SHA → 唯一 sysfs 身份验证的 raw metadata → misc → 独立 Standalone dmesg → 全量 manifest/SHA → RAM UMS；metadata 不挂载、不 replay journal。
+- C30 已完成主机侧构建，未刷写/启动。采用 `c30_diag` 专用 SELinux domain、三项独立 write/fdatasync/append canary、init built-in lifecycle markers；canary 通过后才启动有序事件与 60 秒无轮转 logcat。system_server PID 从 logcat 启动事件/`SystemServer` tag 提取，不扫描通用 `/proc`。
+- 第一次静态 CIL 检查拦截了通用 `/proc` 读取；移除后 `secilc`/neverallow、AArch64 helper、EROFS、fsck、AVB/vbmeta_system 和 LP 关系验证通过。
+- C30 实际 canary、logger 持久写、zygote/netd 时间顺序、system_server PID 与 critical escalation 尚未实机验证。没有证据要求关闭 Zygote critical 或修改 secondary callback。
+- 本轮报告及源码在 `reports/candidate30/` 和 `tools/`。仓库不分发完整 ROM、Candidate 镜像或原始 metadata/misc 备份。
 
-## 已验证继承成果与保护边界
-C9 Property Contexts 去重、C11 system_ext EROFS 元数据、C14 BPF 启动门槛绕过、C17 graphics allocator ION open/read 权限，以及 C21–C23 图形启动推进有各自历史实机证据。C29 未改变这些路径。
+## 下一步
+后续若获准进入设备阶段，先确认退出 UMS 并只读核对 Fastboot、设备身份与槽位。测试 C30 前需相应的刷写/启动授权；故障后第一次 RAM boot 使用 Unified First-Response Standalone，优先保存 pstore，再导出 metadata/misc，完成全量主机校验后分析。
 
-不回锁 Bootloader；不擅自修改 persist 硬件分区、modemst、EFS/NV、校准或设备身份数据。不无依据清除 userdata/metadata，不写 misc/BCB。
-
-C/D/E 任一盘低于 50 GiB 才暂停重型构建/大型提取。Docker 永久排除，不清理、不压缩、不修改。公开仓库不存放完整 ROM、分区镜像、metadata.raw 或 misc.raw。
+C/D/E 空间门槛为 50 GiB；Docker 始终排除。
