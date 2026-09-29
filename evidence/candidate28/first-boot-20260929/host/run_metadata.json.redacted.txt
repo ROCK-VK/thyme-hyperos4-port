@@ -1,0 +1,8 @@
+{
+  "candidate": "C28-recovery-zygote-diagnostic",
+  "observer_started_utc": "2026-09-29T11:09:54.216+00:00",
+  "serial": "<device-id-redacted>",
+  "observation_seconds": 900,
+  "run_dir": "<local-project-path>\\work\\reports\\20260929_C28_RECOVERY_ZYGOTE_DIAGNOSTIC\\observations\\run_20260929_190954",
+  "host_timezone": "中国标准时间"
+}

@@ -14046,3 +14046,24 @@
 - 磁盘：C/D/E 分别约 77.76/206.15/250.92 GiB 可用；不触发低于 50 GiB 门槛，未清理，Docker 未访问。
 - 待处理：等待用户现场确认 C28 首次启动。设备保持 Bootloader Fastboot。
 - 替代：更新当前状态中“C27 已刷写、C28 不构建”的旧阶段判断；旧历史条目保留为当时事实。
+
+
+## 2026-09-29 19:40 HKT｜C28 首启取证确认 PID 1 fatal panic，metadata logger 状态仍未知
+
+- 状态：C28 单次启动与 Standalone 只读取证完成；未构建或刷写新 Candidate。
+- 改动/结论：C28 console-ramoops 的唯一可见 Linux 启动在约 33.464 秒记录 PID 1 `init` 写 `/proc/sysrq-trigger`，随后 kernel panic。cmdline 同时有 `androidboot.init_fatal_panic=true`、`androidboot.init_fatal_reboot_target=recovery`；这是 init fatal-signal panic 分支，不证明发生了 `sys.powerctl=reboot,recovery`。fatal signal 编号/根因仍未知。C28 pmsg 记录 5 次 netd SIGABRT；C27 netd→Zygote 回调删除效果、Zygote/system_server 状态均未被直接验证。PID 1063 `main` 也有 SIGABRT，但无 executable/cmdline，身份未知。BootAnimation 有进程日志，不等于物理显示已呈现。
+- 取证：首次 THYME_DIAG 8 个可访问文件大小和 SHA 全部匹配。第二次 metadata-only 导出实际挂载 `ro,relatime,norecovery`，可见 14 个旧 C25/C26/C27 文件，无 C28 名称；禁用 journal replay 使此缺失结论不确定。可见的 20 个文件校验无 mismatch；脚本非零因该镜像未生成要求的顶层 `dmesg_diag_boot.txt`。`oops.raw` 是 2024/Long Press 旧记录，Standalone dmesg 是诊断环境自身日志。第二镜像附带 misc.raw 仅本地保留，未分析/写入。
+- 现场：用户报告只见静态第一屏小米 Logo + powered by Android，约 8 分钟后手动退出；ADB 未上线。主机最后只读查询仍看到 G: THYME_DIAG UMS 盘，fastboot/adb 均无设备，与用户所报“已回到 Bootloader Fastboot”不一致；因此当前 Bootloader 和启动后 A/B 状态未确认。启动前 A retry=6，未执行 set_active。
+- 涉及文件：`work/reports/20260929_C28_RECOVERY_ZYGOTE_DIAGNOSTIC/C28_FIRST_BOOT_PID1_FATAL_PANIC_REPORT.md`、`日志/项目当前状态.md`；公开副本 `reports/C28_FIRST_BOOT_PID1_FATAL_PANIC_REPORT.md` 与 `evidence/candidate28/first-boot-20260929/`。
+- 验证：本地原件未修改。公开副本将 console、Standalone dmesg、diag_status、host 观察数据脱敏；pmsg 原始字节不含设备序列号/CPUID并原样同步。oops.raw 公开副本仅对 serial/CPUID 做同长度替换。misc.raw、旧 C25/C26/C27 metadata 内容和 Windows Volume Information 未公开。
+- 尚未验证：C28 logger START/logd 状态、ext4 journal 中是否存在 C28 输出、Zygote/system_server 状态、init fatal signal 来源、用户所报告 Fastboot 是否真实枚举、启动后 A/B retry。
+- 待处理：待实际 Bootloader Fastboot 被主机识别后，使用唯一 PARTNAME=metadata 只读导出完整 metadata 原始副本；仅在主机副本分析/replay ext4 journal，恢复 C28 marker/logger 输出，再决定是否需最小后续诊断版本。
+- 替代：更新并替代“C28 尚未首次启动、等待启动授权”的当前状态；该旧记录保留为刷写时事实。
+
+## 2026-09-29 19:48 HKT｜C28 设备模式回报与主机枚举不一致
+
+- 状态：仅只读复核；未向设备发送命令。
+- 改动/结论：用户报告已手动回到 Bootloader Fastboot，但其后主机仍枚举 G: `THYME_DIAG` FAT32 USB Mass Storage 卷；`fastboot devices` 与 ADB 均无设备。故实际 Fastboot 与启动后 A/B 状态仍未确认。
+- 原因：设备模式必须以当前主机枚举证据确认，不能用 Standalone UMS 状态执行 Fastboot 或分区读取。
+- 验证：使用项目本地 platform-tools 只读查询；G: 容量约 63 MiB，USB 设备为 THYME_DIAG UMS。
+- 待处理：请用户通过实体按键退出 Standalone UMS 并回到 Bootloader Fastboot；待唯一设备被 fastboot 枚举后，再只读确认 product 和 A/B 状态。此前对 metadata 的只读许可仍限于身份及容量校验通过后的受控读取。

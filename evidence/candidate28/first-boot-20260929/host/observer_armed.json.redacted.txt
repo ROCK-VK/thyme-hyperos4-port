@@ -1,0 +1,11 @@
+{
+  "candidate": "C28-recovery-zygote-diagnostic",
+  "armed_utc": "2026-09-29T11:10:00.541+00:00",
+  "elapsed_seconds": 6.326,
+  "serial": "<device-id-redacted>",
+  "usb_pnp_state": "present",
+  "usb_pnp_output": "{\"state\":\"present\",\"devices\":[{\"Status\":\"OK\",\"Class\":\"AndroidUsbDeviceClass\",\"FriendlyName\":\"Android Bootloader Interface\",\"InstanceId\":\"USB\\\\VID_18D1&PID_D00D\\\\<device-id-redacted>\"}]}",
+  "adb_state": "absent",
+  "fastboot_state": "fastboot",
+  "run_dir": "<local-project-path>\\work\\reports\\20260929_C28_RECOVERY_ZYGOTE_DIAGNOSTIC\\observations\\run_20260929_190954"
+}
