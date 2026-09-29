@@ -163,7 +163,7 @@ K40 产品配置另有 `ro.hwui.use_vulkan=true`；C21 未改 product，thyme ve
 
 1. 不重复启动 C26。先定点解释 logcat oneshot 于 uptime 52.027s 停止的原因，并取得 Zygote 首次退出时的 fatal/crash 证据。
 2. 单独评估 Android 25Q2 netd 对 4.19 内核的显式拒绝及其启动影响；当前不能将它认定为 Zygote 首因。K40 缓存中的 `libnetd_updatable.so` 与供体逐字节一致，暂未发现可直接复制的软件绕过。
-3. 暂不构建 C27；待取得可归因的新证据后选择最小修复或诊断调整。C26 构建和首启报告见 `reports/candidate26/C26_FIRST_BOOT_AND_STANDALONE_REPORT.md`，完整公开证据见 `evidence/candidate26/run_20260929_133135/`。
+3. 暂不构建 C27；待取得可归因的新证据后选择最小修复或诊断调整。C26 构建和首启报告见 `reports/candidate26/C26_FIRST_BOOT_AND_STANDALONE_REPORT.md`，完整公开证据见 `evidence/candidate26/run_20260929_133135/`；证据同步提交：https://github.com/ROCK-VK/thyme-hyperos4-port/commit/7fa27bcb16092c877ddc3d96f90a76e3c9507306。
 4. 最新 C/D/E 可用空间约为 78.00/233.95/265.84 GiB。C/D/E 任一盘低于 50 GiB 时触发本项目专属空间清理；C 盘低于 50 GiB 时暂停新构建和大型提取，直到治理完成。当前三盘均高于门槛。Docker 相关资产绝对排除。
 ## 关键工具与项目路径
 

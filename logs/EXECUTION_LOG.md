@@ -13959,8 +13959,9 @@
 
 - 状态：部分完成；C26 首次启动已取证，Zygote 退出首因仍未知。
 - 改动/结论：C26 进入 Android 用户空间并触发 post-fs-data。Zygote/secondary Zygote 反复重启，没有 system_server 或 SystemUI/SetupWizard/Launcher。用户约 9 分 9 秒后手动进入 Fastboot；A 槽 retry 2→1，unbootable=no。未刷写、清数据、set_active、改 BCB 或恢复 PixelOS。
-- 验证：post-fs-data 标记存在；C26 logcat 在 uptime 15.297s 启动，写入 8,564,736 bytes，最后可读约 50.959s，init service 于 52.027s stopped。Zygote 首次 running→stopping 约 147ms；日志未给出可归因的首次退出 fatal。netd 在 uptime 14.409s 因 `25Q2+ platform with kernel version < 5.4.0 is unsupported` SIGABRT；因果仍未知。Standalone 全卷 14 个可访问文件、12,972,436 bytes 源/副本核验一致；本卷无 console-ramoops、pmsg-ramoops、oops.raw、dmesg_diag_boot.txt。公开了 20 个证据文件，约 8.89 MB；misc 原件和散列、Windows 系统卷文件未发布，CPUID/主机路径/设备序列号已在公开文本副本中脱敏。
+- 验证：post-fs-data 标记存在；C26 logcat 在 uptime 15.297s 启动，写入 8,564,736 bytes，最后可读约 50.959s，init service 于 52.027s stopped。Zygote 首次 running→stopping 约 147ms；日志未给出可归因的首次退出 fatal。netd 在 uptime 14.409s 因 `25Q2+ platform with kernel version < 5.4.0 is unsupported` SIGABRT；因果仍未知。Standalone 全卷 14 个可访问文件、12,972,436 bytes 源/副本核验一致；本卷无 console-ramoops、pmsg-ramoops、oops.raw、dmesg_diag_boot.txt。公开了 20 个证据文件，约 8.89 MB；misc 原件和散列、Windows 系统卷文件未发布，CPUID/主机路径/设备序列号已在公开文本副本中脱敏。 匿名 GitHub HTTP 对仓库首页、README、状态、执行记录、C26 报告、证据 manifest 和原始 logcat 均返回 200。
 - 尚未验证：Zygote 首次退出原因；netd 错误是否导致 Zygote 重启；C26 logcat oneshot 提前退出原因。未构建 C27。
+- GitHub：公开证据与报告提交：https://github.com/ROCK-VK/thyme-hyperos4-port/commit/7fa27bcb16092c877ddc3d96f90a76e3c9507306。
 - 待处理：定点调查 C26 logcat 停止原因和 Zygote 首退记录；单独评估 netd 25Q2/4.19 冲突。当前设备 Fastboot，thyme/A/unlocked，A retry=1、B retry=7；PixelOS 未恢复。
 
 ## 2026-09-29 13:54 HKT｜更正 C 盘空间触发门槛
