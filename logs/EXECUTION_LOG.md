@@ -14075,3 +14075,15 @@
 - 验证级别：只读设备分区采集与主机副本分析；没有修改设备分区。marker 无时间戳，netd 与 Zygote 状态变化之间的因果仍未知。C28 system_server、PID 1063 身份、init fatal signal 来源和 boot complete 仍未确认。
 - 公开内容：新增 evidence/candidate28/first-boot-20260929/metadata-journal-recovery/，含恢复 marker、大小/SHA-256 清单与来源说明。未公开完整 metadata/misc、ROM 或分区镜像。
 - 待处理：主机最新仍显示 THYME_DIAG UMS、Fastboot 设备数为 0；待设备实际回到 Bootloader Fastboot 后只读核验状态。
+
+
+## 2026-09-29 21:48 HKT｜C28 PID 1 fatal / Zygote 因果边界与 C29 诊断刷写
+
+- 状态：C28 离线因果分析完成；C29 构建成功并按受限范围刷写。C29 尚未启动，设备保持 Bootloader Fastboot。
+- C28 结论：约 33.464 秒 PID 1 init 写 sysrq-trigger 后发生 kernel panic；运行时命令行记录 init_fatal_panic=true。fatal signal、此前 LOG(FATAL)、init userspace backtrace 和底层 fatal 原因未知。primary zygote critical 配置对应 vendor build.prop 静态值 10，但运行时展开与是否触发 escalation 未测。zygote 曾 running/restarting，secondary 只证明曾 running；无时间戳的 marker 不能给出顺序/次数。secondary onrestart restart zygote 仅为配置路径，是否实际触发未知。5 个 zygote 域 main SIGABRT 和 PID 1063 无法映射到具体 Zygote/system_server。netd 重复崩溃与 zygote 状态共存，但没有因果时间线；C27 删除的 netd→Zygote callback 继续保持删除。panic 后自动第二次 boot 未知。
+- C29 只替换 C28 诊断 helper/RC，新增带 CLOCK_BOOTTIME、boot_id、event/service/PID 的同步事件记录、init 状态 marker、服务状态采样、system_server 首见 PID 和 60 秒/8 MiB 单文件 logcat 状态留证。没有改变 critical、secondary callback、netd、SELinux、图形、内核、fstab 或加密行为。
+- 构建验证：EROFS、ELF、AVB/vbmeta、LP 和预期树差异检查通过；构建报告及源码已公开。构建通过不代表 C29 诊断功能或启动已实机验证。
+- 刷写：只写入 super 与 vbmeta_system_a，两项 Fastboot 写入均成功。super 7,703,587,800 bytes，SHA-256 A67994F75146E87EB74F772A2BEAF7547BFCC4B31C80C94003239FE6E47BB09D；vbmeta_system 131,072 bytes，SHA-256 A03AFBEDF1A60DDCBC3D0A1F9A391782876F15323F397F108CB8637CEA142A40。
+- 刷后只读状态：product=thyme、A 槽、unlocked=yes、is-userspace=no；A retry=5/unbootable=no/successful=no，B retry=7/unbootable=no/successful=no。未执行 reboot、set_active、擦除、misc/BCB 写入或回锁。
+- 新增 reports/C29_PID1_FATAL_ROOT_CAUSE_AND_FLASH_REPORT.md、reports/C29_PID1_ZYGOTE_DIAGNOSTIC_BUILD_REPORT.md、C29 builder/受限 flash 脚本和诊断源码。未上传系统镜像、完整 ROM、原始 metadata/misc 或设备备份。
+- 下一步：先启动 C29 观察器并确认 ARMED；等用户现场确认后才启动一次 C29。故障后先完整备份 THYME_DIAG，再以 C29 有序记录判断重启因果。

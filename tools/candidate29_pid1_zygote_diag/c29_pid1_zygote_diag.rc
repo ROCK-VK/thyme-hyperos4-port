@@ -1,0 +1,61 @@
+service c29_logcat /system/bin/c29_pid1_zygote_diag --logcat
+    class core
+    user shell
+    group shell log
+    disabled
+    oneshot
+    seclabel u:r:shell:s0
+
+service c29_zygote_watch /system/bin/c29_pid1_zygote_diag --watch
+    class core
+    user shell
+    group shell log readproc
+    disabled
+    oneshot
+    seclabel u:r:shell:s0
+
+on post-fs-data
+    write /metadata/thyme_os4_diag/C29_POST_FS_DATA.txt "candidate=C29 event=post-fs-data bootreason=${ro.boot.bootreason} slot=${ro.boot.slot_suffix}"
+    start c29_logcat
+    start c29_zygote_watch
+
+on property:init.svc.netd=running
+    write /metadata/thyme_os4_diag/C29_INIT_NETD_RUNNING.txt "candidate=C29 service=netd state=running"
+on property:init.svc.netd=restarting
+    write /metadata/thyme_os4_diag/C29_INIT_NETD_RESTARTING.txt "candidate=C29 service=netd state=restarting"
+on property:init.svc.netd=stopping
+    write /metadata/thyme_os4_diag/C29_INIT_NETD_STOPPING.txt "candidate=C29 service=netd state=stopping"
+on property:init.svc.netd=stopped
+    write /metadata/thyme_os4_diag/C29_INIT_NETD_STOPPED.txt "candidate=C29 service=netd state=stopped"
+
+on property:init.svc.zygote=running
+    write /metadata/thyme_os4_diag/C29_INIT_PRIMARY_RUNNING.txt "candidate=C29 service=zygote state=running"
+on property:init.svc.zygote=restarting
+    write /metadata/thyme_os4_diag/C29_INIT_PRIMARY_RESTARTING.txt "candidate=C29 service=zygote state=restarting"
+on property:init.svc.zygote=stopping
+    write /metadata/thyme_os4_diag/C29_INIT_PRIMARY_STOPPING.txt "candidate=C29 service=zygote state=stopping"
+on property:init.svc.zygote=stopped
+    write /metadata/thyme_os4_diag/C29_INIT_PRIMARY_STOPPED.txt "candidate=C29 service=zygote state=stopped"
+
+on property:init.svc.zygote_secondary=running
+    write /metadata/thyme_os4_diag/C29_INIT_SECONDARY_RUNNING.txt "candidate=C29 service=zygote_secondary state=running"
+on property:init.svc.zygote_secondary=restarting
+    write /metadata/thyme_os4_diag/C29_INIT_SECONDARY_RESTARTING.txt "candidate=C29 service=zygote_secondary state=restarting"
+on property:init.svc.zygote_secondary=stopping
+    write /metadata/thyme_os4_diag/C29_INIT_SECONDARY_STOPPING.txt "candidate=C29 service=zygote_secondary state=stopping"
+on property:init.svc.zygote_secondary=stopped
+    write /metadata/thyme_os4_diag/C29_INIT_SECONDARY_STOPPED.txt "candidate=C29 service=zygote_secondary state=stopped"
+
+on property:init.svc.c29_logcat=running
+    write /metadata/thyme_os4_diag/C29_INIT_LOGCAT_RUNNING.txt "candidate=C29 service=c29_logcat state=running"
+on property:init.svc.c29_logcat=stopped
+    write /metadata/thyme_os4_diag/C29_INIT_LOGCAT_STOPPED.txt "candidate=C29 service=c29_logcat state=stopped"
+on property:init.svc.c29_zygote_watch=stopped
+    write /metadata/thyme_os4_diag/C29_INIT_WATCH_STOPPED.txt "candidate=C29 service=c29_zygote_watch state=stopped"
+
+on property:sys.boot_completed=1
+    write /metadata/thyme_os4_diag/C29_BOOT_COMPLETED.txt "candidate=C29 sys.boot_completed=1"
+on property:sys.powerctl=*
+    write /metadata/thyme_os4_diag/C29_SYS_POWERCTL.txt "candidate=C29 sys.powerctl=${sys.powerctl}"
+on shutdown
+    write /metadata/thyme_os4_diag/C29_SHUTDOWN.txt "candidate=C29 event=shutdown bootreason=${ro.boot.bootreason}"

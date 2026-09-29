@@ -1,0 +1,240 @@
+{
+  "candidate": "Candidate 29 PID1/Zygote ordered fatal diagnostics",
+  "base": "Candidate 28 Recovery/Zygote persistent startup diagnostics",
+  "changes": [
+    "Replaces the C28 diagnostic helper/RC with C29 ordered event and persistent logcat diagnostics.",
+    "Starts both observers at post-fs-data before the inherited zygote-start trigger; writes monotonic boot-id-tagged service/property events using O_APPEND and fdatasync, alongside init built-in per-state markers.",
+    "Runs direct /system/bin/logcat -b all -v threadtime,monotonic -f to one unique metadata file for at most 60 seconds; no -r/-n rotation; RLIMIT_FSIZE caps the file at up to 8 MiB while reserving metadata space; records START, child PID, exec errno, wait status, exit code/signal and stop reason.",
+    "Preserves C28/C27 system behavior: no change to Zygote critical policy, secondary onrestart, netd callbacks already removed by C27, SELinux CIL, GPU/HWC, kernel, fstab, data encryption, or user data."
+  ],
+  "evidence_basis": [
+    "C28 pstore directly records PID 1 writing /proc/sysrq-trigger and a subsequent sysrq panic at about 33.464s; fatal signal and preceding init LOG(FATAL) are absent from saved bytes.",
+    "C28 pmsg contains five SIGABRT processes named main in zygote SELinux domain, while metadata markers show primary zygote running/restarting and secondary running but have no timestamps/PID mapping.",
+    "Image-derived zygote.critical_window.minute is 10 and C28 primary service has critical window=${zygote.critical_window.minute:-off}; this is a strong candidate escalation chain, not a closed runtime causal mapping.",
+    "C26 direct logcat -f produced about 8.56 MB on-device. C28 logger files were empty/stopped without enough runtime status to explain why; C29 reuses direct logcat capture and records the parent/child result."
+  ],
+  "diagnostic_limits": [
+    "Runtime PID-to-primary/secondary mapping and exact service restart count remain unknown until C29 event/logcat output is recovered.",
+    "C29 does not disable critical escalation or alter the secondary callback because their exact causal role is not proven by C28 evidence.",
+    "The observer polls init properties every 10ms; very brief transitions could still be missed, with init built-in markers providing a separate state-occurrence channel.",
+    "A kernel panic can interrupt status finalization; immediate START and per-event fdatasync preserve whatever was committed beforehand."
+  ],
+  "tree_changes": {
+    "init_import": {
+      "base_import": "import /system/etc/init/c28_recovery_diag.rc",
+      "candidate_import": "import /system/etc/init/c29_pid1_zygote_diag.rc",
+      "only_import_changed": true
+    },
+    "removed": [
+      "system/etc/init/c28_recovery_diag.rc",
+      "system/bin/c28_recovery_diag"
+    ],
+    "added": [
+      "system/etc/init/c29_pid1_zygote_diag.rc",
+      "system/bin/c29_pid1_zygote_diag"
+    ],
+    "file_contexts_removed": [
+      "/system/bin/c28_recovery_diag u:object_r:shell_exec:s0",
+      "/system/etc/init/c28_recovery_diag\\.rc u:object_r:system_file:s0"
+    ],
+    "file_contexts_added": [
+      "/system/bin/c29_pid1_zygote_diag u:object_r:shell_exec:s0",
+      "/system/etc/init/c29_pid1_zygote_diag\\.rc u:object_r:system_file:s0"
+    ],
+    "netd_callbacks_still_absent": true,
+    "primary_critical_policy_unchanged": true,
+    "secondary_callback_unchanged": true,
+    "selinux_cil_unchanged": true
+  },
+  "tree_delta": {
+    "removed": [
+      "system/bin/c28_recovery_diag",
+      "system/etc/init/c28_recovery_diag.rc"
+    ],
+    "added": [
+      "system/bin/c29_pid1_zygote_diag",
+      "system/etc/init/c29_pid1_zygote_diag.rc"
+    ],
+    "modified": [
+      "system/etc/init/hw/init.rc",
+      "system/etc/selinux/plat_file_contexts"
+    ],
+    "unexpected_changes": []
+  },
+  "runtime_helper": {
+    "bytes": 2340816,
+    "sha256": "C8EB52282990AD054566A72B6E1D7ABF4AA21A083FB64C341E97C9167BDBB7D6",
+    "architecture": "AArch64",
+    "needed": [
+      "liblog.so"
+    ],
+    "cxx_runtime": "statically linked libc++",
+    "source_sha256": "800A680F9042DD4F40AD4E180948725689074CC9980BCD334F32680B62D7A2DD"
+  },
+  "system_build": {
+    "system_image_bytes": 1092616192,
+    "system_image_sha256": "6262212CF702895B76C6D4A68D282F4D2CBA605C77641576CCDE7A5BC766FBD1",
+    "final_erofs_readback": {
+      "/system/etc/init/hw/init.rc": {
+        "bytes": 81335,
+        "sha256": "A4D30314C01192854690AD14F240423E5F447AB5D0DB58784A988D3FC801FAAC",
+        "required_tokens": [
+          "import /system/etc/init/c29_pid1_zygote_diag.rc",
+          "C28_RECOVERY_BAD_NV_VENDOR.txt",
+          "C28_RECOVERY_BAD_NV_RADIO.txt",
+          "rebootrecovery --bad_nv"
+        ]
+      },
+      "/system/etc/init/c29_pid1_zygote_diag.rc": {
+        "bytes": 3248,
+        "sha256": "61A1E4D760BF08F71EF4774A3A5BAD621D8B80E237DB464348400A0DA9C3CBAE",
+        "required_tokens": [
+          "C29_POST_FS_DATA.txt",
+          "C29_INIT_PRIMARY_RUNNING.txt",
+          "C29_INIT_PRIMARY_RESTARTING.txt",
+          "C29_INIT_SECONDARY_RUNNING.txt",
+          "C29_INIT_SECONDARY_RESTARTING.txt",
+          "C29_BOOT_COMPLETED.txt",
+          "C29_SYS_POWERCTL.txt",
+          "C29_SHUTDOWN.txt",
+          "start c29_logcat",
+          "start c29_zygote_watch",
+          "seclabel u:r:shell:s0"
+        ]
+      },
+      "/system/etc/init/netd.rc": {
+        "bytes": 2319,
+        "sha256": "CE706B53205492835BE972DE4381DC601297E4C0B211D3889C9C9E150428C5EE",
+        "required_tokens": [
+          "service netd /system/bin/netd"
+        ]
+      },
+      "/system/etc/selinux/plat_file_contexts": {
+        "bytes": 50798,
+        "sha256": "F6EBF55EB4864ABB1F34FA751C087B3DB27B75ADEDFDCCDB5625D4127019CBF9",
+        "required_tokens": [
+          "/system/bin/c29_pid1_zygote_diag",
+          "/system/etc/init/c29_pid1_zygote_diag\\.rc"
+        ]
+      },
+      "/system/bin/c29_pid1_zygote_diag": {
+        "bytes": 2340816,
+        "sha256": "C8EB52282990AD054566A72B6E1D7ABF4AA21A083FB64C341E97C9167BDBB7D6",
+        "required_tokens": [
+          "C29ZygoteDiag",
+          "C29_LOGCAT_START",
+          "C29_LOGCAT_CHILD",
+          "C29_LOGCAT_EXEC_FAILED",
+          "process_first_seen",
+          "init.svc.zygote",
+          "init.svc.zygote_secondary",
+          "logger_exit"
+        ]
+      }
+    },
+    "new_file_contexts": [
+      "/system/system/bin/c25_bootdiag u:object_r:shell_exec:s0",
+      "/system/system/etc/init/c25_bootdiag\\.rc u:object_r:system_file:s0",
+      "/system/system/bin/c29_pid1_zygote_diag u:object_r:shell_exec:s0",
+      "/system/system/etc/init/c29_pid1_zygote_diag\\.rc u:object_r:system_file:s0"
+    ],
+    "new_fs_config_paths": [
+      "system/system/bin/c29_pid1_zygote_diag",
+      "system/system/etc/init/c29_pid1_zygote_diag.rc"
+    ],
+    "selinux_cil_changed": false
+  },
+  "vbmeta_system_update": {
+    "base_sha256": "BE82309DE7892151F3111E551E02BD90FB2F256C30A2803C1D77DAB692F00359",
+    "system_image_size_before": 959852544,
+    "system_image_size_after": 959840256,
+    "system_tree_size": 7565312,
+    "system_root_digest": "24fbcf1239c971ac3bbd69eb7c8c46f1e71d7ae73fd3ecf8182e75cb01cb8569",
+    "flags": 2,
+    "rollback_index": 0,
+    "rollback_index_location": 2,
+    "unchanged_other_descriptors": [
+      "product",
+      "system_ext"
+    ]
+  },
+  "logical_input_hashes": {
+    "vendor_c22.img": {
+      "bytes": 1510998016,
+      "sha256": "FCEAFEE5B5909D7BE9BBEC48D9E8720F37798DDEEBDBF193424FB3A095CBA675"
+    },
+    "system_ext_a.img": {
+      "bytes": 942669824,
+      "sha256": "6B63E58346DA5B2FEBA7F51980CCEBF886D5991DD07F91541FE4D9F1485CDAD5"
+    },
+    "mi_ext.img": {
+      "bytes": 202375168,
+      "sha256": "43ED8FC0D1848F5D53BFB7206AC91FE5E5ED4E3F71E958D49F2EEA4C9C8B4BCE"
+    },
+    "odm.img": {
+      "bytes": 35758080,
+      "sha256": "075E4A17DC4CA716399166388B1C175060D5CBB31139B2ACBD9E5B2DEE352E22"
+    },
+    "product.img": {
+      "bytes": 4387241984,
+      "sha256": "87955DBE97AC28B01A214273BD03F36B5886310DC3B2E4128B9F4661E1C3345E"
+    }
+  },
+  "flash_scope_prepared": [
+    "super",
+    "vbmeta_system_a"
+  ],
+  "inherited_images_checked": {
+    "boot.img": {
+      "bytes": 201326592,
+      "sha256": "E5A016056D5C93C7A886980A7C062617EC44DC06A48417D7DD0F4476708A6368"
+    },
+    "vendor_boot.img": {
+      "bytes": 100663296,
+      "sha256": "02333B82BA936F1BAAB1ECAB744632C70F8FC16688A206C7041EF319F112A137"
+    },
+    "dtbo.img": {
+      "bytes": 33554432,
+      "sha256": "50E1AC0EDCBD333778217AA6FE8D972F6FF85ADD0DAE8A015A6642C2172DD886"
+    },
+    "vbmeta.img": {
+      "bytes": 131072,
+      "sha256": "66A53C2EC38247193CC86B7F5DE887556864413D1142C3C1994645DE1E3BAB10"
+    },
+    "vbmeta_system.img": {
+      "bytes": 131072,
+      "sha256": "BE82309DE7892151F3111E551E02BD90FB2F256C30A2803C1D77DAB692F00359"
+    }
+  },
+  "images": {
+    "boot.img": {
+      "bytes": 201326592,
+      "sha256": "E5A016056D5C93C7A886980A7C062617EC44DC06A48417D7DD0F4476708A6368"
+    },
+    "vendor_boot.img": {
+      "bytes": 100663296,
+      "sha256": "02333B82BA936F1BAAB1ECAB744632C70F8FC16688A206C7041EF319F112A137"
+    },
+    "dtbo.img": {
+      "bytes": 33554432,
+      "sha256": "50E1AC0EDCBD333778217AA6FE8D972F6FF85ADD0DAE8A015A6642C2172DD886"
+    },
+    "vbmeta.img": {
+      "bytes": 131072,
+      "sha256": "66A53C2EC38247193CC86B7F5DE887556864413D1142C3C1994645DE1E3BAB10"
+    },
+    "vbmeta_system.img": {
+      "bytes": 131072,
+      "sha256": "A03AFBEDF1A60DDCBC3D0A1F9A391782876F15323F397F108CB8637CEA142A40"
+    },
+    "super.img": {
+      "bytes": 7703587800,
+      "sha256": "A67994F75146E87EB74F772A2BEAF7547BFCC4B31C80C94003239FE6E47BB09D"
+    }
+  },
+  "host_storage_gate": {
+    "C_free_gib": 75.28,
+    "D_free_gib": 206.2,
+    "E_free_gib": 248.82
+  }
+}
