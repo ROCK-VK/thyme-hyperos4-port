@@ -64,7 +64,7 @@ Android init 的 `Service::Reap()` 在服务退出后执行 `onrestart` 命令�
 | `super` | 7,703,595,992 bytes | `2B7A2F055B55AFB0B52B3DEAE9B7963F7923F075D406449F0C5034B5E7236598` |
 | `vbmeta_system_a` | 131,072 bytes | `19B1ECD7128874989792C1B3F5173E6F4A8D2E0AC08734D35338AFAD674FA881` |
 
-C27 仍是待验证实验，不表示 Zygote/SystemServer 已修复，也不保证网络服务工作。C27 已刷入，但 A 槽 retry=1；启动前必须由用户单独处理 A 槽启动预算，并另行确认现场启动；不得自动执行 `set_active a`。
+C27 仍是待验证实验，不表示 Zygote/SystemServer 已修复，也不保证网络服务工作。C27 已刷入；刷写后 A 槽 retry=1，后续已按单独授权执行一次 `fastboot set_active a`，目前 retry=7。启动仍需用户现场确认；不得自动 reboot。
 
 ## 设备和下一步
 
@@ -80,3 +80,6 @@ C27 仍是待验证实验，不表示 Zygote/SystemServer 已修复，也不保�
 - 实际只刷写 `super` 与 `vbmeta_system_a`。`super`（7,703,595,992 bytes，SHA-256 `2B7A2F055B55AFB0B52B3DEAE9B7963F7923F075D406449F0C5034B5E7236598`）10/10 sparse 片段均 OKAY；`vbmeta_system_a`（131,072 bytes，SHA-256 `19B1ECD7128874989792C1B3F5173E6F4A8D2E0AC08734D35338AFAD674FA881`）发送与写入均 OKAY。
 - 刷后只读 Fastboot 确认 thyme、A 槽、unlocked=yes、is-userspace=no；A `unbootable=no / successful=no / retry=1`，B retry=7。无清数据、槽位调整、其他分区写入或重启。当前保持 Bootloader Fastboot，C27 尚未启动；启动预算需用户另行处理/授权。
 - 构建器使用文本捕获 `dump.erofs --cat` 的二进制 stdout，因此 manifest 中 helper 的 EROFS readback `bytes` 字段不是原始 ELF 文件长度；此字段不作为字节级 ELF 完整性证据。netd.rc 文本 readback 及目标字符串检查有效。
+## 2026-09-29 16:18 HKT A 槽预算恢复补记
+
+用户明确授权后，仅执行一次 astboot set_active a。命令返回 OKAY、退出码 0；current-slot 保持 A，A retry 从 1 恢复到 7，A/B unbootable=no、successful=no，B retry=7。没有执行 reboot、刷写、擦除或切槽。C27 仍未启动，设备保持 Bootloader Fastboot，等待用户现场首次启动确认。

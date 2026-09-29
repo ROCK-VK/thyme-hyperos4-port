@@ -13993,3 +13993,33 @@
 - 尚未验证：C27 Android 启动、netd 重启是否不再连带终止 Zygote、helper 在设备上的启动/持久化行为及 system_server 后续进度。构建器的 `dump.erofs --cat` 以文本模式捕获二进制 stdout，helper 的 readback 字节数不是原始 ELF 字节长度；不据此声称 helper 做过原始字节级读回校验。
 - 待处理：当前停在 A retry=1；等待用户单独处理 A 槽启动预算并另行授权 C27 首次启动。不得由本记录推导 `set_active` 授权。
 - 替代：本条更新并替代 15:43 条目中“C27 未刷写、设备未枚举、等待刷写”的当前状态；保留该旧记录作为当时事实。
+
+## 2026-09-29 16:18 HKT｜C27 A 槽启动预算恢复
+
+- 状态：已按用户本轮限定授权执行一次 astboot set_active a；A 槽 retry 从 1 恢复为 7。设备保持 Bootloader Fastboot，C27 尚未启动。
+- 改动/结论：操作前只读预检唯一设备 [设备序列号已脱敏]：product=thyme、current-slot=a、unlocked=yes、is-userspace=no；A unbootable=no / successful=no / retry=1；B unbootable=no / successful=no / retry=7。astboot set_active a 返回 Setting current slot to 'a' OKAY，进程退出码 0。立即读回 current-slot=a；A unbootable=no / successful=no / retry=7；B unbootable=no / successful=no / retry=7。没有切到 B，也未伪造 successful 状态。
+- 原始关键输出：
+  `	ext
+  [设备序列号已脱敏]               fastboot
+  product: thyme
+  current-slot: a
+  unlocked: yes
+  is-userspace: no
+  slot-unbootable:a: no
+  slot-successful:a: no
+  slot-retry-count:a: 1
+  slot-unbootable:b: no
+  slot-successful:b: no
+  slot-retry-count:b: 7
+  Setting current slot to 'a'                        OKAY [  0.008s]
+  set_active_exit_code=0
+  slot-retry-count:a: 7
+  slot-unbootable:a: no
+  slot-successful:a: no
+  slot-retry-count:b: 7
+  `
+- 原因：C27 已刷入但 A retry=1；恢复正常尝试预算以便后续受控首启。set_active a 仅恢复当前 A 槽预算，不代表 Candidate 启动成功。
+- 验证：set_active 后 Fastboot getvar 对 current-slot、A/B 槽状态均成功读回。未执行第二次 set_active、reboot、刷写、擦除、切槽或其他 boot-control 操作。
+- 尚未验证：C27 首次启动及 Android 启动效果。
+- 待处理：等待用户现场确认并明确授权首次启动 C27。
+- 替代：更新 C27 刷写后“等待处理 A 槽启动预算”的当前待办；刷写时 retry=1 的历史记录仍保留。

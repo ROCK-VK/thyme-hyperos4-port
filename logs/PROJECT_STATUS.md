@@ -3,7 +3,7 @@
 ## 目标与阶段
 
 将 Xiaomi 15（dada）的 HyperOS 4 / Android 17 用户空间移植到 Xiaomi Mi 10S（thyme）。当前优先越过第一屏进入 HyperOS 启动画面、设置向导或桌面，外围功能暂缓。
-当前阶段：C27 已完成主机静态门禁，并按授权仅刷入 `super`、`vbmeta_system_a`；设备保持 Bootloader Fastboot，C27 尚未启动。A 槽启动预算仍为 retry=1，未执行 `set_active`。
+当前阶段：C27 已完成静态门禁并刷入 `super`、`vbmeta_system_a`；随后按单次授权执行 `fastboot set_active a`，A 槽 retry 已从 1 恢复到 7。设备保持 Bootloader Fastboot，C27 尚未启动。
 
 ## 最新因果结论
 
@@ -29,9 +29,9 @@
 
 ## 设备、磁盘与下一步
 
-- 刷写前后 Fastboot 均只枚举到目标设备：`product=thyme`、`current-slot=a`、`unlocked=yes`、`is-userspace=no`。刷后 A `unbootable=no / successful=no / retry=1`，B `unbootable=no / successful=no / retry=7`；未执行 `set_active`、`reboot`、清数据或其他分区写入。
+- C27 刷写前后 Fastboot 均只枚举到目标设备：`product=thyme`、`current-slot=a`、`unlocked=yes`、`is-userspace=no`；当时 A `unbootable=no / successful=no / retry=1`，B retry=7。本轮仅执行一次获准的 `fastboot set_active a` 后，A 为 `unbootable=no / successful=no / retry=7`，B 为 `unbootable=no / successful=no / retry=7`，current-slot 仍为 A。未执行 reboot、清数据或其他分区写入。
 - 当前已刷版本：C27 的 `super` 与 `vbmeta_system_a`；C27 尚未启动。未刷其他分区、未擦除 userdata/metadata、未改 misc/BCB、未恢复 PixelOS、未回锁。
-- 下一步停点：等待用户单独处理 A 槽启动预算并授权首次启动；不得自行 `set_active a` 或 reboot。启动前仍需用户现场确认。
+- 下一步停点：A 槽启动预算已恢复；等待用户现场确认并明确授权 C27 首次启动。不得自行 reboot。
 - 2026-09-29 16:09 HKT 实测 C/D/E 可用空间 77.87/223.45/258.34 GiB；没有触发低于 50 GiB 门槛。Docker 及其任何资产绝对排除。
 - 已实机验证的关键修复：C9 Property Contexts、C11 EROFS 元数据、C14 BPF 绕过、C17 ION read/open。完整历史和验证细节查执行记录与各 Candidate 报告。
 - C26 原始 logcat/Standalone/主机观察留在本地；公开内容不含 ROM、分区镜像或原始设备备份。
