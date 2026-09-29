@@ -13979,3 +13979,17 @@
 - C27 只移除 netd 重启时重启两个 Zygote 的回调，并将 C26 轮转 logcat 改为有界单文件受监管采集。主机构建和静态验证通过；C27 尚未刷写或启动。
 - 设备 Fastboot 本轮未被主机枚举，因此没有设备写入。C27 首启前仍需单独处理 A 槽启动预算并等待现场启动确认。
 - 不随公开同步上传 ROM、分区镜像或原始设备备份。
+
+
+## 2026-09-29 16:10 HKT｜C27 最终静态门禁、受限刷写与启动预算停点
+
+- 状态：C27 最终静态门禁通过；按授权刷入 `super` 和 `vbmeta_system_a`；设备保持 Bootloader Fastboot，尚未启动。
+- 改动/结论：最终 C27 system tree 中 `netd.rc` 仅有一份 netd 服务定义，目标两条 `onrestart restart zygote` / `onrestart restart zygote_secondary` 均已移除。对 87 个可达 system init `.rc` 文件扫描，未发现另一份 netd 定义或重复 netd 回调；另有一条 `onrestart restart zygote` 属于 `zygote_secondary` 自身，不是 netd 回调。C26→C27 仅有该 netd 修复及预期诊断器/import/file-context/logger 替换。
+- logger：单文件有界 logcat，不用 `-r/-n` 轮转，不删除旧日志；最多 8 分钟，输出上限为 metadata 可用空间扣 12 MiB 后不超过 24 MiB；写入状态包含 child exit code、signal、stderr、elapsed、bytes 与 stop reason。C++ 源文件 SHA-256 与构建 manifest 中 source hash 一致。
+- 镜像：`super` 7,703,595,992 bytes，SHA-256 `2B7A2F055B55AFB0B52B3DEAE9B7963F7923F075D406449F0C5034B5E7236598`；`vbmeta_system.img` → `vbmeta_system_a` 131,072 bytes，SHA-256 `19B1ECD7128874989792C1B3F5173E6F4A8D2E0AC08734D35338AFAD674FA881`。Dry-Run 与写入前 manifest 校验均匹配；super 10/10 sparse chunks 返回 OKAY，随后 vbmeta_system_a 发送/写入返回 OKAY。
+- 设备：刷写前后唯一 Fastboot 设备均为 thyme、A 槽、unlocked=yes、is-userspace=no。刷后 A `unbootable=no / successful=no / retry=1`，B retry=7。未执行 `set_active`、reboot、userdata/metadata 擦除、其他分区写入、恢复 PixelOS 或 Bootloader 回锁。
+- 磁盘：C/D/E 可用 77.87/223.45/258.34 GiB，未触发低于 50 GiB 门槛；Docker 未触碰。
+- 验证：最终 system tree init rc 定点扫描、netd.rc diff、C27 logger 源码与镜像 SHA 检查、Fastboot 前置/后置只读状态检查均完成；分区写入命令实际返回成功。
+- 尚未验证：C27 Android 启动、netd 重启是否不再连带终止 Zygote、helper 在设备上的启动/持久化行为及 system_server 后续进度。构建器的 `dump.erofs --cat` 以文本模式捕获二进制 stdout，helper 的 readback 字节数不是原始 ELF 字节长度；不据此声称 helper 做过原始字节级读回校验。
+- 待处理：当前停在 A retry=1；等待用户单独处理 A 槽启动预算并另行授权 C27 首次启动。不得由本记录推导 `set_active` 授权。
+- 替代：本条更新并替代 15:43 条目中“C27 未刷写、设备未枚举、等待刷写”的当前状态；保留该旧记录作为当时事实。

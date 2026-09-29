@@ -3,7 +3,7 @@
 ## 目标与阶段
 
 将 Xiaomi 15（dada）的 HyperOS 4 / Android 17 用户空间移植到 Xiaomi Mi 10S（thyme）。当前优先越过第一屏进入 HyperOS 启动画面、设置向导或桌面，外围功能暂缓。
-当前阶段：C26 Zygote 首次停止原因已从离线证据收敛到 netd 重启回调；C27 已构建并通过主机验证，尚未刷写或启动。
+当前阶段：C27 已完成主机静态门禁，并按授权仅刷入 `super`、`vbmeta_system_a`；设备保持 Bootloader Fastboot，C27 尚未启动。A 槽启动预算仍为 retry=1，未执行 `set_active`。
 
 ## 最新因果结论
 
@@ -24,17 +24,16 @@
 - 构建目录：work/stage_c27_netd_zygote_cycle_break_20260929_run1/images/；最终报告：work/reports/20260929_C27_NETD_ZYGOTE_CYCLE_BREAK/REPORT.md。
 - 以 C26 为基线，只移除 system netd.rc 中 onrestart restart zygote 与 onrestart restart zygote_secondary；保留 netd 自身的 Linux 4.19 拒绝和重启。网络仍可能不可用。
 - C26 轮转 logger 替换为 helper 监管的单文件 pipe logger，不轮转/删除；限时 8 分钟，metadata 可用空间扣 12 MiB 后最多 24 MiB；持久记录子进程退出码、信号、stderr、耗时、字节数和停止原因。保留 watcher/C25 sampler；不改 SELinux、ART、内核、图形、fstab、加密或硬件配置。
-- 主机验证：EROFS readback、system AVB、vbmeta_system descriptor、LP/Super 输入检查及 AArch64 PIE -Wall -Wextra -Werror 编译通过；刷写脚本 Parser/Dry-Run 通过。
-- 待刷 super：7,703,595,992 bytes，SHA-256 2B7A2F055B55AFB0B52B3DEAE9B7963F7923F075D406449F0C5034B5E7236598。待刷 vbmeta_system.img（目标 vbmeta_system_a）：131,072 bytes，SHA-256 19B1ECD7128874989792C1B3F5173E6F4A8D2E0AC08734D35338AFAD674FA881。Dry-Run 只计划顺序写这两个目标。
+- 主机验证：EROFS `netd.rc` readback 排除两条目标回调；可达 system init 树 87 个 `.rc` 定点扫描仅找到一份 `service netd` 定义；C27 logger 行为与容量限制经源码核对。system AVB、vbmeta_system descriptor、LP/Super 输入检查及 AArch64 PIE 编译通过；受限刷写脚本 Dry-Run 与实际分区写入通过。
+- 实刷镜像：`super` 7,703,595,992 bytes，SHA-256 `2B7A2F055B55AFB0B52B3DEAE9B7963F7923F075D406449F0C5034B5E7236598`；`vbmeta_system_a` 使用 `vbmeta_system.img`，131,072 bytes，SHA-256 `19B1ECD7128874989792C1B3F5173E6F4A8D2E0AC08734D35338AFAD674FA881`。两项实际 Fastboot 写入均返回成功。
 
 ## 设备、磁盘与下一步
 
-- 最近可靠 A/B 状态（C26 启动后）：A unbootable=no / successful=no / retry=1；B retry=7。本轮没有 set_active 或其他 boot-control 修改。
-- 本轮 fastboot devices -l 无设备输出，当前设备模式/槽位无法重新确认；最后确认写入版本是 C26，C27 尚未刷写/启动。
-- 本轮未启动 Candidate、未运行 Standalone、未刷写、未擦除 userdata/metadata、未改 misc/BCB、未恢复 PixelOS、未回锁。
-- 下一步：设备重新枚举后只读核验唯一 thyme、Bootloader Fastboot、A 槽、unlocked、is-userspace=no 和 retry；通过后刷 C27 super、vbmeta_system_a 并保持 Fastboot。C27 首启前须单独授权恢复 A 槽启动预算，且另需用户现场启动确认；不得自行 set_active a。
-- 2026-09-29 15:42 HKT 实测 C/D/E 可用空间 77.87/223.45/258.34 GiB；低于 50 GiB 才做项目空间治理。Docker 及其任何资产绝对排除。
+- 刷写前后 Fastboot 均只枚举到目标设备：`product=thyme`、`current-slot=a`、`unlocked=yes`、`is-userspace=no`。刷后 A `unbootable=no / successful=no / retry=1`，B `unbootable=no / successful=no / retry=7`；未执行 `set_active`、`reboot`、清数据或其他分区写入。
+- 当前已刷版本：C27 的 `super` 与 `vbmeta_system_a`；C27 尚未启动。未刷其他分区、未擦除 userdata/metadata、未改 misc/BCB、未恢复 PixelOS、未回锁。
+- 下一步停点：等待用户单独处理 A 槽启动预算并授权首次启动；不得自行 `set_active a` 或 reboot。启动前仍需用户现场确认。
+- 2026-09-29 16:09 HKT 实测 C/D/E 可用空间 77.87/223.45/258.34 GiB；没有触发低于 50 GiB 门槛。Docker 及其任何资产绝对排除。
 - 已实机验证的关键修复：C9 Property Contexts、C11 EROFS 元数据、C14 BPF 绕过、C17 ION read/open。完整历史和验证细节查执行记录与各 Candidate 报告。
-- C26 原始 logcat/Standalone/主机观察留在本地。本轮公开仅同步去标识报告、工具和文本清单，不同步 ROM、镜像或原始设备备份。
+- C26 原始 logcat/Standalone/主机观察留在本地；公开内容不含 ROM、分区镜像或原始设备备份。
 
-验证级别：C26 因果链来自真实持久 logcat 和当时实际 init 配置；C27 目前只有主机构建/静态验证，尚无刷写或实机验证。
+验证级别：C26 因果链来自真实持久 logcat 和当时实际 init 配置；C27 已通过主机构建、镜像静态门禁和两项 Fastboot 分区写入，Android 启动效果尚未验证。构建器对 `dump.erofs --cat` 二进制输出使用文本捕获，因此 manifest 中 helper readback 的 `bytes` 不是原始 ELF 字节数，不将其作为 byte-for-byte ELF 校验。

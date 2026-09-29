@@ -1,7 +1,7 @@
 # THYME-OS4：C26 Zygote 首因与 C27 试验决策
 
 日期：2026-09-29（HKT）
-状态：C26 离线因果链已收敛；C27 已构建并通过主机检查，但未刷写、未启动。
+状态：C26 离线因果链已收敛；C27 已构建并通过主机检查，随后已限定刷入 `super` 与 `vbmeta_system_a`；设备仍在 Bootloader Fastboot，C27 未启动。
 
 ## 结论
 
@@ -64,11 +64,19 @@ Android init 的 `Service::Reap()` 在服务退出后执行 `onrestart` 命令�
 | `super` | 7,703,595,992 bytes | `2B7A2F055B55AFB0B52B3DEAE9B7963F7923F075D406449F0C5034B5E7236598` |
 | `vbmeta_system_a` | 131,072 bytes | `19B1ECD7128874989792C1B3F5173E6F4A8D2E0AC08734D35338AFAD674FA881` |
 
-C27 仍是待验证实验，不表示 Zygote/SystemServer 已修复，也不保证网络服务工作。若后续刷写成功，首次启动前必须单独处理 A 槽启动预算；不得自动执行 `set_active a`。
+C27 仍是待验证实验，不表示 Zygote/SystemServer 已修复，也不保证网络服务工作。C27 已刷入，但 A 槽 retry=1；启动前必须由用户单独处理 A 槽启动预算，并另行确认现场启动；不得自动执行 `set_active a`。
 
 ## 设备和下一步
 
-- C26 最近一次可信只读槽位记录：A `unbootable=no / successful=no / retry=1`，B retry=7；本轮未执行任何 A/B 元数据操作。当前主机 `fastboot devices -l` 无设备输出，故不能确认现在仍处 Bootloader Fastboot，也不能刷入 C27。
-- 最后确认已刷版本为 C26；C27 尚未刷写/启动，设备当前分区状态未能重新确认。
-- 下一步：恢复唯一 thyme Bootloader Fastboot 的主机枚举后，再以只读查询确认 product、A 槽、unlocked、is-userspace 和当前 retry；只有状态通过后才执行限定 C27 写入。刷写完成保持 Fastboot。C27 首启前单独申请 A 槽预算恢复授权，且另等用户现场启动确认。
-- 本轮没有启动手机、运行 Standalone、执行 `fastboot set_active a`、擦除 userdata/metadata、修改 misc/BCB、恢复 PixelOS 或触碰 Docker。
+- 刷写前后均只枚举到唯一目标：product=thyme、A 槽、unlocked=yes、is-userspace=no。刷后 A `unbootable=no / successful=no / retry=1`，B `unbootable=no / successful=no / retry=7`。
+- C27 的 `super` 与 `vbmeta_system_a` 已成功刷入；当前设备仍在 Bootloader Fastboot，C27 尚未启动。
+- 下一步停点：等待用户单独处理 A 槽启动预算并另行确认现场启动；不得自行 `set_active a` 或 reboot。
+- 本轮没有运行 Standalone、擦除 userdata/metadata、修改 misc/BCB、恢复 PixelOS 或回锁 Bootloader。
+
+## 2026-09-29 16:10 HKT 刷写与停点更新
+
+- 最终 C27 system tree 的 87 个可达 init `.rc` 文件定点扫描只有一份 `service netd` 定义；C27 `netd.rc` 不含两条目标回调。剩余的 `onrestart restart zygote` 位于 `zygote_secondary` 服务，仅维持该服务自身的重启关系。
+- logger 源码采用单文件输出，无 `logcat -r/-n` 轮转或删除旧日志；持续时间上限 8 分钟，metadata 可用空间扣除 12 MiB 后最高 24 MiB；状态包括子进程 exit code、signal、stderr、耗时、字节数和停止原因。源码 SHA-256 与构建 manifest 中的 source hash 相同。
+- 实际只刷写 `super` 与 `vbmeta_system_a`。`super`（7,703,595,992 bytes，SHA-256 `2B7A2F055B55AFB0B52B3DEAE9B7963F7923F075D406449F0C5034B5E7236598`）10/10 sparse 片段均 OKAY；`vbmeta_system_a`（131,072 bytes，SHA-256 `19B1ECD7128874989792C1B3F5173E6F4A8D2E0AC08734D35338AFAD674FA881`）发送与写入均 OKAY。
+- 刷后只读 Fastboot 确认 thyme、A 槽、unlocked=yes、is-userspace=no；A `unbootable=no / successful=no / retry=1`，B retry=7。无清数据、槽位调整、其他分区写入或重启。当前保持 Bootloader Fastboot，C27 尚未启动；启动预算需用户另行处理/授权。
+- 构建器使用文本捕获 `dump.erofs --cat` 的二进制 stdout，因此 manifest 中 helper 的 EROFS readback `bytes` 字段不是原始 ELF 文件长度；此字段不作为字节级 ELF 完整性证据。netd.rc 文本 readback 及目标字符串检查有效。
