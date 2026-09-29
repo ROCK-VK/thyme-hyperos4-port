@@ -1,0 +1,11 @@
+定点对照：Redmi K40 OS4.0.0.8 Android 17 成功移植包 vs C26
+
+- K40 包中的 /system/bin/netd 与 C26 使用文件逐字节一致。
+- K40 system/etc/init/netd.rc 与 C26 逐字节一致，包含 `onrestart restart zygote` 和 `onrestart restart zygote_secondary`。
+- com.android.tethering.capex 两边均为 17,248,810 bytes，SHA-256：98c2197598ca8df182216aba958ce8ad3603ca9f1bef81a9b8620bce0c9a5566。
+- 两边 SDK 为 37，vendor API level 为 30。
+- K40 包内 boot kernel 字符串为 Linux version 4.19.325-cip135-st19-aptusitu-perf-ga8adb96703d6。它是打包镜像内容，不是实际成功运行时 uname。
+- K40 netbpfload.rc 使用默认 bpfloader -> 等待 bpf.progs_loaded -> netd1shot 路径；C26 使用 C14 遗留的 BPF bypass。该差异不能解释 K40 成功运行时是否也遇到 netd 的 25Q2 / Linux 5.4 检查。
+- 未找到 K40 runtime uname、netd logcat/tombstone 或足以证明其绕过同一 netd 检查的现场记录。相同二进制和 init 回调与包内 4.19 字符串之间的差异仍未解释。
+
+结论：没有证据支持将 K40 netd、tethering APEX 或 netd.rc 替换到 thyme。C27 改动依据来自 C26 的本机进程时间线、PID 1 SIGKILL 记录及 C26 实际 netd.rc 的 onrestart 回调，而非对 K40 成功机理的推测。

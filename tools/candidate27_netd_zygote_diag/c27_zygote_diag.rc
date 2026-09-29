@@ -1,0 +1,20 @@
+service c27_logcat /system/bin/c27_zygote_diag --logcat
+    class core
+    user shell
+    group shell log
+    disabled
+    oneshot
+    seclabel u:r:shell:s0
+
+service c27_zygote_watch /system/bin/c27_zygote_diag --watch
+    class core
+    user shell
+    group shell log readproc
+    disabled
+    oneshot
+    seclabel u:r:shell:s0
+
+on post-fs-data
+    write /metadata/thyme_os4_diag/C27_INIT_TRIGGER.txt "candidate=C27 action=post-fs-data"
+    start c27_logcat
+    start c27_zygote_watch

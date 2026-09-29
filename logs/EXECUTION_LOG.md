@@ -13972,3 +13972,10 @@
 - 验证：C/D/E 当前约 78.00/233.95/265.84 GiB；Ubuntu 和 docker-desktop 均为 Stopped，未执行清理或设备操作。
 - 待处理：每次重型工作前检查 C/D/E 余量；任一盘低于 50 GiB 时触发项目专属清理，其中 C 盘低于 50 GiB 时暂停新构建/大型提取。Docker 绝对排除。
 - 替代：本条替代所有较早记录中的 C 盘 80 GiB 当前门槛；旧记录保留为历史事实。
+## 2026-09-29｜C26 Zygote 因果链与 C27 主机准备
+
+- C26 持久 logcat 显示 netd 因 Android 25Q2+ 对 Linux 4.19 的门槛 SIGABRT；约 94 ms 后 PID 1 对两个 Zygote 进程组发送 SIGKILL，服务随后转为 stopping。实际 netd.rc 含两条重启 Zygote 的 onrestart 回调，构成当前最有证据支持的因果解释。最终 Zygote waitpid 状态/退出码没有保存。
+- K40 OS4.0.0.8 的 netd、netd.rc 与 Tethering capex 和 C26 相同；包内 kernel 字符串为 4.19.325，但缺少运行时 uname/netd 证据，K40 成功环境为何不受同一门槛影响仍未知。
+- C27 只移除 netd 重启时重启两个 Zygote 的回调，并将 C26 轮转 logcat 改为有界单文件受监管采集。主机构建和静态验证通过；C27 尚未刷写或启动。
+- 设备 Fastboot 本轮未被主机枚举，因此没有设备写入。C27 首启前仍需单独处理 A 槽启动预算并等待现场启动确认。
+- 不随公开同步上传 ROM、分区镜像或原始设备备份。

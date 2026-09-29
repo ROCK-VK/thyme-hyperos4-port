@@ -1,0 +1,218 @@
+{
+  "candidate": "Candidate 27 netd-to-Zygote restart-cycle fix and diagnostic",
+  "base": "Candidate 26 Zygote first-exit diagnostic",
+  "changes": [
+    "Based on C26 and removes only netd.rc callbacks that restarted both Zygote services when netd was restarted; netd itself retains its existing crash/restart behavior and compatibility gate.",
+    "Replaces the C26 rotating logcat logger with a single-file, 8-minute, byte-capped logger supervised by the native helper; status records child exit, signal, stderr, elapsed time, output size, cap, and stop reason.",
+    "The helper starts at post-fs-data, watches Zygote/netd service state, captures bounded crash/system/main logcat tails, and records the existing C25 persistent sampler state without reading denied init.svc_debug_pid properties.",
+    "Uses existing shell labels and policy; no SELinux CIL, kernel, fstab, data-encryption, graphics, or hardware partition changes."
+  ],
+  "evidence_basis": [
+    "C26 netd PID 1046 aborts at monotonic 14.409s because the 25Q2+ tethering code rejects Linux 4.19; within 100ms init sends SIGKILL to Zygote PID 1060 and secondary PID 1061 process groups, followed by both service state transitions to stopping. C26 netd.rc contains the matching onrestart restart zygote and onrestart restart zygote_secondary callbacks.",
+    "The saved trace proves init issued SIGKILL after netd restart. It does not contain Zygote waitpid status, so the precise observed exit status remains unknown; no Zygote fatal/tombstone was captured.",
+    "K40 OS4.0.0.8 package and C26 share the same netd binary and netd.rc, SDK37/vendor API30; the package embeds a 4.19.325 kernel string, but no runtime uname or K40 netd log proves that kernel was running. The static/runtime discrepancy remains unresolved."
+  ],
+  "diagnostic_limits": [
+    "The logcat child is limited to 8 minutes and the currently available metadata filesystem space minus a 12 MiB reserve (8 MiB for the inherited C25 sampler, 1.5 MiB for C27 event/tail files, and 2.5 MiB headroom), capped at 24 MiB; the watcher and tail files also have fixed caps.",
+    "The watcher uses the existing shell SELinux domain/policy and does not read init.svc_debug_pid.*. Helper and logger exit status are persisted; Android tombstones are not directly read because standalone cannot decrypt /data.",
+    "C27 is an experiment: netd is still expected to abort on the 4.19 kernel. Removing the reverse restart callbacks tests whether Zygote/system_server can progress independently; networking may remain unavailable."
+  ],
+  "k40_runtime_comparison": {
+    "report": "work/reports/20260929_C27_NETD_ZYGOTE_CYCLE_BREAK/runtime_comparison.txt",
+    "result": "K40's packaged netd binary and netd.rc match C26, and its package includes a Linux 4.19.325 kernel string. Its successful runtime under this netd compatibility gate is not proven from available runtime logs. The same netd.rc callback therefore establishes a relevant mechanism but not evidence that K40 removed it."
+  },
+  "runtime_helper": {
+    "bytes": 2360440,
+    "sha256": "0FC53976FA738ACE47B3A494C18D0BDCF1D303CE4130C896904AB5F5A7832F2F",
+    "architecture": "AArch64",
+    "needed": [
+      "liblog.so"
+    ],
+    "cxx_runtime": "statically linked libc++",
+    "source_sha256": "291BDDBE4A6D10D837488DA538FAF9F5B3C7FEB73B33F170E4159B2EC93A4F95"
+  },
+  "policy": {
+    "init_import_added": "import /system/etc/init/c27_zygote_diag.rc",
+    "init_import_retained": "import /system/etc/init/c25_bootdiag.rc",
+    "init_import_removed": "import /system/etc/init/c26_zygote_diag.rc",
+    "runtime_file_context_additions": [
+      "/system/bin/c27_zygote_diag u:object_r:shell_exec:s0",
+      "/system/etc/init/c27_zygote_diag\\.rc u:object_r:system_file:s0"
+    ],
+    "runtime_file_contexts_removed": [
+      "/system/bin/c26_zygote_diag u:object_r:shell_exec:s0",
+      "/system/etc/init/c26_zygote_diag\\.rc u:object_r:system_file:s0"
+    ],
+    "netd_rc_before_sha256": "51039198C9EC69111B1F7F1C8257AE12EE0A677C14599A87416C5B24B112948B",
+    "netd_rc_after_sha256": "CE706B53205492835BE972DE4381DC601297E4C0B211D3889C9C9E150428C5EE",
+    "netd_onrestart_commands_removed": [
+      "onrestart restart zygote",
+      "onrestart restart zygote_secondary"
+    ],
+    "plat_sepolicy_sha256": "25E1258BAD2C587C40A79FE41820FE05E8318768B204B80B5346BE76FAFEFCBF",
+    "plat_sepolicy_and_mapping_sha256_file": "a2ebd43aebbb49647be9d8e68fa7dc79b9d07cea9484f622f2cc76692c19d3ed",
+    "cil_changed": false
+  },
+  "system_build": {
+    "file_context_additions": [
+      "/system/system/bin/c25_bootdiag u:object_r:shell_exec:s0",
+      "/system/system/etc/init/c25_bootdiag\\.rc u:object_r:system_file:s0",
+      "/system/system/bin/c27_zygote_diag u:object_r:shell_exec:s0",
+      "/system/system/etc/init/c27_zygote_diag\\.rc u:object_r:system_file:s0"
+    ],
+    "new_fs_config_paths": [
+      "system/system/bin/c27_zygote_diag",
+      "system/system/etc/init/c27_zygote_diag.rc"
+    ],
+    "final_erofs_readback": {
+      "/system/etc/init/hw/init.rc": {
+        "contains": "import /system/etc/init/c27_zygote_diag.rc",
+        "bytes": 80953
+      },
+      "/system/etc/init/netd.rc": {
+        "contains": "service netd /system/bin/netd",
+        "bytes": 2319
+      },
+      "/system/etc/init/c27_zygote_diag.rc": {
+        "contains": "seclabel u:r:shell:s0",
+        "bytes": 486
+      },
+      "/system/bin/c27_zygote_diag": {
+        "contains": "byte_cap",
+        "bytes": 3067991
+      },
+      "/system/etc/selinux/plat_file_contexts": {
+        "contains": "/metadata/thyme_os4_diag",
+        "bytes": 50788
+      },
+      "/system/etc/init/netd.rc_removed_commands": {
+        "absent": [
+          "onrestart restart zygote",
+          "onrestart restart zygote_secondary"
+        ],
+        "bytes": 2319
+      }
+    },
+    "system_image_bytes": 1092616192,
+    "system_image_sha256": "993FF2F96C5E3B961B7586F7BFE0D528063F48C8ACA2D903000D4A7467E39BE3",
+    "plat_sepolicy_sha256": "25E1258BAD2C587C40A79FE41820FE05E8318768B204B80B5346BE76FAFEFCBF",
+    "plat_cil_unchanged_from_c26": true
+  },
+  "vbmeta_system_update": {
+    "base_sha256": "194000046E3FA288322D4D9D01B65559042DBCB27E3E354C986796888ABA40A3",
+    "system_image_size_before": 959836160,
+    "system_image_size_after": 959848448,
+    "system_tree_size": 7565312,
+    "system_root_digest": "be89f35a8f2a5142d652c4c364de01c8a853e48aacc7600a60eb9477f9e90028",
+    "flags": 2,
+    "rollback_index": 0,
+    "rollback_index_location": 2,
+    "unchanged_other_descriptors": [
+      "product",
+      "system_ext"
+    ]
+  },
+  "logical_input_hashes": {
+    "vendor_c22.img": {
+      "bytes": 1510998016,
+      "sha256": "FCEAFEE5B5909D7BE9BBEC48D9E8720F37798DDEEBDBF193424FB3A095CBA675"
+    },
+    "system_ext_a.img": {
+      "bytes": 942669824,
+      "sha256": "6B63E58346DA5B2FEBA7F51980CCEBF886D5991DD07F91541FE4D9F1485CDAD5"
+    },
+    "mi_ext.img": {
+      "bytes": 202375168,
+      "sha256": "43ED8FC0D1848F5D53BFB7206AC91FE5E5ED4E3F71E958D49F2EEA4C9C8B4BCE"
+    },
+    "odm.img": {
+      "bytes": 35758080,
+      "sha256": "075E4A17DC4CA716399166388B1C175060D5CBB31139B2ACBD9E5B2DEE352E22"
+    },
+    "product.img": {
+      "bytes": 4387241984,
+      "sha256": "87955DBE97AC28B01A214273BD03F36B5886310DC3B2E4128B9F4661E1C3345E"
+    }
+  },
+  "flash_scope_prepared": [
+    "super",
+    "vbmeta_system_a"
+  ],
+  "images": {
+    "boot.img": {
+      "bytes": 201326592,
+      "sha256": "E5A016056D5C93C7A886980A7C062617EC44DC06A48417D7DD0F4476708A6368"
+    },
+    "vendor_boot.img": {
+      "bytes": 100663296,
+      "sha256": "02333B82BA936F1BAAB1ECAB744632C70F8FC16688A206C7041EF319F112A137"
+    },
+    "dtbo.img": {
+      "bytes": 33554432,
+      "sha256": "50E1AC0EDCBD333778217AA6FE8D972F6FF85ADD0DAE8A015A6642C2172DD886"
+    },
+    "vbmeta.img": {
+      "bytes": 131072,
+      "sha256": "66A53C2EC38247193CC86B7F5DE887556864413D1142C3C1994645DE1E3BAB10"
+    },
+    "vbmeta_system.img": {
+      "bytes": 131072,
+      "sha256": "19B1ECD7128874989792C1B3F5173E6F4A8D2E0AC08734D35338AFAD674FA881"
+    },
+    "super.img": {
+      "bytes": 7703595992,
+      "sha256": "2B7A2F055B55AFB0B52B3DEAE9B7963F7923F075D406449F0C5034B5E7236598"
+    }
+  },
+  "c26_baseline": {
+    "checked_images": {
+      "boot.img": {
+        "bytes": 201326592,
+        "sha256": "E5A016056D5C93C7A886980A7C062617EC44DC06A48417D7DD0F4476708A6368"
+      },
+      "vendor_boot.img": {
+        "bytes": 100663296,
+        "sha256": "02333B82BA936F1BAAB1ECAB744632C70F8FC16688A206C7041EF319F112A137"
+      },
+      "dtbo.img": {
+        "bytes": 33554432,
+        "sha256": "50E1AC0EDCBD333778217AA6FE8D972F6FF85ADD0DAE8A015A6642C2172DD886"
+      },
+      "vbmeta.img": {
+        "bytes": 131072,
+        "sha256": "66A53C2EC38247193CC86B7F5DE887556864413D1142C3C1994645DE1E3BAB10"
+      },
+      "vbmeta_system.img": {
+        "bytes": 131072,
+        "sha256": "194000046E3FA288322D4D9D01B65559042DBCB27E3E354C986796888ABA40A3"
+      }
+    },
+    "logical_input_hashes": {
+      "vendor_c22.img": {
+        "bytes": 1510998016,
+        "sha256": "FCEAFEE5B5909D7BE9BBEC48D9E8720F37798DDEEBDBF193424FB3A095CBA675"
+      },
+      "system_ext_a.img": {
+        "bytes": 942669824,
+        "sha256": "6B63E58346DA5B2FEBA7F51980CCEBF886D5991DD07F91541FE4D9F1485CDAD5"
+      },
+      "mi_ext.img": {
+        "bytes": 202375168,
+        "sha256": "43ED8FC0D1848F5D53BFB7206AC91FE5E5ED4E3F71E958D49F2EEA4C9C8B4BCE"
+      },
+      "odm.img": {
+        "bytes": 35758080,
+        "sha256": "075E4A17DC4CA716399166388B1C175060D5CBB31139B2ACBD9E5B2DEE352E22"
+      },
+      "product.img": {
+        "bytes": 4387241984,
+        "sha256": "87955DBE97AC28B01A214273BD03F36B5886310DC3B2E4128B9F4661E1C3345E"
+      }
+    }
+  },
+  "host_storage_gate": {
+    "C_free_gib": 77.9,
+    "D_free_gib": 232.39,
+    "E_free_gib": 265.83
+  }
+}
