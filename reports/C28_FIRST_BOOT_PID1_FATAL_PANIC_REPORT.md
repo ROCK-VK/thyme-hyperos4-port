@@ -72,3 +72,13 @@ C27 logger 文件为零字节的**确切运行时原因仍未确定**。已知�
 3. 只有 journal 副本也没有 C28 诊断结果时，再准备最小后续诊断版本，重点留存 init fatal signal 编号/回溯与 PID 1063 的进程身份；不立即构建 C29，也不恢复 netd→Zygote callbacks。
 
 **当前没有新修复或新 Candidate；C28 的主要新发现是 PID 1 fatal signal 后触发的 kernel panic，底层 fatal 来源和 C27 的 Zygote 修复效果仍待证。**
+
+## 2026-09-29 20:06 HKT 补记｜metadata journal 主机副本恢复 C28 状态标记
+
+此前“没有可见 C28 marker”是基于 `ro,norecovery` 的首次只读目录视图。随后按授权从唯一 `PARTNAME=metadata` 只读导出完整 metadata；设备端与主机副本长度及 SHA-256 一致。原始 metadata 保留在本机，未公开也未修改。ext4 journal 只在逐字节校验过的主机工作副本上恢复，再由该副本提取文件；没有向设备写入或 replay。
+
+恢复副本中有 12 个 `C28_*` 文件，9 个有内容、3 个为零字节。Init marker 记录 netd 曾 `restarting` 和 `running`；zygote 曾 `running` 和 `restarting`；secondary zygote、SurfaceFlinger、bootanim 和 C28 watcher 曾 `running`；C28 logcat 服务记录为 `stopped`。这些 marker 来自 C28 init rc 的 `init.svc.*` property triggers，但不带时间戳；不能证明 netd restart 导致 zygote restart，也不能仅凭它们确认 system_server 或 Android boot complete。
+
+logcat status 文件、zygote event/tail 文件均为零字节，没有可用 C28 logcat。C28 确实记录到 zygote 进入 restarting，所以 C27 移除 netd 的两条 onrestart 回调不足以保证该次启动中的 zygote 不重启；具体触发者仍未知。PID 1063 `main` 身份和 init fatal signal 来源仍未确认。
+
+公开增量 `evidence/candidate28/first-boot-20260929/metadata-journal-recovery/` 只包含恢复的 C28 marker、文件 SHA-256 清单和来源说明；未包含完整 metadata、misc、ROM、分区镜像或设备身份数据。

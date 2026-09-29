@@ -1,0 +1,1 @@
+candidate=C28 service=bootanim state=running

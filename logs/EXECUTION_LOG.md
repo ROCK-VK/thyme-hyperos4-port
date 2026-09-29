@@ -14067,3 +14067,11 @@
 - 原因：设备模式必须以当前主机枚举证据确认，不能用 Standalone UMS 状态执行 Fastboot 或分区读取。
 - 验证：使用项目本地 platform-tools 只读查询；G: 容量约 63 MiB，USB 设备为 THYME_DIAG UMS。
 - 待处理：请用户通过实体按键退出 Standalone UMS 并回到 Bootloader Fastboot；待唯一设备被 fastboot 枚举后，再只读确认 product 和 A/B 状态。此前对 metadata 的只读许可仍限于身份及容量校验通过后的受控读取。
+
+## 2026-09-29 20:06 HKT｜C28 metadata journal recovery 恢复 Zygote 状态标记
+
+- 状态：完成只读 metadata 取证的主机副本 journal recovery；公开恢复出的 C28 marker 与清单。
+- 改动/结论：在与设备端 SHA-256 一致的 metadata 原始副本的主机工作副本上恢复 ext4 journal，提取 12 个 C28 文件。Init marker 记录 netd 曾 restarting/running、zygote 曾 running/restarting、secondary zygote/SurfaceFlinger/bootanim/watcher running，以及 logcat service stopped。3 个 logcat status/zygote events/tails 文件为零字节。
+- 验证级别：只读设备分区采集与主机副本分析；没有修改设备分区。marker 无时间戳，netd 与 Zygote 状态变化之间的因果仍未知。C28 system_server、PID 1063 身份、init fatal signal 来源和 boot complete 仍未确认。
+- 公开内容：新增 evidence/candidate28/first-boot-20260929/metadata-journal-recovery/，含恢复 marker、大小/SHA-256 清单与来源说明。未公开完整 metadata/misc、ROM 或分区镜像。
+- 待处理：主机最新仍显示 THYME_DIAG UMS、Fastboot 设备数为 0；待设备实际回到 Bootloader Fastboot 后只读核验状态。

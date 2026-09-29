@@ -1,0 +1,1 @@
+candidate=C28 service=netd state=running

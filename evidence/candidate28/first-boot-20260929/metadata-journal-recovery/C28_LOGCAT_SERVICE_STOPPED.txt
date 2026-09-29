@@ -1,0 +1,1 @@
+candidate=C28 service=c28_logcat state=stopped
