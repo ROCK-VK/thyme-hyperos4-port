@@ -1,0 +1,14 @@
+{"candidate": "C26-zygote-first-exit", "event": "observer_started", "host_utc": "2026-09-29T05:19:53.456+00:00", "serial": "[DEVICE_SERIAL_REDACTED]"}
+{"elapsed_seconds": 2.265, "event": "usb_pnp_state_change", "host_utc": "2026-09-29T05:19:55.731+00:00", "output": "initial PnP query pending", "state": "query_pending"}
+{"elapsed_seconds": 2.265, "event": "adb_state_change", "host_utc": "2026-09-29T05:19:55.732+00:00", "output": "List of devices attached |  | * daemon not running; starting now at tcp:5037 | * daemon started successfully", "state": "absent"}
+{"elapsed_seconds": 2.265, "event": "fastboot_state_change", "host_utc": "2026-09-29T05:19:55.733+00:00", "output": "[DEVICE_SERIAL_REDACTED]               fastboot", "state": "fastboot"}
+{"adb_state": "absent", "candidate": "C26-zygote-first-exit", "elapsed_seconds": 6.312, "event": "observer_armed", "fastboot_state": "fastboot", "host_utc": "2026-09-29T05:19:59.774+00:00", "usb_pnp_state": "present"}
+{"elapsed_seconds": 6.312, "event": "usb_pnp_state_change", "host_utc": "2026-09-29T05:19:59.776+00:00", "output": "{\"state\":\"present\",\"devices\":[{\"Status\":\"OK\",\"Class\":\"AndroidUsbDeviceClass\",\"FriendlyName\":\"Android Bootloader Interface\",\"InstanceId\":\"USB\\\\VID_18D1&PID_D00D\\\\[DEVICE_SERIAL_REDACTED]\"}]}", "state": "present"}
+{"host_utc":"2026-09-29T05:20:08.2253771+00:00","event":"fastboot_preboot_state","candidate":"C26-zygote-first-exit","current_slot":"a","slot_unbootable_a":"no","slot_successful_a":"no","slot_retry_count_a":2}
+{"host_utc":"2026-09-29T05:20:08.2525541+00:00","event":"candidate_boot_command","candidate":"C26-zygote-first-exit","command":"fastboot reboot","serial":"[DEVICE_SERIAL_REDACTED]"}
+{"host_utc":"2026-09-29T05:20:08.2773991+00:00","event":"candidate_boot_command_returned","candidate":"C26-zygote-first-exit","exit_code":0}
+{"elapsed_seconds": 15.297, "event": "fastboot_state_change", "host_utc": "2026-09-29T05:20:08.765+00:00", "output": "", "state": "absent"}
+{"elapsed_seconds": 21.312, "event": "usb_pnp_state_change", "host_utc": "2026-09-29T05:20:14.781+00:00", "output": "{\"state\":\"absent\",\"devices\":[]}", "state": "absent"}
+{"elapsed_seconds": 563.812, "event": "fastboot_state_change", "host_utc": "2026-09-29T05:29:17.279+00:00", "output": "[DEVICE_SERIAL_REDACTED]               fastboot", "state": "fastboot"}
+{"elapsed_seconds": 571.812, "event": "usb_pnp_state_change", "host_utc": "2026-09-29T05:29:25.281+00:00", "output": "{\"state\":\"present\",\"devices\":[{\"Status\":\"OK\",\"Class\":\"AndroidUsbDeviceClass\",\"FriendlyName\":\"Android Bootloader Interface\",\"InstanceId\":\"USB\\\\VID_18D1&PID_D00D\\\\[DEVICE_SERIAL_REDACTED]\"}]}", "state": "present"}
+{"elapsed_seconds": 576.265, "event": "observer_stopped_by_user", "host_utc": "2026-09-29T05:29:29.727+00:00"}

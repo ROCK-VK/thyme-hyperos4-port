@@ -1,0 +1,2 @@
+Some source content could not be traversed or verified:
+missing required top-level file: dmesg_diag_boot.txt

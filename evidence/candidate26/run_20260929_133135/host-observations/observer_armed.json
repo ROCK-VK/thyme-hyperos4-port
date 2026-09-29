@@ -1,0 +1,11 @@
+{
+  "candidate": "C26-zygote-first-exit",
+  "armed_utc": "2026-09-29T05:19:59.772+00:00",
+  "elapsed_seconds": 6.312,
+  "serial": "[DEVICE_SERIAL_REDACTED]",
+  "usb_pnp_state": "present",
+  "usb_pnp_output": "{\"state\":\"present\",\"devices\":[{\"Status\":\"OK\",\"Class\":\"AndroidUsbDeviceClass\",\"FriendlyName\":\"Android Bootloader Interface\",\"InstanceId\":\"USB\\\\VID_18D1&PID_D00D\\\\[DEVICE_SERIAL_REDACTED]\"}]}",
+  "adb_state": "absent",
+  "fastboot_state": "fastboot",
+  "run_dir": "work\\reports\\20260929_C26_ZYGOTE_FIRST_EXIT\\observations\\run_20260929_131953"
+}

@@ -1,0 +1,690 @@
+
+===== C26_LOGCAT_TAIL n=1 uptime_ms=17827 trigger=init.svc.zygote =====
+dmesg: klogctl: Permission denied
+--------- beginning of main
+    17.754   778   778 E sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:1334: Error 0x200: remote_handle_open failed for adsp_default_listener (errno Success)
+    17.754   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:90:listener exits
+    17.755   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/rpcmem_android.c:192: rpcmem_deinit_internal: closed ION fd 4
+    17.755   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_pm.c:116: fastrpc_wake_lock_deinit done
+    17.755   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:2993: fastrpc_apps_user_deinit done
+    17.755   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:101:sscrpcd daemon will restart after 25ms...
+    17.763  1026  1026 W c26_zygote_diag: type=1400 audit(0.0:174): avc:  denied  { read } for  name="u:object_r:init_svc_debug_prop:s0" dev="tmpfs" ino=2972 scontext=u:r:shell:s0 tcontext=u:object_r:init_svc_debug_prop:s0 tclass=file permissive=0
+    17.767  1026  1026 W libc    : Access denied finding property "init.svc_debug_pid.zygote"
+    17.763  1026  1026 W c26_zygote_diag: type=1400 audit(0.0:175): avc:  denied  { read } for  name="u:object_r:init_svc_debug_prop:s0" dev="tmpfs" ino=2972 scontext=u:r:shell:s0 tcontext=u:object_r:init_svc_debug_prop:s0 tclass=file permissive=0
+    17.767  1026  1026 W libc    : Access denied finding property "init.svc_debug_pid.zygote_secondary"
+    17.782   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/rpcmem_android.c:159: rpcmem_init_internal: opened ION device fd 4, configured heap IDs: system (0x2000000), contig (0x400000), secure (0x200), secure flags (0x80080000)
+    17.782   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:3061: fastrpc_apps_user_init done with default domain:2 and &fastrpc_trace:0x6d9225afa0
+    17.782   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:86:adsp_default_listener_start called for [sensorspd]
+    17.782   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_pm.c:85: fastrpc_wake_lock_init done for sscrpcd:778
+    17.782   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:1709: wakelock_control: enabled wakelock control for domain 2
+    17.782   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:63:fastrpc wakelock control is enabled
+    17.782   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:1331: remote_handle_open: Successfully opened handle 0x0 for '":;./\createstaticpd:sensorspd on domain 2
+    17.782   778   778 E sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:2846: Error 0x200: apps_dev_init failed for domain 2, errno Transport endpoint is not connected
+    17.782   778   778 E sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:2944: Error 0x200: open_dev (-1) failed for domain 2 (errno Transport endpoint is not connected)
+    17.782   778   778 E sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:1334: Error 0x200: remote_handle_open failed for adsp_default_listener (errno Success)
+    17.782   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:90:listener exits
+    17.783   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/rpcmem_android.c:192: rpcmem_deinit_internal: closed ION fd 4
+    17.783   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_pm.c:116: fastrpc_wake_lock_deinit done
+    17.783   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:2993: fastrpc_apps_user_deinit done
+    17.783   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:101:sscrpcd daemon will restart after 25ms...
+    17.811   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/rpcmem_android.c:159: rpcmem_init_internal: opened ION device fd 4, configured heap IDs: system (0x2000000), contig (0x400000), secure (0x200), secure flags (0x80080000)
+    17.811   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:3061: fastrpc_apps_user_init done with default domain:2 and &fastrpc_trace:0x6d922c8fa0
+    17.811   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:86:adsp_default_listener_start called for [sensorspd]
+    17.812   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_pm.c:85: fastrpc_wake_lock_init done for sscrpcd:778
+    17.812   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:1709: wakelock_control: enabled wakelock control for domain 2
+    17.812   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:63:fastrpc wakelock control is enabled
+    17.812   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:1331: remote_handle_open: Successfully opened handle 0x0 for '":;./\createstaticpd:sensorspd on domain 2
+    17.807  1026  1026 W c26_zygote_diag: type=1400 audit(0.0:176): avc:  denied  { read } for  name="u:object_r:init_svc_debug_prop:s0" dev="tmpfs" ino=2972 scontext=u:r:shell:s0 tcontext=u:object_r:init_svc_debug_prop:s0 tclass=file permissive=0
+    17.812  1026  1026 W libc    : Access denied finding property "init.svc_debug_pid.zygote"
+    17.807  1026  1026 W c26_zygote_diag: type=1400 audit(0.0:177): avc:  denied  { read } for  name="u:object_r:init_svc_debug_prop:s0" dev="tmpfs" ino=2972 scontext=u:r:shell:s0 tcontext=u:object_r:init_svc_debug_prop:s0 tclass=file permissive=0
+    17.812  1026  1026 W libc    : Access denied finding property "init.svc_debug_pid.zygote_secondary"
+    17.807  1026  1026 W c26_zygote_diag: type=1400 audit(0.0:178): avc:  denied  { read } for  name="u:object_r:init_svc_debug_prop:s0" dev="tmpfs" ino=2972 scontext=u:r:shell:s0 tcontext=u:object_r:init_svc_debug_prop:s0 tclass=file permissive=0
+    17.812  1026  1026 W libc    : Access denied finding property "init.svc_debug_pid.zygote"
+    17.812   778   778 E sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:2846: Error 0x200: apps_dev_init failed for domain 2, errno Transport endpoint is not connected
+    17.812  1026  1026 W libc    : Access denied finding property "init.svc_debug_pid.zygote_secondary"
+    17.812   778   778 E sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:2944: Error 0x200: open_dev (-1) failed for domain 2 (errno Transport endpoint is not connected)
+    17.813   778   778 E sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:1334: Error 0x200: remote_handle_open failed for adsp_default_listener (errno Success)
+    17.813   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:90:listener exits
+    17.807  1026  1026 W c26_zygote_diag: type=1400 audit(0.0:179): avc:  denied  { read } for  name="u:object_r:init_svc_debug_prop:s0" dev="tmpfs" ino=2972 scontext=u:r:shell:s0 tcontext=u:object_r:init_svc_debug_prop:s0 tclass=file permissive=0
+    17.813   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/rpcmem_android.c:192: rpcmem_deinit_internal: closed ION fd 4
+    17.813   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_pm.c:116: fastrpc_wake_lock_deinit done
+    17.813   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:2993: fastrpc_apps_user_deinit done
+    17.813   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:101:sscrpcd daemon will restart after 25ms...
+    17.815     1     1 I libc    : kill: send 9 to pid -1057
+    17.815     1     1 I libc    : debug pid reuse, real pid -1057
+    17.816     1     1 I libc    : kill: send 9 to pid -1061
+    17.816     1     1 I libc    : debug pid reuse, real pid -1061
+    17.818     1     1 I libc    : kill: send 9 to pid -1074
+    17.818     1     1 I libc    : debug pid reuse, real pid -1074
+    17.819     1     1 I libc    : kill: send 9 to pid -1094
+    17.819     1     1 I libc    : debug pid reuse, real pid -1094
+    17.820   713  1116 W libc    : Unable to set property "ctl.interface_start" to "android.hardware.audio@7.0::IDevicesFactory/default": PROP_ERROR_HANDLE_CONTROL_MESSAGE (0x20)
+    17.820   713  1116 I hwservicemanager: Tried to start android.hardware.audio@7.0::IDevicesFactory/default as a lazy service, but was unable to. Usually this happens when a service is not installed, but if the service is intended to be used as a lazy service, then it may be configured incorrectly.
+    17.821   713  1119 W libc    : Unable to set property "ctl.interface_start" to "android.hardware.audio@7.0::IDevicesFactory/default": PROP_ERROR_HANDLE_CONTROL_MESSAGE (0x20)
+    17.821   713  1119 I hwservicemanager: Tried to start android.hardware.audio@7.0::IDevicesFactory/default as a lazy service, but was unable to. Usually this happens when a service is not installed, but if the service is intended to be used as a lazy service, then it may be configured incorrectly.
+    17.827  1026  1026 I C26ZygoteDiag: C26 uptime_ms=17826 elapsed_ms=2514 PROPERTY_CHANGE key=init.svc.zygote old=stopping new=restarting init.svc.zygote=restarting init.svc.zygote_secondary=stopping init.svc.c26_logcat=running init.svc.c25_bootdiag=running init.svc.netd=restarting init.svc_debug_pid.zygote=<unset> init.svc_debug_pid.zygote_secondary=<unset> proc_zygote_processes=none proc_unreadable=0
+    17.828   713  1129 W libc    : Unable to set property "ctl.interface_start" to "android.hardware.audio@7.0::IDevicesFactory/default": PROP_ERROR_HANDLE_CONTROL_MESSAGE (0x20)
+    17.828   713  1129 I hwservicemanager: Tried to start android.hardware.audio@7.0::IDevicesFactory/default as a lazy service, but was unable to. Usually this happens when a service is not installed, but if the service is intended to be used as a lazy service, then it may be configured incorrectly.
+    17.830   713  1131 W libc    : Unable to set property "ctl.interface_start" to "android.hardware.audio@7.0::IDevicesFactory/default": PROP_ERROR_HANDLE_CONTROL_MESSAGE (0x20)
+    17.830   713  1131 I hwservicemanager: Tried to start android.hardware.audio@7.0::IDevicesFactory/default as a lazy service, but was unable to. Usually this happens when a service is not installed, but if the service is intended to be used as a lazy service, then it may be configured incorrectly.
+    17.841   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/rpcmem_android.c:159: rpcmem_init_internal: opened ION device fd 4, configured heap IDs: system (0x2000000), contig (0x400000), secure (0x200), secure flags (0x80080000)
+    17.841   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:3061: fastrpc_apps_user_init done with default domain:2 and &fastrpc_trace:0x6d92269fa0
+    17.841   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:86:adsp_default_listener_start called for [sensorspd]
+    17.841   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_pm.c:85: fastrpc_wake_lock_init done for sscrpcd:778
+    17.841   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:1709: wakelock_control: enabled wakelock control for domain 2
+    17.841   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:63:fastrpc wakelock control is enabled
+    17.841   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:1331: remote_handle_open: Successfully opened handle 0x0 for '":;./\createstaticpd:sensorspd on domain 2
+    17.841   778   778 E sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:2846: Error 0x200: apps_dev_init failed for domain 2, errno Transport endpoint is not connected
+    17.841   778   778 E sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:2944: Error 0x200: open_dev (-1) failed for domain 2 (errno Transport endpoint is not connected)
+    17.841   778   778 E sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:1334: Error 0x200: remote_handle_open failed for adsp_default_listener (errno Success)
+    17.841   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:90:listener exits
+    17.841   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/rpcmem_android.c:192: rpcmem_deinit_internal: closed ION fd 4
+    17.841   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_pm.c:116: fastrpc_wake_lock_deinit done
+    17.841   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:2993: fastrpc_apps_user_deinit done
+    17.842   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:101:sscrpcd daemon will restart after 25ms...
+
+C26_TAIL_RESULT bytes=12909 kept=12909 exit=0 signal=0 spawn_errno=0 timeout=no truncated=no
+
+===== C26_LOGCAT_TAIL n=2 uptime_ms=17875 trigger=init.svc.zygote_secondary =====
+dmesg: klogctl: Permission denied
+--------- beginning of main
+    17.782   778   778 E sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:2944: Error 0x200: open_dev (-1) failed for domain 2 (errno Transport endpoint is not connected)
+    17.782   778   778 E sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:1334: Error 0x200: remote_handle_open failed for adsp_default_listener (errno Success)
+    17.782   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:90:listener exits
+    17.783   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/rpcmem_android.c:192: rpcmem_deinit_internal: closed ION fd 4
+    17.783   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_pm.c:116: fastrpc_wake_lock_deinit done
+    17.783   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:2993: fastrpc_apps_user_deinit done
+    17.783   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:101:sscrpcd daemon will restart after 25ms...
+    17.811   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/rpcmem_android.c:159: rpcmem_init_internal: opened ION device fd 4, configured heap IDs: system (0x2000000), contig (0x400000), secure (0x200), secure flags (0x80080000)
+    17.811   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:3061: fastrpc_apps_user_init done with default domain:2 and &fastrpc_trace:0x6d922c8fa0
+    17.811   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:86:adsp_default_listener_start called for [sensorspd]
+    17.812   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_pm.c:85: fastrpc_wake_lock_init done for sscrpcd:778
+    17.812   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:1709: wakelock_control: enabled wakelock control for domain 2
+    17.812   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:63:fastrpc wakelock control is enabled
+    17.812   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:1331: remote_handle_open: Successfully opened handle 0x0 for '":;./\createstaticpd:sensorspd on domain 2
+    17.807  1026  1026 W c26_zygote_diag: type=1400 audit(0.0:176): avc:  denied  { read } for  name="u:object_r:init_svc_debug_prop:s0" dev="tmpfs" ino=2972 scontext=u:r:shell:s0 tcontext=u:object_r:init_svc_debug_prop:s0 tclass=file permissive=0
+    17.812  1026  1026 W libc    : Access denied finding property "init.svc_debug_pid.zygote"
+    17.807  1026  1026 W c26_zygote_diag: type=1400 audit(0.0:177): avc:  denied  { read } for  name="u:object_r:init_svc_debug_prop:s0" dev="tmpfs" ino=2972 scontext=u:r:shell:s0 tcontext=u:object_r:init_svc_debug_prop:s0 tclass=file permissive=0
+    17.812  1026  1026 W libc    : Access denied finding property "init.svc_debug_pid.zygote_secondary"
+    17.807  1026  1026 W c26_zygote_diag: type=1400 audit(0.0:178): avc:  denied  { read } for  name="u:object_r:init_svc_debug_prop:s0" dev="tmpfs" ino=2972 scontext=u:r:shell:s0 tcontext=u:object_r:init_svc_debug_prop:s0 tclass=file permissive=0
+    17.812  1026  1026 W libc    : Access denied finding property "init.svc_debug_pid.zygote"
+    17.812   778   778 E sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:2846: Error 0x200: apps_dev_init failed for domain 2, errno Transport endpoint is not connected
+    17.812  1026  1026 W libc    : Access denied finding property "init.svc_debug_pid.zygote_secondary"
+    17.812   778   778 E sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:2944: Error 0x200: open_dev (-1) failed for domain 2 (errno Transport endpoint is not connected)
+    17.813   778   778 E sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:1334: Error 0x200: remote_handle_open failed for adsp_default_listener (errno Success)
+    17.813   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:90:listener exits
+    17.807  1026  1026 W c26_zygote_diag: type=1400 audit(0.0:179): avc:  denied  { read } for  name="u:object_r:init_svc_debug_prop:s0" dev="tmpfs" ino=2972 scontext=u:r:shell:s0 tcontext=u:object_r:init_svc_debug_prop:s0 tclass=file permissive=0
+    17.813   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/rpcmem_android.c:192: rpcmem_deinit_internal: closed ION fd 4
+    17.813   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_pm.c:116: fastrpc_wake_lock_deinit done
+    17.813   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:2993: fastrpc_apps_user_deinit done
+    17.813   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:101:sscrpcd daemon will restart after 25ms...
+    17.815     1     1 I libc    : kill: send 9 to pid -1057
+    17.815     1     1 I libc    : debug pid reuse, real pid -1057
+    17.816     1     1 I libc    : kill: send 9 to pid -1061
+    17.816     1     1 I libc    : debug pid reuse, real pid -1061
+    17.818     1     1 I libc    : kill: send 9 to pid -1074
+    17.818     1     1 I libc    : debug pid reuse, real pid -1074
+    17.819     1     1 I libc    : kill: send 9 to pid -1094
+    17.819     1     1 I libc    : debug pid reuse, real pid -1094
+    17.820   713  1116 W libc    : Unable to set property "ctl.interface_start" to "android.hardware.audio@7.0::IDevicesFactory/default": PROP_ERROR_HANDLE_CONTROL_MESSAGE (0x20)
+    17.820   713  1116 I hwservicemanager: Tried to start android.hardware.audio@7.0::IDevicesFactory/default as a lazy service, but was unable to. Usually this happens when a service is not installed, but if the service is intended to be used as a lazy service, then it may be configured incorrectly.
+    17.821   713  1119 W libc    : Unable to set property "ctl.interface_start" to "android.hardware.audio@7.0::IDevicesFactory/default": PROP_ERROR_HANDLE_CONTROL_MESSAGE (0x20)
+    17.821   713  1119 I hwservicemanager: Tried to start android.hardware.audio@7.0::IDevicesFactory/default as a lazy service, but was unable to. Usually this happens when a service is not installed, but if the service is intended to be used as a lazy service, then it may be configured incorrectly.
+    17.827  1026  1026 I C26ZygoteDiag: C26 uptime_ms=17826 elapsed_ms=2514 PROPERTY_CHANGE key=init.svc.zygote old=stopping new=restarting init.svc.zygote=restarting init.svc.zygote_secondary=stopping init.svc.c26_logcat=running init.svc.c25_bootdiag=running init.svc.netd=restarting init.svc_debug_pid.zygote=<unset> init.svc_debug_pid.zygote_secondary=<unset> proc_zygote_processes=none proc_unreadable=0
+    17.828   713  1129 W libc    : Unable to set property "ctl.interface_start" to "android.hardware.audio@7.0::IDevicesFactory/default": PROP_ERROR_HANDLE_CONTROL_MESSAGE (0x20)
+    17.828   713  1129 I hwservicemanager: Tried to start android.hardware.audio@7.0::IDevicesFactory/default as a lazy service, but was unable to. Usually this happens when a service is not installed, but if the service is intended to be used as a lazy service, then it may be configured incorrectly.
+    17.830   713  1131 W libc    : Unable to set property "ctl.interface_start" to "android.hardware.audio@7.0::IDevicesFactory/default": PROP_ERROR_HANDLE_CONTROL_MESSAGE (0x20)
+    17.830   713  1131 I hwservicemanager: Tried to start android.hardware.audio@7.0::IDevicesFactory/default as a lazy service, but was unable to. Usually this happens when a service is not installed, but if the service is intended to be used as a lazy service, then it may be configured incorrectly.
+    17.841   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/rpcmem_android.c:159: rpcmem_init_internal: opened ION device fd 4, configured heap IDs: system (0x2000000), contig (0x400000), secure (0x200), secure flags (0x80080000)
+    17.841   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:3061: fastrpc_apps_user_init done with default domain:2 and &fastrpc_trace:0x6d92269fa0
+    17.841   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:86:adsp_default_listener_start called for [sensorspd]
+    17.841   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_pm.c:85: fastrpc_wake_lock_init done for sscrpcd:778
+    17.841   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:1709: wakelock_control: enabled wakelock control for domain 2
+    17.841   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:63:fastrpc wakelock control is enabled
+    17.841   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:1331: remote_handle_open: Successfully opened handle 0x0 for '":;./\createstaticpd:sensorspd on domain 2
+    17.841   778   778 E sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:2846: Error 0x200: apps_dev_init failed for domain 2, errno Transport endpoint is not connected
+    17.841   778   778 E sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:2944: Error 0x200: open_dev (-1) failed for domain 2 (errno Transport endpoint is not connected)
+    17.841   778   778 E sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:1334: Error 0x200: remote_handle_open failed for adsp_default_listener (errno Success)
+    17.841   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:90:listener exits
+    17.841   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/rpcmem_android.c:192: rpcmem_deinit_internal: closed ION fd 4
+    17.841   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_pm.c:116: fastrpc_wake_lock_deinit done
+    17.841   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:2993: fastrpc_apps_user_deinit done
+    17.842   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:101:sscrpcd daemon will restart after 25ms...
+    17.847  1137  1137 W dmesg   : type=1400 audit(0.0:180): avc:  denied  { syslog_read } for  scontext=u:r:shell:s0 tcontext=u:r:kernel:s0 tclass=system permissive=0
+    17.858  1026  1026 I C26ZygoteDiag: C26 uptime_ms=17857 elapsed_ms=2545 TAIL_CAPTURED trigger=init.svc.zygote n=1 output_bytes=12909 exit=0 signal=0 timeout=no truncated=no
+    17.869   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/rpcmem_android.c:159: rpcmem_init_internal: opened ION device fd 4, configured heap IDs: system (0x2000000), contig (0x400000), secure (0x200), secure flags (0x80080000)
+    17.869   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:3061: fastrpc_apps_user_init done with default domain:2 and &fastrpc_trace:0x6d92315fa0
+    17.869   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:86:adsp_default_listener_start called for [sensorspd]
+    17.869   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_pm.c:85: fastrpc_wake_lock_init done for sscrpcd:778
+    17.869   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:1709: wakelock_control: enabled wakelock control for domain 2
+    17.869   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:63:fastrpc wakelock control is enabled
+    17.869   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:1331: remote_handle_open: Successfully opened handle 0x0 for '":;./\createstaticpd:sensorspd on domain 2
+    17.873   778   778 E sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:2846: Error 0x200: apps_dev_init failed for domain 2, errno Transport endpoint is not connected
+    17.873   778   778 E sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:2944: Error 0x200: open_dev (-1) failed for domain 2 (errno Transport endpoint is not connected)
+    17.873   778   778 E sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:1334: Error 0x200: remote_handle_open failed for adsp_default_listener (errno Success)
+    17.873   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:90:listener exits
+    17.873   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/rpcmem_android.c:192: rpcmem_deinit_internal: closed ION fd 4
+    17.873   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_pm.c:116: fastrpc_wake_lock_deinit done
+    17.873   778   778 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:2993: fastrpc_apps_user_deinit done
+    17.874   778   778 E sscrpcd : vendor/qcom/proprietary/sensors-see/sscrpcd/src/sscrpcd.cpp:101:sscrpcd daemon will restart after 25ms...
+    17.875  1026  1026 I C26ZygoteDiag: C26 uptime_ms=17874 elapsed_ms=2562 PROPERTY_CHANGE key=init.svc.zygote_secondary old=stopping new=restarting init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.c26_logcat=running init.svc.c25_bootdiag=running init.svc.netd=restarting init.svc_debug_pid.zygote=<unset> init.svc_debug_pid.zygote_secondary=<unset> proc_zygote_processes=none proc_unreadable=0
+
+C26_TAIL_RESULT bytes=13168 kept=13168 exit=0 signal=0 spawn_errno=0 timeout=no truncated=no
+
+===== C26_LOGCAT_TAIL n=3 uptime_ms=19920 trigger=init.svc.zygote_secondary =====
+dmesg: klogctl: Permission denied
+--------- beginning of main
+    19.920  1813  1945 D misight : CleanupDbByDateOrSize dataSize 0, elapse=19
+    19.920  1813  1945 D misight : GetStoreProperity prop misight.store.checktime use default value
+    19.921   778  1524 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/apps_std_imp.c:848: Successfully opened file /mnt/vendor/persist/sensors/registry/registry/../temp.json
+    19.923  1830  1965 I adsprpcd: vendor/qcom/proprietary/adsprpc/src/mod_table.c:687: open_mod_table_open_from_static: reverse module apps_std opened with handle 0x112b9e8 (idx 0)
+    19.923   778  1524 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/apps_std_imp.c:848: Successfully opened file /vendor/etc/sensors/config/sns_tilt_to_wake.json
+    19.923   778  1524 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/apps_std_imp.c:848: Successfully opened file /vendor/etc/sensors/config/sns_tilt_to_wake.json
+    19.925   778  1524 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/apps_std_imp.c:848: Successfully opened file /mnt/vendor/persist/sensors/registry/registry/../temp.json
+    19.925  1862  1862 I gatekeeperd: Starting gatekeeperd...
+    19.927   778  1524 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/apps_std_imp.c:848: Successfully opened file /vendor/etc/sensors/config/sm8250_power_0.json
+    19.927  1821  1845 E OMX-VDEC-1080P: Extension: OMX.google.android.index.storeANWBufferInMetadata not implemented
+    19.928  1821  1845 E OMX-VDEC-1080P: Extension: OMX.google.android.index.configureVideoTunnelMode not implemented
+    19.928  1821  1845 E OMX-VDEC-1080P: Extension: OMX.google.android.index.useAndroidNativeBuffer is supported
+    19.928   778  1524 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/apps_std_imp.c:848: Successfully opened file /vendor/etc/sensors/config/sm8250_power_0.json
+    19.928  1821  1845 E OMXNodeInstance: getParameter(0xe5400014:qcom.decoder.mpeg2, ??(0x7f000044)) ERROR: UnsupportedSetting(0x80001019)
+    19.928  1821  1845 E OMXNodeInstance: getParameter(0xe5400014:qcom.decoder.mpeg2, ??(0x7f000044)) ERROR: UnsupportedSetting(0x80001019)
+    19.929  1821  1845 E OMX-VDEC-1080P: Extension: OMX.google.android.index.configureVideoTunnelMode not implemented
+    19.929  1821  1845 E OMXNodeInstance: getExtensionIndex(0xe5400014:qcom.decoder.mpeg2, OMX.google.android.index.configureVideoTunnelMode) ERROR: NotImplemented(0x80001006)
+    19.929  1134  1144 D MediaCodecInfo: detail feature-tunneled-playback wasn't present to remove
+    19.929  1821  1845 E OMX-VDEC-1080P: set_parameter: Error: 0x80001019, setting param 0x7f00005d
+    19.929  1821  1845 E OMXNodeInstance: setParameter(0xe5400014:qcom.decoder.mpeg2, OMX.google.android.index.allocateNativeHandle(0x7f00005d): Output:1 en=0) ERROR: UnsupportedSetting(0x80001019)
+    19.929  1821  1845 E OMX-VDEC-1080P: Extension: OMX.google.android.index.storeANWBufferInMetadata not implemented
+    19.930  1821  1845 I OMX-VDEC-1080P: omx_vdec::component_deinit() complete
+    19.931  1839  1839 I mediaswcodec: media swcodec service starting
+    19.932  1839  1839 W mediaswcodec: Could not read additional policy file '/vendor/etc/seccomp_policy/mediaswcodec.policy'
+    19.932  1777  1940 E SmcInvoke_MinkDescriptor: cbthread[tid 530579622784] exit
+    19.932  1777  1937 E SmcInvoke_MinkDescriptor: cbthread[tid 530582817664] exit
+    19.932  1830  1965 I adsprpcd: vendor/qcom/proprietary/adsprpc/src/apps_std_imp.c:868: Successfully opened file /vendor/etc/acdbdata//adsp_avs_config.acdb
+    19.932  1777  1926 E SmcInvoke_MinkDescriptor: cbthread[tid 530594532224] exit
+    19.932  1839  1839 W mediaswcodec: libminijail[1839]: failed to get path of fd 4: No such file or directory
+    19.932  1777  1939 E SmcInvoke_MinkDescriptor: cbthread[tid 530580687744] exit
+    19.932  1839  1839 W mediaswcodec: libminijail[1839]: allowing syscall: connect
+    19.933  1839  1839 W mediaswcodec: libminijail[1839]: allowing syscall: fcntl
+    19.933   778  1524 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/apps_std_imp.c:848: Successfully opened file /mnt/vendor/persist/sensors/registry/registry/../temp.json
+    19.933  1839  1839 W mediaswcodec: libminijail[1839]: allowing syscall: sendto
+    19.933  1777  1931 E SmcInvoke_MinkDescriptor: cbthread[tid 530589207424] exit
+    19.933  1777  1929 E SmcInvoke_MinkDescriptor: cbthread[tid 530591337344] exit
+    19.933  1839  1839 W mediaswcodec: libminijail[1839]: allowing syscall: socket
+    19.933  1839  1839 W mediaswcodec: libminijail[1839]: allowing syscall: writev
+    19.933  1880  1880 D LocSvc_LBSProxy: checkIfLocationExtendedClientExists] File does not Exist
+    19.933  1777  1928 E SmcInvoke_MinkDescriptor: cbthread[tid 530592402304] exit
+    19.933  1777  1925 E SmcInvoke_MinkDescriptor: cbthread[tid 530595597184] return -1, errno 4: has_response 1, txn_id 3, result 0, cbobj_id -2, op 0xffff, counts 0x0,
+    19.933  1777  1925 D SmcInvoke_MinkDescriptor: cbthread[tid 530595597184] continue with errno 4
+    19.933  1777  1925 E SmcInvoke_MinkDescriptor: cbthread[tid 530595597184] exit
+    19.934  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: /apex/com.android.media.swcodec/etc/seccomp_policy/crash_dump.no_mmap_mprotect_prctl.arm64.policy(6): syscall read redefined here
+    19.934  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: <fd>(54): previous definition here
+    19.934  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: /apex/com.android.media.swcodec/etc/seccomp_policy/crash_dump.no_mmap_mprotect_prctl.arm64.policy(7): syscall write redefined here
+    19.934  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: <fd>(48): previous definition here
+    19.934  1777  1777 I feature_enabler_client: adding featenab_client.service succeeded
+    19.934  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: /apex/com.android.media.swcodec/etc/seccomp_policy/crash_dump.no_mmap_mprotect_prctl.arm64.policy(8): syscall exit redefined here
+    19.934  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: <fd>(44): previous definition here
+    19.935  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: /apex/com.android.media.swcodec/etc/seccomp_policy/crash_dump.no_mmap_mprotect_prctl.arm64.policy(9): syscall rt_sigreturn redefined here
+    19.935  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: <fd>(60): previous definition here
+    19.935  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: /apex/com.android.media.swcodec/etc/seccomp_policy/crash_dump.no_mmap_mprotect_prctl.arm64.policy(10): syscall exit_group redefined here
+    19.935  1777  1777 D FEATURE_ENABLER_CLIENT: : Waiting for composer service init
+    19.935  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: <fd>(58): previous definition here
+    19.935  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: /apex/com.android.media.swcodec/etc/seccomp_policy/crash_dump.no_mmap_mprotect_prctl.arm64.policy(12): syscall gettimeofday redefined here
+    19.935  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: <fd>(56): previous definition here
+    19.935  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: /apex/com.android.media.swcodec/etc/seccomp_policy/crash_dump.no_mmap_mprotect_prctl.arm64.policy(13): syscall futex redefined here
+    19.935  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: <fd>(15): previous definition here
+    19.935  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: /apex/com.android.media.swcodec/etc/seccomp_policy/crash_dump.no_mmap_mprotect_prctl.arm64.policy(14): syscall getrandom redefined here
+    19.935  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: <fd>(61): previous definition here
+    19.935  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: /apex/com.android.media.swcodec/etc/seccomp_policy/crash_dump.no_mmap_mprotect_prctl.arm64.policy(15): syscall getpid redefined here
+    19.935  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: <fd>(65): previous definition here
+    19.936  1777  1777 D FEATURE_ENABLER_CLIENT: : Sending command 0
+    19.936  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: /apex/com.android.media.swcodec/etc/seccomp_policy/crash_dump.no_mmap_mprotect_prctl.arm64.policy(17): syscall gettid redefined here
+    19.936  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: <fd>(66): previous definition here
+    19.936  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: /apex/com.android.media.swcodec/etc/seccomp_policy/crash_dump.no_mmap_mprotect_prctl.arm64.policy(18): syscall ppoll redefined here
+    19.936  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: <fd>(20): previous definition here
+    19.936  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: /apex/com.android.media.swcodec/etc/seccomp_policy/crash_dump.no_mmap_mprotect_prctl.arm64.policy(20): syscall openat redefined here
+    19.936  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: <fd>(47): previous definition here
+    19.936  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: /apex/com.android.media.swcodec/etc/seccomp_policy/crash_dump.no_mmap_mprotect_prctl.arm64.policy(21): syscall dup redefined here
+    19.936  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: <fd>(19): previous definition here
+    19.936  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: /apex/com.android.media.swcodec/etc/seccomp_policy/crash_dump.no_mmap_mprotect_prctl.arm64.policy(22): syscall close redefined here
+    19.936  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: <fd>(18): previous definition here
+    19.936   778  1524 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/apps_std_imp.c:848: Successfully opened file /mnt/vendor/persist/sensors/registry/registry/../temp.json
+    19.936  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: /apex/com.android.media.swcodec/etc/seccomp_policy/crash_dump.no_mmap_mprotect_prctl.arm64.policy(23): syscall lseek redefined here
+    19.936  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: <fd>(45): previous definition here
+    19.936  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: /apex/com.android.media.swcodec/etc/seccomp_policy/crash_dump.no_mmap_mprotect_prctl.arm64.policy(24): syscall getdents64 redefined here
+    19.936  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: <fd>(52): previous definition here
+    19.936  1839  1839 W mediaswcodec: libminijail[1839]: compile_file: /apex/com.android.media.swcodec/etc/seccomp_policy/crash_dump.no_mmap_mprotect_prctl.arm64.policy(25): syscall faccessat redefined here
+
+C26_TAIL_RESULT bytes=10724 kept=10724 exit=0 signal=0 spawn_errno=0 timeout=no truncated=no
+
+===== C26_LOGCAT_TAIL n=4 uptime_ms=20001 trigger=init.svc.zygote =====
+dmesg: klogctl: Permission denied
+--------- beginning of main
+    19.999   778  1524 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/apps_std_imp.c:848: Successfully opened file /mnt/vendor/persist/sensors/registry/registry/../temp.json
+    20.000  1983  1983 W libbinder.BackendUnifiedServiceManager: Thread Pool max thread count is 0. Cannot cache binder as linkToDeath cannot be implemented. serviceName: android.hardware.usb.gadget.IUsbGadget/default
+    20.000  1983  1983 I android.hardware.usb.gadget-service.qti: QTI USB Gadget HAL Ready.
+    20.000  1873  1873 I usbd    : Usb AIDL HAL found.
+    20.001  1976  1976 I MSM-irqbalance: msm-irq_balance (1.3) initialized
+    20.001  1976  1976 I MSM-irqbalance: Configuration
+    20.001  1976  1976 I MSM-irqbalance: Rate: 0.2 Hz
+    20.001  1976  1976 I MSM-irqbalance: Decay Factor: 75.0
+    20.001  1976  1976 I MSM-irqbalance: Balancing Factor: 0.1
+    20.001  1976  1976 I MSM-irqbalance: Debug Log: OFF
+    20.001  1976  1976 I MSM-irqbalance: Cfg file: /system/vendor/etc/msm_irqbalance.conf
+    20.001  1976  1976 I MSM-irqbalance: CPU PRIO: CPU0: 1 CPU1: 1 CPU2: 1 CPU3: 1 CPU4: 0 CPU5: 0 CPU6: 0 CPU7: 0 
+    20.001  1976  1976 I MSM-irqbalance: Ignored IRQs: 3 7 5 269 307 
+    20.001  1983  1983 E android.hardware.usb.gadget-service.qti: mMonitor not running
+    20.001  1983  1983 I libusbconfigfs: setCurrentUsbFunctions None
+    20.001  1983  1983 I libusbconfigfs: Gadget cannot be pulled down
+    20.001  1026  1026 I C26ZygoteDiag: C26 uptime_ms=19995 elapsed_ms=4683 PROPERTY_CHANGE key=init.svc.zygote old=stopping new=restarting init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.c26_logcat=running init.svc.c25_bootdiag=running init.svc.netd=restarting init.svc_debug_pid.zygote=<unset> init.svc_debug_pid.zygote_secondary=<unset> proc_zygote_processes=none proc_unreadable=2
+    20.001  1983  1983 I android.hardware.usb.gadget-service.qti: Unable to remove file /config/usb_gadget/g1/os_desc/b.1 errno:2
+    20.002     1     1 I libc    : kill: send 9 to pid -1873
+    20.002     1     1 I libc    : debug pid reuse, real pid -1873
+    20.003   778  1524 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/apps_std_imp.c:848: Successfully opened file /mnt/vendor/persist/sensors/registry/registry/../temp.json
+    20.006  1134  1144 I OMXClient: IOmx service obtained
+    20.006  1821  1842 I OMXStore: makeComponentInstance(OMX.qcom.video.decoder.vp9.secure) in android.hardwar process
+    20.006  1821  1842 D PlatformConfig: getInstance: Enter
+    20.006  1821  1842 D PlatformConfig: getConfigStoreBool: vpp/enable=false, returning false 
+    20.009  1881  1881 D QSEECOMAPI: QSEECom_get_handle sb_length = 0x1000
+    20.010  1821  1842 D PlatformConfig: getInstance: Enter
+    20.010  1821  1842 D PlatformConfig: getInt32 Config name: vidc_dec_log_in value: 0
+    20.010  1821  1842 D PlatformConfig: getInstance: Enter
+    20.010  1821  1842 D PlatformConfig: getInt32 Config name: vidc_dec_log_out value: 0
+    20.010  1821  1842 D PlatformConfig: getInstance: Enter
+    20.010  1821  1842 D PlatformConfig: getInt32 Config name: vidc_dec_sec_prefetch_size_internal value: 209715200
+    20.010  1821  1842 D PlatformConfig: getInstance: Enter
+    20.010  1821  1842 D PlatformConfig: getInt32 Config name: vidc_dec_sec_prefetch_size_output value: 13434880
+    20.010  1821  1842 D PlatformConfig: getInstance: Enter
+    20.010  1821  1842 D PlatformConfig: getInt32 Config name: vidc_perf_control_enable value: 0
+    20.010  1821  1842 D PlatformConfig: getInstance: Enter
+    20.010  1821  1842 D PlatformConfig: getInt32 Config name: vidc_dec_thumbnail_yuv_output value: 0
+    20.010  1821  1842 D PlatformConfig: getInstance: Enter
+    20.010  1821  1842 D PlatformConfig: getInt32: Returning default
+    20.010  1821  1842 D PlatformConfig: getInstance: Enter
+    20.010  1821  1842 D PlatformConfig: getInt32 Config name: vidc_dec_output_rate value: 120
+    20.010  1821  1842 I OMX-VDEC-1080P: component_init: OMX.qcom.video.decoder.vp9 : fd=7
+    20.010  1821  1842 E OMX-VDEC-1080P: Unsupported output color format for c2d (2141391876)
+    20.010  1821  1842 E OMX-VDEC-1080P: Setting color format failed
+    20.010   778  1524 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/apps_std_imp.c:848: Successfully opened file /vendor/etc/sensors/config/sns_gyro_cal.json
+    20.011   778  1524 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/apps_std_imp.c:848: Successfully opened file /vendor/etc/sensors/config/sns_gyro_cal.json
+    20.011  1821  1842 D PlatformConfig: getInstance: Enter
+    20.011  1821  1842 D PlatformConfig: getInt32: Returning default
+    20.011  1821  1842 D PlatformConfig: getInstance: Enter
+    20.011  1821  1842 D PlatformConfig: getInt32: Returning default
+    20.011  1821  1842 I OMX-VDEC-1080P: omx_vdec::component_init() success : fd=7
+    20.012  1821  2010 E OMX-VDEC-1080P: Extension: OMX.google.android.index.storeANWBufferInMetadata not implemented
+    20.012  1821  2010 E OMX-VDEC-1080P: Extension: OMX.google.android.index.configureVideoTunnelMode not implemented
+    20.012  1821  2010 E OMX-VDEC-1080P: Extension: OMX.google.android.index.useAndroidNativeBuffer is supported
+    20.012  1821  2010 E OMXNodeInstance: getParameter(0xe5420034:qcom.decoder.vp9.secure, ??(0x7f000044)) ERROR: UnsupportedSetting(0x80001019)
+    20.013  1821  1842 E OMXNodeInstance: getParameter(0xe5420034:qcom.decoder.vp9.secure, ??(0x7f000044)) ERROR: UnsupportedSetting(0x80001019)
+    20.013  1821  1842 E OMX-VDEC-1080P: Extension: OMX.google.android.index.configureVideoTunnelMode not implemented
+    20.013  1821  1842 E OMXNodeInstance: getExtensionIndex(0xe5420034:qcom.decoder.vp9.secure, OMX.google.android.index.configureVideoTunnelMode) ERROR: NotImplemented(0x80001006)
+    20.013  1134  1144 D MediaCodecInfo: detail feature-tunneled-playback wasn't present to remove
+    20.014  1821  2010 E OMX-VDEC-1080P: set_parameter: Error: 0x80001019, setting param 0x7f00005d
+    20.014  1821  2010 E OMXNodeInstance: setParameter(0xe5420034:qcom.decoder.vp9.secure, OMX.google.android.index.allocateNativeHandle(0x7f00005d): Output:1 en=0) ERROR: UnsupportedSetting(0x80001019)
+    20.014   778  1524 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/apps_std_imp.c:848: Successfully opened file /mnt/vendor/persist/sensors/registry/registry/../temp.json
+    20.014  1821  2010 E OMX-VDEC-1080P: Extension: OMX.google.android.index.storeANWBufferInMetadata not implemented
+    20.014  1821  1842 I OMX-VDEC-1080P: omx_vdec::component_deinit() complete
+    20.018  1419  1419 I vppservice: vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:1445: remote_handle64_close: closed handle 0xb400007520c55190
+    20.018  1821  1842 I OMX-VDEC-1080P: Exit OMX vdec Destructor: fd=7
+    20.018  1419  1419 I vppservice: vendor/qcom/proprietary/adsprpc/src/fastrpc_apps_user.c:2612: Successfully opened /vendor/dsp/cdsp/fastrpc_shell_33
+    20.018  1419  1419 I vppservice: vendor/qcom/proprietary/adsprpc/src/fastrpc_config.c:200: Reading configuration file: vppservice.debugconfig
+    20.020   778  1524 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/apps_std_imp.c:848: Successfully opened file /vendor/etc/sensors/config/sm8250_tcs3408.json
+    20.020   778  1524 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/apps_std_imp.c:848: Successfully opened file /vendor/etc/sensors/config/sm8250_tcs3408.json
+    20.021  1134  1144 D OmxInfoBuilder: disabling OMX.qcom.video.encoder.avc for media type video/avc because we are not using OMX input surface
+    20.021  1134  1144 D OmxInfoBuilder: disabling OMX.qcom.video.encoder.hevc for media type video/hevc because we are not using OMX input surface
+    20.021  1134  1144 D OmxInfoBuilder: disabling OMX.qcom.video.encoder.hevc.cq for media type video/hevc because we are not using OMX input surface
+    20.021  1134  1144 D OmxInfoBuilder: disabling OMX.qcom.video.encoder.vp8 for media type video/x-vnd.on2.vp8 because we are not using OMX input surface
+    20.024  1134  1144 I ApexCodecsLazy: ApexCodecs loading skipped on non-CN device (region=cn)
+--------- beginning of system
+    20.024  1134  1144 I Codec2Client: Available Codec2 services: "default" "default1" "software"
+    20.027   778  1524 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/apps_std_imp.c:848: Successfully opened file /mnt/vendor/persist/sensors/registry/registry/../temp.json
+    20.030   778  1524 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/apps_std_imp.c:848: Successfully opened file /mnt/vendor/persist/sensors/registry/registry/../temp.json
+    20.031   778  1524 I sscrpcd : vendor/qcom/proprietary/adsprpc/src/apps_std_imp.c:848: Successfully opened file /mnt/vendor/persist/sensors/registry/registry/../temp.json
+
+C26_TAIL_RESULT bytes=8799 kept=8799 exit=0 signal=0 spawn_errno=0 timeout=no truncated=no
+
+===== C26_LOGCAT_TAIL n=5 uptime_ms=24720 trigger=init.svc.zygote_secondary =====
+dmesg: klogctl: Permission denied
+--------- beginning of main
+    24.717  2565  2571 D Diag_Lib: [IMS_DEBUG]| 471 | 2571 |clientThreadHandler_ipc : DATAD_MODEMLL: pMsg_resp->ipaddress fe80::e98b:c240:4753:b48b
+    24.717  2565  2571 D Diag_Lib: [IMS_DEBUG]| 806 | 2571 |Datad_SocketHandler_ipc : Len 76, Bytes Consumed [76], Bytes Remaining [0]
+    24.717  2565  2571 D Diag_Lib: [IMS_DEBUG]| 976 | 2571 |datad_select_fd : clientThreadHandler_ipc retrun 0
+    24.717  2565  2571 D Diag_Lib: [IMS_DEBUG]| 765 | 2571 |qpdpl:Initialize - qpWaitForModemLL Success
+    24.717  2565  2571 D Diag_Lib: [IMS_DEBUG]| 333 | 2571 |qpHandShakeDataInit | Entry
+    24.717  2565  2571 D Diag_Lib: [IMS_DEBUG]| 1014 | 2571 |qpDataD_ipc_get_handle : Enter
+    24.717  2565  2571 D Diag_Lib: [IMS_DEBUG]| 1063 | 2571 |qpDataD_ipc_get_handle : pProfileInfo->pdpInfo.apn_type 7
+    24.717  2565  2571 D Diag_Lib: [IMS_DEBUG]| 1064 | 2571 |qpDataD_ipc_get_handle : pProfileInfo->pdpInfo.rat_type 0
+    24.717  2565  2571 D Diag_Lib: [IMS_DEBUG]| 1065 | 2571 |qpDataD_ipc_get_handle : pProfileInfo->pdpInfo.family_type 2
+    24.718  2565  2571 D Diag_Lib: [IMS_DEBUG]| 1066 | 2571 |qpDataD_ipc_get_handle : pProfileInfo->pdpInfo.profile_num 0
+    24.718     1     1 I libc    : kill: send 9 to pid -2567
+    24.718  2565  2571 D Diag_Lib: [IMS_DEBUG]| 1067 | 2571 |qpDataD_ipc_get_handle : pProfileInfo->pdpInfo.apn_name 
+    24.718     1     1 I libc    : debug pid reuse, real pid -2567
+    24.718     1     1 I libc    : kill: send 9 to pid -2567
+    24.718  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.713  1468  1468 W graphicsengine: type=1400 audit(0.0:1715): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.718     1     1 I libc    : debug pid reuse, real pid -2567
+    24.720  2565  2571 D Diag_Lib: [IMS_DEBUG]| 1083 | 2571 |qpDataD_ipc_get_handle : Bytes Written 137
+    24.720  2565  2571 D Diag_Lib: [IMS_DEBUG]| 968 | 2571 |datad_select_fd : Enter : fd 10
+    24.720  2565  2571 D Diag_Lib: [IMS_DEBUG]| 179 | 2571 |clientThreadHandler_ipc : client thread created
+    24.720  2565  2571 D Diag_Lib: [IMS_DEBUG]| 193 | 2571 |clientThreadHandler_ipc : waiting to read
+    24.720  1026  1026 I C26ZygoteDiag: C26 uptime_ms=24718 elapsed_ms=9406 PROPERTY_CHANGE key=init.svc.zygote_secondary old=running new=restarting init.svc.zygote=stopping init.svc.zygote_secondary=restarting init.svc.c26_logcat=running init.svc.c25_bootdiag=running init.svc.netd=running init.svc_debug_pid.zygote=<unset> init.svc_debug_pid.zygote_secondary=<unset> proc_zygote_processes=none proc_unreadable=0
+    24.717  1468  1468 W graphicsengine: type=1400 audit(0.0:1716): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.720  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.721  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.717  1468  1468 W graphicsengine: type=1400 audit(0.0:1717): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.717  1468  1468 W graphicsengine: type=1400 audit(0.0:1718): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.721  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.723     1     1 I libc    : kill: send 9 to pid -2173
+    24.723     1     1 I libc    : debug pid reuse, real pid -2173
+    24.723     1     1 I libc    : kill: send 9 to pid -2176
+    24.723     1     1 I libc    : debug pid reuse, real pid -2176
+    24.724     1     1 I libc    : kill: send 9 to pid -2176
+    24.724     1     1 I libc    : debug pid reuse, real pid -2176
+    24.720  1468  1468 W graphicsengine: type=1400 audit(0.0:1719): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.726  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.723  1468  1468 W graphicsengine: type=1400 audit(0.0:1720): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.726  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.727  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.723  1468  1468 W graphicsengine: type=1400 audit(0.0:1721): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.723  1468  1468 W graphicsengine: type=1400 audit(0.0:1722): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.727  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.723  1468  1468 W graphicsengine: type=1400 audit(0.0:1723): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.728  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.723  1468  1468 W graphicsengine: type=1400 audit(0.0:1724): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.728  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.723  1468  1468 W graphicsengine: type=1400 audit(0.0:1725): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.728  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.723  1468  1468 W graphicsengine: type=1400 audit(0.0:1726): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.729  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.730     1     1 I libc    : kill: send 9 to pid -2174
+    24.730     1     1 I libc    : debug pid reuse, real pid -2174
+    24.727  1468  1468 W graphicsengine: type=1400 audit(0.0:1727): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.731  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.727  1468  1468 W graphicsengine: type=1400 audit(0.0:1728): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.731  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.732     1     1 I libc    : kill: send 9 to pid -2176
+    24.732     1     1 I libc    : debug pid reuse, real pid -2176
+    24.730  1468  1468 W graphicsengine: type=1400 audit(0.0:1729): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.733  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.730  1468  1468 W graphicsengine: type=1400 audit(0.0:1730): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.733  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.734     1     1 I libc    : kill: send 9 to pid -2177
+    24.734     1     1 I libc    : debug pid reuse, real pid -2177
+    24.730  1468  1468 W graphicsengine: type=1400 audit(0.0:1731): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.734  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.736     1     1 I libc    : kill: send 9 to pid -2567
+    24.736     1     1 I libc    : debug pid reuse, real pid -2567
+    24.730  1468  1468 W graphicsengine: type=1400 audit(0.0:1732): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.736  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.736     1     1 I libc    : kill: send 9 to pid -2576
+    24.736     1     1 I libc    : debug pid reuse, real pid -2576
+    24.733  1468  1468 W graphicsengine: type=1400 audit(0.0:1733): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.738  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.733  1468  1468 W graphicsengine: type=1400 audit(0.0:1734): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.738  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.733  1468  1468 W graphicsengine: type=1400 audit(0.0:1735): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.739  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.740  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.737  1468  1468 W graphicsengine: type=1400 audit(0.0:1736): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+
+C26_TAIL_RESULT bytes=11184 kept=11184 exit=0 signal=0 spawn_errno=0 timeout=no truncated=no
+
+===== C26_LOGCAT_TAIL n=6 uptime_ms=24779 trigger=init.svc.zygote =====
+dmesg: klogctl: Permission denied
+--------- beginning of main
+    24.728  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.723  1468  1468 W graphicsengine: type=1400 audit(0.0:1725): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.728  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.723  1468  1468 W graphicsengine: type=1400 audit(0.0:1726): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.729  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.730     1     1 I libc    : kill: send 9 to pid -2174
+    24.730     1     1 I libc    : debug pid reuse, real pid -2174
+    24.727  1468  1468 W graphicsengine: type=1400 audit(0.0:1727): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.731  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.727  1468  1468 W graphicsengine: type=1400 audit(0.0:1728): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.731  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.732     1     1 I libc    : kill: send 9 to pid -2176
+    24.732     1     1 I libc    : debug pid reuse, real pid -2176
+    24.730  1468  1468 W graphicsengine: type=1400 audit(0.0:1729): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.733  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.730  1468  1468 W graphicsengine: type=1400 audit(0.0:1730): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.733  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.734     1     1 I libc    : kill: send 9 to pid -2177
+    24.734     1     1 I libc    : debug pid reuse, real pid -2177
+    24.730  1468  1468 W graphicsengine: type=1400 audit(0.0:1731): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.734  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.736     1     1 I libc    : kill: send 9 to pid -2567
+    24.736     1     1 I libc    : debug pid reuse, real pid -2567
+    24.730  1468  1468 W graphicsengine: type=1400 audit(0.0:1732): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.736  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.736     1     1 I libc    : kill: send 9 to pid -2576
+    24.736     1     1 I libc    : debug pid reuse, real pid -2576
+    24.733  1468  1468 W graphicsengine: type=1400 audit(0.0:1733): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.738  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.733  1468  1468 W graphicsengine: type=1400 audit(0.0:1734): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.738  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.733  1468  1468 W graphicsengine: type=1400 audit(0.0:1735): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.739  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.740  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.737  1468  1468 W graphicsengine: type=1400 audit(0.0:1736): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.737  1468  1468 W graphicsengine: type=1400 audit(0.0:1737): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.737  1468  1468 W graphicsengine: type=1400 audit(0.0:1738): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.737  1468  1468 W graphicsengine: type=1400 audit(0.0:1739): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.737  1468  1468 W graphicsengine: type=1400 audit(0.0:1740): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.741  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.742  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.742  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.740  1468  1468 W graphicsengine: type=1400 audit(0.0:1741): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.744  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.745  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.740  1468  1468 W graphicsengine: type=1400 audit(0.0:1742): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.745  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.740  1468  1468 W graphicsengine: type=1400 audit(0.0:1743): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.746  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.746  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.740  1468  1468 W graphicsengine: type=1400 audit(0.0:1744): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.740  1468  1468 W graphicsengine: type=1400 audit(0.0:1745): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.747  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.743  1468  1468 W graphicsengine: type=1400 audit(0.0:1746): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.757  1803  1803 W libbinder.ServiceManagerCppClient: Service package_native didn't start. Returning NULL
+--------- beginning of system
+    24.757  1803  1803 E storaged: getService package_native failed
+    24.753  2589  2589 W dmesg   : type=1400 audit(0.0:1747): avc:  denied  { syslog_read } for  scontext=u:r:shell:s0 tcontext=u:r:kernel:s0 tclass=system permissive=0
+    24.759  1134  1134 I libbinder.AidlLazyServiceRegistrar: Process has 0 (of 1 available) client(s) in use after notification media.codeclist.generator has clients: 0
+    24.759  1134  1134 I libbinder.AidlLazyServiceRegistrar: Trying to shut down the service. No clients in use for any service in process.
+    24.759  1134  1134 I libbinder.AidlLazyServiceRegistrar: Unregistered all clients and exiting
+    24.763  1026  1026 I C26ZygoteDiag: C26 uptime_ms=24762 elapsed_ms=9450 TAIL_CAPTURED trigger=init.svc.zygote_secondary n=5 output_bytes=11184 exit=0 signal=0 timeout=no truncated=no
+    24.767  1803  1803 W libbinder.BpBinder: Linking to death on android.hardware.health.IHealth but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+    24.769  1026  1026 I C26ZygoteDiag: C26 uptime_ms=24763 elapsed_ms=9451 PROPERTY_CHANGE key=init.svc.netd old=running new=restarting init.svc.zygote=stopping init.svc.zygote_secondary=restarting init.svc.c26_logcat=running init.svc.c25_bootdiag=running init.svc.netd=restarting init.svc_debug_pid.zygote=<unset> init.svc_debug_pid.zygote_secondary=<unset>
+    24.769  1026  1026 W libc    : Access denied finding property "init.svc_debug_pid.zygote"
+    24.769  1026  1026 W libc    : Access denied finding property "init.svc_debug_pid.zygote_secondary"
+    24.763  1026  1026 W c26_zygote_diag: type=1400 audit(0.0:1748): avc:  denied  { read } for  name="u:object_r:init_svc_debug_prop:s0" dev="tmpfs" ino=2972 scontext=u:r:shell:s0 tcontext=u:object_r:init_svc_debug_prop:s0 tclass=file permissive=0
+    24.763  1026  1026 W c26_zygote_diag: type=1400 audit(0.0:1749): avc:  denied  { read } for  name="u:object_r:init_svc_debug_prop:s0" dev="tmpfs" ino=2972 scontext=u:r:shell:s0 tcontext=u:object_r:init_svc_debug_prop:s0 tclass=file permissive=0
+    24.771     1     1 I libc    : kill: send 9 to pid -1134
+    24.771     1     1 I libc    : debug pid reuse, real pid -1134
+    24.772  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.767  1468  1468 W graphicsengine: type=1400 audit(0.0:1750): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.773  1803  2591 I storaged: storaged: Start
+    24.773  1803  1803 W libbinder.BackendUnifiedServiceManager: Thread Pool max thread count is 0. Cannot cache binder as linkToDeath cannot be implemented. serviceName: storaged
+    24.773  1803  1803 W libbinder.BackendUnifiedServiceManager: Thread Pool max thread count is 0. Cannot cache binder as linkToDeath cannot be implemented. serviceName: storaged_pri
+    24.775  1803  2591 I libbinder.ServiceManagerCppClient: Waiting for service 'package_native' on '/dev/binder'...
+    24.779  1026  1026 I C26ZygoteDiag: C26 uptime_ms=24777 elapsed_ms=9465 PROPERTY_CHANGE key=init.svc.zygote old=stopping new=restarting init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.c26_logcat=running init.svc.c25_bootdiag=running init.svc.netd=restarting init.svc_debug_pid.zygote=<unset> init.svc_debug_pid.zygote_secondary=<unset> proc_zygote_processes=none proc_unreadable=0
+    24.785  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.785  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    24.780  1468  1468 W graphicsengine: type=1400 audit(0.0:1751): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    24.780  1468  1468 W graphicsengine: type=1400 audit(0.0:1752): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+
+C26_TAIL_RESULT bytes=12931 kept=12931 exit=0 signal=0 spawn_errno=0 timeout=no truncated=no
+
+===== C26_LOGCAT_TAIL n=7 uptime_ms=29775 trigger=init.svc.zygote_secondary =====
+dmesg: klogctl: Permission denied
+--------- beginning of main
+    29.766  2638  2720 D audio_hw_cirrus_playback: audio_extn_cirrus_playback_deinit: Entering deinit init_check :1
+    29.763  1468  1468 W graphicsengine: type=1400 audit(0.0:2218): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.767  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.763  1468  1468 W graphicsengine: type=1400 audit(0.0:2219): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.767  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.767     1     1 I libc    : kill: send 9 to pid -2637
+    29.767     1     1 I libc    : debug pid reuse, real pid -2637
+    29.768     1     1 I libc    : kill: send 9 to pid -2637
+    29.768     1     1 I libc    : debug pid reuse, real pid -2637
+    29.767  1468  1468 W graphicsengine: type=1400 audit(0.0:2220): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.771  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.767  1468  1468 W graphicsengine: type=1400 audit(0.0:2221): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.771  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.771     1     1 I libc    : kill: send 9 to pid -2639
+    29.771     1     1 I libc    : debug pid reuse, real pid -2639
+    29.771     1     1 I libc    : kill: send 9 to pid -2639
+    29.771     1     1 I libc    : debug pid reuse, real pid -2639
+    29.773  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.770  1468  1468 W graphicsengine: type=1400 audit(0.0:2222): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.770  1468  1468 W graphicsengine: type=1400 audit(0.0:2223): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.774  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.770  1468  1468 W graphicsengine: type=1400 audit(0.0:2224): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.774  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.775  1026  1026 I C26ZygoteDiag: C26 uptime_ms=29773 elapsed_ms=14461 PROPERTY_CHANGE key=init.svc.zygote_secondary old=running new=restarting init.svc.zygote=stopping init.svc.zygote_secondary=restarting init.svc.c26_logcat=running init.svc.c25_bootdiag=running init.svc.netd=running init.svc_debug_pid.zygote=<unset> init.svc_debug_pid.zygote_secondary=<unset> proc_zygote_processes=none proc_unreadable=0
+    29.770  1468  1468 W graphicsengine: type=1400 audit(0.0:2225): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.775  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.770  1468  1468 W graphicsengine: type=1400 audit(0.0:2226): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.775  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.775     1     1 I libc    : kill: send 9 to pid -2765
+    29.775     1     1 I libc    : debug pid reuse, real pid -2765
+    29.776     1     1 I libc    : kill: send 9 to pid -2765
+    29.776     1     1 I libc    : debug pid reuse, real pid -2765
+    29.773  1468  1468 W graphicsengine: type=1400 audit(0.0:2227): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.778  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.773  1468  1468 W graphicsengine: type=1400 audit(0.0:2228): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.779  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.773  1468  1468 W graphicsengine: type=1400 audit(0.0:2229): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.779  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.781     1     1 I libc    : kill: send 9 to pid -2636
+    29.781     1     1 I libc    : debug pid reuse, real pid -2636
+    29.781     1     1 I libc    : kill: send 9 to pid -2638
+    29.781     1     1 I libc    : debug pid reuse, real pid -2638
+    29.781     1     1 I libc    : kill: send 9 to pid -2638
+    29.781     1     1 I libc    : debug pid reuse, real pid -2638
+    29.780  1468  1468 W graphicsengine: type=1400 audit(0.0:2230): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.784  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.780  1468  1468 W graphicsengine: type=1400 audit(0.0:2231): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.784  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.780  1468  1468 W graphicsengine: type=1400 audit(0.0:2232): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.785  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.780  1468  1468 W graphicsengine: type=1400 audit(0.0:2233): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.785  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.780  1468  1468 W graphicsengine: type=1400 audit(0.0:2234): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.785  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.780  1468  1468 W graphicsengine: type=1400 audit(0.0:2235): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.786  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.780  1468  1468 W graphicsengine: type=1400 audit(0.0:2236): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.786  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.783  1468  1468 W graphicsengine: type=1400 audit(0.0:2237): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.786  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.787     1     1 I libc    : kill: send 9 to pid -2637
+    29.788     1     1 I libc    : debug pid reuse, real pid -2637
+    29.783  1468  1468 W graphicsengine: type=1400 audit(0.0:2238): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.788  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.783  1468  1468 W graphicsengine: type=1400 audit(0.0:2239): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.788  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.789     1     1 I libc    : kill: send 9 to pid -2638
+    29.789     1     1 I libc    : debug pid reuse, real pid -2638
+    29.787  1468  1468 W graphicsengine: type=1400 audit(0.0:2240): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.790  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.787  1468  1468 W graphicsengine: type=1400 audit(0.0:2241): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.790  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.791     1     1 I libc    : kill: send 9 to pid -2639
+    29.791     1     1 I libc    : debug pid reuse, real pid -2639
+    29.787  1468  1468 W graphicsengine: type=1400 audit(0.0:2242): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.791  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.792     1     1 I libc    : kill: send 9 to pid -2660
+    29.793     1     1 I libc    : debug pid reuse, real pid -2660
+    29.793  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.790  1468  1468 W graphicsengine: type=1400 audit(0.0:2243): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+
+C26_TAIL_RESULT bytes=11409 kept=11409 exit=0 signal=0 spawn_errno=0 timeout=no truncated=no
+
+===== C26_LOGCAT_TAIL n=8 uptime_ms=29853 trigger=init.svc.zygote =====
+dmesg: klogctl: Permission denied
+--------- beginning of main
+    29.818  2776  2776 I VirtualHalConfig: init():sensor_location
+    29.818  2776  2776 I VirtualHalConfig: init():sensor_strength
+    29.818  2776  2776 I VirtualHalConfig: init():navigation_gesture
+    29.818  2776  2776 I VirtualHalConfig: init():detect_interaction
+    29.818  2776  2776 I VirtualHalConfig: init():display_touch
+    29.818  2776  2776 I VirtualHalConfig: init():control_illumination
+    29.818  2776  2776 D android.hardware.biometrics.fingerprint-service.xiaomi: Opening fingerprint hal library...
+    29.819  2776  2776 E android.hardware.biometrics.fingerprint-service.xiaomi: Can't open fingerprint HW Module
+    29.819  2776  2776 E android.hardware.biometrics.fingerprint-service.xiaomi: Can't open HAL module, class: fortsense, module_id: fingerprint
+    29.819  2776  2776 D android.hardware.biometrics.fingerprint-service.xiaomi: Opening fingerprint hal library...
+    29.819  2776  2776 E android.hardware.biometrics.fingerprint-service.xiaomi: Can't open fingerprint HW Module
+    29.819  2776  2776 E android.hardware.biometrics.fingerprint-service.xiaomi: Can't open HAL module, class: fpc, module_id: fingerprint
+    29.819  2776  2776 D android.hardware.biometrics.fingerprint-service.xiaomi: Opening fingerprint hal library...
+    29.819  2776  2776 E android.hardware.biometrics.fingerprint-service.xiaomi: Can't open fingerprint HW Module
+    29.819  2776  2776 E android.hardware.biometrics.fingerprint-service.xiaomi: Can't open HAL module, class: fpc_fod, module_id: fingerprint
+    29.819  2776  2776 D android.hardware.biometrics.fingerprint-service.xiaomi: Opening fingerprint hal library...
+    29.819  2776  2776 E android.hardware.biometrics.fingerprint-service.xiaomi: Can't open fingerprint HW Module
+    29.819  2776  2776 E android.hardware.biometrics.fingerprint-service.xiaomi: Can't open HAL module, class: goodix, module_id: fingerprint
+    29.819  2776  2776 D android.hardware.biometrics.fingerprint-service.xiaomi: Opening fingerprint hal library...
+    29.819  2776  2776 E android.hardware.biometrics.fingerprint-service.xiaomi: Can't open fingerprint HW Module
+    29.819  2776  2776 E android.hardware.biometrics.fingerprint-service.xiaomi: Can't open HAL module, class: goodix, module_id: gf_fingerprint
+    29.819  2776  2776 D android.hardware.biometrics.fingerprint-service.xiaomi: Opening fingerprint hal library...
+    29.820  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.807  1468  1468 W graphicsengine: type=1400 audit(0.0:2253): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.810  1468  1468 W graphicsengine: type=1400 audit(0.0:2254): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.810  1468  1468 W graphicsengine: type=1400 audit(0.0:2255): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.810  1468  1468 W graphicsengine: type=1400 audit(0.0:2256): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.810  1468  1468 W graphicsengine: type=1400 audit(0.0:2257): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.810  1468  1468 W graphicsengine: type=1400 audit(0.0:2258): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.813  1468  1468 W graphicsengine: type=1400 audit(0.0:2259): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.813  1468  1468 W graphicsengine: type=1400 audit(0.0:2260): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.817  1468  1468 W graphicsengine: type=1400 audit(0.0:2261): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.820  1468  1468 W graphicsengine: type=1400 audit(0.0:2262): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.823  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.824  2775  2775 E perfetto:        host_impl.cc:163 Failed to create vsock://-1:2010 (errno: 97, Address family not supported by protocol)
+    29.820  1468  1468 W graphicsengine: type=1400 audit(0.0:2263): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.824  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.824  2775  2775 E perfetto:          service.cc:225 Failed to start the traced service
+    29.825     1     1 I libc    : kill: send 9 to pid -2775
+    29.825     1     1 I libc    : debug pid reuse, real pid -2775
+    29.826  1468  1517 W libc    : Access denied finding property "hwservicemanager.ready"
+    29.820  1468  1468 W graphicsengine: type=1400 audit(0.0:2264): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=2961 scontext=u:r:graphicsengine:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0
+    29.820  2774  2774 W dmesg   : type=1400 audit(0.0:2265): avc:  denied  { syslog_read } for  scontext=u:r:shell:s0 tcontext=u:r:kernel:s0 tclass=system permissive=0
+    29.826  2776  2776 E [GF_HAL][Device]: [open] Success to open device (/dev/goodix_fp) g_fd=5
+    29.832  1026  1026 I C26ZygoteDiag: C26 uptime_ms=29831 elapsed_ms=14519 TAIL_CAPTURED trigger=init.svc.zygote_secondary n=7 output_bytes=11409 exit=0 signal=0 timeout=no truncated=no
+    29.832  1026  1026 I C26ZygoteDiag: C26 uptime_ms=29832 elapsed_ms=14520 PROPERTY_CHANGE key=init.svc.netd old=running new=restarting init.svc.zygote=stopping init.svc.zygote_secondary=restarting init.svc.c26_logcat=running init.svc.c25_bootdiag=running init.svc.netd=restarting init.svc_debug_pid.zygote=<unset> init.svc_debug_pid.zygote_secondary=<unset>
+    29.827  1026  1026 W c26_zygote_diag: type=1400 audit(0.0:2266): avc:  denied  { read } for  name="u:object_r:init_svc_debug_prop:s0" dev="tmpfs" ino=2972 scontext=u:r:shell:s0 tcontext=u:object_r:init_svc_debug_prop:s0 tclass=file permissive=0
+    29.833  1026  1026 W libc    : Access denied finding property "init.svc_debug_pid.zygote"
+    29.827  1026  1026 W c26_zygote_diag: type=1400 audit(0.0:2267): avc:  denied  { read } for  name="u:object_r:init_svc_debug_prop:s0" dev="tmpfs" ino=2972 scontext=u:r:shell:s0 tcontext=u:object_r:init_svc_debug_prop:s0 tclass=file permissive=0
+    29.833  1026  1026 W libc    : Access denied finding property "init.svc_debug_pid.zygote_secondary"
+    29.846  2776  2776 D QSEECOMAPI: QSEECom_get_handle sb_length = 0x1000
+    29.846  2776  2776 D QSEECOMAPI: App is not loaded in QSEE
+    29.846  2776  2776 E QSEECOMAPI: Error::Cannot open the file /vendor/firmware/gfthy.mdt errno = 2
+    29.846  2776  2776 E QSEECOMAPI: Error::Loading image failed with ret = -1
+    29.846  2776  2776 D QSEECOMAPI: QSEECom_get_handle sb_length = 0x1000
+    29.846  2776  2776 D QSEECOMAPI: App is not loaded in QSEE
+    29.846  2776  2776 E QSEECOMAPI: Error::Cannot open the file /system/etc/firmware/gfthy.mdt errno = 2
+    29.846  2776  2776 E QSEECOMAPI: Error::Loading image failed with ret = -1
+    29.846  2776  2776 D QSEECOMAPI: QSEECom_get_handle sb_length = 0x1000
+    29.846  2776  2776 D QSEECOMAPI: App is not loaded in QSEE
+    29.846  2776  2776 E QSEECOMAPI: Error::Cannot open the file /firmware/image/gfthy.mdt errno = 2
+    29.846  2776  2776 E QSEECOMAPI: Error::Loading image failed with ret = -1
+    29.846  2776  2776 D QSEECOMAPI: QSEECom_get_handle sb_length = 0x1000
+    29.846  2776  2776 D QSEECOMAPI: App is not loaded in QSEE
+    29.846  2776  2776 D QSEECOMAPI: app_arch = 2, total_files = 9
+    29.846  2776  2776 E ion     : open /dev/ion failed: Permission denied
+    29.846  2776  2776 E QSEECOMAPI: Error::Cannot open ION device
+    29.846  2776  2776 E QSEECOMAPI: Error::ION_memalloc failed
+    29.846  2776  2776 E QSEECOMAPI: Error::Loading image failed with ret = -12
+    29.846  2776  2776 E [GF_HAL][CaEntry]: [startTap] Load ta: gfthy failed, ret=-12, errno=13.
+    29.846  2776  2776 E [GF_HAL][CaEntry]: [startTap] exit. err=GF_ERROR_OPEN_TA_FAILED, errno=1002
+    29.846  2776  2776 E [GF_HAL][Device]: [disable] no device is opened
+    29.846  2776  2776 E [GF_HAL][Device]: [disable] exit. err=GF_ERROR_HAL_FILE_DESCRIPTION_NULL, errno=1018
+    29.846  2776  2776 E [GF_HAL][HalContext]: [init] exit. err=GF_ERROR_OPEN_TA_FAILED, errno=1002
+    29.846  2776  2776 E [GF_HAL][HalContextExt]: [init] exit. err=GF_ERROR_OPEN_TA_FAILED, errno=1002
+    29.840  2776  2776 W android.hardwar: type=1400 audit(0.0:2268): avc:  denied  { read } for  name="ion" dev="tmpfs" ino=104 scontext=u:r:hal_fingerprint_default:s0 tcontext=u:object_r:ion_device:s0 tclass=chr_file permissive=0
+    29.846  2776  2776 E android.hardware.biometrics.fingerprint-service.xiaomi: Can't open HAL module, class: goodix_fod, module_id: fingerprint
+    29.846  2776  2776 D android.hardware.biometrics.fingerprint-service.xiaomi: Opening fingerprint hal library...
+    29.850  2776  2776 E [GF_HAL][Device]: [open] Success to open device (/dev/goodix_fp) g_fd=5
+    29.853  1026  1026 I C26ZygoteDiag: C26 uptime_ms=29852 elapsed_ms=14540 PROPERTY_CHANGE key=init.svc.zygote old=stopping new=restarting init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.c26_logcat=running init.svc.c25_bootdiag=running init.svc.netd=restarting init.svc_debug_pid.zygote=<unset> init.svc_debug_pid.zygote_secondary=<unset> proc_zygote_processes=none proc_unreadable=0
+
+C26_TAIL_RESULT bytes=10858 kept=10858 exit=0 signal=0 spawn_errno=0 timeout=no truncated=no

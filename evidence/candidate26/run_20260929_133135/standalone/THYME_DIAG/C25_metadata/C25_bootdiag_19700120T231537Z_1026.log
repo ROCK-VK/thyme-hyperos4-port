@@ -1,0 +1,406 @@
+C25 elapsed_ms=2 START build=C25 duration_ms=900000 sample_interval_ms=15000 dump_interval_ms=60000 file_limit_bytes=524288 file=open
+C25 elapsed_ms=22 SAMPLE n=1 uptime_ms=15310 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=<empty-or-unreadable> init.svc.bootanim=<empty-or-unreadable> init.svc.surfaceflinger=<empty-or-unreadable> init.svc.zygote=<empty-or-unreadable> init.svc.zygote_secondary=<empty-or-unreadable> init.svc.vold=running init.svc.netd=<empty-or-unreadable> pid.system_server=none pid.zygote64=none pid.surfaceflinger=none pid.bootanimation=none pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=23 DUMP_START label=window timeout_ms=4000 command=/system/bin/dumpsys window
+C25 elapsed_ms=50 DUMP_RESULT label=window exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=27 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=51 DUMP_START label=activity timeout_ms=4000 command=/system/bin/dumpsys activity activities
+C25 elapsed_ms=77 DUMP_RESULT label=activity exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=29 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=78 DUMP_START label=surfaceflinger timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger
+C25 elapsed_ms=97 DUMP_RESULT label=surfaceflinger exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=35 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=97 DUMP_START label=display timeout_ms=4000 command=/system/bin/dumpsys display
+C25 elapsed_ms=130 DUMP_RESULT label=display exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=28 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=131 DUMP_START label=sf_layers timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger --list
+C25 elapsed_ms=153 DUMP_RESULT label=sf_layers exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=35 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=154 DUMP_START label=home timeout_ms=4000 command=/system/bin/cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME
+C25 elapsed_ms=178 DUMP_RESULT label=home exit=20 signal=0 timeout=no spawn_errno=0 output_bytes=33 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=15057 SAMPLE n=2 uptime_ms=30326 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=30093 SAMPLE n=3 uptime_ms=45362 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=45131 SAMPLE n=4 uptime_ms=60398 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=60174 SAMPLE n=5 uptime_ms=75436 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=60182 DUMP_START label=window timeout_ms=4000 command=/system/bin/dumpsys window
+C25 elapsed_ms=60207 DUMP_RESULT label=window exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=27 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=60208 DUMP_START label=activity timeout_ms=4000 command=/system/bin/dumpsys activity activities
+C25 elapsed_ms=60224 DUMP_RESULT label=activity exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=29 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=60225 DUMP_START label=surfaceflinger timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger
+C25 elapsed_ms=60373 DUMP_LINE label=surfaceflinger text=Build configuration: [sf PRESENT_TIME_OFFSET=0 FORCE_HWC_FOR_RBG_TO_YUV=1 MAX_VIRT_DISPLAY_DIM=4096 RUNNING_WITHOUT_SYNC_FRAMEWORK=0 NUM_FRAMEBUFFER_SURFACE_BUFFERS=3]
+C25 elapsed_ms=60374 DUMP_LINE label=surfaceflinger text=Display identification data:
+C25 elapsed_ms=60375 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 (HWC display 0): port=129 pnpId=QCM screenPartStatus=UNSUPPORTED displayName=""
+C25 elapsed_ms=60376 DUMP_LINE label=surfaceflinger text=DisplayColorSetting: Enhanced
+C25 elapsed_ms=60377 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 color modes:
+C25 elapsed_ms=60377 DUMP_LINE label=surfaceflinger text=    ColorMode::DISPLAY_P3 (9)
+C25 elapsed_ms=60378 DUMP_LINE label=surfaceflinger text=Sync configuration: [using: EGL_ANDROID_native_fence_sync EGL_KHR_wait_sync]
+C25 elapsed_ms=60379 DUMP_LINE label=surfaceflinger text=    PresentFences=true
+C25 elapsed_ms=60380 DUMP_LINE label=surfaceflinger text=    pacesetterDisplayId=4630946545580055169
+C25 elapsed_ms=60381 DUMP_LINE label=surfaceflinger text=    forcedPacesetterDisplayId=nullopt
+C25 elapsed_ms=60382 DUMP_RESULT label=surfaceflinger exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=21255 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=10
+C25 elapsed_ms=60383 DUMP_START label=display timeout_ms=4000 command=/system/bin/dumpsys display
+C25 elapsed_ms=60403 DUMP_RESULT label=display exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=28 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=60405 DUMP_START label=sf_layers timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger --list
+C25 elapsed_ms=60433 DUMP_LINE label=sf_layers text=RequestedLayerState{BootAnimation#1 z=1073741824}
+C25 elapsed_ms=60435 DUMP_LINE label=sf_layers text=RequestedLayerState{[BBQ] BootAnimation#1#2 parentId=1}
+C25 elapsed_ms=60436 DUMP_RESULT label=sf_layers exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=106 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=2
+C25 elapsed_ms=60437 DUMP_START label=home timeout_ms=4000 command=/system/bin/cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME
+C25 elapsed_ms=60461 DUMP_RESULT label=home exit=20 signal=0 timeout=no spawn_errno=0 output_bytes=33 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=75254 SAMPLE n=6 uptime_ms=90478 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=90302 SAMPLE n=7 uptime_ms=105560 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=105353 SAMPLE n=8 uptime_ms=120607 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=120399 SAMPLE n=9 uptime_ms=135658 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=120463 DUMP_START label=window timeout_ms=4000 command=/system/bin/dumpsys window
+C25 elapsed_ms=120487 DUMP_RESULT label=window exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=27 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=120489 DUMP_START label=activity timeout_ms=4000 command=/system/bin/dumpsys activity activities
+C25 elapsed_ms=120510 DUMP_RESULT label=activity exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=29 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=120512 DUMP_START label=surfaceflinger timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger
+C25 elapsed_ms=120544 DUMP_LINE label=surfaceflinger text=Build configuration: [sf PRESENT_TIME_OFFSET=0 FORCE_HWC_FOR_RBG_TO_YUV=1 MAX_VIRT_DISPLAY_DIM=4096 RUNNING_WITHOUT_SYNC_FRAMEWORK=0 NUM_FRAMEBUFFER_SURFACE_BUFFERS=3]
+C25 elapsed_ms=120545 DUMP_LINE label=surfaceflinger text=Display identification data:
+C25 elapsed_ms=120546 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 (HWC display 0): port=129 pnpId=QCM screenPartStatus=UNSUPPORTED displayName=""
+C25 elapsed_ms=120547 DUMP_LINE label=surfaceflinger text=DisplayColorSetting: Enhanced
+C25 elapsed_ms=120548 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 color modes:
+C25 elapsed_ms=120549 DUMP_LINE label=surfaceflinger text=    ColorMode::DISPLAY_P3 (9)
+C25 elapsed_ms=120549 DUMP_LINE label=surfaceflinger text=Sync configuration: [using: EGL_ANDROID_native_fence_sync EGL_KHR_wait_sync]
+C25 elapsed_ms=120550 DUMP_LINE label=surfaceflinger text=    PresentFences=true
+C25 elapsed_ms=120551 DUMP_LINE label=surfaceflinger text=    pacesetterDisplayId=4630946545580055169
+C25 elapsed_ms=120551 DUMP_LINE label=surfaceflinger text=    forcedPacesetterDisplayId=nullopt
+C25 elapsed_ms=120554 DUMP_RESULT label=surfaceflinger exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=21264 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=10
+C25 elapsed_ms=120555 DUMP_START label=display timeout_ms=4000 command=/system/bin/dumpsys display
+C25 elapsed_ms=120583 DUMP_RESULT label=display exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=28 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=120585 DUMP_START label=sf_layers timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger --list
+C25 elapsed_ms=120610 DUMP_LINE label=sf_layers text=RequestedLayerState{BootAnimation#1 z=1073741824}
+C25 elapsed_ms=120611 DUMP_LINE label=sf_layers text=RequestedLayerState{[BBQ] BootAnimation#1#2 parentId=1}
+C25 elapsed_ms=120612 DUMP_RESULT label=sf_layers exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=106 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=2
+C25 elapsed_ms=120613 DUMP_START label=home timeout_ms=4000 command=/system/bin/cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME
+C25 elapsed_ms=120640 DUMP_RESULT label=home exit=20 signal=0 timeout=no spawn_errno=0 output_bytes=33 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=135457 SAMPLE n=10 uptime_ms=150704 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=150488 SAMPLE n=11 uptime_ms=165761 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=165513 SAMPLE n=12 uptime_ms=180792 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=180540 SAMPLE n=13 uptime_ms=195817 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=180642 DUMP_START label=window timeout_ms=4000 command=/system/bin/dumpsys window
+C25 elapsed_ms=180663 DUMP_RESULT label=window exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=27 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=180664 DUMP_START label=activity timeout_ms=4000 command=/system/bin/dumpsys activity activities
+C25 elapsed_ms=180681 DUMP_RESULT label=activity exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=29 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=180682 DUMP_START label=surfaceflinger timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger
+C25 elapsed_ms=180706 DUMP_LINE label=surfaceflinger text=Build configuration: [sf PRESENT_TIME_OFFSET=0 FORCE_HWC_FOR_RBG_TO_YUV=1 MAX_VIRT_DISPLAY_DIM=4096 RUNNING_WITHOUT_SYNC_FRAMEWORK=0 NUM_FRAMEBUFFER_SURFACE_BUFFERS=3]
+C25 elapsed_ms=180708 DUMP_LINE label=surfaceflinger text=Display identification data:
+C25 elapsed_ms=180708 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 (HWC display 0): port=129 pnpId=QCM screenPartStatus=UNSUPPORTED displayName=""
+C25 elapsed_ms=180709 DUMP_LINE label=surfaceflinger text=DisplayColorSetting: Enhanced
+C25 elapsed_ms=180710 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 color modes:
+C25 elapsed_ms=180711 DUMP_LINE label=surfaceflinger text=    ColorMode::DISPLAY_P3 (9)
+C25 elapsed_ms=180711 DUMP_LINE label=surfaceflinger text=Sync configuration: [using: EGL_ANDROID_native_fence_sync EGL_KHR_wait_sync]
+C25 elapsed_ms=180712 DUMP_LINE label=surfaceflinger text=    PresentFences=true
+C25 elapsed_ms=180713 DUMP_LINE label=surfaceflinger text=    pacesetterDisplayId=4630946545580055169
+C25 elapsed_ms=180713 DUMP_LINE label=surfaceflinger text=    forcedPacesetterDisplayId=nullopt
+C25 elapsed_ms=180715 DUMP_RESULT label=surfaceflinger exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=21264 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=10
+C25 elapsed_ms=180716 DUMP_START label=display timeout_ms=4000 command=/system/bin/dumpsys display
+C25 elapsed_ms=180737 DUMP_RESULT label=display exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=28 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=180738 DUMP_START label=sf_layers timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger --list
+C25 elapsed_ms=180757 DUMP_LINE label=sf_layers text=RequestedLayerState{BootAnimation#1 z=1073741824}
+C25 elapsed_ms=180758 DUMP_LINE label=sf_layers text=RequestedLayerState{[BBQ] BootAnimation#1#2 parentId=1}
+C25 elapsed_ms=180758 DUMP_RESULT label=sf_layers exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=106 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=2
+C25 elapsed_ms=180759 DUMP_START label=home timeout_ms=4000 command=/system/bin/cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME
+C25 elapsed_ms=180779 DUMP_RESULT label=home exit=20 signal=0 timeout=no spawn_errno=0 output_bytes=33 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=195565 SAMPLE n=14 uptime_ms=210844 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=210589 SAMPLE n=15 uptime_ms=225869 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=225613 SAMPLE n=16 uptime_ms=240894 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=240647 SAMPLE n=17 uptime_ms=255918 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=240780 DUMP_START label=window timeout_ms=4000 command=/system/bin/dumpsys window
+C25 elapsed_ms=240800 DUMP_RESULT label=window exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=27 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=240801 DUMP_START label=activity timeout_ms=4000 command=/system/bin/dumpsys activity activities
+C25 elapsed_ms=240821 DUMP_RESULT label=activity exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=29 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=240822 DUMP_START label=surfaceflinger timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger
+C25 elapsed_ms=240843 DUMP_LINE label=surfaceflinger text=Build configuration: [sf PRESENT_TIME_OFFSET=0 FORCE_HWC_FOR_RBG_TO_YUV=1 MAX_VIRT_DISPLAY_DIM=4096 RUNNING_WITHOUT_SYNC_FRAMEWORK=0 NUM_FRAMEBUFFER_SURFACE_BUFFERS=3]
+C25 elapsed_ms=240844 DUMP_LINE label=surfaceflinger text=Display identification data:
+C25 elapsed_ms=240845 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 (HWC display 0): port=129 pnpId=QCM screenPartStatus=UNSUPPORTED displayName=""
+C25 elapsed_ms=240846 DUMP_LINE label=surfaceflinger text=DisplayColorSetting: Enhanced
+C25 elapsed_ms=240847 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 color modes:
+C25 elapsed_ms=240847 DUMP_LINE label=surfaceflinger text=    ColorMode::DISPLAY_P3 (9)
+C25 elapsed_ms=240848 DUMP_LINE label=surfaceflinger text=Sync configuration: [using: EGL_ANDROID_native_fence_sync EGL_KHR_wait_sync]
+C25 elapsed_ms=240849 DUMP_LINE label=surfaceflinger text=    PresentFences=true
+C25 elapsed_ms=240849 DUMP_LINE label=surfaceflinger text=    pacesetterDisplayId=4630946545580055169
+C25 elapsed_ms=240850 DUMP_LINE label=surfaceflinger text=    forcedPacesetterDisplayId=nullopt
+C25 elapsed_ms=240852 DUMP_RESULT label=surfaceflinger exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=21264 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=10
+C25 elapsed_ms=240853 DUMP_START label=display timeout_ms=4000 command=/system/bin/dumpsys display
+C25 elapsed_ms=240873 DUMP_RESULT label=display exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=28 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=240874 DUMP_START label=sf_layers timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger --list
+C25 elapsed_ms=240892 DUMP_LINE label=sf_layers text=RequestedLayerState{BootAnimation#1 z=1073741824}
+C25 elapsed_ms=240893 DUMP_LINE label=sf_layers text=RequestedLayerState{[BBQ] BootAnimation#1#2 parentId=1}
+C25 elapsed_ms=240894 DUMP_RESULT label=sf_layers exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=106 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=2
+C25 elapsed_ms=240894 DUMP_START label=home timeout_ms=4000 command=/system/bin/cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME
+C25 elapsed_ms=240913 DUMP_RESULT label=home exit=20 signal=0 timeout=no spawn_errno=0 output_bytes=33 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=255679 SAMPLE n=18 uptime_ms=270952 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=270721 SAMPLE n=19 uptime_ms=285983 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=285753 SAMPLE n=20 uptime_ms=301026 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=300781 SAMPLE n=21 uptime_ms=316058 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=300915 DUMP_START label=window timeout_ms=4000 command=/system/bin/dumpsys window
+C25 elapsed_ms=300940 DUMP_RESULT label=window exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=27 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=300941 DUMP_START label=activity timeout_ms=4000 command=/system/bin/dumpsys activity activities
+C25 elapsed_ms=300961 DUMP_RESULT label=activity exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=29 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=300962 DUMP_START label=surfaceflinger timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger
+C25 elapsed_ms=300990 DUMP_LINE label=surfaceflinger text=Build configuration: [sf PRESENT_TIME_OFFSET=0 FORCE_HWC_FOR_RBG_TO_YUV=1 MAX_VIRT_DISPLAY_DIM=4096 RUNNING_WITHOUT_SYNC_FRAMEWORK=0 NUM_FRAMEBUFFER_SURFACE_BUFFERS=3]
+C25 elapsed_ms=300991 DUMP_LINE label=surfaceflinger text=Display identification data:
+C25 elapsed_ms=300992 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 (HWC display 0): port=129 pnpId=QCM screenPartStatus=UNSUPPORTED displayName=""
+C25 elapsed_ms=300992 DUMP_LINE label=surfaceflinger text=DisplayColorSetting: Enhanced
+C25 elapsed_ms=300993 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 color modes:
+C25 elapsed_ms=300994 DUMP_LINE label=surfaceflinger text=    ColorMode::DISPLAY_P3 (9)
+C25 elapsed_ms=300994 DUMP_LINE label=surfaceflinger text=Sync configuration: [using: EGL_ANDROID_native_fence_sync EGL_KHR_wait_sync]
+C25 elapsed_ms=300995 DUMP_LINE label=surfaceflinger text=    PresentFences=true
+C25 elapsed_ms=300996 DUMP_LINE label=surfaceflinger text=    pacesetterDisplayId=4630946545580055169
+C25 elapsed_ms=300996 DUMP_LINE label=surfaceflinger text=    forcedPacesetterDisplayId=nullopt
+C25 elapsed_ms=300998 DUMP_RESULT label=surfaceflinger exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=21264 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=10
+C25 elapsed_ms=300999 DUMP_START label=display timeout_ms=4000 command=/system/bin/dumpsys display
+C25 elapsed_ms=301019 DUMP_RESULT label=display exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=28 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=301020 DUMP_START label=sf_layers timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger --list
+C25 elapsed_ms=301037 DUMP_LINE label=sf_layers text=RequestedLayerState{BootAnimation#1 z=1073741824}
+C25 elapsed_ms=301038 DUMP_LINE label=sf_layers text=RequestedLayerState{[BBQ] BootAnimation#1#2 parentId=1}
+C25 elapsed_ms=301040 DUMP_RESULT label=sf_layers exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=106 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=2
+C25 elapsed_ms=301041 DUMP_START label=home timeout_ms=4000 command=/system/bin/cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME
+C25 elapsed_ms=301063 DUMP_RESULT label=home exit=20 signal=0 timeout=no spawn_errno=0 output_bytes=33 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=315811 SAMPLE n=22 uptime_ms=331086 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=330836 SAMPLE n=23 uptime_ms=346115 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=345870 SAMPLE n=24 uptime_ms=361141 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=360893 SAMPLE n=25 uptime_ms=376175 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=361064 DUMP_START label=window timeout_ms=4000 command=/system/bin/dumpsys window
+C25 elapsed_ms=361090 DUMP_RESULT label=window exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=27 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=361091 DUMP_START label=activity timeout_ms=4000 command=/system/bin/dumpsys activity activities
+C25 elapsed_ms=361107 DUMP_RESULT label=activity exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=29 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=361108 DUMP_START label=surfaceflinger timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger
+C25 elapsed_ms=361131 DUMP_LINE label=surfaceflinger text=Build configuration: [sf PRESENT_TIME_OFFSET=0 FORCE_HWC_FOR_RBG_TO_YUV=1 MAX_VIRT_DISPLAY_DIM=4096 RUNNING_WITHOUT_SYNC_FRAMEWORK=0 NUM_FRAMEBUFFER_SURFACE_BUFFERS=3]
+C25 elapsed_ms=361132 DUMP_LINE label=surfaceflinger text=Display identification data:
+C25 elapsed_ms=361133 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 (HWC display 0): port=129 pnpId=QCM screenPartStatus=UNSUPPORTED displayName=""
+C25 elapsed_ms=361135 DUMP_LINE label=surfaceflinger text=DisplayColorSetting: Enhanced
+C25 elapsed_ms=361136 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 color modes:
+C25 elapsed_ms=361137 DUMP_LINE label=surfaceflinger text=    ColorMode::DISPLAY_P3 (9)
+C25 elapsed_ms=361138 DUMP_LINE label=surfaceflinger text=Sync configuration: [using: EGL_ANDROID_native_fence_sync EGL_KHR_wait_sync]
+C25 elapsed_ms=361139 DUMP_LINE label=surfaceflinger text=    PresentFences=true
+C25 elapsed_ms=361140 DUMP_LINE label=surfaceflinger text=    pacesetterDisplayId=4630946545580055169
+C25 elapsed_ms=361140 DUMP_LINE label=surfaceflinger text=    forcedPacesetterDisplayId=nullopt
+C25 elapsed_ms=361142 DUMP_RESULT label=surfaceflinger exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=21264 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=10
+C25 elapsed_ms=361143 DUMP_START label=display timeout_ms=4000 command=/system/bin/dumpsys display
+C25 elapsed_ms=361160 DUMP_RESULT label=display exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=28 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=361161 DUMP_START label=sf_layers timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger --list
+C25 elapsed_ms=361190 DUMP_LINE label=sf_layers text=RequestedLayerState{BootAnimation#1 z=1073741824}
+C25 elapsed_ms=361191 DUMP_LINE label=sf_layers text=RequestedLayerState{[BBQ] BootAnimation#1#2 parentId=1}
+C25 elapsed_ms=361192 DUMP_RESULT label=sf_layers exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=106 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=2
+C25 elapsed_ms=361192 DUMP_START label=home timeout_ms=4000 command=/system/bin/cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME
+C25 elapsed_ms=361211 DUMP_RESULT label=home exit=20 signal=0 timeout=no spawn_errno=0 output_bytes=33 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=375916 SAMPLE n=26 uptime_ms=391197 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=390937 SAMPLE n=27 uptime_ms=406220 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=405960 SAMPLE n=28 uptime_ms=421241 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=420981 SAMPLE n=29 uptime_ms=436264 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=421213 DUMP_START label=window timeout_ms=4000 command=/system/bin/dumpsys window
+C25 elapsed_ms=421237 DUMP_RESULT label=window exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=27 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=421238 DUMP_START label=activity timeout_ms=4000 command=/system/bin/dumpsys activity activities
+C25 elapsed_ms=421258 DUMP_RESULT label=activity exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=29 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=421259 DUMP_START label=surfaceflinger timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger
+C25 elapsed_ms=421279 DUMP_LINE label=surfaceflinger text=Build configuration: [sf PRESENT_TIME_OFFSET=0 FORCE_HWC_FOR_RBG_TO_YUV=1 MAX_VIRT_DISPLAY_DIM=4096 RUNNING_WITHOUT_SYNC_FRAMEWORK=0 NUM_FRAMEBUFFER_SURFACE_BUFFERS=3]
+C25 elapsed_ms=421281 DUMP_LINE label=surfaceflinger text=Display identification data:
+C25 elapsed_ms=421283 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 (HWC display 0): port=129 pnpId=QCM screenPartStatus=UNSUPPORTED displayName=""
+C25 elapsed_ms=421285 DUMP_LINE label=surfaceflinger text=DisplayColorSetting: Enhanced
+C25 elapsed_ms=421286 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 color modes:
+C25 elapsed_ms=421288 DUMP_LINE label=surfaceflinger text=    ColorMode::DISPLAY_P3 (9)
+C25 elapsed_ms=421289 DUMP_LINE label=surfaceflinger text=Sync configuration: [using: EGL_ANDROID_native_fence_sync EGL_KHR_wait_sync]
+C25 elapsed_ms=421289 DUMP_LINE label=surfaceflinger text=    PresentFences=true
+C25 elapsed_ms=421290 DUMP_LINE label=surfaceflinger text=    pacesetterDisplayId=4630946545580055169
+C25 elapsed_ms=421291 DUMP_LINE label=surfaceflinger text=    forcedPacesetterDisplayId=nullopt
+C25 elapsed_ms=421292 DUMP_RESULT label=surfaceflinger exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=21264 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=10
+C25 elapsed_ms=421293 DUMP_START label=display timeout_ms=4000 command=/system/bin/dumpsys display
+C25 elapsed_ms=421310 DUMP_RESULT label=display exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=28 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=421311 DUMP_START label=sf_layers timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger --list
+C25 elapsed_ms=421330 DUMP_LINE label=sf_layers text=RequestedLayerState{BootAnimation#1 z=1073741824}
+C25 elapsed_ms=421331 DUMP_LINE label=sf_layers text=RequestedLayerState{[BBQ] BootAnimation#1#2 parentId=1}
+C25 elapsed_ms=421332 DUMP_RESULT label=sf_layers exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=106 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=2
+C25 elapsed_ms=421333 DUMP_START label=home timeout_ms=4000 command=/system/bin/cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME
+C25 elapsed_ms=421353 DUMP_RESULT label=home exit=20 signal=0 timeout=no spawn_errno=0 output_bytes=33 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=436022 SAMPLE n=30 uptime_ms=451285 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=451047 SAMPLE n=31 uptime_ms=466326 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=466080 SAMPLE n=32 uptime_ms=481352 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=481116 SAMPLE n=33 uptime_ms=496384 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=481354 DUMP_START label=window timeout_ms=4000 command=/system/bin/dumpsys window
+C25 elapsed_ms=481379 DUMP_RESULT label=window exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=27 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=481380 DUMP_START label=activity timeout_ms=4000 command=/system/bin/dumpsys activity activities
+C25 elapsed_ms=481397 DUMP_RESULT label=activity exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=29 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=481398 DUMP_START label=surfaceflinger timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger
+C25 elapsed_ms=481419 DUMP_LINE label=surfaceflinger text=Build configuration: [sf PRESENT_TIME_OFFSET=0 FORCE_HWC_FOR_RBG_TO_YUV=1 MAX_VIRT_DISPLAY_DIM=4096 RUNNING_WITHOUT_SYNC_FRAMEWORK=0 NUM_FRAMEBUFFER_SURFACE_BUFFERS=3]
+C25 elapsed_ms=481420 DUMP_LINE label=surfaceflinger text=Display identification data:
+C25 elapsed_ms=481421 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 (HWC display 0): port=129 pnpId=QCM screenPartStatus=UNSUPPORTED displayName=""
+C25 elapsed_ms=481422 DUMP_LINE label=surfaceflinger text=DisplayColorSetting: Enhanced
+C25 elapsed_ms=481422 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 color modes:
+C25 elapsed_ms=481423 DUMP_LINE label=surfaceflinger text=    ColorMode::DISPLAY_P3 (9)
+C25 elapsed_ms=481424 DUMP_LINE label=surfaceflinger text=Sync configuration: [using: EGL_ANDROID_native_fence_sync EGL_KHR_wait_sync]
+C25 elapsed_ms=481424 DUMP_LINE label=surfaceflinger text=    PresentFences=true
+C25 elapsed_ms=481425 DUMP_LINE label=surfaceflinger text=    pacesetterDisplayId=4630946545580055169
+C25 elapsed_ms=481426 DUMP_LINE label=surfaceflinger text=    forcedPacesetterDisplayId=nullopt
+C25 elapsed_ms=481427 DUMP_RESULT label=surfaceflinger exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=21264 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=10
+C25 elapsed_ms=481428 DUMP_START label=display timeout_ms=4000 command=/system/bin/dumpsys display
+C25 elapsed_ms=481447 DUMP_RESULT label=display exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=28 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=481448 DUMP_START label=sf_layers timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger --list
+C25 elapsed_ms=481464 DUMP_LINE label=sf_layers text=RequestedLayerState{BootAnimation#1 z=1073741824}
+C25 elapsed_ms=481466 DUMP_LINE label=sf_layers text=RequestedLayerState{[BBQ] BootAnimation#1#2 parentId=1}
+C25 elapsed_ms=481466 DUMP_RESULT label=sf_layers exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=106 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=2
+C25 elapsed_ms=481467 DUMP_START label=home timeout_ms=4000 command=/system/bin/cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME
+C25 elapsed_ms=481490 DUMP_RESULT label=home exit=20 signal=0 timeout=no spawn_errno=0 output_bytes=33 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=496191 SAMPLE n=34 uptime_ms=511421 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=511238 SAMPLE n=35 uptime_ms=526496 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=526286 SAMPLE n=36 uptime_ms=541543 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=541330 SAMPLE n=37 uptime_ms=556591 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=541491 DUMP_START label=window timeout_ms=4000 command=/system/bin/dumpsys window
+C25 elapsed_ms=541543 DUMP_RESULT label=window exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=27 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=541544 DUMP_START label=activity timeout_ms=4000 command=/system/bin/dumpsys activity activities
+C25 elapsed_ms=541564 DUMP_RESULT label=activity exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=29 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=541565 DUMP_START label=surfaceflinger timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger
+C25 elapsed_ms=541590 DUMP_LINE label=surfaceflinger text=Build configuration: [sf PRESENT_TIME_OFFSET=0 FORCE_HWC_FOR_RBG_TO_YUV=1 MAX_VIRT_DISPLAY_DIM=4096 RUNNING_WITHOUT_SYNC_FRAMEWORK=0 NUM_FRAMEBUFFER_SURFACE_BUFFERS=3]
+C25 elapsed_ms=541591 DUMP_LINE label=surfaceflinger text=Display identification data:
+C25 elapsed_ms=541592 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 (HWC display 0): port=129 pnpId=QCM screenPartStatus=UNSUPPORTED displayName=""
+C25 elapsed_ms=541593 DUMP_LINE label=surfaceflinger text=DisplayColorSetting: Enhanced
+C25 elapsed_ms=541593 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 color modes:
+C25 elapsed_ms=541594 DUMP_LINE label=surfaceflinger text=    ColorMode::DISPLAY_P3 (9)
+C25 elapsed_ms=541595 DUMP_LINE label=surfaceflinger text=Sync configuration: [using: EGL_ANDROID_native_fence_sync EGL_KHR_wait_sync]
+C25 elapsed_ms=541595 DUMP_LINE label=surfaceflinger text=    PresentFences=true
+C25 elapsed_ms=541596 DUMP_LINE label=surfaceflinger text=    pacesetterDisplayId=4630946545580055169
+C25 elapsed_ms=541597 DUMP_LINE label=surfaceflinger text=    forcedPacesetterDisplayId=nullopt
+C25 elapsed_ms=541598 DUMP_RESULT label=surfaceflinger exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=21264 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=10
+C25 elapsed_ms=541599 DUMP_START label=display timeout_ms=4000 command=/system/bin/dumpsys display
+C25 elapsed_ms=541637 DUMP_RESULT label=display exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=28 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=541638 DUMP_START label=sf_layers timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger --list
+C25 elapsed_ms=541657 DUMP_LINE label=sf_layers text=RequestedLayerState{BootAnimation#1 z=1073741824}
+C25 elapsed_ms=541658 DUMP_LINE label=sf_layers text=RequestedLayerState{[BBQ] BootAnimation#1#2 parentId=1}
+C25 elapsed_ms=541659 DUMP_RESULT label=sf_layers exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=106 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=2
+C25 elapsed_ms=541659 DUMP_START label=home timeout_ms=4000 command=/system/bin/cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME
+C25 elapsed_ms=541679 DUMP_RESULT label=home exit=20 signal=0 timeout=no spawn_errno=0 output_bytes=33 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=556405 SAMPLE n=38 uptime_ms=571635 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=571459 SAMPLE n=39 uptime_ms=586709 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=586507 SAMPLE n=40 uptime_ms=601764 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=601551 SAMPLE n=41 uptime_ms=616812 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=601680 DUMP_START label=window timeout_ms=4000 command=/system/bin/dumpsys window
+C25 elapsed_ms=601705 DUMP_RESULT label=window exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=27 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=601706 DUMP_START label=activity timeout_ms=4000 command=/system/bin/dumpsys activity activities
+C25 elapsed_ms=601723 DUMP_RESULT label=activity exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=29 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=601725 DUMP_START label=surfaceflinger timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger
+C25 elapsed_ms=601747 DUMP_LINE label=surfaceflinger text=Build configuration: [sf PRESENT_TIME_OFFSET=0 FORCE_HWC_FOR_RBG_TO_YUV=1 MAX_VIRT_DISPLAY_DIM=4096 RUNNING_WITHOUT_SYNC_FRAMEWORK=0 NUM_FRAMEBUFFER_SURFACE_BUFFERS=3]
+C25 elapsed_ms=601748 DUMP_LINE label=surfaceflinger text=Display identification data:
+C25 elapsed_ms=601749 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 (HWC display 0): port=129 pnpId=QCM screenPartStatus=UNSUPPORTED displayName=""
+C25 elapsed_ms=601750 DUMP_LINE label=surfaceflinger text=DisplayColorSetting: Enhanced
+C25 elapsed_ms=601750 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 color modes:
+C25 elapsed_ms=601751 DUMP_LINE label=surfaceflinger text=    ColorMode::DISPLAY_P3 (9)
+C25 elapsed_ms=601752 DUMP_LINE label=surfaceflinger text=Sync configuration: [using: EGL_ANDROID_native_fence_sync EGL_KHR_wait_sync]
+C25 elapsed_ms=601752 DUMP_LINE label=surfaceflinger text=    PresentFences=true
+C25 elapsed_ms=601753 DUMP_LINE label=surfaceflinger text=    pacesetterDisplayId=4630946545580055169
+C25 elapsed_ms=601754 DUMP_LINE label=surfaceflinger text=    forcedPacesetterDisplayId=nullopt
+C25 elapsed_ms=601755 DUMP_RESULT label=surfaceflinger exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=21264 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=10
+C25 elapsed_ms=601756 DUMP_START label=display timeout_ms=4000 command=/system/bin/dumpsys display
+C25 elapsed_ms=601788 DUMP_RESULT label=display exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=28 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=601789 DUMP_START label=sf_layers timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger --list
+C25 elapsed_ms=601813 DUMP_LINE label=sf_layers text=RequestedLayerState{BootAnimation#1 z=1073741824}
+C25 elapsed_ms=601814 DUMP_LINE label=sf_layers text=RequestedLayerState{[BBQ] BootAnimation#1#2 parentId=1}
+C25 elapsed_ms=601815 DUMP_RESULT label=sf_layers exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=106 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=2
+C25 elapsed_ms=601816 DUMP_START label=home timeout_ms=4000 command=/system/bin/cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME
+C25 elapsed_ms=601834 DUMP_RESULT label=home exit=20 signal=0 timeout=no spawn_errno=0 output_bytes=33 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=616627 SAMPLE n=42 uptime_ms=631856 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=631675 SAMPLE n=43 uptime_ms=646932 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=646715 SAMPLE n=44 uptime_ms=661980 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=661763 SAMPLE n=45 uptime_ms=677020 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=661835 DUMP_START label=window timeout_ms=4000 command=/system/bin/dumpsys window
+C25 elapsed_ms=661859 DUMP_RESULT label=window exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=27 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=661860 DUMP_START label=activity timeout_ms=4000 command=/system/bin/dumpsys activity activities
+C25 elapsed_ms=661877 DUMP_RESULT label=activity exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=29 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=661878 DUMP_START label=surfaceflinger timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger
+C25 elapsed_ms=661900 DUMP_LINE label=surfaceflinger text=Build configuration: [sf PRESENT_TIME_OFFSET=0 FORCE_HWC_FOR_RBG_TO_YUV=1 MAX_VIRT_DISPLAY_DIM=4096 RUNNING_WITHOUT_SYNC_FRAMEWORK=0 NUM_FRAMEBUFFER_SURFACE_BUFFERS=3]
+C25 elapsed_ms=661901 DUMP_LINE label=surfaceflinger text=Display identification data:
+C25 elapsed_ms=661902 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 (HWC display 0): port=129 pnpId=QCM screenPartStatus=UNSUPPORTED displayName=""
+C25 elapsed_ms=661902 DUMP_LINE label=surfaceflinger text=DisplayColorSetting: Enhanced
+C25 elapsed_ms=661903 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 color modes:
+C25 elapsed_ms=661903 DUMP_LINE label=surfaceflinger text=    ColorMode::DISPLAY_P3 (9)
+C25 elapsed_ms=661904 DUMP_LINE label=surfaceflinger text=Sync configuration: [using: EGL_ANDROID_native_fence_sync EGL_KHR_wait_sync]
+C25 elapsed_ms=661905 DUMP_LINE label=surfaceflinger text=    PresentFences=true
+C25 elapsed_ms=661906 DUMP_LINE label=surfaceflinger text=    pacesetterDisplayId=4630946545580055169
+C25 elapsed_ms=661906 DUMP_LINE label=surfaceflinger text=    forcedPacesetterDisplayId=nullopt
+C25 elapsed_ms=661908 DUMP_RESULT label=surfaceflinger exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=21264 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=10
+C25 elapsed_ms=661909 DUMP_START label=display timeout_ms=4000 command=/system/bin/dumpsys display
+C25 elapsed_ms=661930 DUMP_RESULT label=display exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=28 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=661931 DUMP_START label=sf_layers timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger --list
+C25 elapsed_ms=661949 DUMP_LINE label=sf_layers text=RequestedLayerState{BootAnimation#1 z=1073741824}
+C25 elapsed_ms=661950 DUMP_LINE label=sf_layers text=RequestedLayerState{[BBQ] BootAnimation#1#2 parentId=1}
+C25 elapsed_ms=661951 DUMP_RESULT label=sf_layers exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=106 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=2
+C25 elapsed_ms=661951 DUMP_START label=home timeout_ms=4000 command=/system/bin/cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME
+C25 elapsed_ms=661970 DUMP_RESULT label=home exit=20 signal=0 timeout=no spawn_errno=0 output_bytes=33 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=676840 SAMPLE n=46 uptime_ms=692068 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=691888 SAMPLE n=47 uptime_ms=707145 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=706937 SAMPLE n=48 uptime_ms=722194 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=721985 SAMPLE n=49 uptime_ms=737242 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=721986 DUMP_START label=window timeout_ms=4000 command=/system/bin/dumpsys window
+C25 elapsed_ms=722014 DUMP_RESULT label=window exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=27 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=722015 DUMP_START label=activity timeout_ms=4000 command=/system/bin/dumpsys activity activities
+C25 elapsed_ms=722033 DUMP_RESULT label=activity exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=29 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=722034 DUMP_START label=surfaceflinger timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger
+C25 elapsed_ms=722056 DUMP_LINE label=surfaceflinger text=Build configuration: [sf PRESENT_TIME_OFFSET=0 FORCE_HWC_FOR_RBG_TO_YUV=1 MAX_VIRT_DISPLAY_DIM=4096 RUNNING_WITHOUT_SYNC_FRAMEWORK=0 NUM_FRAMEBUFFER_SURFACE_BUFFERS=3]
+C25 elapsed_ms=722057 DUMP_LINE label=surfaceflinger text=Display identification data:
+C25 elapsed_ms=722057 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 (HWC display 0): port=129 pnpId=QCM screenPartStatus=UNSUPPORTED displayName=""
+C25 elapsed_ms=722058 DUMP_LINE label=surfaceflinger text=DisplayColorSetting: Enhanced
+C25 elapsed_ms=722058 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 color modes:
+C25 elapsed_ms=722059 DUMP_LINE label=surfaceflinger text=    ColorMode::DISPLAY_P3 (9)
+C25 elapsed_ms=722060 DUMP_LINE label=surfaceflinger text=Sync configuration: [using: EGL_ANDROID_native_fence_sync EGL_KHR_wait_sync]
+C25 elapsed_ms=722060 DUMP_LINE label=surfaceflinger text=    PresentFences=true
+C25 elapsed_ms=722061 DUMP_LINE label=surfaceflinger text=    pacesetterDisplayId=4630946545580055169
+C25 elapsed_ms=722061 DUMP_LINE label=surfaceflinger text=    forcedPacesetterDisplayId=nullopt
+C25 elapsed_ms=722063 DUMP_RESULT label=surfaceflinger exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=21264 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=10
+C25 elapsed_ms=722064 DUMP_START label=display timeout_ms=4000 command=/system/bin/dumpsys display
+C25 elapsed_ms=722082 DUMP_RESULT label=display exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=28 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=722083 DUMP_START label=sf_layers timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger --list
+C25 elapsed_ms=722100 DUMP_LINE label=sf_layers text=RequestedLayerState{BootAnimation#1 z=1073741824}
+C25 elapsed_ms=722101 DUMP_LINE label=sf_layers text=RequestedLayerState{[BBQ] BootAnimation#1#2 parentId=1}
+C25 elapsed_ms=722102 DUMP_RESULT label=sf_layers exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=106 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=2
+C25 elapsed_ms=722103 DUMP_START label=home timeout_ms=4000 command=/system/bin/cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME
+C25 elapsed_ms=722121 DUMP_RESULT label=home exit=20 signal=0 timeout=no spawn_errno=0 output_bytes=33 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=737058 SAMPLE n=50 uptime_ms=752289 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=752103 SAMPLE n=51 uptime_ms=767363 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=767151 SAMPLE n=52 uptime_ms=782408 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=782122 DUMP_START label=window timeout_ms=4000 command=/system/bin/dumpsys window
+C25 elapsed_ms=782147 DUMP_RESULT label=window exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=27 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=782148 DUMP_START label=activity timeout_ms=4000 command=/system/bin/dumpsys activity activities
+C25 elapsed_ms=782167 DUMP_RESULT label=activity exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=29 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=782168 DUMP_START label=surfaceflinger timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger
+C25 elapsed_ms=782189 DUMP_LINE label=surfaceflinger text=Build configuration: [sf PRESENT_TIME_OFFSET=0 FORCE_HWC_FOR_RBG_TO_YUV=1 MAX_VIRT_DISPLAY_DIM=4096 RUNNING_WITHOUT_SYNC_FRAMEWORK=0 NUM_FRAMEBUFFER_SURFACE_BUFFERS=3]
+C25 elapsed_ms=782190 DUMP_LINE label=surfaceflinger text=Display identification data:
+C25 elapsed_ms=782191 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 (HWC display 0): port=129 pnpId=QCM screenPartStatus=UNSUPPORTED displayName=""
+C25 elapsed_ms=782191 DUMP_LINE label=surfaceflinger text=DisplayColorSetting: Enhanced
+C25 elapsed_ms=782192 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 color modes:
+C25 elapsed_ms=782192 DUMP_LINE label=surfaceflinger text=    ColorMode::DISPLAY_P3 (9)
+C25 elapsed_ms=782193 DUMP_LINE label=surfaceflinger text=Sync configuration: [using: EGL_ANDROID_native_fence_sync EGL_KHR_wait_sync]
+C25 elapsed_ms=782194 DUMP_LINE label=surfaceflinger text=    PresentFences=true
+C25 elapsed_ms=782195 DUMP_LINE label=surfaceflinger text=    pacesetterDisplayId=4630946545580055169
+C25 elapsed_ms=782195 DUMP_LINE label=surfaceflinger text=    forcedPacesetterDisplayId=nullopt
+C25 elapsed_ms=782197 DUMP_RESULT label=surfaceflinger exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=21264 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=10
+C25 elapsed_ms=782198 DUMP_START label=display timeout_ms=4000 command=/system/bin/dumpsys display
+C25 elapsed_ms=782217 DUMP_RESULT label=display exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=28 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=782218 DUMP_START label=sf_layers timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger --list
+C25 elapsed_ms=782235 DUMP_LINE label=sf_layers text=RequestedLayerState{BootAnimation#1 z=1073741824}
+C25 elapsed_ms=782236 DUMP_LINE label=sf_layers text=RequestedLayerState{[BBQ] BootAnimation#1#2 parentId=1}
+C25 elapsed_ms=782238 DUMP_RESULT label=sf_layers exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=106 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=2
+C25 elapsed_ms=782239 DUMP_START label=home timeout_ms=4000 command=/system/bin/cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME
+C25 elapsed_ms=782260 DUMP_RESULT label=home exit=20 signal=0 timeout=no spawn_errno=0 output_bytes=33 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=782285 SAMPLE n=53 uptime_ms=797564 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=797321 SAMPLE n=54 uptime_ms=812590 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=812376 SAMPLE n=55 uptime_ms=827629 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=827404 SAMPLE n=56 uptime_ms=842681 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0
+C25 elapsed_ms=842261 DUMP_START label=window timeout_ms=4000 command=/system/bin/dumpsys window
+C25 elapsed_ms=842287 DUMP_RESULT label=window exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=27 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=842288 DUMP_START label=activity timeout_ms=4000 command=/system/bin/dumpsys activity activities
+C25 elapsed_ms=842307 DUMP_RESULT label=activity exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=29 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=842308 DUMP_START label=surfaceflinger timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger
+C25 elapsed_ms=842330 DUMP_LINE label=surfaceflinger text=Build configuration: [sf PRESENT_TIME_OFFSET=0 FORCE_HWC_FOR_RBG_TO_YUV=1 MAX_VIRT_DISPLAY_DIM=4096 RUNNING_WITHOUT_SYNC_FRAMEWORK=0 NUM_FRAMEBUFFER_SURFACE_BUFFERS=3]
+C25 elapsed_ms=842331 DUMP_LINE label=surfaceflinger text=Display identification data:
+C25 elapsed_ms=842332 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 (HWC display 0): port=129 pnpId=QCM screenPartStatus=UNSUPPORTED displayName=""
+C25 elapsed_ms=842332 DUMP_LINE label=surfaceflinger text=DisplayColorSetting: Enhanced
+C25 elapsed_ms=842333 DUMP_LINE label=surfaceflinger text=Display 4630946545580055169 color modes:
+C25 elapsed_ms=842334 DUMP_LINE label=surfaceflinger text=    ColorMode::DISPLAY_P3 (9)
+C25 elapsed_ms=842334 DUMP_LINE label=surfaceflinger text=Sync configuration: [using: EGL_ANDROID_native_fence_sync EGL_KHR_wait_sync]
+C25 elapsed_ms=842335 DUMP_LINE label=surfaceflinger text=    PresentFences=true
+C25 elapsed_ms=842335 DUMP_LINE label=surfaceflinger text=    pacesetterDisplayId=4630946545580055169
+C25 elapsed_ms=842336 DUMP_LINE label=surfaceflinger text=    forcedPacesetterDisplayId=nullopt
+C25 elapsed_ms=842338 DUMP_RESULT label=surfaceflinger exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=21264 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=10
+C25 elapsed_ms=842339 DUMP_START label=display timeout_ms=4000 command=/system/bin/dumpsys display
+C25 elapsed_ms=842356 DUMP_RESULT label=display exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=28 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=842357 DUMP_START label=sf_layers timeout_ms=4000 command=/system/bin/dumpsys SurfaceFlinger --list
+C25 elapsed_ms=842383 DUMP_LINE label=sf_layers text=RequestedLayerState{BootAnimation#1 z=1073741824}
+C25 elapsed_ms=842385 DUMP_LINE label=sf_layers text=RequestedLayerState{[BBQ] BootAnimation#1#2 parentId=1}
+C25 elapsed_ms=842385 DUMP_RESULT label=sf_layers exit=0 signal=0 timeout=no spawn_errno=0 output_bytes=106 truncated=no permission_denied_lines=0 service_not_found_lines=0 matched_lines=2
+C25 elapsed_ms=842386 DUMP_START label=home timeout_ms=4000 command=/system/bin/cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME
+C25 elapsed_ms=842408 DUMP_RESULT label=home exit=20 signal=0 timeout=no spawn_errno=0 output_bytes=33 truncated=no permission_denied_lines=0 service_not_found_lines=1 matched_lines=0
+C25 elapsed_ms=842434 SAMPLE n=57 uptime_ms=857712 sys.boot_completed=<empty-or-unreadable> service.bootanim.exit=0 init.svc.bootanim=running init.svc.surfaceflinger=running init.svc.zygote=restarting init.svc.zygote_secondary=restarting init.svc.vold=running init.svc.netd=restarting pid.system_server=none pid.zygote64=none pid.surfaceflinger=1467 pid.bootanimation=2227 pid.systemui=none pid.miui_systemui=none pid.miui_home=none pid.launcher=none pid.setupwizard=none pid.provision=none pid_scan_unreadable=0 pid_scan_errors=0

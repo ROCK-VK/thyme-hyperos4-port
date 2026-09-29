@@ -1,0 +1,4 @@
+Source: the unique host volume labeled THYME_DIAG, exposed by the Standalone RAM diagnostic environment.
+dmesg_diag_boot.txt is the Standalone diagnostic kernel log, not the preceding C26-zygote-first-exit kernel log.
+Salvaged boot label: C26-zygote-first-exit.
+Export started (UTC): 2026-09-29T05:31:49.541+00:00

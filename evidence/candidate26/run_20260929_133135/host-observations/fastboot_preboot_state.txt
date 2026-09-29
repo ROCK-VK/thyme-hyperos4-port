@@ -1,0 +1,11 @@
+C26 preboot Fastboot state; read-only queries only
+host_utc=2026-09-29T05:20:08.2253771+00:00
+candidate=C26-zygote-first-exit
+serial=[REDACTED]
+product=thyme
+current_slot=a
+unlocked=yes
+is_userspace=no
+slot_unbootable_a=no
+slot_successful_a=no
+slot_retry_count_a=2

@@ -13954,3 +13954,20 @@
 - 待处理：用户在手机旁确认后，先启动 C26 只读观察器并确认 ARMED，再执行唯一一次 C26 启动；如 ADB 不在线，返回 Fastboot 后完整导出 THYME_DIAG 与 metadata 诊断目录并校验。
 - GitHub：C26 诊断代码、报告、构建清单和状态已同步至公开仓库，Commit 949ee593ab5504e5e291bd3922394590262e4ff4；匿名 GitHub API 确认为 Public/main，README、C26 报告与 helper 源码返回 HTTP 200。
 - 替代：无；本条更新 C25“下一步捕获 Zygote 首因”的当前执行状态，不替代 C25 历史实机结论。
+
+## 2026-09-29 13:54 HKT｜C26 首次启动与 Standalone 取证
+
+- 状态：部分完成；C26 首次启动已取证，Zygote 退出首因仍未知。
+- 改动/结论：C26 进入 Android 用户空间并触发 post-fs-data。Zygote/secondary Zygote 反复重启，没有 system_server 或 SystemUI/SetupWizard/Launcher。用户约 9 分 9 秒后手动进入 Fastboot；A 槽 retry 2→1，unbootable=no。未刷写、清数据、set_active、改 BCB 或恢复 PixelOS。
+- 验证：post-fs-data 标记存在；C26 logcat 在 uptime 15.297s 启动，写入 8,564,736 bytes，最后可读约 50.959s，init service 于 52.027s stopped。Zygote 首次 running→stopping 约 147ms；日志未给出可归因的首次退出 fatal。netd 在 uptime 14.409s 因 `25Q2+ platform with kernel version < 5.4.0 is unsupported` SIGABRT；因果仍未知。Standalone 全卷 14 个可访问文件、12,972,436 bytes 源/副本核验一致；本卷无 console-ramoops、pmsg-ramoops、oops.raw、dmesg_diag_boot.txt。公开了 20 个证据文件，约 8.89 MB；misc 原件和散列、Windows 系统卷文件未发布，CPUID/主机路径/设备序列号已在公开文本副本中脱敏。
+- 尚未验证：Zygote 首次退出原因；netd 错误是否导致 Zygote 重启；C26 logcat oneshot 提前退出原因。未构建 C27。
+- 待处理：定点调查 C26 logcat 停止原因和 Zygote 首退记录；单独评估 netd 25Q2/4.19 冲突。当前设备 Fastboot，thyme/A/unlocked，A retry=1、B retry=7；PixelOS 未恢复。
+
+## 2026-09-29 13:54 HKT｜更正 C 盘空间触发门槛
+
+- 状态：已更新当前策略。
+- 改动/结论：用户确认 C/D/E 任一盘可用空间低于 50 GiB 时触发 THYME-OS4 项目专属空间清理；C 盘低于 50 GiB 时暂停新构建和大型提取，直到项目空间治理完成。当前实测 C 盘约 78.00 GiB，未触发。Docker Desktop、docker-desktop WSL、镜像、容器、卷、缓存和数据目录始终禁止触碰。
+- 原因：用户明确更正此前使用的 80 GiB 门槛。
+- 验证：C/D/E 当前约 78.00/233.95/265.84 GiB；Ubuntu 和 docker-desktop 均为 Stopped，未执行清理或设备操作。
+- 待处理：每次重型工作前检查 C/D/E 余量；任一盘低于 50 GiB 时触发项目专属清理，其中 C 盘低于 50 GiB 时暂停新构建/大型提取。Docker 绝对排除。
+- 替代：本条替代所有较早记录中的 C 盘 80 GiB 当前门槛；旧记录保留为历史事实。

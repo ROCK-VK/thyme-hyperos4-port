@@ -1,0 +1,1 @@
+C26_LOGCAT_START uptime_ms=15297 pid=1025 path=/metadata/thyme_os4_diag/C26_logcat_19700121T132132Z_u15297_p1025.txt command=/system/bin/logcat -b all -v threadtime,monotonic -r 1024 -n 3

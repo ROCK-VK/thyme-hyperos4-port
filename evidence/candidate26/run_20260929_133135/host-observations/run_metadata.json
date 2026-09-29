@@ -1,0 +1,8 @@
+{
+  "candidate": "C26-zygote-first-exit",
+  "observer_started_utc": "2026-09-29T05:19:53.456+00:00",
+  "serial": "[DEVICE_SERIAL_REDACTED]",
+  "observation_seconds": 1000,
+  "run_dir": "work\\reports\\20260929_C26_ZYGOTE_FIRST_EXIT\\observations\\run_20260929_131953",
+  "host_timezone": "中国标准时间"
+}

@@ -4,14 +4,14 @@
 
 将 Xiaomi 15（dada）的 HyperOS 4 / Android 17 用户空间移植到 Xiaomi Mi 10S（thyme）。当前优先让设备越过米标，进入 HyperOS 启动画面、设置向导或桌面。非开机关键功能暂缓。
 
-当前阶段：C26 Zygote 首因诊断版已构建并刷写，尚未启动。C25 的 55 个连续样本证明 zygote/zygote_secondary 长时间处于 `restarting`，system_server/zygote64 不存在；退出首因未保存。C26 保留 C25 诊断并新增 logcat 持久采集和 Zygote 属性/进程转换记录，目标是在首次启动后捕获真实退出错误。
+当前阶段：C26 已完成首次启动和 Standalone 取证。设备进入 Android 用户空间，但 Zygote/secondary Zygote 反复重启；没有 system_server、SystemUI、SetupWizard 或 Launcher。C26 首次捕获到 Android 25Q2+ netd 因 Linux 4.19 低于 5.4 门槛而 SIGABRT，但尚不能证明该错误导致 Zygote 首次退出。
 
 ## 当前设备与刷入状态
 
-- C26 刷写前只读查询确认唯一 thyme、A 槽、Bootloader 解锁、非 userspace Fastboot；A 槽 `unbootable=no`、`successful=no`、`retry=2`。刷写脚本结束后再次确认设备仍在 Bootloader Fastboot，未启动。
+- C26 首启前只读查询确认唯一 thyme、A 槽、Bootloader 解锁、非 userspace Fastboot；启动前 A 槽 `unbootable=no`、`successful=no`、`retry=2`。观察器 ARMED 后仅执行一次 `fastboot reboot`；用户全程看到静态小米第一屏，约 9 分 9 秒后手动进入 Fastboot，ADB 未上线。
 - C26 仅刷写 `super` 与 `vbmeta_system_a`。`super` 10/10 sparse chunks 均成功，写入耗时约 194 秒；`vbmeta_system_a` 发送与写入均成功。未进行分区回读，故只记录 Fastboot 写入命令成功。
 - C26 `super.img`：7,703,583,704 bytes，SHA-256 `601FF7548F658442B9F17176FB2AC391791E1453660E55A41D8B292E1E290E62`；`vbmeta_system.img`：131,072 bytes，SHA-256 `194000046E3FA288322D4D9D01B65559042DBCB27E3E354C986796888ABA40A3`。
-- C26 继承 C25 引导镜像、thyme 硬件栈和持久诊断；未执行 reboot、userdata/metadata 擦除、set_active、BCB/misc 操作、PixelOS 恢复或其他分区写入，未回锁 Bootloader。PixelOS 未恢复。设备端分区未回读，实际启动状态尚未验证。
+- C26 继承 C25 引导镜像、thyme 硬件栈和持久诊断；未清 userdata/metadata，未执行 `set_active`、BCB/misc 操作、PixelOS 恢复或其他分区写入，未回锁 Bootloader。C26 仍在设备上；当前只读状态为 A `unbootable=no / successful=no / retry=1`，B `retry=7`。PixelOS 未恢复。
 
 ## C25 持久化首屏诊断
 
@@ -28,7 +28,7 @@
 - K40 Android 17 成功包、Xiaomi 15 供体与 C25 的 Zygote rc、app_process32/64、`libandroid_runtime.so`、classpath PB、ART/runtime APEX 定点比较逐字节一致；未发现可复用的 K40 Zygote/ART 修复，因此 C26 是诊断增量，不混入无证据系统修复。
 - 新 helper 在 `post-fs-data` 后启动 logd 全 buffer 轮转采集（最多 4×1 MiB），并用 Bionic property-wait 监视 zygote、zygote_secondary 等状态；检测重启时记录可见进程信息并截取最多 8 次 crash/system/main 尾部。C25 sampler 保留；未改 SELinux CIL、GPU/HWC、ART、内核、fstab、属性或加密路径。
 - 构建器报告 EROFS 内容检查、system AVB footer 验证、vbmeta_system 更新、LP/Super 构建和逻辑输入校验完成；待刷镜像大小/SHA 与构建清单一致。helper 为 Android AArch64 PIE，源码通过 `-Wall -Wextra -Werror` 编译。
-- 尚未验证：C26 诊断服务能否在真机启动、logcat 是否成功持久化、Zygote 首次退出原因及是否进入后续启动阶段。
+- 实机结果：post-fs-data 标记存在；C26 logcat 于 uptime 15.297s 启动、保存 8,564,736 bytes，init service 于 52.027s 停止，原因未明。Zygote watcher 保存 8 份 tail，event 文件到 32 KiB 上限后截断；C25 sampler 仅 4 个样本、最后到 uptime 60.395s。诊断服务未完成 900s 观察。\n- 首次 Zygote 从 `running` 到 `stopping` 约 147ms；可用日志未含能解释首次退出的 fatal/crash。shell 域读取 `init.svc_debug_pid.zygote*` 被 SELinux 拒绝；这限制了 PID 诊断，不证明是系统故障原因。\n- `netd` 于 uptime 14.409s 因 `25Q2+ platform with kernel version < 5.4.0 is unsupported` SIGABRT；与 Zygote 的因果关系未知。
 
 ## C25 实机诊断结论（历史基线）
 
@@ -36,8 +36,8 @@
 - 后续 55 个样本一致：`init.svc.zygote=restarting`、`zygote_secondary=restarting`、`init.svc.netd=restarting`；system_server、zygote64、SystemUI、HOME、SetupWizard PID 均为 none；SurfaceFlinger 和 bootanimation PID 分别为 1467、2227，状态 running；`service.bootanim.exit=0`，`sys.boot_completed` 报为 empty/unreadable。Window、Activity、Display dumpsys 持续返回 service-not-found；SurfaceFlinger dumpsys 和 BootAnimation layer 可读取。
 - SurfaceFlinger 识别 HWC display 0、`PresentFences=true` 并列出 BootAnimation layer，但没有成功 present/fence 完成或用户实际收到该 layer 的证据。用户观察为中央小米 Logo + `powered by Android` 第一屏；不能据此确认 HyperOS 第二屏，也不能断言物理显示链根因。
 - 已有 C23/C24 pmsg 同样反复出现 `ZygotePid: -1`，且没有 `AndroidRuntime`/`ZygoteInit` 明确错误文本；这些旧日志不够说明 init zygote 状态，也未给出退出根因。C25 首次明确的持续状态证据把下一问题定位到 zygote 重启环，不代表根因已找到。
-- C25 的 logcat 缺失由 C26 诊断增量针对处理；C26 的真实服务启动和数据留存仍待实机验证。
-- 磁盘门禁：2026-09-29 01:01 HKT 实测 C/D/E 可用空间为 76.95/119.53/176.11 GiB；C 低于 80 GiB，暂不进行重型构建。E 盘 C13.1 未上机 stage（44.42 GiB）仍保留；此前精确递归删除被执行策略拒绝，本轮未绕过。D 盘 Ubuntu VHDX 164.64 GiB，此前压缩因占用失败，本轮未重试。Docker 未访问或修改。
+- C25 的 logcat 缺失由 C26 部分补足：Android logcat、zygote events/tails 和持久 sampler 已导出；但 Zygote 首退仍未解释。C26 原始诊断卷没有 console-ramoops、pmsg-ramoops、oops.raw 或 dmesg_diag_boot.txt。
+- 磁盘门禁：2026-09-29 01:01 HKT 实测 C/D/E 可用空间为 76.95/119.53/176.11 GiB；该历史记录使用当时的 80 GiB 门槛；2026-09-29 用户将现行门槛更正为低于 50 GiB。E 盘 C13.1 未上机 stage（44.42 GiB）仍保留；此前精确递归删除被执行策略拒绝，本轮未绕过。D 盘 Ubuntu VHDX 164.64 GiB，此前压缩因占用失败，本轮未重试。Docker 未访问或修改。
 - run3 取证后用户报告已返回 Bootloader Fastboot；但主机 `fastboot devices` 未枚举到设备。需要先恢复 USB Fastboot 枚举，再进行设备查询或操作。
 ## C21 当前实现
 
@@ -149,22 +149,22 @@ K40 产品配置另有 `ro.hwui.use_vulkan=true`；C21 未改 product，thyme ve
 - C22：越过 C21 的 RenderEngine 创建 fatal 并进入 Skia shader-cache 预热；output buffer GPU write usage 检查反复 fatal，未出现 HyperOS 启动画面、设置向导或桌面。
 
 ## 磁盘空间与清理状态
-- 2026-09-29 01:01 HKT 主机余量：C=76.95 GiB、D=119.53 GiB、E=176.11 GiB。C 低于 80 GiB 重型工作门槛；本轮未构建。
+- 2026-09-29 01:01 HKT 主机余量：C=76.95 GiB、D=119.53 GiB、E=176.11 GiB。该历史记录使用当时的 80 GiB 门槛；现行门槛为低于 50 GiB。；本轮未构建。
 - [LOCAL_PROJECT_ROOT] 分层盘点得到约 311,277,118,023 bytes（289.90 GiB）逻辑文件量，其中 work 247,804,377,446 bytes（230.79 GiB）。计数跳过 reparse point，但含硬链接重复路径；不能直接视作可回收的物理空间。
 - C 盘已知项目临时目录 [LOCAL_USER_PATH] 目前为空；未发现可观的 C 盘项目清理项。
 - Ubuntu /path/to/thyme-os4-build 当前 93,921,775,616 bytes（约 87.47 GiB）；D 盘 Ubuntu VHDX 逻辑长度 176,781,524,992 bytes（164.64 GiB）。本轮删除一份已逐字节散列证实的重复 K40 super.raw（SHA-256 7fa58150d67eef64f924c264a7b69df6604772c85417399f9141042260a663df，9,126,805,504 bytes），保留另一份及 K40 提取内容。Ubuntu df 已用量相应下降；fstrim / 报告 905.1 GiB trimmed，但 Windows D 可用空间未增加，VHDX 长度未变。
 - E 盘 work/stage_c_thyme_os4_candidate_13_1_data_guard 仍有 44.42 GiB；其递归删除在此前被执行环境拒绝，本轮未重试、未绕过。diagnostic_candidates 中 M26（K40 提取件）、M29（已失败并曾上机的候选）与 Pixel A17 native control 输出保留；M29 的 11 个生成镜像约 8.45 GB 曾尝试清理，但执行环境拒绝该删除，本轮未改用其他工具绕过。Pixel native super 是救援资产，M26 提取件被后续技术报告引用。C20→C25 阶段目录与当前构建脚本链保持不动。
 - C20→C26 构建链中的阶段目录由现有 Candidate 构建脚本逐版引用，当前先保留；原始供体、PixelOS 救援资产、取证、日志、报告和 K40 图形提取缓存保留。
 - 本轮 Docker 未访问或修改；未停止 WSL、未压缩 VHDX。此前 VHDX 压缩因文件占用失败，未重试。
-- 后续清理仅使用明确项目路径；任何 WSL 操作限定 Ubuntu，不触及 Docker。C 低于 80 GiB 时暂停重型构建。
+- 后续清理仅使用明确项目路径；任何 WSL 操作限定 Ubuntu，不触及 Docker。C 盘低于 50 GiB 时触发本项目空间治理；Docker 永久排除。。
 - C26 构建前/刷写前实测 C/D/E 可用空间为 76.76/119.52/176.11 GiB；本轮沿用已定向到 E 与 Ubuntu WSL 的构建流程，没有清理任何目录，Docker 相关资产未访问。
 
 ## 下一步
 
-1. 设备当前保持 Bootloader Fastboot；等待用户在手机旁确认可观察后再启动 C26。
-2. 启动前运行只读观察器并确认 ARMED，再通过 `tools/start_candidate26_observed_boot.ps1` 执行唯一一次 reboot。
-3. 若 ADB 不上线，待用户手动返回 Fastboot 后使用既有 Standalone 流程完整备份 THYME_DIAG 与 `/metadata/thyme_os4_diag`，先核验副本再分析 C26 logcat 和 Zygote 首次退出原因。
-4. 最近 Windows C/D/E 实测余量为 75.91/119.52/168.62 GiB。C 低于 80 GiB 重型构建门槛；本轮 C26 已构建，未清理磁盘。Docker 与其 WSL 资产未访问、未修改。
+1. 不重复启动 C26。先定点解释 logcat oneshot 于 uptime 52.027s 停止的原因，并取得 Zygote 首次退出时的 fatal/crash 证据。
+2. 单独评估 Android 25Q2 netd 对 4.19 内核的显式拒绝及其启动影响；当前不能将它认定为 Zygote 首因。K40 缓存中的 `libnetd_updatable.so` 与供体逐字节一致，暂未发现可直接复制的软件绕过。
+3. 暂不构建 C27；待取得可归因的新证据后选择最小修复或诊断调整。C26 构建和首启报告见 `reports/candidate26/C26_FIRST_BOOT_AND_STANDALONE_REPORT.md`，完整公开证据见 `evidence/candidate26/run_20260929_133135/`。
+4. 最新 C/D/E 可用空间约为 78.00/233.95/265.84 GiB。C/D/E 任一盘低于 50 GiB 时触发本项目专属空间清理；C 盘低于 50 GiB 时暂停新构建和大型提取，直到治理完成。当前三盘均高于门槛。Docker 相关资产绝对排除。
 ## 关键工具与项目路径
 
 - C21 构建：`tools/build_candidate21_k40_vk_renderengine.py`
