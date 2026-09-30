@@ -1,0 +1,59 @@
+﻿Line,Operation,Source,Target,SourcePresentInPackage,Slot,Notes
+46,direct stream to block device (shell >),images/xbl_ramdump.img,/dev/block/bootdevice/by-name/xbl_ramdump_a,False,A,No per-source error check in wrapper
+47,direct stream to block device (shell >),images/xbl_ramdump.img,/dev/block/bootdevice/by-name/xbl_ramdump_b,False,B,No per-source error check in wrapper
+48,direct stream to block device (shell >),images/xbl.img,/dev/block/bootdevice/by-name/xbl_a,True,A,No per-source error check in wrapper
+49,direct stream to block device (shell >),images/xbl.img,/dev/block/bootdevice/by-name/xbl_b,True,B,No per-source error check in wrapper
+50,direct stream to block device (shell >),images/xbl_config.img,/dev/block/bootdevice/by-name/xbl_config_a,True,A,No per-source error check in wrapper
+51,direct stream to block device (shell >),images/xbl_config.img,/dev/block/bootdevice/by-name/xbl_config_b,True,B,No per-source error check in wrapper
+52,direct stream to block device (shell >),images/vm-bootsys.img,/dev/block/bootdevice/by-name/vm-bootsys_a,False,A,No per-source error check in wrapper
+53,direct stream to block device (shell >),images/vm-bootsys.img,/dev/block/bootdevice/by-name/vm-bootsys_b,False,B,No per-source error check in wrapper
+54,direct stream to block device (shell >),images/vendor_boot.img,/dev/block/bootdevice/by-name/vendor_boot_a,True,A,No per-source error check in wrapper
+55,direct stream to block device (shell >),images/vendor_boot.img,/dev/block/bootdevice/by-name/vendor_boot_b,True,B,No per-source error check in wrapper
+56,direct stream to block device (shell >),images/uefisecapp.img,/dev/block/bootdevice/by-name/uefisecapp_a,True,A,No per-source error check in wrapper
+57,direct stream to block device (shell >),images/uefisecapp.img,/dev/block/bootdevice/by-name/uefisecapp_b,True,B,No per-source error check in wrapper
+58,direct stream to block device (shell >),images/uefi.img,/dev/block/bootdevice/by-name/uefi_a,False,A,No per-source error check in wrapper
+59,direct stream to block device (shell >),images/uefi.img,/dev/block/bootdevice/by-name/uefi_b,False,B,No per-source error check in wrapper
+60,direct stream to block device (shell >),images/tz.img,/dev/block/bootdevice/by-name/tz_a,True,A,No per-source error check in wrapper
+61,direct stream to block device (shell >),images/tz.img,/dev/block/bootdevice/by-name/tz_b,True,B,No per-source error check in wrapper
+62,direct stream to block device (shell >),images/shrm.img,/dev/block/bootdevice/by-name/shrm_a,False,A,No per-source error check in wrapper
+63,direct stream to block device (shell >),images/shrm.img,/dev/block/bootdevice/by-name/shrm_b,False,B,No per-source error check in wrapper
+64,direct stream to block device (shell >),images/qupfw.img,/dev/block/bootdevice/by-name/qupfw_a,True,A,No per-source error check in wrapper
+65,direct stream to block device (shell >),images/qupfw.img,/dev/block/bootdevice/by-name/qupfw_b,True,B,No per-source error check in wrapper
+66,direct stream to block device (shell >),images/modem.img,/dev/block/bootdevice/by-name/modem_a,True,A,No per-source error check in wrapper
+67,direct stream to block device (shell >),images/modem.img,/dev/block/bootdevice/by-name/modem_b,True,B,No per-source error check in wrapper
+68,direct stream to block device (shell >),images/keymaster.img,/dev/block/bootdevice/by-name/keymaster_a,True,A,No per-source error check in wrapper
+69,direct stream to block device (shell >),images/keymaster.img,/dev/block/bootdevice/by-name/keymaster_b,True,B,No per-source error check in wrapper
+70,direct stream to block device (shell >),images/imagefv.img,/dev/block/bootdevice/by-name/imagefv_a,True,A,No per-source error check in wrapper
+71,direct stream to block device (shell >),images/imagefv.img,/dev/block/bootdevice/by-name/imagefv_b,True,B,No per-source error check in wrapper
+72,direct stream to block device (shell >),images/hyp.img,/dev/block/bootdevice/by-name/hyp_a,True,A,No per-source error check in wrapper
+73,direct stream to block device (shell >),images/hyp.img,/dev/block/bootdevice/by-name/hyp_b,True,B,No per-source error check in wrapper
+74,direct stream to block device (shell >),images/featenabler.img,/dev/block/bootdevice/by-name/featenabler_a,True,A,No per-source error check in wrapper
+75,direct stream to block device (shell >),images/featenabler.img,/dev/block/bootdevice/by-name/featenabler_b,True,B,No per-source error check in wrapper
+76,direct stream to block device (shell >),images/dtbo.img,/dev/block/bootdevice/by-name/dtbo_a,True,A,No per-source error check in wrapper
+77,direct stream to block device (shell >),images/dtbo.img,/dev/block/bootdevice/by-name/dtbo_b,True,B,No per-source error check in wrapper
+78,direct stream to block device (shell >),images/dsp.img,/dev/block/bootdevice/by-name/dsp_a,True,A,No per-source error check in wrapper
+79,direct stream to block device (shell >),images/dsp.img,/dev/block/bootdevice/by-name/dsp_b,True,B,No per-source error check in wrapper
+80,direct stream to block device (shell >),images/devcfg.img,/dev/block/bootdevice/by-name/devcfg_a,True,A,No per-source error check in wrapper
+81,direct stream to block device (shell >),images/devcfg.img,/dev/block/bootdevice/by-name/devcfg_b,True,B,No per-source error check in wrapper
+82,direct stream to block device (shell >),images/cpucp.img,/dev/block/bootdevice/by-name/cpucp_a,False,A,No per-source error check in wrapper
+83,direct stream to block device (shell >),images/cpucp.img,/dev/block/bootdevice/by-name/cpucp_b,False,B,No per-source error check in wrapper
+84,direct stream to block device (shell >),images/bluetooth.img,/dev/block/bootdevice/by-name/bluetooth_a,True,A,No per-source error check in wrapper
+85,direct stream to block device (shell >),images/bluetooth.img,/dev/block/bootdevice/by-name/bluetooth_b,True,B,No per-source error check in wrapper
+86,direct stream to block device (shell >),images/aop.img,/dev/block/bootdevice/by-name/aop_a,True,A,No per-source error check in wrapper
+87,direct stream to block device (shell >),images/aop.img,/dev/block/bootdevice/by-name/aop_b,True,B,No per-source error check in wrapper
+88,direct stream to block device (shell >),images/aop_config.img,/dev/block/bootdevice/by-name/aop_config_a,False,A,No per-source error check in wrapper
+89,direct stream to block device (shell >),images/aop_config.img,/dev/block/bootdevice/by-name/aop_config_b,False,B,No per-source error check in wrapper
+90,direct stream to block device (shell >),images/abl.img,/dev/block/bootdevice/by-name/abl_a,True,A,No per-source error check in wrapper
+91,direct stream to block device (shell >),images/abl.img,/dev/block/bootdevice/by-name/abl_b,True,B,No per-source error check in wrapper
+92,direct stream to block device (shell >),images/boot.img,/dev/block/bootdevice/by-name/boot_a,True,A,No per-source error check in wrapper
+93,direct stream to block device (shell >),images/boot.img,/dev/block/bootdevice/by-name/boot_b,True,B,No per-source error check in wrapper
+94,direct stream to block device (shell >),images/vbmeta.img,/dev/block/bootdevice/by-name/vbmeta_a,True,A,No per-source error check in wrapper
+95,direct stream to block device (shell >),images/vbmeta.img,/dev/block/bootdevice/by-name/vbmeta_b,True,B,No per-source error check in wrapper
+96,direct stream to block device (shell >),images/vbmeta_system.img,/dev/block/bootdevice/by-name/vbmeta_system_a,True,A,No per-source error check in wrapper
+97,direct stream to block device (shell >),images/vbmeta_system.img,/dev/block/bootdevice/by-name/vbmeta_system_b,True,B,No per-source error check in wrapper
+98,direct stream to block device (shell >),images/recovery.img,/dev/block/bootdevice/by-name/recovery_a,True,A,No per-source error check in wrapper
+99,direct stream to block device (shell >),images/recovery.img,/dev/block/bootdevice/by-name/recovery_b,True,B,No per-source error check in wrapper
+184,custom sparse stream dd to super (not full erase),images/super.img,/dev/block/bootdevice/by-name/super,True,shared,RAW/FILL chunks written; DONT_CARE advances output offset without clearing; includes zero fill writes
+221,delete cache paths,,/data/dalvik-cache/arm/*,n/a,userdata content,Does not issue erase/format userdata or metadata here
+222,delete cache paths,,/data/dalvik-cache/arm64/*,n/a,userdata content,Does not issue erase/format userdata or metadata here
+223,delete cache paths,,/data/system/package_cache/*,n/a,userdata content,Does not issue erase/format userdata or metadata here

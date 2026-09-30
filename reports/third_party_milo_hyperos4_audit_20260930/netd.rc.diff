@@ -1,0 +1,8 @@
+--- third-party Milo / K40 netd.rc
++++ C30 netd.rc
+@@
+-    onrestart restart zygote
+-    onrestart restart zygote_secondary
+
+The audited third-party netd.rc is byte-identical to the K40 reference for this file.
+C30 removes these two netd-to-Zygote restart callbacks.

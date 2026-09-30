@@ -1,0 +1,33 @@
+﻿Line,Operation,TargetOrValue,Source,SlotScope,Conditional,Flags,DeviceWriteOrControl
+47,erase,frp,,shared/non-slot,unconditional,,yes
+48,flash,abl_ab,images\abl.img,_ab target name (official 10S script uses same syntax; actual resolution not tested),unconditional,,yes
+49,flash,aop_ab,images\aop.img,_ab target name (official 10S script uses same syntax; actual resolution not tested),unconditional,,yes
+50,flash,bluetooth_ab,images\bluetooth.img,_ab target name (official 10S script uses same syntax; actual resolution not tested),unconditional,,yes
+51,flash,boot_ab,images\boot.img,_ab target name (official 10S script uses same syntax; actual resolution not tested),unconditional,,yes
+52,flash,cmnlib_ab,images\cmnlib.img,_ab target name (official 10S script uses same syntax; actual resolution not tested),unconditional,,yes
+53,flash,cmnlib64_ab,images\cmnlib64.img,_ab target name (official 10S script uses same syntax; actual resolution not tested),unconditional,,yes
+54,flash,devcfg_ab,images\devcfg.img,_ab target name (official 10S script uses same syntax; actual resolution not tested),unconditional,,yes
+55,flash,dsp_ab,images\dsp.img,_ab target name (official 10S script uses same syntax; actual resolution not tested),unconditional,,yes
+56,flash,dtbo_ab,images\dtbo.img,_ab target name (official 10S script uses same syntax; actual resolution not tested),unconditional,,yes
+57,flash,featenabler_ab,images\featenabler.img,_ab target name (official 10S script uses same syntax; actual resolution not tested),unconditional,,yes
+58,flash,hyp_ab,images\hyp.img,_ab target name (official 10S script uses same syntax; actual resolution not tested),unconditional,,yes
+59,flash,imagefv_ab,images\imagefv.img,_ab target name (official 10S script uses same syntax; actual resolution not tested),unconditional,,yes
+60,flash,keymaster_ab,images\keymaster.img,_ab target name (official 10S script uses same syntax; actual resolution not tested),unconditional,,yes
+61,flash,modem_ab,images\modem.img,_ab target name (official 10S script uses same syntax; actual resolution not tested),unconditional,,yes
+62,flash,qupfw_ab,images\qupfw.img,_ab target name (official 10S script uses same syntax; actual resolution not tested),unconditional,,yes
+63,flash,recovery_ab,images\recovery.img,_ab target name (official 10S script uses same syntax; actual resolution not tested),unconditional,,yes
+64,flash,tz_ab,images\tz.img,_ab target name (official 10S script uses same syntax; actual resolution not tested),unconditional,,yes
+65,flash,uefisecapp_ab,images\uefisecapp.img,_ab target name (official 10S script uses same syntax; actual resolution not tested),unconditional,,yes
+66,flash,xbl_ab,images\xbl.img,_ab target name (official 10S script uses same syntax; actual resolution not tested),unconditional,,yes
+67,flash,xbl_config_ab,images\xbl_config.img,_ab target name (official 10S script uses same syntax; actual resolution not tested),unconditional,,yes
+68,flash,vendor_boot_ab,images\vendor_boot.img,_ab target name (official 10S script uses same syntax; actual resolution not tested),unconditional,,yes
+69,flash,vbmeta_a,images\vbmeta.img,slot-specific,unconditional,--disable-verity,yes
+70,flash,vbmeta_b,images\vbmeta.img,slot-specific,unconditional,--disable-verity,yes
+71,flash,vbmeta_system_a,images\vbmeta_system.img,slot-specific,unconditional,--disable-verity,yes
+72,flash,vbmeta_system_b,images\vbmeta_system.img,slot-specific,unconditional,--disable-verity,yes
+79,erase,super,,shared/non-slot,unconditional,,yes
+80,flash,super,images\super.img,shared/non-slot,unconditional,,yes
+82,set_active,a,,shared/non-slot,unconditional,,yes
+89,erase,userdata,,shared/non-slot,optional menu choice 2 (first install),,yes
+90,erase,metadata,,shared/non-slot,optional menu choice 2 (first install),,yes
+94,reboot,,,shared/non-slot,unconditional,,yes

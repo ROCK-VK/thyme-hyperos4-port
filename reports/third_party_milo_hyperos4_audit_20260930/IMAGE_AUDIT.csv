@@ -1,0 +1,25 @@
+﻿Filename,SizeBytes,SHA256,Sparse,Compressed,ELF,AVBFooter,StaticFileType
+abl.img,208896,786dad8dda245b79fcd212454fff3e3afe6a79f1eaf553fb1d082342232f23d3,False,False,True,False,"ELF 32-bit LSB executable, ARM, version 1 (SYSV), statically linked, no section header"
+aop.img,204800,bc1ea00fbbb6018699929e5a164bd5b52ce0c7c20455156cffb1b1a8f1df534b,False,False,True,False,"ELF 32-bit LSB executable, ARM, EABI5 version 1 (GNU/Linux), statically linked, no section header"
+bluetooth.img,421888,d75fde83f0e005c8b615f763a08eba43350738b258f3cd0ed2ceb366a1aef5cb,False,False,False,False,"DOS/MBR boot sector, code offset 0x3c+2, OEM-ID ""MSDOS5.0"", Bytes/sector 4096, sectors/cluster 4, root entries 512, Media descriptor 0xf8, sectors/FAT 3, sectors/track 63, heads 255, sectors 16384 (volumes > 32 MB), serial number 0xbc614e, unlabeled, FAT (16 bit)"
+boot.img,134217728,c96d171afc58e81ceba3a2fb79916b5e785ce875c3e497d5772f2e22b5b506eb,False,False,False,True,"Android bootimg, kernel (0x12ee5e6), ramdisk (0x62c)"
+cmnlib.img,397312,a8ec8cddf4c864aee4345338525b1f54cad89661df27c94fb8928662aea34b1e,False,False,True,False,"ELF 32-bit LSB shared object, ARM, EABI5 version 1 (SYSV), dynamically linked, no section header"
+cmnlib64.img,516096,b92e4577216a8ad4f6a1ba48458af43dab2375688214ca3d44e0a672001da2f4,False,False,True,False,"ELF 64-bit LSB shared object, ARM aarch64, version 1 (SYSV), dynamically linked, no section header"
+devcfg.img,57344,fa96716e29f2e02fe7d990501f54c401a8e90a26906efacc7c4f389b08b8697d,False,False,True,False,"ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), statically linked, no section header"
+dsp.img,67108864,ad87cad498de7992803941869fa0db29afc9f824946dea351694a66618979ae7,False,False,False,False,"Linux rev 1.0 ext4 filesystem data, UUID=af32c008-2a39-7e5b-a5dc-201456d93103, volume name ""dsp"" (extents) (large files)"
+dtbo.img,33554432,a0f550a32c15b95a6ba0bbe141976bad905d23fc74367e3e3ff0f41bc90c6d3a,False,False,False,True,data
+featenabler.img,90112,4dfa0c1bc8304d6751cb963feadfc785d49b3f8a0ffd2eefcaabfe7027e0f08c,False,False,True,False,"ELF 64-bit LSB shared object, ARM aarch64, version 1 (SYSV), dynamically linked, no section header"
+hyp.img,446464,cbae1ed3389fb3078406e1c7973bafc950a2aa7fc2307726f59b0fe981d5b3b1,False,False,True,False,"ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), statically linked, no section header"
+imagefv.img,2097152,2fa7f927965091e63440acfed32aa19894d05a4001ea7a617b03c8d8020db18b,False,False,True,False,"ELF 32-bit LSB executable, ARM, version 1 (SYSV), statically linked, no section header"
+keymaster.img,282624,b93f1f6eefd803e1ae3353dd33c40074fb3b118354c5a437bbd15833b1b97fbc,False,False,True,False,"ELF 64-bit LSB shared object, ARM aarch64, version 1 (SYSV), dynamically linked, no section header"
+modem.img,308015104,998cf43eb52d22d9848528ebb91159fea222097045e889660e8e6fe889e4e655,False,False,False,False,"DOS/MBR boot sector, code offset 0x3c+2, OEM-ID ""MSDOS5.0"", Bytes/sector 4096, sectors/cluster 4, root entries 512, Media descriptor 0xf8, sectors/FAT 15, sectors/track 63, heads 255, sectors 114688 (volumes > 32 MB), serial number 0xbc614e, unlabeled, FAT (16 bit)"
+qupfw.img,57344,4abe5f0ab42599f15d38b9c937ad06d1652af4ac8b73d5cf922f406eb38c08c9,False,False,True,False,"ELF 32-bit LSB executable, QUALCOMM DSP6, version 1 (SYSV), statically linked, no section header"
+recovery.img,201326592,7a86dbc9eb3d92d0ae50e5086e5dcec1adb9923c2c88d55f8bb2aed119129c02,False,False,False,True,"Android bootimg, kernel (0x3056e68), ramdisk (0x62c)"
+super.img,6683588156,6089839b0d3aa2865accbcf62951e302f7934fe545d5449450014eb970ff368b,True,False,False,False,Android sparse image
+tz.img,3190784,2c9a62b2bab432689c9b56ec9992aaa2c451e6a4496a62b49be4f1d78f2517b6,False,False,True,False,"ELF 64-bit LSB executable, ARM aarch64, version 1 (GNU/Linux), statically linked, no section header"
+uefisecapp.img,126976,0dbf7f0d8c22165874bdefa9698f4245cde877f581d06eda7f7d36598f280599,False,False,True,False,"ELF 32-bit LSB shared object, ARM, EABI5 version 1 (SYSV), dynamically linked, no section header"
+vbmeta_system.img,4096,12af57223c00c3bd9f04b522ac3e4b0cdaa3b838e5943c7b53184372f8f863ef,False,False,False,False,data
+vbmeta.img,8192,a425af6183813e1bbb234d56552a7058b652fb81e405f4a5d9806a431b69b3ba,False,False,False,False,data
+vendor_boot.img,100663296,69c59d9cf02c845490634f0c89ee7099f4353f92824f7e7aec0121a6dae2b592,False,False,False,True,data
+xbl_config.img,102400,c896dc9c04826af794d5299a06fad5971de07d51d4c252623225659e65a57ba8,False,False,True,False,"ELF 64-bit LSB executable, ARM, version 1 (SYSV), statically linked, no section header"
+xbl.img,3575808,a1fc3745c9fb345ac64db93228e4be3800d70f88d7b524ffed722438a7266266,False,False,True,False,"ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), statically linked, no section header"

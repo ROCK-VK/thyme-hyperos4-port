@@ -1,0 +1,50 @@
+﻿Path,SizeBytes,SHA256,Type,Sparse,Compressed,ELF,APK,Script,WindowsExecutable,AvbFooter
+点我一键安装安卓驱动.exe,20656640,15077cb5f5f37071cae1a61522c1715fda721acc0d574a9c680f6569493c7bfd,PE/Windows executable,False,False,False,False,False,True,False
+点我一键线刷.bat,3665,83be489c804532768e0aeffa6ecb95b7dd1909bf548604b4a919489999e0ccb4,Script,False,False,False,False,True,False,False
+bin/android/busybox,2102536,88dbbc3563b6025dabad1eeab55ca40d8dcd70cc17801c3284ce92c5d5a0e41f,ELF,False,False,True,False,False,False,False
+bin/android/zstd,1390080,b2b5618b51c0a9c5913b7d67a6fd2f50edc57293d8eb6a6c270cf994f9601720,ELF,False,False,True,False,False,False,False
+bin/windows.zip,8021115,c8fbedf2de2d1ab5c2b68660880d010a3dafba4ab0c1313fd4e1fb2ec7880d6a,ZIP/APK archive,False,True,False,False,False,False,False
+bin/windows/adb.exe,8273560,b4a6b455702684652cccf7b46258b29e653538904359a58fd4931cf3ef286b3f,PE/Windows executable,False,False,False,False,False,True,False
+bin/windows/AdbWinApi.dll,108184,c1d653030b4bde65d3e07e4d0b0979e17be56df1436cdd15528630f27808050d,PE/Windows executable,False,False,False,False,False,True,False
+bin/windows/AdbWinUsbApi.dll,73368,0710e894d9b40f71a670c13c694079d564c92c1279da382cfe4850983aaebe1b,PE/Windows executable,False,False,False,False,False,True,False
+bin/windows/etc1tool.exe,451224,ee9bb89bb770badcfeb12bb9a3c4095682fb2ea0105487f9f16e440c582064a3,PE/Windows executable,False,False,False,False,False,True,False
+bin/windows/fastboot.exe,2429080,b2d9cbff4ce9ae7eb448cfc831bafc867935f50f5be38f8f81057fd7eb3b8d86,PE/Windows executable,False,False,False,False,False,True,False
+bin/windows/hprof-conv.exe,52888,70cfef266dd9d94922679be159901cec3218561be946347e6e4a7577fc81dede,PE/Windows executable,False,False,False,False,False,True,False
+bin/windows/libwinpthread-1.dll,243016,f2044c755e39efc5d47f47c5a942178dd6d79dc8945bb182dc8753d10e2a4269,PE/Windows executable,False,False,False,False,False,True,False
+bin/windows/make_f2fs_casefold.exe,473752,9ac076516c2a1f620df24e148660becf3e7d4102b46ddda66970d35c59db2962,PE/Windows executable,False,False,False,False,False,True,False
+bin/windows/make_f2fs.exe,473752,a1d8e18474636972e4ebaf2617ac17c880e76642fad7fa3e51ae5cd3c1fe5d17,PE/Windows executable,False,False,False,False,False,True,False
+bin/windows/mke2fs.conf,1157,ad58a58dcdd24d85055814ca9cac67db89d4e67c434e96774bdce0d0a007d067,Data/text,False,False,False,False,False,False,False
+bin/windows/mke2fs.exe,763544,308304852b1f1a1449e9d9115332ab908b8a54b99f460ed1df5d109decef5be7,PE/Windows executable,False,False,False,False,False,True,False
+bin/windows/NOTICE.txt,1154131,38ec8c6f5b7799c223ffeab1f9e81c2d5fc67b5e56d6424f649630ca1ee1a811,Data/text,False,False,False,False,False,False,False
+bin/windows/source.properties,38,2dccd788c0234d8cf7f7457377e57f57527a86a629c6ed54feb8af0f549dac38,Data/text,False,False,False,False,False,False,False
+bin/windows/sqlite3.exe,3031704,234d9e6c475c6e9ba07498a1ad96a6a32840fbfdc74e50277e1a94cbac48abdc,PE/Windows executable,False,False,False,False,False,True,False
+images/abl.img,208896,786dad8dda245b79fcd212454fff3e3afe6a79f1eaf553fb1d082342232f23d3,ELF,False,False,True,False,False,False,False
+images/aop.img,204800,bc1ea00fbbb6018699929e5a164bd5b52ce0c7c20455156cffb1b1a8f1df534b,ELF,False,False,True,False,False,False,False
+images/bluetooth.img,421888,d75fde83f0e005c8b615f763a08eba43350738b258f3cd0ed2ceb366a1aef5cb,Image (format pending),False,False,False,False,False,False,False
+images/boot.img,134217728,c96d171afc58e81ceba3a2fb79916b5e785ce875c3e497d5772f2e22b5b506eb,Image (format pending),False,False,False,False,False,False,True
+images/cmnlib.img,397312,a8ec8cddf4c864aee4345338525b1f54cad89661df27c94fb8928662aea34b1e,ELF,False,False,True,False,False,False,False
+images/cmnlib64.img,516096,b92e4577216a8ad4f6a1ba48458af43dab2375688214ca3d44e0a672001da2f4,ELF,False,False,True,False,False,False,False
+images/devcfg.img,57344,fa96716e29f2e02fe7d990501f54c401a8e90a26906efacc7c4f389b08b8697d,ELF,False,False,True,False,False,False,False
+images/dsp.img,67108864,ad87cad498de7992803941869fa0db29afc9f824946dea351694a66618979ae7,Image (format pending),False,False,False,False,False,False,False
+images/dtbo.img,33554432,a0f550a32c15b95a6ba0bbe141976bad905d23fc74367e3e3ff0f41bc90c6d3a,Image (format pending),False,False,False,False,False,False,True
+images/featenabler.img,90112,4dfa0c1bc8304d6751cb963feadfc785d49b3f8a0ffd2eefcaabfe7027e0f08c,ELF,False,False,True,False,False,False,False
+images/hyp.img,446464,cbae1ed3389fb3078406e1c7973bafc950a2aa7fc2307726f59b0fe981d5b3b1,ELF,False,False,True,False,False,False,False
+images/imagefv.img,2097152,2fa7f927965091e63440acfed32aa19894d05a4001ea7a617b03c8d8020db18b,ELF,False,False,True,False,False,False,False
+images/keymaster.img,282624,b93f1f6eefd803e1ae3353dd33c40074fb3b118354c5a437bbd15833b1b97fbc,ELF,False,False,True,False,False,False,False
+images/modem.img,308015104,998cf43eb52d22d9848528ebb91159fea222097045e889660e8e6fe889e4e655,Image (format pending),False,False,False,False,False,False,False
+images/qupfw.img,57344,4abe5f0ab42599f15d38b9c937ad06d1652af4ac8b73d5cf922f406eb38c08c9,ELF,False,False,True,False,False,False,False
+images/recovery.img,201326592,7a86dbc9eb3d92d0ae50e5086e5dcec1adb9923c2c88d55f8bb2aed119129c02,Image (format pending),False,False,False,False,False,False,True
+images/super.img,6683588156,6089839b0d3aa2865accbcf62951e302f7934fe545d5449450014eb970ff368b,Android sparse image,True,False,False,False,False,False,False
+images/tz.img,3190784,2c9a62b2bab432689c9b56ec9992aaa2c451e6a4496a62b49be4f1d78f2517b6,ELF,False,False,True,False,False,False,False
+images/uefisecapp.img,126976,0dbf7f0d8c22165874bdefa9698f4245cde877f581d06eda7f7d36598f280599,ELF,False,False,True,False,False,False,False
+images/vbmeta_system.img,4096,12af57223c00c3bd9f04b522ac3e4b0cdaa3b838e5943c7b53184372f8f863ef,AVB vbmeta,False,False,False,False,False,False,False
+images/vbmeta.img,8192,a425af6183813e1bbb234d56552a7058b652fb81e405f4a5d9806a431b69b3ba,AVB vbmeta,False,False,False,False,False,False,False
+images/vendor_boot.img,100663296,69c59d9cf02c845490634f0c89ee7099f4353f92824f7e7aec0121a6dae2b592,Image (format pending),False,False,False,False,False,False,True
+images/xbl_config.img,102400,c896dc9c04826af794d5299a06fad5971de07d51d4c252623225659e65a57ba8,ELF,False,False,True,False,False,False,False
+images/xbl.img,3575808,a1fc3745c9fb345ac64db93228e4be3800d70f88d7b524ffed722438a7266266,ELF,False,False,True,False,False,False,False
+META-INF/com/android/metadata,681,2157cda762463331e48384fce8753bc447ab109583e32eeadade6fefeed38703,Data/text,False,False,False,False,False,False,False
+META-INF/com/android/metadata.pb,1427,716c3dbb7b486dfccf16580af79f2d87f78ac354b88919716e0e64d1e215a9b3,Data/text,False,False,False,False,False,False,False
+META-INF/com/android/otacert,1594,ff85d8bc50e4eed4c5f54734b20003e845a8ee5f206bfe717335ad594dd01a5e,Data/text,False,False,False,False,False,False,False
+META-INF/com/google/android/update-binary,9673,56d8205ea1216f41cc80eb6d6f3a9df44db4b1763a042afce13b5da7d4fd02a3,Data/text,False,False,False,False,False,False,False
+META-INF/com/google/android/updater-script,10,6b7e0857037bda5d933a56e28789138400e815b166a3a547b32a42242d41c641,Data/text,False,False,False,False,False,False,False
+Sukisu.apk,12148312,1b1e837c0a5b6aa34554882fad67cef6db6ca1a84d43e07dd904cf54f8d261ae,ZIP/APK archive,False,True,False,True,False,False,False

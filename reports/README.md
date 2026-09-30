@@ -13,3 +13,5 @@ Some historical reports use emphatic phrases such as “100%” or “司法级�
 The C13 clean-data `console-ramoops` ends around 3.75 seconds after first-stage mount, dynamic policy compilation, enforcing second-stage init, and APEX bootstrap. It does not establish later HAL, vold, `/data`, boot animation, or desktop status. It is not a complete system log.
 
 Raw `misc`/BCB, partition backups, `persist`, radio/NV/EFS data, user data, complete images, and vendor binaries are not published.
+
+- reports/third_party_milo_hyperos4_audit_20260930/ contains the offline Milo package audit, file/image manifests, static Windows Fastboot and Recovery write plans, and the netd rc diff. Original executables, APK, firmware and images are excluded.

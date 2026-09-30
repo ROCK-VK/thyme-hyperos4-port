@@ -14154,3 +14154,14 @@
 - Standalone UMS 取证后，主机重新看到唯一 Bootloader Fastboot 设备。只读 getvar 确认 thyme/A/unlocked/non-userspace；A unbootable=no、successful=no、retry=3，B no/no/retry=7。
 - 未执行 reboot、set_active、刷写或擦除。C30 保持未再次启动。
 - C30 报告与原始 pstore/主机证据已于提交 dac7820d48d86719dbeeb2161ff014bba093f8d4 推送；匿名 raw 文件链接返回 HTTP 200。GitHub API visibility 请求返回 403，故没有用 API 结果单独宣称可见性。
+## 2026-09-30 15:30 HKT｜第三方 Milo HyperOS4 包离线审计
+
+- 状态：仅分析，未修改 Candidate、未操作设备；第三方 exe/bat/apk 未运行。
+- 改动/结论：完成 49 文件（7,602,127,591 B）静态清点、逐文件 SHA-256 manifest、24 镜像类型/AVB 清单、Fastboot BAT 与 Recovery updater 写入计划。该包是自定义 Windows Fastboot 包与指向 muyu 的 Recovery updater/矛盾 OTA metadata 混合物，不满足 External Candidate 条件；未创建 staging 或 Dry-Run。
+- 启动链：第三方 netd.rc 与 K40 对应文件一致，保留 netd→两套 Zygote restart；netbpfload 与 libnetd_updatable 与 C30/K40 对应文件相同。没有发现解决 C30 当前 PID 1/Zygote 故障的新兼容补丁。boot/vendor_boot/dtbo/vbmeta/vbmeta_system 与 10S Android13 官方基线一致；super LP 与 C30 不同，Android17 system/product 与 Android13 thyme vendor/boot 混合。
+- 作者分区说明：用户转述作者承认此前分区映射忽略 10S A/B。当前未取得修订包或详细更正表；本地官方 10S fastboot 脚本也使用 boot_ab/vendor_boot_ab 名称，故不能据概述判定每个 _ab 目标均错误。该说明不改变当前旧包不适合实机测试的结论。
+- 涉及文件：work/reports/third_party_milo_hyperos4_audit_20260930/THIRD_PARTY_PORT_STRATEGY.md、同目录 THIRD_PARTY_PACKAGE_MANIFEST.csv、IMAGE_AUDIT.csv、BAT_WRITE_PLAN.csv、RECOVERY_WRITE_PLAN.csv、netd.rc.diff。
+- 验证：49 条 manifest 总大小与原清单汇总相符；24 项镜像与静态 file 类型记录对应；BAT 计划含 FRP/super 擦除、modem 等底层写入、可选 userdata/metadata 擦除及 reboot；Recovery 计划标出六类缺失源镜像。没有运行第三方程序、向设备发送命令或修改 C30。
+- 尚未验证：作者所指的具体错误分区名及修订包；第三方 bootloader 对 _ab 目标的实际解析；本轮没有做设备端行为验证。
+- 待处理：如获得作者修订版和准确映射，对新包另行静态审计；继续 C30 PID 1 fatal 定点分析。
+- 替代：无；本条新增对外部参考包的评估，不替代 C30 历史结果。
