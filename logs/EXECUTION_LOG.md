@@ -14199,3 +14199,11 @@
 - 验证：本次两个公开文本文件只含审计结论、属性候选及文件哈希；未包括 ROM、分区镜像、raw metadata/misc、第三方 APK/EXE/BAT。该分析不是实机验证。
 - 待处理：如继续该方向，需在受控启动中直接留存 property key 与 PID/调用点，或取得可用 SIGABRT tombstone/backtrace。
 - 替代：更新先前未对齐 AVC/SIGABRT 的摘要；当前判断为强时间相关但因果未知。
+
+## 2026-10-01 00:35 HKT｜C30 AVC 报告公开同步验证
+
+- 状态：报告和候选表已推送并完成匿名访问验证。
+- 改动/结论：main 的报告提交为 08863a43ee4ed7053a69621f1d8aad59c1ce1f06，包含 C30 AVC 闭环报告、DEX 候选表、脱敏状态/执行记录和报告索引。
+- 验证：git ls-remote 与本地 HEAD 相同；报告、CSV、项目状态、执行记录和 reports 索引的匿名 GET 均 HTTP 200；提交后公开工作树干净。
+- 安全：仅发布文本和 CSV；未上传 ROM、镜像、raw metadata/misc、第三方程序、设备身份资料或凭据。
+- 设备：本轮没有查询或操作手机。

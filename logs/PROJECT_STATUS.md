@@ -55,3 +55,4 @@
 - AVC #43 与 PID 1051 main SIGABRT 相隔约 143 ms；三条 vendor_default_prop AVC 在该 abort 后约 77 ms。重复 main abort 后约 32.922 秒 PID 1 触发 sysrq panic。相关性强，因果未证。
 - K40 成功样本对 vendor_default_prop、vendor_displayfeature_prop、vendor_system_prop、vendor_display_prop 允许 Zygote read；Milo 4.0.11.0 的相关 context 与 C30 同类且没有对应 zygote grant；Xiaomi 15 donor 的定点 vendor CIL 只确认 vendor_fp_prop read。没有足够证据构建 C31。
 - 详细报告与 DEX 候选表位于 reports/c30_zygote_vendor_property_avc_20260930/。本轮未公开 ROM、镜像、raw metadata/misc 或第三方二进制。
+- Latest public sync: C30 AVC report and DEX candidate CSV are available in main at report commit 08863a43ee4ed7053a69621f1d8aad59c1ce1f06; anonymous raw reads succeeded and the worktree was clean after verification.
