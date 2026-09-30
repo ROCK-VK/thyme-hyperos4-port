@@ -14215,3 +14215,10 @@
 - C30 property context `ro.hardware.fp` 与 K40/donor `ro.hardware.fp.` 对应 SELinux type 不同；已找到的 `ro.hardware.fp.fod` getter 默认 false，但不知它是否对应 AVC #43。
 - 决策：C31 change set 为空；不构建、不增加 SELinux allow。下一步需取得 property key/PID/调用点及 Zygote abort backtrace。
 - 发布物只有审计 Markdown/CSV；无 ROM、分区镜像、raw metadata/misc 或二进制。
+
+## 2026-10-01 01:31 HKT｜C30 UltraFramework 闭环材料公开同步验证
+
+- 状态：已推送并完成匿名公开读取核验。
+- 改动/结论：公开提交 `3568c6d0707363fd82867608b8a87e2d7d5b34b1` 发布闭环报告、七条 AVC CSV、空 C31 change-set、报告索引及脱敏项目状态/执行记录。
+- 验证：`git ls-remote origin refs/heads/main` 与该提交一致；报告、两份 CSV、项目状态、执行记录、reports 索引匿名 GET 均 HTTP 200；公开工作树干净。
+- 安全与设备：提交仅含文本/CSV；未上传 ROM、镜像、metadata/misc raw、第三方二进制或设备身份数据。未查询或操作手机，C30 未启动，C31 未构建。

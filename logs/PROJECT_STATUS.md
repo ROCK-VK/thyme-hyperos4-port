@@ -62,3 +62,5 @@
 - 七条 vendor-property AVC 的 exact key/PID 仍未记录。K40 对四类目标 type 有 Zygote 读取授权；这解释策略差异，不证明它们造成 C30 abort。C30 `ro.hardware.fp` 与 K40/donor `ro.hardware.fp.` 的 type 映射不同，但 AVC #43 无 key，暂不作为启动修复。
 - C31 change set 为空，不构建 C31，不增加 SELinux allow。主机静态分析；本轮未查询或操作设备。A retry=3 是历史只读值，不代表实时状态。
 - 报告与七条 AVC CSV 位于 `reports/c30_ultraframework_closure_20261001/`；未公开 ROM、镜像、metadata/misc raw、APK/EXE 或其他二进制。
+
+- 该闭环材料已公开同步，远端 main 与当次发布提交一致，匿名报告/CSV/状态/执行记录/索引读取均成功（HTTP 200）。
