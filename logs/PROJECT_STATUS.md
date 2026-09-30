@@ -32,3 +32,7 @@
 1. 若作者提供修订包及逐项 A/B 分区映射，对新版本单独进行静态复核；不复用旧包结论替代新包证据。
 2. 当前主线仍是定点分析 C30 PID 1 panic 前的 init fatal 条件与诊断留证。
 3. 新 Candidate 启动前等待用户现场确认；本状态不授权设备操作。
+
+## 最新公开同步
+- 第三方 Milo 离线审计材料已推送至公开仓库 main；审计首发提交 9e7ff9dc3cb7b1648a849de0290f38080692cba0。匿名 raw 报告、manifest、PROJECT_STATUS 与 reports 索引均返回 HTTP 200。
+- 公开目录 reports/third_party_milo_hyperos4_audit_20260930/ 仅含报告、CSV 和文本 diff；未包含第三方 EXE/APK/ROM 镜像或设备 raw 分区副本。

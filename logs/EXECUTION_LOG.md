@@ -14165,3 +14165,11 @@
 - 尚未验证：作者所指的具体错误分区名及修订包；第三方 bootloader 对 _ab 目标的实际解析；本轮没有做设备端行为验证。
 - 待处理：如获得作者修订版和准确映射，对新包另行静态审计；继续 C30 PID 1 fatal 定点分析。
 - 替代：无；本条新增对外部参考包的评估，不替代 C30 历史结果。
+
+## 2026-09-30 15:43 HKT｜第三方 Milo 离线审计公开同步验证
+
+- 状态：已推送并完成匿名公开读取检查。
+- 改动/结论：审计报告、逐文件/镜像清单、BAT 与 Recovery 写入计划、netd.rc 文本差异、报告索引及项目状态已推送至 ROCK-VK/thyme-hyperos4-port；审计首发提交 9e7ff9dc3cb7b1648a849de0290f38080692cba0。
+- 验证：git ls-remote 的 main 与本地首发 commit 一致；匿名 raw 的 THIRD_PARTY_PORT_STRATEGY.md、THIRD_PARTY_PACKAGE_MANIFEST.csv、PROJECT_STATUS.md、reports/README.md 均 HTTP 200；暂存内容无空白错误，公开目录无 exe/apk/img/bin/raw/zip/dll/so，最大单文件 19,350 B。公开仓库没有未提交修改。
+- 安全：仅上传文本报告/CSV/diff 与脱敏状态/执行记录；未上传第三方程序、镜像、固件或设备分区备份。设备无操作，C30 状态不变。
+- 待处理：如获得作者修订包和准确 A/B 分区映射，另行静态审计；当前外部包不作为 Candidate。
