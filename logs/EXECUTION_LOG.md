@@ -14207,3 +14207,11 @@
 - 验证：git ls-remote 与本地 HEAD 相同；报告、CSV、项目状态、执行记录和 reports 索引的匿名 GET 均 HTTP 200；提交后公开工作树干净。
 - 安全：仅发布文本和 CSV；未上传 ROM、镜像、raw metadata/misc、第三方程序、设备身份资料或凭据。
 - 设备：本轮没有查询或操作手机。
+
+## 2026-10-01 01:21 HKT｜C30 UltraFramework / K40 SELinux 因果闭环
+
+- 状态：仅主机离线分析；未改 Candidate、未查询/操作设备、未构建 C31。
+- 结论：C30/K40 `framework.jar` 与 preload 清单 hash 完全一致；工厂类加载异常被捕获并 fallback，C30 pmsg 后续仍有初始化记录。七条 AVC 缺少 exact property key/PID；#43 与 PID 1051 SIGABRT 仅有约 143 ms 时间关系，SIGABRT 无 backtrace。K40 的四类 Zygote property grants 是兼容性线索，不足以闭合根因。
+- C30 property context `ro.hardware.fp` 与 K40/donor `ro.hardware.fp.` 对应 SELinux type 不同；已找到的 `ro.hardware.fp.fod` getter 默认 false，但不知它是否对应 AVC #43。
+- 决策：C31 change set 为空；不构建、不增加 SELinux allow。下一步需取得 property key/PID/调用点及 Zygote abort backtrace。
+- 发布物只有审计 Markdown/CSV；无 ROM、分区镜像、raw metadata/misc 或二进制。

@@ -56,3 +56,9 @@
 - K40 成功样本对 vendor_default_prop、vendor_displayfeature_prop、vendor_system_prop、vendor_display_prop 允许 Zygote read；Milo 4.0.11.0 的相关 context 与 C30 同类且没有对应 zygote grant；Xiaomi 15 donor 的定点 vendor CIL 只确认 vendor_fp_prop read。没有足够证据构建 C31。
 - 详细报告与 DEX 候选表位于 reports/c30_zygote_vendor_property_avc_20260930/。本轮未公开 ROM、镜像、raw metadata/misc 或第三方二进制。
 - Latest public sync: C30 AVC report and DEX candidate CSV are available in main at report commit 08863a43ee4ed7053a69621f1d8aad59c1ce1f06; anonymous raw reads succeeded and the worktree was clean after verification.
+
+### C30 UltraFramework / K40 AVC 因果闭环（2026-10-01）
+- C30 与成功 K40 样本的 `framework.jar` 和 preload 清单字节完全一致。共同 DEX 捕获 `UltraFrameworkComponentFactoryImpl` 加载异常并回退到基础工厂；C30 pmsg 显示后续初始化继续。缺类尚无证据解释 Zygote SIGABRT。
+- 七条 vendor-property AVC 的 exact key/PID 仍未记录。K40 对四类目标 type 有 Zygote 读取授权；这解释策略差异，不证明它们造成 C30 abort。C30 `ro.hardware.fp` 与 K40/donor `ro.hardware.fp.` 的 type 映射不同，但 AVC #43 无 key，暂不作为启动修复。
+- C31 change set 为空，不构建 C31，不增加 SELinux allow。主机静态分析；本轮未查询或操作设备。A retry=3 是历史只读值，不代表实时状态。
+- 报告与七条 AVC CSV 位于 `reports/c30_ultraframework_closure_20261001/`；未公开 ROM、镜像、metadata/misc raw、APK/EXE 或其他二进制。
