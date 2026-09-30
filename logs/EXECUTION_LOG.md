@@ -14173,3 +14173,11 @@
 - 验证：git ls-remote 的 main 与本地首发 commit 一致；匿名 raw 的 THIRD_PARTY_PORT_STRATEGY.md、THIRD_PARTY_PACKAGE_MANIFEST.csv、PROJECT_STATUS.md、reports/README.md 均 HTTP 200；暂存内容无空白错误，公开目录无 exe/apk/img/bin/raw/zip/dll/so，最大单文件 19,350 B。公开仓库没有未提交修改。
 - 安全：仅上传文本报告/CSV/diff 与脱敏状态/执行记录；未上传第三方程序、镜像、固件或设备分区备份。设备无操作，C30 状态不变。
 - 待处理：如获得作者修订包和准确 A/B 分区映射，另行静态审计；当前外部包不作为 Candidate。
+
+## 2026-09-30 16:40 HKT｜Milo/C30 四方启动链定点差异分析
+
+- 状态：仅主机离线分析；未修改 Candidate，未操作设备；未运行第三方 EXE/BAT/APK。
+- 结论：Milo 的 Zygote rc、ART/runtime APEX、classpath、linker config、VINTF 文件与 C30/donor/K40 的指定文件一致。Milo 保留 netd→两套 Zygote restart callbacks 和 Android 17 stock BPF loader；没有发现 4.19、critical、PID 1 fatal 或 Recovery workaround。C30 已有的 callback 删除及 BPF 绕过不应被 Milo 文件覆盖。
+- 来源：Milo 是较新的 generic missi Android 17 system（CP2A.260605.016，增量 2026-09-23），product 标识 thyme/4.0.0.44。与 donor/K40 2026-09-02 system 属同系列基线，但不能据 metadata 证明直接供体关系。Framework 文件有差异但没有定位到与当前 fatal 相关的具体修复行为。
+- 决策：没有形成值得移植的 C31 项；维持 C30 与下一步 PID 1 fatal 根因分析。报告/清单归档于 reports/third_party_milo_c30_startup_diff_20260930/。
+- 设备：无查询、刷写、启动、擦除、set_active 或恢复；C30 与槽位状态本轮未改变。

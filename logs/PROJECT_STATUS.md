@@ -1,6 +1,6 @@
 # THYME-OS4 项目当前状态
 
-更新时间：2026-09-30 15:30 HKT
+更新时间：2026-09-30 16:40 HKT
 
 ## 项目目标与阶段
 将 Xiaomi 15（dada）HyperOS 4 / Android 17 移植到 Xiaomi 10S（thyme）。当前主线是依据 C30 真实启动证据定位 PID 1 panic 的上游触发条件；第三方 Milo 包已完成离线评估，不作为当前 Candidate。
@@ -22,6 +22,12 @@
 - 用户转述作者承认此前分区映射有误，因为忽略 10S 的 A/B 分区。未收到修订包/准确映射。项目本地 10S 官方 fastboot 脚本也使用 boot_ab/vendor_boot_ab 等目标名，因此具体错项尚不能从这句话独立确定；当前包仍因写入范围、Recovery 来源、LP/AVB 不一致而不适合作为实机 Candidate。
 - External Candidate：不通过。本轮未生成 staging/Dry-Run，第三方 exe/bat/apk 均未运行，未向手机发送命令。
 - 报告与清单：work/reports/third_party_milo_hyperos4_audit_20260930/THIRD_PARTY_PORT_STRATEGY.md 及同目录 CSV/diff。
+
+### Milo system 与 C30 四方启动链定点比较（2026-09-30）
+- Milo、C30 实际 system、Xiaomi 15 donor、K40 Android 17 system 的定点比较未发现可解释 C30 PID 1/Zygote 启动故障的 Milo 专属补丁；未构建 C31、未操作设备。
+- Milo 的 Zygote rc、ART/runtime APEX、classpath、linker config、VINTF 文件与其他三方指定文件逐字节相同。其 netd callbacks 和 stock Android 17 netbpfload 仍存在；C30 的两项差异是已有工程修复，Milo 不提供替代方案。
+- Milo `services.jar`、`framework-res.apk`、`libandroid_runtime.so` 有版本字节差异，尚无证据映射到当前 PID 1 fatal。C30 `surfaceflinger.rc` 的 ANGLE 属性段是旧实验遗留，不是 Milo 修复。
+- 最新报告与文本清单见 `reports/third_party_milo_c30_startup_diff_20260930/`。未上传 ROM/镜像/第三方程序。
 
 ## 安全、磁盘与公开仓库
 - Bootloader 保持解锁；禁止回锁及擅自修改 persist 硬件分区、modemst、EFS/NV、射频校准或设备身份资料。

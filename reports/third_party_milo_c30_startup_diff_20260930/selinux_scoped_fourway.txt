@@ -1,0 +1,42 @@
+Milo: bytes=3301542 lines=85980 scoped_rules=2697 sha256=96320f4ed4f982adb0e69cf3e61a92d2677f8fc357123f2f2e3d43daa9aaff45
+C30: bytes=3303714 lines=86012 scoped_rules=2727 sha256=fb4e807318d797aaceae777b902e54da48c66a676ab93ea570d563fac9fb8af8
+Xiaomi15: bytes=3301280 lines=85970 scoped_rules=2697 sha256=795b0e01d1b51f0386a26314a25931db37cebf0cd62195b3cb259b355d22eee2
+K40: bytes=3301255 lines=85966 scoped_rules=2699 sha256=1ce1e7d3e1ea83f946e4cb3047ebc6bbe0a96041204b2b7895e7e97c5f586ff6
+
+[Milo only vs C30: 0; C30 only vs Milo: 30]
+B (allow c30_diag boot_status_prop (file (read getattr map open)))
+B (allow c30_diag c25_diag_data_file (dir (search open read write add_name getattr)))
+B (allow c30_diag c25_diag_data_file (file (create open read write append getattr setattr)))
+B (allow c30_diag c30_diag_exec (file (read getattr map execute open entrypoint)))
+B (allow c30_diag init_service_status_prop (file (read getattr map open)))
+B (allow c30_diag logcat_exec (file (read getattr map execute open execute_no_trans)))
+B (allow c30_diag logd (unix_stream_socket (connectto)))
+B (allow c30_diag logd_socket (sock_file (write)))
+B (allow c30_diag metadata_file (dir (search)))
+B (allow c30_diag powerctl_prop (file (read getattr map open)))
+B (allow c30_diag proc_random (file (read getattr open)))
+B (allow c30_diag self (process (fork sigchld signal sigkill)))
+B (allow init c25_diag_data_file (dir (create getattr open read search write add_name)))
+B (allow init c25_diag_data_file (file (create open write getattr setattr)))
+B (allow init c30_diag (process (transition siginh rlimitinh)))
+B (allow init c30_diag_exec (file (read getattr map execute open)))
+B (allow init metadata_file (dir (add_name search write)))
+B (allow shell boot_status_prop (file (read getattr map open)))
+B (allow shell bootanim_system_prop (file (read getattr map open)))
+B (allow shell c25_diag_data_file (dir (getattr open read search write add_name)))
+B (allow shell c25_diag_data_file (file (create open read write append getattr setattr)))
+B (allow shell init_service_status_prop (file (read getattr map open)))
+B (allow shell surfaceflinger (binder (call transfer)))
+B (allow shell system_server (binder (call transfer)))
+B (allow system_server shell (binder (transfer)))
+B (typetransition c30_diag c25_diag_data_file file c25_diag_data_file)
+B (typetransition init c25_diag_data_file file c25_diag_data_file)
+B (typetransition init c30_diag_exec process c30_diag)
+B (typetransition init metadata_file dir c25_diag_data_file)
+B (typetransition shell c25_diag_data_file file c25_diag_data_file)
+
+[Milo only vs Xiaomi15: 0; Xiaomi15 only vs Milo: 0]
+
+[Milo only vs K40: 0; K40 only vs Milo: 2]
+B (allow shell system_prop (file (read getattr map open)))
+B (allow shell system_prop (property_service (set)))
