@@ -14189,3 +14189,13 @@
 - 临时空间：删除三个本轮生成、可重建且不再需要的文件，分别为 Milo unsparse super 9,126,805,504 B、Milo system_a 提取 978,804,736 B、K40 临时 services.jar 40,160,958 B，合计 10,145,771,198 B（约 9.45 GiB）。原始 Milo super 和 Milo/K40 选定 system 缓存保留；Docker 未接触。
 - 验证：三个精确删除目标不存在，保留源缓存仍存在；C/D/E 当时约 90.48/198.22/194.63 GiB。结论为静态离线证据，不是实机验证。
 - 待处理：定点核实 Zygote vendor-property AVC 的具体键/策略与 PID1 sysrq panic 前的 init fatal；当前不构建 C31。
+
+## 2026-10-01 00:25 HKT｜C30 Zygote vendor-property AVC 与最新 Milo policy 定点闭环
+
+- 状态：仅主机侧分析；未修改 Candidate/业务代码，未查询或操作手机；未运行第三方 BAT/EXE/APK，未启动 C30、未构建 C31。
+- 结论：七条 C30 Zygote read AVC 涉及五种 target type，audit 未记录 property key/value/PID。C30 DEX 扫描找到 82 个字面量候选但不能与 AVC 建立一一关系。最近的先行 AVC 与 PID 1051 main SIGABRT 相差约 143 ms；后续重复 abort，约 uptime 32.922 秒 PID 1 触发 sysrq panic。时间相关显著，因果仍未闭环。
+- K40/Milo/donor：K40 vendor CIL 对四种被拒非指纹 type 有明确 Zygote read；最新 Milo 4.0.11.0 vendor_a 对应 contexts 与 C30 同类，定点 CIL 未找到这些 grants；Xiaomi 15 donor 只确认 vendor_fp_prop 规则。没有足够证据构建 C31，不扩大 SELinux。
+- 涉及文件：reports/c30_zygote_vendor_property_avc_20260930/C30_ZYGOTE_VENDOR_PROPERTY_AVC_CLOSURE.md、C30_PROPERTY_DEX_CANDIDATES.csv。
+- 验证：本次两个公开文本文件只含审计结论、属性候选及文件哈希；未包括 ROM、分区镜像、raw metadata/misc、第三方 APK/EXE/BAT。该分析不是实机验证。
+- 待处理：如继续该方向，需在受控启动中直接留存 property key 与 PID/调用点，或取得可用 SIGABRT tombstone/backtrace。
+- 替代：更新先前未对齐 AVC/SIGABRT 的摘要；当前判断为强时间相关但因果未知。
