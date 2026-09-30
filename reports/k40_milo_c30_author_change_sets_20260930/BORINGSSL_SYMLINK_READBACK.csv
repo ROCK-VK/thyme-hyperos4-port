@@ -1,0 +1,9 @@
+source,path,entry_type,entry_size_bytes,symlink_target,target_sha256,method
+Xiaomi15 donor,/system/etc/init/hw/init.boringssl.no_zygote.rc,symlink,29,init.boringssl.zygote64_32.rc,02F224884BA6120068A2D9DB54AF7BA919354D6503540756FFAE646481E05377,dump.erofs --cat
+K40,/system/etc/init/hw/init.boringssl.no_zygote.rc,symlink,29,init.boringssl.zygote64_32.rc,02F224884BA6120068A2D9DB54AF7BA919354D6503540756FFAE646481E05377,dump.erofs --cat
+Milo,/system/etc/init/hw/init.boringssl.no_zygote.rc,symlink,29,init.boringssl.zygote64_32.rc,02F224884BA6120068A2D9DB54AF7BA919354D6503540756FFAE646481E05377,dump.erofs --cat
+C30,/system/etc/init/hw/init.boringssl.no_zygote.rc,symlink,29,init.boringssl.zygote64_32.rc,02F224884BA6120068A2D9DB54AF7BA919354D6503540756FFAE646481E05377,readlink
+Xiaomi15 donor,/system/etc/init/hw/init.boringssl.zygote32.rc,symlink,29,init.boringssl.zygote64_32.rc,02F224884BA6120068A2D9DB54AF7BA919354D6503540756FFAE646481E05377,dump.erofs --cat
+K40,/system/etc/init/hw/init.boringssl.zygote32.rc,symlink,29,init.boringssl.zygote64_32.rc,02F224884BA6120068A2D9DB54AF7BA919354D6503540756FFAE646481E05377,dump.erofs --cat
+Milo,/system/etc/init/hw/init.boringssl.zygote32.rc,symlink,29,init.boringssl.zygote64_32.rc,02F224884BA6120068A2D9DB54AF7BA919354D6503540756FFAE646481E05377,dump.erofs --cat
+C30,/system/etc/init/hw/init.boringssl.zygote32.rc,symlink,29,init.boringssl.zygote64_32.rc,02F224884BA6120068A2D9DB54AF7BA919354D6503540756FFAE646481E05377,readlink

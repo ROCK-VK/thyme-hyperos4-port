@@ -16,3 +16,5 @@ Raw `misc`/BCB, partition backups, `persist`, radio/NV/EFS data, user data, comp
 
 - reports/third_party_milo_hyperos4_audit_20260930/ contains the offline Milo package audit, file/image manifests, static Windows Fastboot and Recovery write plans, and the netd rc diff. Original executables, APK, firmware and images are excluded.
 - `third_party_milo_c30_startup_diff_20260930/` contains a scoped four-way startup-tree comparison (Milo, C30, Xiaomi 15 donor, K40), small file/hash manifests, and the limited SELinux rule comparison. No ROM binaries are included; the report found no Milo-only fix ready to port into C31.
+
+- `k40_milo_c30_author_change_sets_20260930/` records the K40/Milo/C30 blocker cross-check, candidate matrix, and direct EROFS readback of the BoringSSL init symlinks. It documents a C30 Zygote vendor-property AVC clue without asserting causality; no C31 patch was selected. No ROM, executable, APK, or raw partition dump is included.

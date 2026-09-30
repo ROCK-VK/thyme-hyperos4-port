@@ -1,6 +1,6 @@
 # THYME-OS4 项目当前状态
 
-更新时间：2026-09-30 16:40 HKT
+更新时间：2026-09-30 22:03 HKT
 
 ## 项目目标与阶段
 将 Xiaomi 15（dada）HyperOS 4 / Android 17 移植到 Xiaomi 10S（thyme）。当前主线是依据 C30 真实启动证据定位 PID 1 panic 的上游触发条件；第三方 Milo 包已完成离线评估，不作为当前 Candidate。
@@ -31,7 +31,7 @@
 
 ## 安全、磁盘与公开仓库
 - Bootloader 保持解锁；禁止回锁及擅自修改 persist 硬件分区、modemst、EFS/NV、射频校准或设备身份资料。
-- 最近记录的 C/D/E 空间均高于 50 GiB；Docker 永远排除。此次为定点离线检查，无清理。
+- 2026-09-30 22:02 HKT 实测 C/D/E 空间约 90.48/198.22/194.63 GiB。本轮删除三项本次生成且可重建的临时文件，合计 10,145,771,198 B（约 9.45 GiB），保留原始 Milo super 与所需 system 缓存；Docker 未触及。设备本轮未查询，最近记录的槽位状态不是实时读数。
 - 原始 ROM、镜像、设备 raw metadata/misc 及未脱敏硬件身份资料不得公开。第三方包仅公开审计文档、CSV 清单与小型文本差异，不公开其 exe/apk/镜像。
 
 ## 下一步
@@ -42,3 +42,8 @@
 ## 最新公开同步
 - 第三方 Milo 离线审计材料已推送至公开仓库 main；审计首发提交 9e7ff9dc3cb7b1648a849de0290f38080692cba0。匿名 raw 报告、manifest、PROJECT_STATUS 与 reports 索引均返回 HTTP 200。
 - 公开目录 reports/third_party_milo_hyperos4_audit_20260930/ 仅含报告、CSV 和文本 diff；未包含第三方 EXE/APK/ROM 镜像或设备 raw 分区副本。
+
+### K40 / Milo 与 C30 阻塞交叉核验（2026-09-30）
+- K40、Milo、Xiaomi 15 donor、C30 的定点比较未发现可解释已知 C30 阻塞的共同 init/Zygote/netd/BPF/critical/VINTF/linker/plat SELinux 修复。唯一 K40+Milo 共同但 C30 未采用的状态差异是 Tango/pretrans 七项属性未启用；consumer 和启动因果未确认，不进入 C31。
+- C30 console 在约 15.86–16.18 秒记录 Zygote 域读取五类 vendor property context 时的七条 read AVC；与 Zygote 退出及 32.922 秒 PID1 sysrq panic 的因果未证明。K40 完整 vendor policy 未缓存，Milo 本轮只检查 system_a；不扩大 SELinux 权限。
+- 决策：C31 候选为 0 项。下一步定点查明 property key/context、可用 vendor policy 与 PID1 panic 前的 init fatal 条件。报告在 `reports/k40_milo_c30_author_change_sets_20260930/`。

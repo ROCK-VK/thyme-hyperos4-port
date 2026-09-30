@@ -14181,3 +14181,11 @@
 - 来源：Milo 是较新的 generic missi Android 17 system（CP2A.260605.016，增量 2026-09-23），product 标识 thyme/4.0.0.44。与 donor/K40 2026-09-02 system 属同系列基线，但不能据 metadata 证明直接供体关系。Framework 文件有差异但没有定位到与当前 fatal 相关的具体修复行为。
 - 决策：没有形成值得移植的 C31 项；维持 C30 与下一步 PID 1 fatal 根因分析。报告/清单归档于 reports/third_party_milo_c30_startup_diff_20260930/。
 - 设备：无查询、刷写、启动、擦除、set_active 或恢复；C30 与槽位状态本轮未改变。
+
+## 2026-09-30 22:03 HKT｜K40/Milo 改动集合与 C30 阻塞点交叉核验
+
+- 状态：仅主机离线分析；未修改 Candidate，未查询或操作设备；未运行第三方 EXE/BAT/APK，未启动 C30，未构建 C31。
+- 结论：K40、Milo、Xiaomi 15 donor、C30 定点对照没有发现共同且映射到当前已知阻塞的 init/Zygote/netd/BPF/critical/VINTF/linker/plat SELinux 修复。唯一共同但 C30 未采用的配置状态是 Tango/pretrans 七项属性在 K40 未设置、Milo 注释而 C30 启用；consumer/启动因果未知，不移植。C30 console 有 Zygote 域在约 15.86–16.18 秒读取五类 vendor property context 的七条 read AVC；与 Zygote 退出和 PID1 panic 的因果未证实。K40 vendor policy 完整缓存缺失，Milo 本轮仅检查 system_a。
+- 临时空间：删除三个本轮生成、可重建且不再需要的文件，分别为 Milo unsparse super 9,126,805,504 B、Milo system_a 提取 978,804,736 B、K40 临时 services.jar 40,160,958 B，合计 10,145,771,198 B（约 9.45 GiB）。原始 Milo super 和 Milo/K40 选定 system 缓存保留；Docker 未接触。
+- 验证：三个精确删除目标不存在，保留源缓存仍存在；C/D/E 当时约 90.48/198.22/194.63 GiB。结论为静态离线证据，不是实机验证。
+- 待处理：定点核实 Zygote vendor-property AVC 的具体键/策略与 PID1 sysrq panic 前的 init fatal；当前不构建 C31。
