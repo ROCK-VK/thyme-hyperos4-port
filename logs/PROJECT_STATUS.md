@@ -2,28 +2,27 @@
 
 更新时间：2026-09-30
 
-## 项目目标与当前阶段
-将 Xiaomi 15（dada）的 HyperOS 4 / Android 17 移植到 Xiaomi Mi 10S（thyme）。当前阶段是用可靠诊断留证确认 Zygote、netd 与 system_server 的启动顺序。
+## 项目目标
+将 Xiaomi 15（dada）的 HyperOS 4 / Android 17 移植至 Xiaomi Mi 10S（thyme）。当前首要目标是查明 C30 的 PID 1 fatal 条件和可靠取得 Zygote/system_server 有序证据。
 
-## Candidate 与设备状态
-- C30 已将 `super` 与 `vbmeta_system_a` 刷入 A 槽；其他引导分区未改。刷写后仍是 Bootloader Fastboot，尚未启动 C30。
-- 刷后只读状态：product=thyme，A 槽，unlocked=yes，is-userspace=no；A `unbootable=no/successful=no/retry=4`，B `no/no/7`。刷写前后完全一致。
-- 本轮没有 reboot、set_active、数据擦除、Standalone 启动或其他分区操作。等待用户单独授权首次启动。
+## 当前 Candidate 与设备
+- C30 的 super、vbmeta_system_a 已刷入 A 槽并正式启动一次。用户全程报告看到静止小米第一屏；没有观察到 HyperOS 动画、设置向导或桌面。
+- C30 pstore 在启动约 32.922 秒记录 PID 1 init 经 write_sysrq_trigger 主动触发 kernel panic。触发 init fatal 的上游原因尚未确定。
+- pmsg 证明 /data F2FS 挂载、fscrypt 和 keystore2 推进；重复 netd SIGABRT 确实存在，但与 Zygote/init panic 的因果未证明。
+- C30 helper 只留下第一份 0-byte canary；ordered event 和 persistent logcat 没有结果。空文件不能区分 write 失败、panic 前未持久化或 helper 提前结束。
+- A 槽启动前 retry=4；用户回到 Fastboot后、Standalone 前最近读数 retry=3，unbootable=no/successful=no。随后 RAM boot 进入 UMS。最近主机识别 THYME_DIAG 诊断盘，Fastboot 无设备；当前不是已确认 Bootloader Fastboot。
+- 未刷写新 Candidate、未第二次启动 C30、未清除 userdata/metadata、未写 misc/BCB、未恢复 PixelOS。
 
-## C29 写入审计结论
-- C29 events/status 文件 inode 已创建但恢复后为 0 bytes；实际目录和文件 SELinux type 为 `c25_diag_data_file`。merged platform policy 有 shell→该 type transition 及必要的 write/append 权限，neverallow 检查通过。
-- C26 同目录/同 type 曾有非空输出。当前证据不能区分 C29 首次 write 失败、fdatasync 未持久化或 helper 在首条 payload 前结束；没有依据扩大 shell 权限。
-- inode 明细见 [`C29_WRITE_ROOT_CAUSE_AND_C30_DECISION.md`](C29_WRITE_ROOT_CAUSE_AND_C30_DECISION.md)。
+## 证据和报告
+- [C30 首次启动与取证报告](../reports/C30_FIRST_BOOT_AND_PSTORE_REPORT.md)
+- [C30 首次启动主机及 Standalone 原始证据](../evidence/candidate30/first-boot-20260930/run_20260930_115223/)
+- 本地 metadata.raw 与 misc.raw 均只读导出，完整原件保存在本地且未公开。
 
-## C30 诊断版本
-- C30 使用 `c30_diag` 专用域，先运行 write/fdatasync/append 三项 canary；仅全部成功后才启动 ordered events 与最长 60 秒、无轮转 logcat。init 另写生命周期 markers。
-- neverallow、EROFS readback、fsck、AVB/vbmeta_system 与 LP 检查通过；C30 runtime canary/logger、服务顺序和 system_server 仍未实机验证。
-- `super`：7,703,591,896 bytes，SHA-256 `071A86171450B5832E2951E63145D0B5AB55AB622BDDEFB249781B819B1CC83C`。
-- `vbmeta_system_a`：131,072 bytes，SHA-256 `D116F268C015382D5B7F0162959563530D1CFAFC368ED7C1D5DF0514743E5C75`。
-- 详细门禁及刷写结果见 [`C30_FINAL_STATIC_GATE_AND_FLASH_REPORT.md`](C30_FINAL_STATIC_GATE_AND_FLASH_REPORT.md)。受限脚本位于 `tools/flash_candidate30_diag_write_canary.ps1`，带 `-Execute` 才写入且限定两分区。
-
-## 首次故障取证
-Unified First-Response Standalone run2 已主机侧构建、静态检查，尚未 RAM boot。故障后的首次 Standalone 应优先保存 pstore，再 raw-read metadata/misc，最后完整导出 THYME_DIAG 并核验。
+## 历史有效修复
+C9 Property Contexts、C11 system_ext EROFS 元数据、C14 BPF loader 兼容、C17 graphics allocator ion_device open/read 权限均有实机阶段性证据；不能将主机静态验证写成最终开机成功。C27/C28/C29/C30 的 PID 1 与 Zygote 首因仍以各自最新 Candidate 报告为准。
 
 ## 下一步
-等待用户明确授权首次启动 C30。启动前启动观察器并确认 ARMED；C30 故障后第一次 RAM boot 使用 Unified First-Response Standalone。C/D/E 低于 50 GiB 才暂停新建构/大型提取；Docker 始终排除。
+设备先退出 THYME_DIAG UMS，再只读确认 Fastboot、product、槽位与 retry。离线定点追查 init 在 sysrq panic 前的 fatal 条件，同时修复 canary 首次持久写留证。当前不启动/重刷 C30、不构建 C31，直到获得足以解释或改进的具体证据。新 Candidate 正式启动前仍需用户现场确认。
+
+## 安全和空间边界
+不回锁 Bootloader；未经授权不修改 persist 硬件分区、modemst、EFS/NV、射频校准或设备身份分区。最近 C/D/E Free Space 分别为 92.73/198.09/231.49 GiB；没有触发清理，Docker 永远排除。

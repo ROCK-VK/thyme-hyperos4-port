@@ -1,0 +1,2667 @@
+01-22 19:55:58.048  712  712 :  ?
+Multiple same specifications for vendor.qti.gnss.ILocAidlGnss/default.01-22 19:55:58.048  712  712 :  ?
+Multiple same specifications for android.media.audio.IHalAdapterVendorExtension/default.01-22 19:55:58.048  712  712 :  ?
+Multiple same specifications for android.media.audio.IHalAdapterVendorExtension/default.01-22 19:55:58.050  712  712 :  ?
+Multiple same specifications for android.media.audio.IHalAdapterVendorExtension/default.01-22 19:55:58.053  712  712 :  ?
+SELinux: Loaded service context from:01-22 19:55:58.053  712  712 :  ?
+		/system/etc/selinux/plat_service_contexts01-22 19:55:58.053  712  712 :  ?
+		/system_ext/etc/selinux/system_ext_service_contexts01-22 19:55:58.053  712  712 :  ?
+		/product/etc/selinux/product_service_contexts01-22 19:55:58.053  712  712 :  ?
+		/vendor/etc/selinux/vendor_service_contexts01-22 19:55:58.053  712  712 :  ?
+		/odm/etc/selinux/odm_service_contexts01-22 19:55:58.183  732  746 :
+QISL
+QSEE Interrupt Service Listener Thread is started
+01-22 19:55:58.184  732  746 :
+QISL
+QSEE Interrupt Service Listener was activated successfully
+01-22 19:55:58.185  732  732 :
+Call QSEECom_register_listener()
+01-22 19:55:58.186  732  732 :
+Registered listener sucessfully!
+01-22 19:55:58.186  732  732 :
+pipe read-fd [32] write-fd [33]
+
+01-22 19:55:58.186  732  732 :
+Create thread
+01-22 19:55:58.186  732  732 :
+Thread created sucessfully.
+01-22 19:55:58.187  732  747 :
+spl_dispatch() started
+01-22 19:55:58.187  732  747 :
+==== Wait For Request ======
+01-22 19:55:58.208  734  734 :
+vold
+Vold 3.0 (the awakening) firing up
+01-22 19:55:58.209  734  734 :
+vold
+Detected support for: exfat ext4 f2fs vfat
+01-22 19:55:58.217  734  734 :
+vold
+[libfstab] Using Android DT directory /proc/device-tree/firmware/android/
+01-22 19:55:58.217  734  734 :
+vold
+[libfstab] ReadDefaultFstab(): target default fstab path=/vendor/etc/fstab.qcom
+01-22 19:55:58.218  734  734 :
+vold
+[libfstab] InjectMiProductMountEntries: injecting 2 entries (mi_product_mounted=0)
+01-22 19:55:58.218  734  734 :
+vold
+[libfstab] ModifyOverlayLowerdirsForMiProduct: /mnt/vendor/mi_product not mounted, skipping
+01-22 19:55:58.219  734  734 :
+vold
+DM_DEV_STATUS failed for mi_product_a: No such device or address
+01-22 19:55:58.219  734  734 :
+vold
+DM_DEV_STATUS failed for mi_product_a: No such device or address
+01-22 19:55:58.221  734  734 :
+vold
+VoldNativeService::start() completed OK
+01-22 19:55:58.237  734  734 :
+vold
+VendorVoldNativeService::try_start() completed OK
+01-22 19:56:03.430  712  712 :  ?
+avc:  denied  { find } for pid=765 uid=0 name=vendor.xiaomi.hardware.misys.common.IMiSysImpl/default scontext=u:r:hypsys_ssi_default:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=001-22 19:56:03.513  734  734 :
+Checkpoint
+cp_needsCheckpoint called
+01-22 19:56:03.515  734  734 :
+vold
+Using AIDL version of IBootControl
+01-22 19:56:03.522  778  778 :
+keystore2
+system/security/keystore2/src/keystore2_main.rs:61 - Keystore2 is starting.
+
+01-22 19:56:03.522  778  778 :
+keystore2
+system/security/keystore2/src/keystore2_main.rs:67 - Setting up sqlite logging for keystore2
+
+01-22 19:56:03.528  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:277 - start monitoring 'apexd.status' property
+
+01-22 19:56:03.529  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:282 - property 'apexd.status' is now 'Err(SystemPropertyAbsent)'
+
+01-22 19:56:03.529  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:287 - await a change to 'apexd.status'...
+
+01-22 19:56:03.529  778  788 :
+keystore2
+system/security/keystore2/src/globals.rs:475 - monitoring for sys.boot_completed=1
+
+01-22 19:56:03.529  778  778 :
+keystore2
+system/security/keystore2/src/keystore2_main.rs:105 - Starting thread pool now.
+
+01-22 19:56:03.532  778  778 :
+keystore2
+system/security/keystore2/src/globals.rs:307 - Add emulation wrapper around Keymaster device for security level: r#TRUSTED_ENVIRONMENT
+
+01-22 19:56:03.535  778  778 :
+keystore2
+system/security/keystore2/src/enforcements.rs:693 - Setting lock state task
+
+01-22 19:56:03.536  778  790 :
+keystore2
+system/security/keystore2/src/shared_secret_negotiation.rs:49 - Shared secret negotiation concluded successfully.
+
+01-22 19:56:03.536  778  778 :
+keystore2
+system/security/keystore2/src/keystore2_main.rs:161 - Successfully registered Keystore 2.0 service.
+
+01-22 19:56:03.536  778  778 :
+keystore2
+system/security/keystore2/src/keystore2_main.rs:163 - Joining thread pool now.
+
+01-22 19:56:03.536  778  790 :
+keystore2
+system/security/keystore2/src/shared_secret_negotiation.rs:287 - No StrongBox Keymint available, so no RoT transfer
+
+01-22 19:56:03.538  734  734 :
+vold
+fscrypt_mount_metadata_encrypted: /data encrypt: 0 format: 0 with null block device: /dev/block/bootdevice/by-name/userdata with zoned 0 length: 0
+01-22 19:56:03.539  734  734 :
+vold
+metadata_key_dir/key: /metadata/vold/metadata_encryption/key
+01-22 19:56:03.539  734  734 :
+vold
+Key exists, using: /metadata/vold/metadata_encryption/key
+01-22 19:56:03.543  778  778 :  ?
+SELinux: Loaded keystore2 context from:01-22 19:56:03.543  778  778 :  ?
+		/system/etc/selinux/plat_keystore2_key_contexts01-22 19:56:03.543  778  778 :  ?
+		/system_ext/etc/selinux/system_ext_keystore2_key_contexts01-22 19:56:03.543  778  778 :  ?
+		/product/etc/selinux/product_keystore2_key_contexts01-22 19:56:03.543  778  778 :  ?
+		/vendor/etc/selinux/vendor_keystore2_key_contexts01-22 19:56:03.552  778  778 :
+keystore2
+system/security/keystore2/src/metrics_store.rs:725 - Unknown algorithm in log_operation_latency - skipping metrics
+
+01-22 19:56:03.554  778  778 :
+keystore2
+system/security/keystore2/src/metrics_store.rs:725 - Unknown algorithm in log_operation_latency - skipping metrics
+
+01-22 19:56:03.556  734  734 :
+vold
+mkdir backup dir failed
+01-22 19:56:03.560  734  734 :
+vold
+Mounting metadata-encrypted filesystem:/data
+01-22 19:56:03.560  734  734 :
+Checkpoint
+cp_needsCheckpoint called
+01-22 19:56:03.560  734  734 :
+vold
+[libfs_mgr] FSIO: /data read superblock start
+01-22 19:56:03.563  734  734 :
+vold
+[libfs_mgr] FSIO: /data read superblock end
+01-22 19:56:03.563  734  734 :
+vold
+[libfs_mgr] is_hybrid_enabled: files not exist: /metadata/hybrid_enable: No such file or directory
+01-22 19:56:03.563  734  734 :
+vold
+[libfs_mgr] Failed to open /sys/fs/f2fs/features/linear_lookup: No such file or directory
+01-22 19:56:03.563  734  734 :
+vold
+[libfs_mgr] Running /system/bin/fsck.f2fs -a -c 10000 --debug-cache /dev/block/mapper/userdata
+01-22 19:56:04.064  734  734 :
+vold
+[libfs_mgr] FSIO: /data fsck end
+01-22 19:56:04.066  734  734 :
+vold
+[libfs_mgr] fsck on /data took 502ms
+01-22 19:56:04.066  734  734 :
+vold
+[libfs_mgr] __mount (target=/data) begin
+01-22 19:56:04.066  734  734 :
+vold
+[libfs_mgr] is_hybrid_enabled: files not exist: /metadata/hybrid_enable: No such file or directory
+01-22 19:56:04.232  734  734 :
+vold
+[libfs_mgr] __mount(source=/dev/block/mapper/userdata,target=/data,type=f2fs)=0,during time: 166 ms: Success
+01-22 19:56:04.233  734  734 :
+vold
+[libfs_mgr] /data usage: total=242051166208, free=240585232384, available=240451014656
+01-22 19:56:04.233  734  734 :
+vold
+Mounted /data
+01-22 19:56:04.233  734  755 :
+vold
+handleDiskChanged Disk:252:47 changed
+01-22 19:56:04.277  734  795 :
+Checkpoint
+cp_prepareCheckpoint called
+01-22 19:56:04.312  734  795 :
+vold
+write_file_bootprof: Failed to open /proc/bootprof: No such file or directory
+01-22 19:56:04.312  734  795 :
+vold
+fscrypt_initialize_systemwide_keys
+01-22 19:56:04.312  734  795 :
+vold
+write_file_bootprof: Failed to open /proc/bootprof: No such file or directory
+01-22 19:56:04.312  734  795 :
+vold
+Creating new key in /data/unencrypted/key
+01-22 19:56:04.312  734  795 :
+vold
+Generating v0 wrapped storage key
+01-22 19:56:04.317  778  792 :
+keystore2
+system/security/keystore2/src/audit_log.rs:39 - Not logging audit event for key with domain r#BLOB
+
+01-22 19:56:04.319  734  795 :
+vold
+Generating "key storage" key
+01-22 19:56:04.327  778  778 :
+keystore2
+system/security/keystore2/src/audit_log.rs:39 - Not logging audit event for key with domain r#BLOB
+
+01-22 19:56:04.331  778  778 :
+keystore2
+system/security/keystore2/src/metrics_store.rs:725 - Unknown algorithm in log_operation_latency - skipping metrics
+
+01-22 19:56:04.333  778  778 :
+keystore2
+system/security/keystore2/src/metrics_store.rs:725 - Unknown algorithm in log_operation_latency - skipping metrics
+
+01-22 19:56:04.333  734  795 :
+vold
+Stored key /data/unencrypted/key
+01-22 19:56:04.333  734  795 :
+vold
+write_file_bootprof: Failed to open /proc/bootprof: No such file or directory
+01-22 19:56:04.333  734  795 :
+vold
+encrypted_key backup file not exists
+01-22 19:56:04.333  734  795 :
+vold
+start backup
+01-22 19:56:04.333  734  795 :
+vold
+write_file_bootprof: Failed to open /proc/bootprof: No such file or directory
+01-22 19:56:04.339  734  806 :
+vold
+mkdir dir_back dir failed/data/unencrypted/key_back
+01-22 19:56:04.339  734  806 :
+vold
+src: /data/unencrypted/key/encrypted_key dst: /data/unencrypted/key_back/encrypted_key
+01-22 19:56:04.339  734  806 :
+vold
+src: /data/unencrypted/key/keymaster_key_blob dst: /data/unencrypted/key_back/keymaster_key_blob
+01-22 19:56:04.339  734  806 :
+vold
+src: /data/unencrypted/key/secdiscardable dst: /data/unencrypted/key_back/secdiscardable
+01-22 19:56:04.340  734  806 :
+vold
+src: /data/unencrypted/key/stretching dst: /data/unencrypted/key_back/stretching
+01-22 19:56:04.340  734  806 :
+vold
+source dir not existsrc: /data/unencrypted/key/stretching
+01-22 19:56:04.340  734  806 :
+vold
+src: /data/unencrypted/key/version dst: /data/unencrypted/key_back/version
+01-22 19:56:04.340  734  795 :
+vold
+Installed fscrypt key with ref e7f06a3877287ce58e0d2d41f76f5ebd to /data
+01-22 19:56:04.340  734  795 :
+vold
+write_file_bootprof: Failed to open /proc/bootprof: No such file or directory
+01-22 19:56:04.341  734  795 :
+vold
+Wrote system DE key reference to:/data/unencrypted/ref
+01-22 19:56:04.341  734  795 :
+vold
+write_file_bootprof: Failed to open /proc/bootprof: No such file or directory
+01-22 19:56:04.341  734  795 :
+vold
+Generating v0 wrapped storage key
+01-22 19:56:04.344  778  792 :
+keystore2
+system/security/keystore2/src/audit_log.rs:39 - Not logging audit event for key with domain r#BLOB
+
+01-22 19:56:04.344  734  795 :
+vold
+write_file_bootprof: Failed to open /proc/bootprof: No such file or directory
+01-22 19:56:04.344  734  795 :
+vold
+write_file_bootprof: Failed to open /proc/bootprof: No such file or directory
+01-22 19:56:04.349  734  795 :
+vold
+Installed fscrypt key with ref 9e201174b93efde3471c206172c55f1d to /data
+01-22 19:56:04.349  734  795 :
+vold
+write_file_bootprof: Failed to open /proc/bootprof: No such file or directory
+01-22 19:56:04.349  734  795 :
+vold
+Wrote per boot key reference to:/data/unencrypted/per_boot_ref
+01-22 19:56:04.353  734  795 :
+vold
+Installed fscrypt key with ref 9e201174b93efde3471c206172c55f1d
+01-22 19:56:04.353  734  795 :
+vold
+Install per-boot key, ref=9e201174b93efde3471c206172c55f1d, key_type=1, key_size=68: No such file or directory
+01-22 19:56:04.353  734  795 :
+vold
+kernel release=4.19.325-perf-g45b9b954f074, parsed version=4.19: No such file or directory
+01-22 19:56:04.353  734  795 :
+vold
+fscrypt-provisioning: RAW key: No such file or directory
+01-22 19:56:04.353  734  795 :
+vold
+Added fscrypt-provisioning key for 9e201174b93efde3471c206172c55f1d to session keyring
+01-22 19:56:04.353  734  795 :
+vold
+write_file_bootprof: Failed to open /proc/bootprof: No such file or directory
+01-22 19:56:04.395  734  795 :
+incfs
+Initial API level of the device: 30
+01-22 19:56:04.395  734  795 :
+incfs
+ro.incremental.enable: true
+01-22 19:56:04.396  734  795 :
+incfs
+isFsAvailable: true
+01-22 19:56:04.396  734  795 :
+incfs
+isFsAvailable: true
+01-22 19:56:04.396  734  795 :
+incfs
+IncFs_Features: v2
+01-22 19:56:04.396  778  792 :
+keystore2
+system/security/keystore2/src/maintenance.rs:619 - earlyBootEnded()
+
+01-22 19:56:04.397  778  792 :
+keystore2
+system/security/keystore2/src/maintenance.rs:235 - In early_boot_ended.
+
+01-22 19:56:04.403  778  792 :
+keystore2
+system/security/keystore2/src/database.rs:1206 - Setting synchronous=EXTRA
+
+01-22 19:56:04.405  778  816 :
+keystore2
+system/security/keystore2/src/database.rs:1206 - Setting synchronous=EXTRA
+
+01-22 19:56:04.410  778  792 :
+keystore2
+system/security/keystore2/src/globals.rs:82 - Touching Keystore 2.0 database for this first time since boot.
+
+01-22 19:56:04.410  778  792 :
+keystore2
+system/security/keystore2/src/globals.rs:84 - Calling cleanup_leftovers(100000)
+
+01-22 19:56:04.411  778  792 :
+keystore2
+system/security/keystore2/src/boot_level_keys.rs:62 - ro.keystore.boot_level_key.strategy not set, inferring from installed KM instances
+
+01-22 19:56:04.412  778  792 :
+keystore2
+system/security/keystore2/src/boot_level_keys.rs:120 - In get_level_zero_key: security_level=r#TRUSTED_ENVIRONMENT, deny_later_strategy=MaxUsesPerBoot
+
+01-22 19:56:04.422  778  792 :
+keystore2
+system/security/keystore2/src/super_key.rs:318 - Starting boot level watcher.
+
+01-22 19:56:04.422  778  792 :
+keystore2
+system/security/keystore2/src/maintenance.rs:214 - Call to earlyBootEnded succeeded for security level TRUSTED_ENVIRONMENT
+
+01-22 19:56:04.422  778  817 :
+keystore2
+system/security/keystore2/src/super_key.rs:351 - Read keystore.boot_level value BootLevel(30)
+
+01-22 19:56:04.423  778  817 :
+keystore2
+system/security/keystore2/src/super_key.rs:351 - Read keystore.boot_level value BootLevel(30)
+
+01-22 19:56:04.423  778  792 :
+keystore2
+system/security/keystore2/src/maintenance.rs:221 - Call to earlyBootEnded failed for StrongBox as it is not available
+
+01-22 19:56:04.427  778  816 :
+keystore2
+system/security/keystore2/src/keystore2_main.rs:69 - [SQLITE3] 17: statement aborts at 28: database schema has changed; [CREATE TABLE IF NOT EXISTS persistent.version (
+                id INTEGER PRIMARY KEY,
+                version INTEGER);]
+
+01-22 19:56:04.428  778  816 :
+keystore2
+system/security/keystore2/src/gc.rs:148 - skip GC as boot not completed
+
+01-22 19:56:04.438  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:289 - await a change to 'apexd.status'...notified
+
+01-22 19:56:04.438  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:282 - property 'apexd.status' is now 'Ok("")'
+
+01-22 19:56:04.438  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:287 - await a change to 'apexd.status'...
+
+01-22 19:56:04.450  734  795 :
+Checkpoint
+cp_needsCheckpoint called
+01-22 19:56:04.469  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:289 - await a change to 'apexd.status'...notified
+
+01-22 19:56:04.469  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:282 - property 'apexd.status' is now 'Ok("starting")'
+
+01-22 19:56:04.469  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:287 - await a change to 'apexd.status'...
+
+01-22 19:56:04.740  819  819 :  ?
+SELinux: Loaded file context from:01-22 19:56:04.740  819  819 :  ?
+		/system/etc/selinux/plat_file_contexts01-22 19:56:04.740  819  819 :  ?
+		/system_ext/etc/selinux/system_ext_file_contexts01-22 19:56:04.740  819  819 :  ?
+		/product/etc/selinux/product_file_contexts01-22 19:56:04.740  819  819 :  ?
+		/vendor/etc/selinux/vendor_file_contexts01-22 19:56:04.740  819  819 :  ?
+		/odm/etc/selinux/odm_file_contexts01-22 19:56:07.211  734  755 :
+vold
+handleDiskChanged Disk:7:32 changed
+01-22 19:56:07.215  734  755 :
+vold
+handleDiskChanged Disk:7:40 changed
+01-22 19:56:07.217  734  755 :
+vold
+handleDiskChanged Disk:7:48 changed
+01-22 19:56:07.223  734  755 :
+vold
+handleDiskChanged Disk:7:56 changed
+01-22 19:56:07.223  734  755 :
+vold
+handleDiskChanged Disk:7:64 changed
+01-22 19:56:07.224  734  755 :
+vold
+handleDiskChanged Disk:7:72 changed
+01-22 19:56:07.224  734  755 :
+vold
+handleDiskChanged Disk:7:80 changed
+01-22 19:56:07.224  734  755 :
+vold
+handleDiskChanged Disk:7:88 changed
+01-22 19:56:07.225  734  755 :
+vold
+handleDiskChanged Disk:7:96 changed
+01-22 19:56:07.225  734  755 :
+vold
+handleDiskChanged Disk:7:104 changed
+01-22 19:56:07.225  734  755 :
+vold
+handleDiskChanged Disk:7:112 changed
+01-22 19:56:07.226  734  755 :
+vold
+handleDiskChanged Disk:7:120 changed
+01-22 19:56:07.226  734  755 :
+vold
+handleDiskChanged Disk:7:128 changed
+01-22 19:56:07.226  734  755 :
+vold
+handleDiskChanged Disk:7:136 changed
+01-22 19:56:07.226  734  755 :
+vold
+handleDiskChanged Disk:7:144 changed
+01-22 19:56:07.227  734  755 :
+vold
+handleDiskChanged Disk:7:152 changed
+01-22 19:56:07.227  734  755 :
+vold
+handleDiskChanged Disk:7:160 changed
+01-22 19:56:07.227  734  755 :
+vold
+handleDiskChanged Disk:7:168 changed
+01-22 19:56:07.227  734  755 :
+vold
+handleDiskChanged Disk:7:176 changed
+01-22 19:56:07.228  734  755 :
+vold
+handleDiskChanged Disk:7:184 changed
+01-22 19:56:07.228  734  755 :
+vold
+handleDiskChanged Disk:7:192 changed
+01-22 19:56:07.228  734  755 :
+vold
+handleDiskChanged Disk:7:200 changed
+01-22 19:56:07.229  734  755 :
+vold
+handleDiskChanged Disk:7:208 changed
+01-22 19:56:07.229  734  755 :
+vold
+handleDiskChanged Disk:7:216 changed
+01-22 19:56:07.235  734  755 :
+vold
+handleDiskChanged Disk:7:224 changed
+01-22 19:56:07.242  734  755 :
+vold
+handleDiskChanged Disk:7:232 changed
+01-22 19:56:07.242  734  755 :
+vold
+handleDiskChanged Disk:7:240 changed
+01-22 19:56:07.242  734  755 :
+vold
+handleDiskChanged Disk:7:248 changed
+01-22 19:56:07.243  734  755 :
+vold
+handleDiskChanged Disk:7:256 changed
+01-22 19:56:07.243  734  755 :
+vold
+handleDiskChanged Disk:7:264 changed
+01-22 19:56:07.243  734  755 :
+vold
+handleDiskChanged Disk:7:272 changed
+01-22 19:56:07.243  734  755 :
+vold
+handleDiskChanged Disk:7:280 changed
+01-22 19:56:07.244  734  755 :
+vold
+handleDiskChanged Disk:7:288 changed
+01-22 19:56:07.245  734  755 :
+vold
+handleDiskChanged Disk:7:296 changed
+01-22 19:56:07.245  734  755 :
+vold
+handleDiskChanged Disk:7:304 changed
+01-22 19:56:07.245  734  755 :
+vold
+handleDiskChanged Disk:7:312 changed
+01-22 19:56:07.245  734  755 :
+vold
+handleDiskChanged Disk:7:320 changed
+01-22 19:56:07.246  734  755 :
+vold
+handleDiskChanged Disk:7:328 changed
+01-22 19:56:07.246  734  755 :
+vold
+handleDiskChanged Disk:7:336 changed
+01-22 19:56:07.246  734  755 :
+vold
+handleDiskChanged Disk:7:344 changed
+01-22 19:56:07.246  734  755 :
+vold
+handleDiskChanged Disk:7:352 changed
+01-22 19:56:07.252  734  755 :
+vold
+handleDiskChanged Disk:252:13 changed
+01-22 19:56:07.252  734  755 :
+vold
+handleDiskChanged Disk:252:13 changed
+01-22 19:56:07.255  734  755 :
+vold
+handleDiskChanged Disk:252:7 changed
+01-22 19:56:07.255  734  755 :
+vold
+handleDiskChanged Disk:252:7 changed
+01-22 19:56:07.288  734  755 :
+vold
+handleDiskChanged Disk:252:8 changed
+01-22 19:56:07.288  734  755 :
+vold
+handleDiskChanged Disk:252:15 changed
+01-22 19:56:07.288  734  755 :
+vold
+handleDiskChanged Disk:252:8 changed
+01-22 19:56:07.289  734  755 :
+vold
+handleDiskChanged Disk:252:15 changed
+01-22 19:56:07.291  734  755 :
+vold
+handleDiskChanged Disk:252:30 changed
+01-22 19:56:07.291  734  755 :
+vold
+handleDiskChanged Disk:252:30 changed
+01-22 19:56:07.294  734  755 :
+vold
+handleDiskChanged Disk:252:16 changed
+01-22 19:56:07.294  734  755 :
+vold
+handleDiskChanged Disk:252:16 changed
+01-22 19:56:07.295  734  755 :
+vold
+handleDiskChanged Disk:252:20 changed
+01-22 19:56:07.295  734  755 :
+vold
+handleDiskChanged Disk:252:20 changed
+01-22 19:56:07.295  734  755 :
+vold
+handleDiskChanged Disk:252:18 changed
+01-22 19:56:07.295  734  755 :
+vold
+handleDiskChanged Disk:252:18 changed
+01-22 19:56:07.298  734  755 :
+vold
+handleDiskChanged Disk:252:22 changed
+01-22 19:56:07.298  734  755 :
+vold
+handleDiskChanged Disk:252:22 changed
+01-22 19:56:07.299  734  755 :
+vold
+handleDiskChanged Disk:252:24 changed
+01-22 19:56:07.299  734  755 :
+vold
+handleDiskChanged Disk:252:24 changed
+01-22 19:56:07.299  734  755 :
+vold
+handleDiskChanged Disk:252:27 changed
+01-22 19:56:07.299  734  755 :
+vold
+handleDiskChanged Disk:252:27 changed
+01-22 19:56:07.300  734  755 :
+vold
+handleDiskChanged Disk:252:31 changed
+01-22 19:56:07.300  734  755 :
+vold
+handleDiskChanged Disk:252:31 changed
+01-22 19:56:07.300  734  755 :
+vold
+handleDiskChanged Disk:252:11 changed
+01-22 19:56:07.300  734  755 :
+vold
+handleDiskChanged Disk:252:11 changed
+01-22 19:56:07.300  734  755 :
+vold
+handleDiskChanged Disk:252:34 changed
+01-22 19:56:07.300  734  755 :
+vold
+handleDiskChanged Disk:252:34 changed
+01-22 19:56:07.300  734  755 :
+vold
+handleDiskChanged Disk:252:25 changed
+01-22 19:56:07.300  734  755 :
+vold
+handleDiskChanged Disk:252:25 changed
+01-22 19:56:07.300  734  755 :
+vold
+handleDiskChanged Disk:252:38 changed
+01-22 19:56:07.300  734  755 :
+vold
+handleDiskChanged Disk:252:38 changed
+01-22 19:56:07.300  734  755 :
+vold
+handleDiskChanged Disk:252:41 changed
+01-22 19:56:07.300  734  755 :
+vold
+handleDiskChanged Disk:252:41 changed
+01-22 19:56:07.300  734  755 :
+vold
+handleDiskChanged Disk:252:43 changed
+01-22 19:56:07.300  734  755 :
+vold
+handleDiskChanged Disk:252:43 changed
+01-22 19:56:07.300  734  755 :
+vold
+handleDiskChanged Disk:252:23 changed
+01-22 19:56:07.301  734  755 :
+vold
+handleDiskChanged Disk:252:23 changed
+01-22 19:56:07.301  734  755 :
+vold
+handleDiskChanged Disk:252:39 changed
+01-22 19:56:07.301  734  755 :
+vold
+handleDiskChanged Disk:252:39 changed
+01-22 19:56:07.301  734  755 :
+vold
+handleDiskChanged Disk:252:35 changed
+01-22 19:56:07.301  734  755 :
+vold
+handleDiskChanged Disk:252:36 changed
+01-22 19:56:07.301  734  755 :
+vold
+handleDiskChanged Disk:252:36 changed
+01-22 19:56:07.301  734  755 :
+vold
+handleDiskChanged Disk:252:35 changed
+01-22 19:56:07.301  734  755 :
+vold
+handleDiskChanged Disk:252:46 changed
+01-22 19:56:07.301  734  755 :
+vold
+handleDiskChanged Disk:252:46 changed
+01-22 19:56:07.302  734  755 :
+vold
+handleDiskChanged Disk:252:21 changed
+01-22 19:56:07.302  734  755 :
+vold
+handleDiskChanged Disk:252:21 changed
+01-22 19:56:07.302  734  755 :
+vold
+handleDiskChanged Disk:252:33 changed
+01-22 19:56:07.302  734  755 :
+vold
+handleDiskChanged Disk:252:33 changed
+01-22 19:56:07.305  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:289 - await a change to 'apexd.status'...notified
+
+01-22 19:56:07.305  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:282 - property 'apexd.status' is now 'Ok("activated")'
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.adbd version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.adservices version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.apex.cts.shim version 1
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.appsearch version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.art version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.art.compatible version 340090000
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.bt version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.compos version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.configinfrastructure version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.conscrypt version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.crashrecovery version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.devicelock version 1
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.extservices version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.hardware.drm.clearkey version 1
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.healthfitness version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.i18n version 1
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.ipsec version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.media version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.media.swcodec version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.mediaprovider version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.neuralnetworks version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.npumanager version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.ondevicepersonalization version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.os.statsd version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.permission version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.profiling version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.resolv version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.rkpd version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.runtime version 1
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.scheduling version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.sdkext version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.telephonycore version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.tethering version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.tzdata version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.uprobestats version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.uwb version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.virt version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.vndk.v34 version 1
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.webapp version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.android.wifi version 370399999
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:326 - apex modules += com.google.android.gmssystem version 13
+
+01-22 19:56:07.314  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:521 - set_module_info with 41 modules
+
+01-22 19:56:07.315  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:188 - skipping setAdditionalAttestationInfo for r#TRUSTED_ENVIRONMENT since its keymint version 40 is less than the minimum required version 400
+
+01-22 19:56:07.315  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:214 - Call to setAdditionalAttestationInfo succeeded for security level TRUSTED_ENVIRONMENT
+
+01-22 19:56:07.315  778  787 :
+keystore2
+system/security/keystore2/src/maintenance.rs:221 - Call to setAdditionalAttestationInfo failed for StrongBox as it is not available
+
+01-22 19:56:07.495  734  795 :
+vold
+write_file_bootprof: Failed to open /proc/bootprof: No such file or directory
+01-22 19:56:07.495  734  795 :
+vold
+fscrypt_init_user0
+01-22 19:56:07.495  734  795 :
+vold
+Preparing: /data/misc/vold/user_keys
+01-22 19:56:07.505  734  795 :
+vold
+Preparing: /data/misc/vold/user_keys/ce
+01-22 19:56:07.505  734  795 :
+vold
+Preparing: /data/misc/vold/user_keys/de
+01-22 19:56:07.506  734  795 :
+vold
+Generating v0 wrapped storage key
+01-22 19:56:07.513  778  792 :
+keystore2
+system/security/keystore2/src/audit_log.rs:39 - Not logging audit event for key with domain r#BLOB
+
+01-22 19:56:07.515  734  795 :
+vold
+Generating "key storage" key
+01-22 19:56:07.523  778  792 :
+keystore2
+system/security/keystore2/src/audit_log.rs:39 - Not logging audit event for key with domain r#BLOB
+
+01-22 19:56:07.525  778  792 :
+keystore2
+system/security/keystore2/src/metrics_store.rs:725 - Unknown algorithm in log_operation_latency - skipping metrics
+
+01-22 19:56:07.527  778  792 :
+keystore2
+system/security/keystore2/src/metrics_store.rs:725 - Unknown algorithm in log_operation_latency - skipping metrics
+
+01-22 19:56:07.528  734  795 :
+vold
+Stored key /data/misc/vold/user_keys/de/0
+01-22 19:56:07.533  734  795 :
+vold
+Installed fscrypt key with ref aea2be92cd04d11e0b0a295e6ac36432 to /data
+01-22 19:56:07.533  734  795 :
+vold
+Created DE key for user 0
+01-22 19:56:07.533  734  795 :
+vold
+Generating v0 wrapped storage key
+01-22 19:56:07.540  778  792 :
+keystore2
+system/security/keystore2/src/audit_log.rs:39 - Not logging audit event for key with domain r#BLOB
+
+01-22 19:56:07.540  734  795 :
+vold
+Preparing: /data/misc/vold/user_keys/ce/0
+01-22 19:56:07.545  734  795 :
+vold
+Installed fscrypt key with ref 40102e485c64207f83b907232b7b345a to /data
+01-22 19:56:07.545  734  795 :
+vold
+Created CE key for user 0
+01-22 19:56:07.548  778  792 :
+keystore2
+system/security/keystore2/src/metrics_store.rs:725 - Unknown algorithm in log_operation_latency - skipping metrics
+
+01-22 19:56:07.550  778  792 :
+keystore2
+system/security/keystore2/src/metrics_store.rs:725 - Unknown algorithm in log_operation_latency - skipping metrics
+
+01-22 19:56:07.551  734  795 :
+vold
+encrypted_key backup file not exists
+01-22 19:56:07.551  734  795 :
+vold
+start backup
+01-22 19:56:07.552  734  1016 :
+vold
+mkdir dir_back dir failed/data/misc/vold/user_keys/de/0_backup
+01-22 19:56:07.552  734  1016 :
+vold
+src: /data/misc/vold/user_keys/de/0/encrypted_key dst: /data/misc/vold/user_keys/de/0_backup/encrypted_key
+01-22 19:56:07.552  734  1016 :
+vold
+src: /data/misc/vold/user_keys/de/0/keymaster_key_blob dst: /data/misc/vold/user_keys/de/0_backup/keymaster_key_blob
+01-22 19:56:07.552  734  1016 :
+vold
+src: /data/misc/vold/user_keys/de/0/secdiscardable dst: /data/misc/vold/user_keys/de/0_backup/secdiscardable
+01-22 19:56:07.553  734  1016 :
+vold
+src: /data/misc/vold/user_keys/de/0/stretching dst: /data/misc/vold/user_keys/de/0_backup/stretching
+01-22 19:56:07.553  734  1016 :
+vold
+source dir not existsrc: /data/misc/vold/user_keys/de/0/stretching
+01-22 19:56:07.553  734  1016 :
+vold
+src: /data/misc/vold/user_keys/de/0/version dst: /data/misc/vold/user_keys/de/0_backup/version
+01-22 19:56:07.556  734  795 :
+vold
+Installed fscrypt key with ref aea2be92cd04d11e0b0a295e6ac36432 to /data
+01-22 19:56:07.556  734  795 :
+vold
+Installed de key for user 0
+01-22 19:56:07.557  734  795 :
+vold
+Preparing: /data/data.new
+01-22 19:56:07.558  734  795 :
+vold
+Encryption policy of /data/data.new set to 40102e485c64207f83b907232b7b345a v2 modes 1/4 flags 0xa
+01-22 19:56:07.558  734  795 :
+vold
+Preparing: /data/user/0
+01-22 19:56:07.563  734  795 :
+vold
+Preparing: /data/media/obb.new
+01-22 19:56:07.563  734  795 :
+vold
+Encryption policy of /data/media/obb.new set to e7f06a3877287ce58e0d2d41f76f5ebd v2 modes 1/4 flags 0xa
+01-22 19:56:07.564  734  795 :
+vold
+fscrypt_prepare_user_storage for volume null, user 0, flags 1
+01-22 19:56:07.564  734  795 :
+vold
+Preparing: /data/system/users/0
+01-22 19:56:07.564  734  795 :
+vold
+Preparing: /data/misc/profiles/cur/0
+01-22 19:56:07.565  734  795 :
+vold
+Preparing: /data/system_de/0.new
+01-22 19:56:07.565  734  795 :
+vold
+Encryption policy of /data/system_de/0.new set to aea2be92cd04d11e0b0a295e6ac36432 v2 modes 1/4 flags 0xa
+01-22 19:56:07.566  734  795 :
+vold
+Preparing: /data/vendor_de/0.new
+01-22 19:56:07.566  734  795 :
+vold
+Encryption policy of /data/vendor_de/0.new set to aea2be92cd04d11e0b0a295e6ac36432 v2 modes 1/4 flags 0xa
+01-22 19:56:07.566  734  795 :
+vold
+Preparing: /data/misc_de/0.new
+01-22 19:56:07.567  734  795 :
+vold
+Encryption policy of /data/misc_de/0.new set to aea2be92cd04d11e0b0a295e6ac36432 v2 modes 1/4 flags 0xa
+01-22 19:56:07.567  734  795 :
+vold
+Preparing: /data/user_de/0.new
+01-22 19:56:07.568  734  795 :
+vold
+Encryption policy of /data/user_de/0.new set to aea2be92cd04d11e0b0a295e6ac36432 v2 modes 1/4 flags 0xa
+01-22 19:56:07.568  734  795 :
+vold
+/system/bin/vold_prepare_subdirs
+01-22 19:56:07.568  734  795 :
+vold
+    prepare
+01-22 19:56:07.568  734  795 :
+vold
+
+01-22 19:56:07.568  734  795 :
+vold
+    0
+01-22 19:56:07.568  734  795 :
+vold
+    1
+01-22 19:56:07.629  734  795 :
+vold
+write_file_bootprof: Failed to open /proc/bootprof: No such file or directory
+01-22 19:56:07.894  1021  1021 :
+odsign
+Trying to retrieve existing HMAC key...
+01-22 19:56:07.894  1021  1021 :
+odsign
+Existing HMAC key not found or invalid, creating new key
+01-22 19:56:07.899  1021  1021 :
+odsign
+Trying to retrieve existing keystore key...
+01-22 19:56:07.900  1021  1021 :
+odsign
+Failed to find keystore key...
+01-22 19:56:07.900  1021  1021 :
+odsign
+Existing keystore key not found or invalid, creating new key
+01-22 19:56:08.123  1021  1021 :
+libbinder.BpBinder
+PerfMonitor binderTransact: time=223ms interface=android.system.keystore2.IKeystoreSecurityLevel code=2
+
+01-22 19:56:08.125  1021  1021 :
+odsign
+Initialized Keystore key.
+01-22 19:56:08.126  1021  1021 :
+odsign
+Key certificate not found: /data/misc/odsign/key.cert: No such file or directory
+01-22 19:56:08.218  1022  1022 :
+odrefresh
+ART APEX version 370399999
+01-22 19:56:08.220  1022  1022 :
+odrefresh
+MMAP_TRYLOCK is not supported in uffd addr:0x765662e000 page-size:4096
+01-22 19:56:08.220  1022  1022 :
+odrefresh
+No prior cache-info file: '/data/misc/apexdata/com.android.art/dalvik-cache/cache-info.xml'
+01-22 19:56:08.265  1022  1022 :
+odrefresh
+Boot images on /system OK (arm64)
+01-22 19:56:08.276  1022  1022 :
+odrefresh
+Boot images on /system OK (arm)
+01-22 19:56:08.333  1022  1022 :
+odrefresh
+system_server artifacts on /system OK
+01-22 19:56:08.344  1021  1021 :
+odsign
+/data/misc/odsign/odsign.info not found.
+01-22 19:56:08.385  1023  1023 :
+odrefresh
+ART APEX version 370399999
+01-22 19:56:08.385  1023  1023 :
+odrefresh
+MMAP_TRYLOCK is not supported in uffd addr:0x7e077a2000 page-size:4096
+01-22 19:56:08.385  1023  1023 :
+odrefresh
+No prior cache-info file: '/data/misc/apexdata/com.android.art/dalvik-cache/cache-info.xml'
+01-22 19:56:08.398  1023  1023 :
+odrefresh
+Boot images on /system OK (arm64)
+01-22 19:56:08.406  1023  1023 :
+odrefresh
+Boot images on /system OK (arm)
+01-22 19:56:08.422  1023  1023 :
+odrefresh
+system_server artifacts on /system OK
+01-22 19:56:08.445  1021  1021 :
+odsign
+odrefresh compiled all artifacts, returned 80
+01-22 19:56:08.445  1021  1021 :
+odsign
+Adding "/data/misc/apexdata/com.android.art/dalvik-cache/cache-info.xml" to fs-verity...
+01-22 19:56:08.459  1021  1021 :
+odsign
+On-device signing done.
+01-22 19:56:08.460  778  817 :
+keystore2
+system/security/keystore2/src/super_key.rs:356 - keystore.boot_level BootLevel(1000000000) hits maximum BootLevel(1000000000), finishing.
+
+01-22 19:56:08.470  734  795 :
+Checkpoint
+cp_needsCheckpoint called
+01-22 19:56:08.082  1043  1043 :
+libc
+Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 1043 (netd), pid 1043 (netd)
+01-22 19:56:08.132  1082  1082 :
+DEBUG
+*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+
+01-22 19:56:08.132  1082  1082 :
+DEBUG
+Build fingerprint: 'Xiaomi/custom_thyme/thyme:17/CP2A.260605.016/OS4.0.0.8.XOCCNXM:user/release-keys'
+
+01-22 19:56:08.132  1082  1082 :
+DEBUG
+Kernel Release: '4.19.325-perf-g45b9b954f074'
+
+01-22 19:56:08.132  1082  1082 :
+DEBUG
+Revision: '0'
+
+01-22 19:56:08.132  1082  1082 :
+DEBUG
+ABI: 'arm64'
+
+01-22 19:56:08.132  1082  1082 :
+DEBUG
+Timestamp: 1970-01-22 19:56:08.113650948+0800
+
+01-22 19:56:08.132  1082  1082 :
+DEBUG
+Process uptime: 0s
+
+01-22 19:56:08.132  1082  1082 :
+DEBUG
+ZygotePid: -1
+
+01-22 19:56:08.133  1082  1082 :
+DEBUG
+Executable: /system/bin/netd
+
+01-22 19:56:08.133  1082  1082 :
+DEBUG
+Cmdline: /system/bin/netd
+
+01-22 19:56:08.133  1082  1082 :
+DEBUG
+pid: 1043, ppid: 1, tid: 1043, name: netd  >>> /system/bin/netd <<<
+
+01-22 19:56:08.133  1082  1082 :
+DEBUG
+uid: 0
+
+01-22 19:56:08.133  1082  1082 :
+DEBUG
+signal 6 (SIGABRT), code -1 (SI_QUEUE), fault addr --------
+
+01-22 19:56:08.133  1082  1082 :
+DEBUG
+    x0  0000000000000000  x1  0000000000000413  x2  0000000000000006  x3  0000007fc52dc400
+
+01-22 19:56:08.133  1082  1082 :
+DEBUG
+    x4  1f3963646b686045  x5  1f3963646b686045  x6  1f3963646b686045  x7  7f7f7f7f7f7f7f7f
+
+01-22 19:56:08.133  1082  1082 :
+DEBUG
+    x8  00000000000000f0  x9  9ce9846e76212b26  x10 000000ff00000020  x11 000000000012800c
+
+01-22 19:56:08.133  1082  1082 :
+DEBUG
+    x12 ffffffffffffffff  x13 b400006f54654040  x14 0000000000000018  x15 0000000016810c00
+
+01-22 19:56:08.133  1082  1082 :
+DEBUG
+    x16 00000070b5597420  x17 00000070b557b580  x18 00000070b9f14000  x19 0000000000000413
+
+01-22 19:56:08.133  1082  1082 :
+DEBUG
+    x20 0000000000000413  x21 00000000ffffffff  x22 0000000000000002  x23 0000007fc52dc760
+
+01-22 19:56:08.133  1082  1082 :
+DEBUG
+    x24 0000000000000000  x25 0000000000000000  x26 0000000000000000  x27 0000000000000000
+
+01-22 19:56:08.133  1082  1082 :
+DEBUG
+    x28 0000000000000000  x29 0000007fc52dc480
+
+01-22 19:56:08.133  1082  1082 :
+DEBUG
+    lr  00000070b5517dec  sp  0000007fc52dc400  pc  00000070b5517e10  pst 0000000000001000
+
+01-22 19:56:08.133  1082  1082 :
+DEBUG
+    esr 0000000000000000  vg  0000000000000000
+
+01-22 19:56:08.133  1082  1082 :
+DEBUG
+4 total frames
+
+01-22 19:56:08.133  1082  1082 :
+DEBUG
+backtrace:
+
+01-22 19:56:08.133  1082  1082 :
+DEBUG
+      #00 pc 000000000007be10  /apex/com.android.runtime/lib64/bionic/libc.so (abort+160) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+
+01-22 19:56:08.133  1082  1082 :
+DEBUG
+      #01 pc 000000000001166c  /apex/com.android.tethering/lib64/libnetd_updatable.so (libnetd_updatable_init.cfi+576) (BuildId: 58c3339c97bfd5908106948948c660f2)
+
+01-22 19:56:08.133  1082  1082 :
+DEBUG
+      #02 pc 0000000000067b1c  /system/bin/netd (main.cfi+336) (BuildId: 44eb755c952aacff0a0d008581b56e08)
+
+01-22 19:56:08.133  1082  1082 :
+DEBUG
+      #03 pc 000000000006eee8  /apex/com.android.runtime/lib64/bionic/libc.so (__libc_init+124) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+
+01-22 19:56:08.133  1082  1082 :
+DEBUG
+Note: To display stack pointer information, use the pbtombstone tool:
+
+01-22 19:56:08.133  1082  1082 :
+DEBUG
+        pbtombstone --display-sp tombstone_XX.pb
+
+01-22 19:56:08.319  1051  1051 :  ?
+01-22 19:56:08.319  1051  1051 :  ?
+01-22 19:56:08.602  1051  1051 :  TENS
+200284993
+????
+01-22 19:56:08.634  1051  1051 :
+UltraFrameworkComponentFactory
+Failed to create UltraFrameworkComponentFactoryImpl
+java.lang.ClassNotFoundException: android.os.ufw.UltraFrameworkComponentFactoryImpl
+	at java.lang.Class.classForName(Native Method)
+	at java.lang.Class.forName(Class.java:591)
+	at java.lang.Class.forName(Class.java:496)
+	at android.os.ufw.UltraFrameworkComponentFactory.getInstance(UltraFrameworkComponentFactory.java:79)
+	at android.view.SurfaceControl.<clinit>(SurfaceControl.java:1166)
+Caused by: java.lang.ClassNotFoundException: android.os.ufw.UltraFrameworkComponentFactoryImpl
+	... 5 more
+
+01-22 19:56:08.680  1051  1051 :  ?
+01-22 19:56:08.722  734  755 :
+vold
+handleDiskChanged Disk:7:360 changed
+01-22 19:56:08.920  1051  1051 :
+HyperOpt
+ThirdAppOptImpl has been initialized !
+01-22 19:56:09.064  1052  1052 :  TENS
+200284993
+????
+01-22 19:56:09.111  1052  1052 :
+UltraFrameworkComponentFactory
+Failed to create UltraFrameworkComponentFactoryImpl
+java.lang.ClassNotFoundException: android.os.ufw.UltraFrameworkComponentFactoryImpl
+	at java.lang.Class.classForName(Native Method)
+	at java.lang.Class.forName(Class.java:591)
+	at java.lang.Class.forName(Class.java:496)
+	at android.os.ufw.UltraFrameworkComponentFactory.getInstance(UltraFrameworkComponentFactory.java:79)
+	at android.view.SurfaceControl.<clinit>(SurfaceControl.java:1166)
+Caused by: java.lang.ClassNotFoundException: android.os.ufw.UltraFrameworkComponentFactoryImpl
+	... 5 more
+
+01-22 19:56:09.146  1051  1051 :
+libc
+Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 1051 (main), pid 1051 (main)
+01-22 19:56:09.159  1051  1051 :
+libc
+Crash due to signal: crash_dump helper failed to exec, or was killed
+01-22 19:56:09.205  734  795 :
+vold
+AbortFuseConnections()++
+01-22 19:56:09.206  734  795 :
+vold
+AbortFuseConnections()--
+01-22 19:56:09.282  1248  1248 :
+audioserver_main
+main: starting
+01-22 19:56:09.297  712  712 :  ?
+avc:  denied  { find } for pid=1249 uid=1047 name=vendor.xiaomi.hardware.misys.common.IMiSysImpl/default scontext=u:r:cameraserver:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=001-22 19:56:09.299  713  713 :  ?
+avc:  denied  { find } for interface=vendor.xiaomi.hardware.misys::IMiSys sid=u:r:cameraserver:s0 pid=1249 scontext=u:r:cameraserver:s0 tcontext=u:object_r:hal_misys_hwservice:s0 tclass=hwservice_manager permissive=001-22 19:56:09.370  1248  1248 :
+audioserver_main
+main: AudioFlinger created
+01-22 19:56:09.375  712  712 :  ?
+avc:  denied  { find } for pid=1248 uid=1041 name=vendor.xiaomi.hardware.uniperf.IUniperf/default scontext=u:r:audioserver:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=001-22 19:56:09.555  1376  1376 :
+android.hardware.wifi-service
+Wifi Hal is booting up...
+01-22 19:56:09.566  1376  1376 :
+android.hardware.wifi-service
+Joining RPC thread pool
+01-22 19:56:09.570  1434  1434 :
+irsc_util
+Starting irsc tool
+
+01-22 19:56:09.575  1434  1434 :
+irsc_util
+Num of entries:298
+
+01-22 19:56:09.575  1434  1434 :
+irsc_util
+Ending irsc tool
+
+01-22 19:56:09.670  1324  1324 :  ?
+01-22 19:56:09.670  1324  1324 :  ?
+01-22 19:56:09.670  1324  1324 :  ?
+01-22 19:56:09.670  1324  1324 :  ?
+01-22 19:56:09.670  1324  1324 :  ?
+01-22 19:56:09.670  1324  1324 :  ?
+01-22 19:56:09.670  1324  1324 :  ?
+01-22 19:56:09.670  1324  1324 :  ?
+01-22 19:56:09.670  1324  1324 :  ?
+01-22 19:56:09.670  1324  1324 :  ?
+01-22 19:56:09.670  1324  1324 :  ?
+01-22 19:56:09.670  1324  1324 :  ?
+01-22 19:56:09.670  1324  1324 :  ?
+01-22 19:56:09.670  1324  1324 :  ?
+01-22 19:56:09.670  1324  1324 :  ?
+01-22 19:56:09.670  1324  1324 :  ?
+01-22 19:56:09.670  1324  1324 :  ?
+01-22 19:56:09.671  1324  1324 :  ?
+01-22 19:56:09.671  1324  1324 :  ?
+01-22 19:56:09.671  1324  1324 :  ?
+01-22 19:56:09.671  1324  1324 :  ?
+01-22 19:56:09.671  1324  1324 :  ?
+01-22 19:56:09.671  1324  1324 :  ?
+01-22 19:56:09.671  1324  1324 :  ?
+01-22 19:56:09.729  1502  1502 :
+MediaCodecListGenerator
+MediaCodecListGenerator starting...
+01-22 19:56:09.731  1502  1502 :
+MediaCodecListGenerator
+MediaCodecListGenerator ready.
+01-22 19:56:09.771  783  1516 :  ?
+01-22 19:56:09.790  1527  1527 :
+gsid
+no DSU: No such file or directory
+01-22 19:56:09.796  734  1537 :
+vold
+DM_TABLE_LOAD failed: name=mireuse_b, table=linear 0 503808 /dev/block/by-name/modemfirmware_b 0;linear 503808 413696 /dev/block/by-name/modem_b 0;linear 917504 196608 /dev/block/by-name/boot_b 0;linear 1114112 204800 /dev/block/by-name/recovery_b 0;linear 1318912 196608 /dev/block/by-name/vendor_boot_b 0;linear 1515520 131072 /dev/block/by-name/dsp_b 0;linear 1646592 98304 /dev/block/by-name/imagefv_b 0;linear 1744896 49152 /dev/block/by-name/dtbo_b 0;linear 1794048 16384 /dev/block/by-name/init_boot_b 0;linear 1810432 16384 /dev/block/by-name/bluetooth_b 0: No such device
+01-22 19:56:09.853  1324  1324 :  ?
+01-22 19:56:10.299  1770  1770 :
+libc
+Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 1770 (netd), pid 1770 (netd)
+01-22 19:56:10.325  1762  1762 :
+installd
+installd firing up
+01-22 19:56:10.325  1762  1762 :
+installd
+Assuming that device has multi-user storage layout; upgrade no longer supported
+01-22 19:56:10.326  1762  1762 :
+installd
+Upgrading to /data/misc/user directories
+01-22 19:56:10.339  1754  1754 :  ?
+01-22 19:56:10.339  1754  1754 :  ?
+01-22 19:56:10.362  1502  1522 :
+MediaCodecListGenerator
+Generating MediaCodecList...
+01-22 19:56:10.414  1792  1792 :
+DEBUG
+*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+
+01-22 19:56:10.414  1792  1792 :
+DEBUG
+Build fingerprint: 'Xiaomi/custom_thyme/thyme:17/CP2A.260605.016/OS4.0.0.8.XOCCNXM:user/release-keys'
+
+01-22 19:56:10.414  1792  1792 :
+DEBUG
+Kernel Release: '4.19.325-perf-g45b9b954f074'
+
+01-22 19:56:10.414  1792  1792 :
+DEBUG
+Revision: '0'
+
+01-22 19:56:10.414  1792  1792 :
+DEBUG
+ABI: 'arm64'
+
+01-22 19:56:10.414  1792  1792 :
+DEBUG
+Timestamp: 1970-01-22 19:56:10.339716326+0800
+
+01-22 19:56:10.414  1792  1792 :
+DEBUG
+Process uptime: 0s
+
+01-22 19:56:10.414  1792  1792 :
+DEBUG
+ZygotePid: -1
+
+01-22 19:56:10.415  1792  1792 :
+DEBUG
+Executable: /system/bin/netd
+
+01-22 19:56:10.415  1792  1792 :
+DEBUG
+Cmdline: /system/bin/netd
+
+01-22 19:56:10.415  1792  1792 :
+DEBUG
+pid: 1770, ppid: 1, tid: 1770, name: netd  >>> /system/bin/netd <<<
+
+01-22 19:56:10.415  1792  1792 :
+DEBUG
+uid: 0
+
+01-22 19:56:10.415  1792  1792 :
+DEBUG
+signal 6 (SIGABRT), code -1 (SI_QUEUE), fault addr --------
+
+01-22 19:56:10.415  1792  1792 :
+DEBUG
+    x0  0000000000000000  x1  00000000000006ea  x2  0000000000000006  x3  0000007fd703a010
+
+01-22 19:56:10.415  1792  1792 :
+DEBUG
+    x4  1f3963646b686045  x5  1f3963646b686045  x6  1f3963646b686045  x7  7f7f7f7f7f7f7f7f
+
+01-22 19:56:10.415  1792  1792 :
+DEBUG
+    x8  00000000000000f0  x9  cfd752b5d0c23b02  x10 000000ff00000020  x11 000000000012800c
+
+01-22 19:56:10.415  1792  1792 :
+DEBUG
+    x12 ffffffffffffffff  x13 b400007c741e2550  x14 0000000000000018  x15 00000000190a7600
+
+01-22 19:56:10.415  1792  1792 :
+DEBUG
+    x16 0000007e48dbf420  x17 0000007e48da3580  x18 0000007e4cd64000  x19 00000000000006ea
+
+01-22 19:56:10.415  1792  1792 :
+DEBUG
+    x20 00000000000006ea  x21 00000000ffffffff  x22 0000000000000002  x23 0000007fd703a370
+
+01-22 19:56:10.415  1792  1792 :
+DEBUG
+    x24 0000000000000000  x25 0000000000000000  x26 0000000000000000  x27 0000000000000000
+
+01-22 19:56:10.415  1792  1792 :
+DEBUG
+    x28 0000000000000000  x29 0000007fd703a090
+
+01-22 19:56:10.415  1792  1792 :
+DEBUG
+    lr  0000007e48d3fdec  sp  0000007fd703a010  pc  0000007e48d3fe10  pst 0000000000001000
+
+01-22 19:56:10.415  1792  1792 :
+DEBUG
+    esr 0000000000000000  vg  0000000000000000
+
+01-22 19:56:10.415  1792  1792 :
+DEBUG
+4 total frames
+
+01-22 19:56:10.415  1792  1792 :
+DEBUG
+backtrace:
+
+01-22 19:56:10.415  1792  1792 :
+DEBUG
+      #00 pc 000000000007be10  /apex/com.android.runtime/lib64/bionic/libc.so (abort+160) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+
+01-22 19:56:10.415  1792  1792 :
+DEBUG
+      #01 pc 000000000001166c  /apex/com.android.tethering/lib64/libnetd_updatable.so (libnetd_updatable_init.cfi+576) (BuildId: 58c3339c97bfd5908106948948c660f2)
+
+01-22 19:56:10.415  1792  1792 :
+DEBUG
+      #02 pc 0000000000067b1c  /system/bin/netd (main.cfi+336) (BuildId: 44eb755c952aacff0a0d008581b56e08)
+
+01-22 19:56:10.415  1792  1792 :
+DEBUG
+      #03 pc 000000000006eee8  /apex/com.android.runtime/lib64/bionic/libc.so (__libc_init+124) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+
+01-22 19:56:10.415  1792  1792 :
+DEBUG
+Note: To display stack pointer information, use the pbtombstone tool:
+
+01-22 19:56:10.415  1792  1792 :
+DEBUG
+        pbtombstone --display-sp tombstone_XX.pb
+
+01-22 19:56:10.470  1754  1754 :  TENS
+200284993
+????
+01-22 19:56:10.478  1754  1754 :
+UltraFrameworkComponentFactory
+Failed to create UltraFrameworkComponentFactoryImpl
+java.lang.ClassNotFoundException: android.os.ufw.UltraFrameworkComponentFactoryImpl
+	at java.lang.Class.classForName(Native Method)
+	at java.lang.Class.forName(Class.java:591)
+	at java.lang.Class.forName(Class.java:496)
+	at android.os.ufw.UltraFrameworkComponentFactory.getInstance(UltraFrameworkComponentFactory.java:79)
+	at android.view.SurfaceControl.<clinit>(SurfaceControl.java:1166)
+Caused by: java.lang.ClassNotFoundException: android.os.ufw.UltraFrameworkComponentFactoryImpl
+	... 5 more
+
+01-22 19:56:10.508  1754  1754 :  ?
+01-22 19:56:10.614  712  712 :  ?
+avc:  denied  { find } for pid=1780 uid=0 name=vendor.xiaomi.hardware.misight.ILogMgr/default scontext=u:r:misight:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=001-22 19:56:10.680  1754  1754 :
+HyperOpt
+ThirdAppOptImpl has been initialized !
+01-22 19:56:10.785  712  712 :  ?
+avc:  denied  { find } for pid=1943 uid=0 name=device_identifiers scontext=u:r:mcd:s0 tcontext=u:object_r:device_identifiers_service:s0 tclass=service_manager permissive=001-22 19:56:10.853  1502  1522 :
+Codec2Client
+Available Codec2 services: "default" "default1" "software"
+01-22 19:56:10.898  1894  2029 :
+libc
+Fatal signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0xd0 in tid 2029 (android.hardwar), pid 1894 (android.hardwar)
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+Build fingerprint: 'Xiaomi/custom_thyme/thyme:17/CP2A.260605.016/OS4.0.0.8.XOCCNXM:user/release-keys'
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+Kernel Release: '4.19.325-perf-g45b9b954f074'
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+Revision: '0'
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+ABI: 'arm64'
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+Timestamp: 1970-01-22 19:56:10.927865968+0800
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+Process uptime: 0s
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+Executable: /vendor/bin/hw/android.hardware.biometrics.fingerprint-service.xiaomi
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+Cmdline: /vendor/bin/hw/android.hardware.biometrics.fingerprint-service.xiaomi
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+pid: 1894, ppid: 1, tid: 2029, name: android.hardwar  >>> /vendor/bin/hw/android.hardware.biometrics.fingerprint-service.xiaomi <<<
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+uid: 1000
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+esr: 0000000092000005 (Data Abort Exception 0x24)
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0x00000000000000d0 (read)
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+Cause: null pointer dereference
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+    x0  0000000000000000  x1  000000000000000a  x2  0000000000000001  x3  0000000000000000
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+    x4  0000000000000000  x5  0000000039323032  x6  0000000039323032  x7  7f7f7f7f7f7f7f7f
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+    x8  0000000000000000  x9  7d812035e2123755  x10 0000007409bedf40  x11 000000769a860ab0
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+    x12 0000000000000032  x13 0000000000000000  x14 0000000000000004  x15 0000000000000032
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+    x16 0000007409bf8358  x17 000000769a91ffc0  x18 0000007408e28000  x19 0000007409bf5e40
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+    x20 0000007409bf5f4f  x21 b4000075da222800  x22 b4000075da2227f0  x23 0000007409bf5eae
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+    x24 0000007409bf5eb4  x25 0000007409bf5edb  x26 0000007409bf5ef8  x27 0000000000000006
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+    x28 000000769d8580d0  x29 0000007409bedad0
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+    lr  0000007409bf7274  sp  0000007409bedaa0  pc  0000007409bf72b4  pst 0000000060001000
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+    esr 0000000092000005  vg  0000000000000000
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+3 total frames
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+backtrace:
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+      #00 pc 00000000000022b4  /vendor/lib64/libudfpshandler.so (void* std::__1::__thread_proxy[abi:nn220000]<std::__1::tuple<std::__1::unique_ptr<std::__1::__thread_struct, std::__1::default_delete<std::__1::__thread_struct>>, XiaomiKonaUdfpsHandler::init(fingerprint_device*)::'lambda'()>>(void*)+356) (BuildId: c4dceef3046e85491181d8ef2e87411b)
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+      #01 pc 000000000008e830  /apex/com.android.runtime/lib64/bionic/libc.so (__pthread_start(void*) (.__uniq.67847048707805468364044055584648682506)+184) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+      #02 pc 000000000007fb24  /apex/com.android.runtime/lib64/bionic/libc.so (__start_thread+68) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+Note: To display stack pointer information, use the pbtombstone tool:
+
+01-22 19:56:10.949  2036  2036 :
+DEBUG
+        pbtombstone --display-sp tombstone_XX.pb
+
+01-22 19:56:11.065  1754  1754 :
+libc
+Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 1754 (main), pid 1754 (main)
+01-22 19:56:11.079  1754  1754 :
+libc
+Crash due to signal: crash_dump helper failed to exec, or was killed
+01-22 19:56:11.161  734  795 :
+vold
+AbortFuseConnections()++
+01-22 19:56:11.161  734  795 :
+vold
+AbortFuseConnections()--
+01-22 19:56:11.320  1502  1522 :
+MediaCodecListGenerator
+MediaCodecList generated and serialized (25408 bytes).
+01-22 19:56:12.045  1480  1480 :
+FrameTimelineInspector
+enable: 0
+01-22 19:56:12.053  712  712 :  ?
+avc:  denied  { find } for pid=1480 uid=1000 name=vendor.qti.hardware.perf2.IPerf/default scontext=u:r:surfaceflinger:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=001-22 19:56:12.054  712  712 :  ?
+avc:  denied  { find } for pid=1480 uid=1000 name=vendor.qti.hardware.perf2.IPerf/default scontext=u:r:surfaceflinger:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=001-22 19:56:12.055  712  712 :  ?
+avc:  denied  { find } for pid=1480 uid=1000 name=vendor.qti.hardware.perf2.IPerf/default scontext=u:r:surfaceflinger:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=001-22 19:56:12.055  712  712 :  ?
+avc:  denied  { find } for pid=1480 uid=1000 name=vendor.qti.hardware.perf2.IPerf/default scontext=u:r:surfaceflinger:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=001-22 19:56:12.056  712  712 :  ?
+avc:  denied  { find } for pid=1480 uid=1000 name=vendor.qti.hardware.perf2.IPerf/default scontext=u:r:surfaceflinger:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=001-22 19:56:12.056  712  712 :  ?
+avc:  denied  { find } for pid=1480 uid=1000 name=vendor.qti.hardware.perf2.IPerf/default scontext=u:r:surfaceflinger:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=001-22 19:56:12.057  712  712 :  ?
+avc:  denied  { find } for pid=1480 uid=1000 name=vendor.qti.hardware.perf2.IPerf/default scontext=u:r:surfaceflinger:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=001-22 19:56:12.058  712  712 :  ?
+avc:  denied  { find } for pid=1480 uid=1000 name=vendor.qti.hardware.perf2.IPerf/default scontext=u:r:surfaceflinger:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=001-22 19:56:12.061  712  712 :  ?
+avc:  denied  { find } for pid=1480 uid=1000 name=vendor.xiaomi.hardware.display.mihwcextension.IMiHwcExtension/default scontext=u:r:surfaceflinger:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=001-22 19:56:12.126  2183  2183 :
+BootAnimation
+miShutting =
+01-22 19:56:12.126  2183  2183 :
+BootAnimation
+operatorName =  coatName =
+01-22 19:56:14.243  712  712 :  ?
+avc:  denied  { find } for pid=2315 uid=1047 name=vendor.xiaomi.hardware.misys.common.IMiSysImpl/default scontext=u:r:cameraserver:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=001-22 19:56:14.243  713  713 :  ?
+avc:  denied  { find } for interface=vendor.xiaomi.hardware.misys::IMiSys sid=u:r:cameraserver:s0 pid=2315 scontext=u:r:cameraserver:s0 tcontext=u:object_r:hal_misys_hwservice:s0 tclass=hwservice_manager permissive=001-22 19:56:14.281  2313  2313 :
+audioserver_main
+main: starting
+01-22 19:56:14.309  2313  2313 :
+audioserver_main
+main: AudioFlinger created
+01-22 19:56:14.316  712  712 :  ?
+avc:  denied  { find } for pid=2313 uid=1041 name=vendor.xiaomi.hardware.uniperf.IUniperf/default scontext=u:r:audioserver:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=001-22 19:56:14.365  2334  2334 :
+MediaCodecListGenerator
+MediaCodecListGenerator starting...
+01-22 19:56:14.366  2334  2334 :
+MediaCodecListGenerator
+MediaCodecListGenerator ready.
+01-22 19:56:15.270  712  712 :  ?
+avc:  denied  { find } for pid=2454 uid=0 name=device_identifiers scontext=u:r:mcd:s0 tcontext=u:object_r:device_identifiers_service:s0 tclass=service_manager permissive=001-22 19:56:15.281  2334  2344 :
+MediaCodecListGenerator
+Generating MediaCodecList...
+01-22 19:56:15.321  2453  2453 :  ?
+01-22 19:56:15.321  2453  2453 :  ?
+01-22 19:56:15.326  2456  2456 :
+libc
+Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 2456 (netd), pid 2456 (netd)
+01-22 19:56:15.447  2473  2473 :
+DEBUG
+*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+
+01-22 19:56:15.447  2473  2473 :
+DEBUG
+Build fingerprint: 'Xiaomi/custom_thyme/thyme:17/CP2A.260605.016/OS4.0.0.8.XOCCNXM:user/release-keys'
+
+01-22 19:56:15.447  2473  2473 :
+DEBUG
+Kernel Release: '4.19.325-perf-g45b9b954f074'
+
+01-22 19:56:15.447  2473  2473 :
+DEBUG
+Revision: '0'
+
+01-22 19:56:15.447  2473  2473 :
+DEBUG
+ABI: 'arm64'
+
+01-22 19:56:15.447  2473  2473 :
+DEBUG
+Timestamp: 1970-01-22 19:56:15.376292974+0800
+
+01-22 19:56:15.448  2473  2473 :
+DEBUG
+Process uptime: 0s
+
+01-22 19:56:15.448  2473  2473 :
+DEBUG
+ZygotePid: -1
+
+01-22 19:56:15.448  2473  2473 :
+DEBUG
+Executable: /system/bin/netd
+
+01-22 19:56:15.448  2473  2473 :
+DEBUG
+Cmdline: /system/bin/netd
+
+01-22 19:56:15.448  2473  2473 :
+DEBUG
+pid: 2456, ppid: 1, tid: 2456, name: netd  >>> /system/bin/netd <<<
+
+01-22 19:56:15.448  2473  2473 :
+DEBUG
+uid: 0
+
+01-22 19:56:15.448  2473  2473 :
+DEBUG
+signal 6 (SIGABRT), code -1 (SI_QUEUE), fault addr --------
+
+01-22 19:56:15.448  2473  2473 :
+DEBUG
+    x0  0000000000000000  x1  0000000000000998  x2  0000000000000006  x3  0000007ff1172b80
+
+01-22 19:56:15.448  2473  2473 :
+DEBUG
+    x4  1f3963646b686045  x5  1f3963646b686045  x6  1f3963646b686045  x7  7f7f7f7f7f7f7f7f
+
+01-22 19:56:15.448  2473  2473 :
+DEBUG
+    x8  00000000000000f0  x9  d7b2b987f3d2e87c  x10 000000ff00000020  x11 000000000012800c
+
+01-22 19:56:15.448  2473  2473 :
+DEBUG
+    x12 ffffffffffffffff  x13 b4000073baece550  x14 0000000000000018  x15 000000001ecb1e00
+
+01-22 19:56:15.448  2473  2473 :
+DEBUG
+    x16 00000076315b5420  x17 0000007631599580  x18 000000763bc08000  x19 0000000000000998
+
+01-22 19:56:15.448  2473  2473 :
+DEBUG
+    x20 0000000000000998  x21 00000000ffffffff  x22 0000000000000002  x23 0000007ff1172ee0
+
+01-22 19:56:15.448  2473  2473 :
+DEBUG
+    x24 0000000000000000  x25 0000000000000000  x26 0000000000000000  x27 0000000000000000
+
+01-22 19:56:15.448  2473  2473 :
+DEBUG
+    x28 0000000000000000  x29 0000007ff1172c00
+
+01-22 19:56:15.449  2473  2473 :
+DEBUG
+    lr  0000007631535dec  sp  0000007ff1172b80  pc  0000007631535e10  pst 0000000000001000
+
+01-22 19:56:15.449  2473  2473 :
+DEBUG
+    esr 0000000000000000  vg  0000000000000000
+
+01-22 19:56:15.449  2473  2473 :
+DEBUG
+4 total frames
+
+01-22 19:56:15.449  2473  2473 :
+DEBUG
+backtrace:
+
+01-22 19:56:15.449  2473  2473 :
+DEBUG
+      #00 pc 000000000007be10  /apex/com.android.runtime/lib64/bionic/libc.so (abort+160) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+
+01-22 19:56:15.449  2473  2473 :
+DEBUG
+      #01 pc 000000000001166c  /apex/com.android.tethering/lib64/libnetd_updatable.so (libnetd_updatable_init.cfi+576) (BuildId: 58c3339c97bfd5908106948948c660f2)
+
+01-22 19:56:15.449  2473  2473 :
+DEBUG
+      #02 pc 0000000000067b1c  /system/bin/netd (main.cfi+336) (BuildId: 44eb755c952aacff0a0d008581b56e08)
+
+01-22 19:56:15.449  2473  2473 :
+DEBUG
+      #03 pc 000000000006eee8  /apex/com.android.runtime/lib64/bionic/libc.so (__libc_init+124) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+
+01-22 19:56:15.449  2473  2473 :
+DEBUG
+Note: To display stack pointer information, use the pbtombstone tool:
+
+01-22 19:56:15.449  2473  2473 :
+DEBUG
+        pbtombstone --display-sp tombstone_XX.pb
+
+01-22 19:56:15.477  2453  2453 :  TENS
+200284993
+????
+01-22 19:56:15.483  2453  2453 :
+UltraFrameworkComponentFactory
+Failed to create UltraFrameworkComponentFactoryImpl
+java.lang.ClassNotFoundException: android.os.ufw.UltraFrameworkComponentFactoryImpl
+	at java.lang.Class.classForName(Native Method)
+	at java.lang.Class.forName(Class.java:591)
+	at java.lang.Class.forName(Class.java:496)
+	at android.os.ufw.UltraFrameworkComponentFactory.getInstance(UltraFrameworkComponentFactory.java:79)
+	at android.view.SurfaceControl.<clinit>(SurfaceControl.java:1166)
+Caused by: java.lang.ClassNotFoundException: android.os.ufw.UltraFrameworkComponentFactoryImpl
+	... 5 more
+
+01-22 19:56:15.494  2334  2344 :
+Codec2Client
+Available Codec2 services: "default" "default1" "software"
+01-22 19:56:15.506  2453  2453 :  ?
+01-22 19:56:15.507  1774  1774 :
+storaged
+getService package_native failed
+01-22 19:56:15.514  1774  2530 :
+storaged
+storaged: Start
+01-22 19:56:15.677  2540  2548 :
+libc
+Fatal signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0xd0 in tid 2548 (android.hardwar), pid 2540 (android.hardwar)
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+Build fingerprint: 'Xiaomi/custom_thyme/thyme:17/CP2A.260605.016/OS4.0.0.8.XOCCNXM:user/release-keys'
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+Kernel Release: '4.19.325-perf-g45b9b954f074'
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+Revision: '0'
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+ABI: 'arm64'
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+Timestamp: 1970-01-22 19:56:15.689682641+0800
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+Process uptime: 0s
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+Executable: /vendor/bin/hw/android.hardware.biometrics.fingerprint-service.xiaomi
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+Cmdline: /vendor/bin/hw/android.hardware.biometrics.fingerprint-service.xiaomi
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+pid: 2540, ppid: 1, tid: 2548, name: android.hardwar  >>> /vendor/bin/hw/android.hardware.biometrics.fingerprint-service.xiaomi <<<
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+uid: 1000
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+esr: 0000000092000005 (Data Abort Exception 0x24)
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0x00000000000000d0 (read)
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+Cause: null pointer dereference
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+    x0  0000000000000000  x1  000000000000000a  x2  0000000000000001  x3  0000000000000000
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+    x4  0000000000000000  x5  0000000038343532  x6  0000000038343532  x7  7f7f7f7f7f7f7f7f
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+    x8  0000000000000000  x9  e213921a033fa4e1  x10 0000007160882f40  x11 00000073f16a8ab0
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+    x12 0000000000000034  x13 0000000000000000  x14 0000000000000004  x15 0000000000000032
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+    x16 000000716088d358  x17 00000073f1767fc0  x18 000000715f8c8000  x19 000000716088ae40
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+    x20 000000716088af4f  x21 b4000071f0ebb020  x22 b4000071f0ebb010  x23 000000716088aeae
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+    x24 000000716088aeb4  x25 000000716088aedb  x26 000000716088aef8  x27 0000000000000005
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+    x28 00000073f2e210d0  x29 0000007160882ad0
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+    lr  000000716088c274  sp  0000007160882aa0  pc  000000716088c2b4  pst 0000000060001000
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+    esr 0000000092000005  vg  0000000000000000
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+3 total frames
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+backtrace:
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+      #00 pc 00000000000022b4  /vendor/lib64/libudfpshandler.so (void* std::__1::__thread_proxy[abi:nn220000]<std::__1::tuple<std::__1::unique_ptr<std::__1::__thread_struct, std::__1::default_delete<std::__1::__thread_struct>>, XiaomiKonaUdfpsHandler::init(fingerprint_device*)::'lambda'()>>(void*)+356) (BuildId: c4dceef3046e85491181d8ef2e87411b)
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+      #01 pc 000000000008e830  /apex/com.android.runtime/lib64/bionic/libc.so (__pthread_start(void*) (.__uniq.67847048707805468364044055584648682506)+184) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+      #02 pc 000000000007fb24  /apex/com.android.runtime/lib64/bionic/libc.so (__start_thread+68) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+Note: To display stack pointer information, use the pbtombstone tool:
+
+01-22 19:56:15.703  2552  2552 :
+DEBUG
+        pbtombstone --display-sp tombstone_XX.pb
+
+01-22 19:56:15.715  2453  2453 :
+HyperOpt
+ThirdAppOptImpl has been initialized !
+01-22 19:56:15.717  2334  2344 :
+MediaCodecListGenerator
+MediaCodecList generated and serialized (25408 bytes).
+01-22 19:56:15.717  2316  2316 :
+libbinder.BpBinder
+PerfMonitor binderTransact: time=437ms interface=android.media.IMediaCodecListGenerator code=1
+
+01-22 19:56:15.728  2315  2330 :
+libbinder.BpBinder
+PerfMonitor binderTransact: time=1087ms interface=android.media.IMediaPlayerService code=7
+
+01-22 19:56:15.906  2453  2453 :
+libc
+Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 2453 (main), pid 2453 (main)
+01-22 19:56:15.916  2453  2453 :
+libc
+Crash due to signal: crash_dump helper failed to exec, or was killed
+01-22 19:56:15.951  734  795 :
+vold
+AbortFuseConnections()++
+01-22 19:56:15.951  734  795 :
+vold
+AbortFuseConnections()--
+01-22 19:56:19.244  712  712 :  ?
+avc:  denied  { find } for pid=2603 uid=1047 name=vendor.xiaomi.hardware.misys.common.IMiSysImpl/default scontext=u:r:cameraserver:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=001-22 19:56:19.244  713  713 :  ?
+avc:  denied  { find } for interface=vendor.xiaomi.hardware.misys::IMiSys sid=u:r:cameraserver:s0 pid=2603 scontext=u:r:cameraserver:s0 tcontext=u:object_r:hal_misys_hwservice:s0 tclass=hwservice_manager permissive=001-22 19:56:19.281  2602  2602 :
+audioserver_main
+main: starting
+01-22 19:56:19.317  2602  2602 :
+audioserver_main
+main: AudioFlinger created
+01-22 19:56:19.322  712  712 :  ?
+avc:  denied  { find } for pid=2602 uid=1041 name=vendor.xiaomi.hardware.uniperf.IUniperf/default scontext=u:r:audioserver:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=001-22 19:56:19.327  2624  2624 :
+MediaCodecListGenerator
+MediaCodecListGenerator starting...
+01-22 19:56:19.328  2624  2624 :
+MediaCodecListGenerator
+MediaCodecListGenerator ready.
+01-22 19:56:20.128  2605  2605 :  ?
+01-22 19:56:20.276  712  712 :  ?
+avc:  denied  { find } for pid=2637 uid=0 name=device_identifiers scontext=u:r:mcd:s0 tcontext=u:object_r:device_identifiers_service:s0 tclass=service_manager permissive=001-22 19:56:20.289  2624  2633 :
+MediaCodecListGenerator
+Generating MediaCodecList...
+01-22 19:56:20.304  2636  2636 :  ?
+01-22 19:56:20.304  2636  2636 :  ?
+01-22 19:56:20.338  2638  2638 :
+libc
+Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 2638 (netd), pid 2638 (netd)
+01-22 19:56:20.421  2636  2636 :  TENS
+200284993
+????
+01-22 19:56:20.429  2636  2636 :
+UltraFrameworkComponentFactory
+Failed to create UltraFrameworkComponentFactoryImpl
+java.lang.ClassNotFoundException: android.os.ufw.UltraFrameworkComponentFactoryImpl
+	at java.lang.Class.classForName(Native Method)
+	at java.lang.Class.forName(Class.java:591)
+	at java.lang.Class.forName(Class.java:496)
+	at android.os.ufw.UltraFrameworkComponentFactory.getInstance(UltraFrameworkComponentFactory.java:79)
+	at android.view.SurfaceControl.<clinit>(SurfaceControl.java:1166)
+Caused by: java.lang.ClassNotFoundException: android.os.ufw.UltraFrameworkComponentFactoryImpl
+	... 5 more
+
+01-22 19:56:20.452  2650  2650 :
+DEBUG
+*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+
+01-22 19:56:20.452  2650  2650 :
+DEBUG
+Build fingerprint: 'Xiaomi/custom_thyme/thyme:17/CP2A.260605.016/OS4.0.0.8.XOCCNXM:user/release-keys'
+
+01-22 19:56:20.452  2650  2650 :
+DEBUG
+Kernel Release: '4.19.325-perf-g45b9b954f074'
+
+01-22 19:56:20.452  2650  2650 :
+DEBUG
+Revision: '0'
+
+01-22 19:56:20.452  2650  2650 :
+DEBUG
+ABI: 'arm64'
+
+01-22 19:56:20.452  2650  2650 :
+DEBUG
+Timestamp: 1970-01-22 19:56:20.385793733+0800
+
+01-22 19:56:20.452  2650  2650 :
+DEBUG
+Process uptime: 0s
+
+01-22 19:56:20.452  2650  2650 :
+DEBUG
+ZygotePid: -1
+
+01-22 19:56:20.452  2650  2650 :
+DEBUG
+Executable: /system/bin/netd
+
+01-22 19:56:20.452  2650  2650 :
+DEBUG
+Cmdline: /system/bin/netd
+
+01-22 19:56:20.452  2650  2650 :
+DEBUG
+pid: 2638, ppid: 1, tid: 2638, name: netd  >>> /system/bin/netd <<<
+
+01-22 19:56:20.452  2650  2650 :
+DEBUG
+uid: 0
+
+01-22 19:56:20.452  2650  2650 :
+DEBUG
+signal 6 (SIGABRT), code -1 (SI_QUEUE), fault addr --------
+
+01-22 19:56:20.452  2650  2650 :
+DEBUG
+    x0  0000000000000000  x1  0000000000000a4e  x2  0000000000000006  x3  0000007ffaca1dc0
+
+01-22 19:56:20.452  2650  2650 :
+DEBUG
+    x4  1f3963646b686045  x5  1f3963646b686045  x6  1f3963646b686045  x7  7f7f7f7f7f7f7f7f
+
+01-22 19:56:20.452  2650  2650 :
+DEBUG
+    x8  00000000000000f0  x9  c36a8d42cf2ac067  x10 000000ff00000020  x11 000000000012800c
+
+01-22 19:56:20.452  2650  2650 :
+DEBUG
+    x12 ffffffffffffffff  x13 b4000074434cfa20  x14 0000000000000018  x15 000000002487de00
+
+01-22 19:56:20.452  2650  2650 :
+DEBUG
+    x16 0000007653902420  x17 00000076538e6580  x18 000000765fc34000  x19 0000000000000a4e
+
+01-22 19:56:20.452  2650  2650 :
+DEBUG
+    x20 0000000000000a4e  x21 00000000ffffffff  x22 0000000000000002  x23 0000007ffaca2120
+
+01-22 19:56:20.452  2650  2650 :
+DEBUG
+    x24 0000000000000000  x25 0000000000000000  x26 0000000000000000  x27 0000000000000000
+
+01-22 19:56:20.452  2650  2650 :
+DEBUG
+    x28 0000000000000000  x29 0000007ffaca1e40
+
+01-22 19:56:20.452  2650  2650 :
+DEBUG
+    lr  0000007653882dec  sp  0000007ffaca1dc0  pc  0000007653882e10  pst 0000000000001000
+
+01-22 19:56:20.452  2650  2650 :
+DEBUG
+    esr 0000000000000000  vg  0000000000000000
+
+01-22 19:56:20.452  2650  2650 :
+DEBUG
+4 total frames
+
+01-22 19:56:20.453  2650  2650 :
+DEBUG
+backtrace:
+
+01-22 19:56:20.453  2650  2650 :
+DEBUG
+      #00 pc 000000000007be10  /apex/com.android.runtime/lib64/bionic/libc.so (abort+160) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+
+01-22 19:56:20.453  2650  2650 :
+DEBUG
+      #01 pc 000000000001166c  /apex/com.android.tethering/lib64/libnetd_updatable.so (libnetd_updatable_init.cfi+576) (BuildId: 58c3339c97bfd5908106948948c660f2)
+
+01-22 19:56:20.453  2650  2650 :
+DEBUG
+      #02 pc 0000000000067b1c  /system/bin/netd (main.cfi+336) (BuildId: 44eb755c952aacff0a0d008581b56e08)
+
+01-22 19:56:20.453  2650  2650 :
+DEBUG
+      #03 pc 000000000006eee8  /apex/com.android.runtime/lib64/bionic/libc.so (__libc_init+124) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+
+01-22 19:56:20.453  2650  2650 :
+DEBUG
+Note: To display stack pointer information, use the pbtombstone tool:
+
+01-22 19:56:20.453  2650  2650 :
+DEBUG
+        pbtombstone --display-sp tombstone_XX.pb
+
+01-22 19:56:20.475  2636  2636 :  ?
+01-22 19:56:20.535  2624  2633 :
+Codec2Client
+Available Codec2 services: "default" "default1" "software"
+01-22 19:56:20.544  1774  2530 :
+storaged
+getService package_native failed
+01-22 19:56:20.659  2684  2692 :
+libc
+Fatal signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0xd0 in tid 2692 (android.hardwar), pid 2684 (android.hardwar)
+01-22 19:56:20.675  2636  2636 :
+HyperOpt
+ThirdAppOptImpl has been initialized !
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+Build fingerprint: 'Xiaomi/custom_thyme/thyme:17/CP2A.260605.016/OS4.0.0.8.XOCCNXM:user/release-keys'
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+Kernel Release: '4.19.325-perf-g45b9b954f074'
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+Revision: '0'
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+ABI: 'arm64'
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+Timestamp: 1970-01-22 19:56:20.679893554+0800
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+Process uptime: 0s
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+Executable: /vendor/bin/hw/android.hardware.biometrics.fingerprint-service.xiaomi
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+Cmdline: /vendor/bin/hw/android.hardware.biometrics.fingerprint-service.xiaomi
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+pid: 2684, ppid: 1, tid: 2692, name: android.hardwar  >>> /vendor/bin/hw/android.hardware.biometrics.fingerprint-service.xiaomi <<<
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+uid: 1000
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+esr: 0000000092000005 (Data Abort Exception 0x24)
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0x00000000000000d0 (read)
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+Cause: null pointer dereference
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+    x0  0000000000000000  x1  000000000000000a  x2  0000000000000001  x3  0000000000000000
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+    x4  0000000000000000  x5  0000000032393632  x6  0000000032393632  x7  7f7f7f7f7f7f7f7f
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+    x8  0000000000000000  x9  8c020b526f9d7f89  x10 0000007be8469f40  x11 0000007e78a8eab0
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+    x12 0000000000000039  x13 0000000000000000  x14 0000000000000004  x15 0000000000000032
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+    x16 0000007be8474358  x17 0000007e78b4dfc0  x18 0000007be7ccc000  x19 0000007be8471e40
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+    x20 0000007be8471f4f  x21 b400007c38a1a530  x22 b400007c38a1a520  x23 0000007be8471eae
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+    x24 0000007be8471eb4  x25 0000007be8471edb  x26 0000007be8471ef8  x27 0000000000000005
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+    x28 0000007e7d29b0d0  x29 0000007be8469ad0
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+    lr  0000007be8473274  sp  0000007be8469aa0  pc  0000007be84732b4  pst 0000000060001000
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+    esr 0000000092000005  vg  0000000000000000
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+3 total frames
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+backtrace:
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+      #00 pc 00000000000022b4  /vendor/lib64/libudfpshandler.so (void* std::__1::__thread_proxy[abi:nn220000]<std::__1::tuple<std::__1::unique_ptr<std::__1::__thread_struct, std::__1::default_delete<std::__1::__thread_struct>>, XiaomiKonaUdfpsHandler::init(fingerprint_device*)::'lambda'()>>(void*)+356) (BuildId: c4dceef3046e85491181d8ef2e87411b)
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+      #01 pc 000000000008e830  /apex/com.android.runtime/lib64/bionic/libc.so (__pthread_start(void*) (.__uniq.67847048707805468364044055584648682506)+184) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+      #02 pc 000000000007fb24  /apex/com.android.runtime/lib64/bionic/libc.so (__start_thread+68) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+Note: To display stack pointer information, use the pbtombstone tool:
+
+01-22 19:56:20.700  2695  2695 :
+DEBUG
+        pbtombstone --display-sp tombstone_XX.pb
+
+01-22 19:56:20.806  2624  2633 :
+MediaCodecListGenerator
+MediaCodecList generated and serialized (25408 bytes).
+01-22 19:56:20.808  2604  2604 :
+libbinder.BpBinder
+PerfMonitor binderTransact: time=519ms interface=android.media.IMediaCodecListGenerator code=1
+
+01-22 19:56:20.818  2603  2603 :
+libbinder.BpBinder
+PerfMonitor binderTransact: time=1464ms interface=android.media.IMediaPlayerService code=7
+
+01-22 19:56:20.893  2636  2636 :
+libc
+Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 2636 (main), pid 2636 (main)
+01-22 19:56:20.904  2636  2636 :
+libc
+Crash due to signal: crash_dump helper failed to exec, or was killed
+01-22 19:56:20.956  734  795 :
+vold
+AbortFuseConnections()++
+01-22 19:56:20.956  734  795 :
+vold
+AbortFuseConnections()--
+01-22 19:56:24.247  712  712 :  ?
+avc:  denied  { find } for pid=2724 uid=1047 name=vendor.xiaomi.hardware.misys.common.IMiSysImpl/default scontext=u:r:cameraserver:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=001-22 19:56:24.248  713  713 :  ?
+avc:  denied  { find } for interface=vendor.xiaomi.hardware.misys::IMiSys sid=u:r:cameraserver:s0 pid=2724 scontext=u:r:cameraserver:s0 tcontext=u:object_r:hal_misys_hwservice:s0 tclass=hwservice_manager permissive=001-22 19:56:24.274  2723  2723 :
+audioserver_main
+main: starting
+01-22 19:56:24.302  2723  2723 :
+audioserver_main
+main: AudioFlinger created
+01-22 19:56:24.306  712  712 :  ?
+avc:  denied  { find } for pid=2723 uid=1041 name=vendor.xiaomi.hardware.uniperf.IUniperf/default scontext=u:r:audioserver:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=001-22 19:56:24.335  2749  2749 :
+MediaCodecListGenerator
+MediaCodecListGenerator starting...
+01-22 19:56:24.336  2749  2749 :
+MediaCodecListGenerator
+MediaCodecListGenerator ready.
+01-22 19:56:25.284  712  712 :  ?
+avc:  denied  { find } for pid=2757 uid=0 name=device_identifiers scontext=u:r:mcd:s0 tcontext=u:object_r:device_identifiers_service:s0 tclass=service_manager permissive=001-22 19:56:25.289  2749  2753 :
+MediaCodecListGenerator
+Generating MediaCodecList...
+01-22 19:56:25.331  2758  2758 :
+libc
+Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 2758 (netd), pid 2758 (netd)
+01-22 19:56:25.332  2756  2756 :  ?
+01-22 19:56:25.332  2756  2756 :  ?
+01-22 19:56:25.404  2767  2767 :
+DEBUG
+*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+
+01-22 19:56:25.404  2767  2767 :
+DEBUG
+Build fingerprint: 'Xiaomi/custom_thyme/thyme:17/CP2A.260605.016/OS4.0.0.8.XOCCNXM:user/release-keys'
+
+01-22 19:56:25.404  2767  2767 :
+DEBUG
+Kernel Release: '4.19.325-perf-g45b9b954f074'
+
+01-22 19:56:25.404  2767  2767 :
+DEBUG
+Revision: '0'
+
+01-22 19:56:25.404  2767  2767 :
+DEBUG
+ABI: 'arm64'
+
+01-22 19:56:25.405  2767  2767 :
+DEBUG
+Timestamp: 1970-01-22 19:56:25.360127875+0800
+
+01-22 19:56:25.405  2767  2767 :
+DEBUG
+Process uptime: 0s
+
+01-22 19:56:25.405  2767  2767 :
+DEBUG
+ZygotePid: -1
+
+01-22 19:56:25.405  2767  2767 :
+DEBUG
+Executable: /system/bin/netd
+
+01-22 19:56:25.405  2767  2767 :
+DEBUG
+Cmdline: /system/bin/netd
+
+01-22 19:56:25.405  2767  2767 :
+DEBUG
+pid: 2758, ppid: 1, tid: 2758, name: netd  >>> /system/bin/netd <<<
+
+01-22 19:56:25.405  2767  2767 :
+DEBUG
+uid: 0
+
+01-22 19:56:25.405  2767  2767 :
+DEBUG
+signal 6 (SIGABRT), code -1 (SI_QUEUE), fault addr --------
+
+01-22 19:56:25.405  2767  2767 :
+DEBUG
+    x0  0000000000000000  x1  0000000000000ac6  x2  0000000000000006  x3  0000007fe6acf960
+
+01-22 19:56:25.405  2767  2767 :
+DEBUG
+    x4  1f3963646b686045  x5  1f3963646b686045  x6  1f3963646b686045  x7  7f7f7f7f7f7f7f7f
+
+01-22 19:56:25.405  2767  2767 :
+DEBUG
+    x8  00000000000000f0  x9  30f06b063a252948  x10 000000ff00000020  x11 000000000012800c
+
+01-22 19:56:25.405  2767  2767 :
+DEBUG
+    x12 ffffffffffffffff  x13 b4000079b6f54190  x14 0000000000000018  x15 000000002a3ec200
+
+01-22 19:56:25.405  2767  2767 :
+DEBUG
+    x16 0000007a871c9420  x17 0000007a871ad580  x18 0000007a90520000  x19 0000000000000ac6
+
+01-22 19:56:25.405  2767  2767 :
+DEBUG
+    x20 0000000000000ac6  x21 00000000ffffffff  x22 0000000000000002  x23 0000007fe6acfcc0
+
+01-22 19:56:25.405  2767  2767 :
+DEBUG
+    x24 0000000000000000  x25 0000000000000000  x26 0000000000000000  x27 0000000000000000
+
+01-22 19:56:25.405  2767  2767 :
+DEBUG
+    x28 0000000000000000  x29 0000007fe6acf9e0
+
+01-22 19:56:25.405  2767  2767 :
+DEBUG
+    lr  0000007a87149dec  sp  0000007fe6acf960  pc  0000007a87149e10  pst 0000000000001000
+
+01-22 19:56:25.405  2767  2767 :
+DEBUG
+    esr 0000000000000000  vg  0000000000000000
+
+01-22 19:56:25.405  2767  2767 :
+DEBUG
+4 total frames
+
+01-22 19:56:25.405  2767  2767 :
+DEBUG
+backtrace:
+
+01-22 19:56:25.405  2767  2767 :
+DEBUG
+      #00 pc 000000000007be10  /apex/com.android.runtime/lib64/bionic/libc.so (abort+160) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+
+01-22 19:56:25.405  2767  2767 :
+DEBUG
+      #01 pc 000000000001166c  /apex/com.android.tethering/lib64/libnetd_updatable.so (libnetd_updatable_init.cfi+576) (BuildId: 58c3339c97bfd5908106948948c660f2)
+
+01-22 19:56:25.405  2767  2767 :
+DEBUG
+      #02 pc 0000000000067b1c  /system/bin/netd (main.cfi+336) (BuildId: 44eb755c952aacff0a0d008581b56e08)
+
+01-22 19:56:25.405  2767  2767 :
+DEBUG
+      #03 pc 000000000006eee8  /apex/com.android.runtime/lib64/bionic/libc.so (__libc_init+124) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+
+01-22 19:56:25.405  2767  2767 :
+DEBUG
+Note: To display stack pointer information, use the pbtombstone tool:
+
+01-22 19:56:25.405  2767  2767 :
+DEBUG
+        pbtombstone --display-sp tombstone_XX.pb
+
+01-22 19:56:25.468  2756  2756 :  TENS
+200284993
+????
+01-22 19:56:25.477  2756  2756 :
+UltraFrameworkComponentFactory
+Failed to create UltraFrameworkComponentFactoryImpl
+java.lang.ClassNotFoundException: android.os.ufw.UltraFrameworkComponentFactoryImpl
+	at java.lang.Class.classForName(Native Method)
+	at java.lang.Class.forName(Class.java:591)
+	at java.lang.Class.forName(Class.java:496)
+	at android.os.ufw.UltraFrameworkComponentFactory.getInstance(UltraFrameworkComponentFactory.java:79)
+	at android.view.SurfaceControl.<clinit>(SurfaceControl.java:1166)
+Caused by: java.lang.ClassNotFoundException: android.os.ufw.UltraFrameworkComponentFactoryImpl
+	... 5 more
+
+01-22 19:56:25.501  2756  2756 :  ?
+01-22 19:56:25.512  2749  2753 :
+Codec2Client
+Available Codec2 services: "default" "default1" "software"
+01-22 19:56:25.666  2806  2815 :
+libc
+Fatal signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0xd0 in tid 2815 (android.hardwar), pid 2806 (android.hardwar)
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+Build fingerprint: 'Xiaomi/custom_thyme/thyme:17/CP2A.260605.016/OS4.0.0.8.XOCCNXM:user/release-keys'
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+Kernel Release: '4.19.325-perf-g45b9b954f074'
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+Revision: '0'
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+ABI: 'arm64'
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+Timestamp: 1970-01-22 19:56:25.680931396+0800
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+Process uptime: 0s
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+Executable: /vendor/bin/hw/android.hardware.biometrics.fingerprint-service.xiaomi
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+Cmdline: /vendor/bin/hw/android.hardware.biometrics.fingerprint-service.xiaomi
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+pid: 2806, ppid: 1, tid: 2815, name: android.hardwar  >>> /vendor/bin/hw/android.hardware.biometrics.fingerprint-service.xiaomi <<<
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+uid: 1000
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+esr: 0000000092000005 (Data Abort Exception 0x24)
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0x00000000000000d0 (read)
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+Cause: null pointer dereference
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+    x0  0000000000000000  x1  000000000000000a  x2  0000000000000001  x3  0000000000000000
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+    x4  0000000000000000  x5  0000000035313832  x6  0000000035313832  x7  7f7f7f7f7f7f7f7f
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+    x8  0000000000000000  x9  bb0e6e625ca3293e  x10 00000072fd192f40  x11 0000007590682ab0
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+    x12 0000000000000031  x13 0000000000000000  x14 0000000000000004  x15 0000000000000032
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+    x16 00000072fd19d358  x17 0000007590741fc0  x18 00000072fcca8000  x19 00000072fd19ae40
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+    x20 00000072fd19af4f  x21 b40000748f6423e0  x22 b40000748f6423d0  x23 00000072fd19aeae
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+    x24 00000072fd19aeb4  x25 00000072fd19aedb  x26 00000072fd19aef8  x27 0000000000000005
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+    x28 00000075956a00d0  x29 00000072fd192ad0
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+    lr  00000072fd19c274  sp  00000072fd192aa0  pc  00000072fd19c2b4  pst 0000000060001000
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+    esr 0000000092000005  vg  0000000000000000
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+3 total frames
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+backtrace:
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+      #00 pc 00000000000022b4  /vendor/lib64/libudfpshandler.so (void* std::__1::__thread_proxy[abi:nn220000]<std::__1::tuple<std::__1::unique_ptr<std::__1::__thread_struct, std::__1::default_delete<std::__1::__thread_struct>>, XiaomiKonaUdfpsHandler::init(fingerprint_device*)::'lambda'()>>(void*)+356) (BuildId: c4dceef3046e85491181d8ef2e87411b)
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+      #01 pc 000000000008e830  /apex/com.android.runtime/lib64/bionic/libc.so (__pthread_start(void*) (.__uniq.67847048707805468364044055584648682506)+184) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+      #02 pc 000000000007fb24  /apex/com.android.runtime/lib64/bionic/libc.so (__start_thread+68) (BuildId: 48c4b18304acf519b26457ccbc3d435f)
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+Note: To display stack pointer information, use the pbtombstone tool:
+
+01-22 19:56:25.698  2818  2818 :
+DEBUG
+        pbtombstone --display-sp tombstone_XX.pb
+
+01-22 19:56:25.705  2756  2756 :
+HyperOpt
+ThirdAppOptImpl has been initialized !
+01-22 19:56:25.771  2749  2753 :
+MediaCodecListGenerator
+MediaCodecList generated and serialized (25408 bytes).
+01-22 19:56:25.772  2725  2725 :
+libbinder.BpBinder
+PerfMonitor binderTransact: time=483ms interface=android.media.IMediaCodecListGenerator code=1
+
+01-22 19:56:25.783  2724  2724 :
+libbinder.BpBinder
+PerfMonitor binderTransact: time=1427ms interface=android.media.IMediaPlayerService code=7
+
+01-22 19:56:25.930  2756  2756 :
+libc
+Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 2756 (main), pid 2756 (main)
+01-22 19:56:25.939  2756  2756 :
+libc
+Crash due to signal: crash_dump helper failed to exec, or was killed

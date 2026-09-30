@@ -14139,3 +14139,12 @@
 - 保护：没有 reboot、set_active、擦除、Standalone boot、其他分区写入或 PixelOS 恢复。公开版不含本机 Fastboot transcript/设备标识及镜像文件。
 - 尚未验证：C30 首次启动、canary/logger 运行、Zygote/netd/system_server 事件顺序。
 - 待处理：等待用户单独明确授权首次启动 C30。
+## 2026-09-30｜C30 首启与 Unified First-Response 取证
+
+- 状态：C30 启动一次；pstore 与 THYME_DIAG 全卷备份完成；未构建新 Candidate。
+- 结论：用户始终看到静止小米第一屏。console-ramoops 在 32.921975 秒记录 PID 1 init 触发 sysrq crash，随后 panic；回溯包含 write_sysrq_trigger。这个证据确认 init 主动走了 panic 路径，但不说明先前哪个 fatal 条件触发它。pmsg 记录 /data F2FS 挂载、fscrypt、keystore2 推进和重复 netd SIGABRT；没有有序 Zygote/system_server 记录，netd 与 init panic 的因果未证实。
+- 诊断写入：host working copy journal recovery 后，首份 C30 write canary inode 319、0 bytes/0 blocks、SELinux type c25_diag_data_file；其余 canary/marker/event 未恢复。当前无证据支持扩大 SELinux 权限，write/fdatasync/进程退出问题仍未区分。
+- 取证：Unified Standalone 先 pstore、再 raw metadata/misc、最后全卷导出。13 个文件、2 个目录全部完成源/副本长度与 SHA-256 对照，0 复制错误。console 292,646 B / SHA-256 9b10867ce85eef8ff439f6d013ba7c49f19a36cd452cbe622f0fb71f9a0c04e7；pmsg 90,225 B / SHA-256 f23f288ea72b31c89e3a702f087e9aebf761ff4430933a3aafb61cc0109557a6。raw metadata/misc 不公开。
+- 设备：启动前 A retry=4；Fastboot 后、Standalone 前 A retry=3/unbootable=no/successful=no。随后主机看到 THYME_DIAG UMS，Fastboot 无设备；不能声称当前仍在 Bootloader Fastboot。没有分区写入、清除、set_active、PixelOS 恢复或 C30 二次启动。
+- 公开内容：新增 C30 报告、原始 pstore console/pmsg、Standalone 日志和主机观察文件；diag_status 中设备/本地标识已脱敏。完整本地原件保留，metadata.raw/misc.raw 不上传。来源与公开 SHA-256 见 evidence/candidate30/first-boot-20260930/run_20260930_115223/PUBLIC_EVIDENCE_MANIFEST.csv。
+- 待处理：设备退出 UMS 后只读确认 Fastboot；定点检查 init fatal 先因与 canary 持久写。

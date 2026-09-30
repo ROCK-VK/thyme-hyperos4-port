@@ -1,0 +1,6 @@
+capture_started_utc=Thu Jan 22 12:07:53 UTC 1970
+mount=success options=ro
+copied=console-ramoops-0 source_bytes=292646 copy_bytes=292646 source_sha256=9b10867ce85eef8ff439f6d013ba7c49f19a36cd452cbe622f0fb71f9a0c04e7 copy_sha256=9b10867ce85eef8ff439f6d013ba7c49f19a36cd452cbe622f0fb71f9a0c04e7 verified=yes
+copied=pmsg-ramoops-0 source_bytes=90225 copy_bytes=90225 source_sha256=f23f288ea72b31c89e3a702f087e9aebf761ff4430933a3aafb61cc0109557a6 copy_sha256=f23f288ea72b31c89e3a702f087e9aebf761ff4430933a3aafb61cc0109557a6 verified=yes
+record_count=2
+capture_finished_utc=Thu Jan 22 12:07:53 UTC 1970

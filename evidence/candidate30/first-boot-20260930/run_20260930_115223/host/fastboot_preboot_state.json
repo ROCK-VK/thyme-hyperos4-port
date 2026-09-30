@@ -1,0 +1,12 @@
+{
+  "product": "thyme",
+  "current-slot": "a",
+  "unlocked": "yes",
+  "is-userspace": "no",
+  "slot-unbootable:a": "no",
+  "slot-successful:a": "no",
+  "slot-retry-count:a": "4",
+  "slot-unbootable:b": "no",
+  "slot-successful:b": "no",
+  "slot-retry-count:b": "7"
+}
