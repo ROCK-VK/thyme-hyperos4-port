@@ -94,3 +94,13 @@ C30 正式启动命令仅执行一次。之后一次 fastboot boot 临时启动�
 ## 下一步
 
 不启动或重刷 C30，不清数据，不修改 A/B 状态。下一轮先定点追查 PID 1 在约 32.9 秒触发 sysrq 前的 init fatal 条件；同时修复 C30 diagnostics 的首条持久写留证路径，不能只依赖 helper 报告自己的写错误。取得可靠事件顺序后，再决定是否需要 C31 或最小启动策略修改。
+
+## 取证后的最新只读设备状态（2026-09-30 13:09 HKT）
+
+在 Standalone UMS 取证完成后，主机后来重新枚举到唯一 Android Bootloader Interface。只读 fastboot getvar 返回：
+
+- product=thyme；current-slot=a；unlocked=yes；is-userspace=no。
+- A：unbootable=no、successful=no、retry=3。
+- B：unbootable=no、successful=no、retry=7。
+
+这只记录模式变化和槽位现状；本次没有执行 set_active、reboot、刷写、擦除或其他写操作。设备目前保持 Bootloader Fastboot，C30 没有再次启动。

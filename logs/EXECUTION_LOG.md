@@ -14148,3 +14148,9 @@
 - 设备：启动前 A retry=4；Fastboot 后、Standalone 前 A retry=3/unbootable=no/successful=no。随后主机看到 THYME_DIAG UMS，Fastboot 无设备；不能声称当前仍在 Bootloader Fastboot。没有分区写入、清除、set_active、PixelOS 恢复或 C30 二次启动。
 - 公开内容：新增 C30 报告、原始 pstore console/pmsg、Standalone 日志和主机观察文件；diag_status 中设备/本地标识已脱敏。完整本地原件保留，metadata.raw/misc.raw 不上传。来源与公开 SHA-256 见 evidence/candidate30/first-boot-20260930/run_20260930_115223/PUBLIC_EVIDENCE_MANIFEST.csv。
 - 待处理：设备退出 UMS 后只读确认 Fastboot；定点检查 init fatal 先因与 canary 持久写。
+
+## 2026-09-30 13:09 HKT｜取证后只读 Fastboot 状态核对
+
+- Standalone UMS 取证后，主机重新看到唯一 Bootloader Fastboot 设备。只读 getvar 确认 thyme/A/unlocked/non-userspace；A unbootable=no、successful=no、retry=3，B no/no/retry=7。
+- 未执行 reboot、set_active、刷写或擦除。C30 保持未再次启动。
+- C30 报告与原始 pstore/主机证据已于提交 dac7820d48d86719dbeeb2161ff014bba093f8d4 推送；匿名 raw 文件链接返回 HTTP 200。GitHub API visibility 请求返回 403，故没有用 API 结果单独宣称可见性。

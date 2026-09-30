@@ -8,7 +8,7 @@
 
 - C30 已在 A 槽启动一次，用户报告全程停留在静止小米第一屏。C30 console 记录 PID 1 init 在约 32.922 秒主动触发 sysrq panic；触发 init fatal 的上游条件尚未确认。
 - pmsg 证明 /data、fscrypt、keystore2 推进，并记录重复 netd SIGABRT；没有有序 Zygote/system_server 证据。C30 canary 文件创建后仍为 0 字节，诊断写入原因尚未定界。
-- Standalone 已完成 pstore 优先读取和全卷校验；设备当前主机状态为 THYME_DIAG UMS，不是 Fastboot。没有第二次启动或新 Candidate 刷写。
+- Standalone 已完成 pstore 优先读取和全卷校验；取证后最新只读状态为 Bootloader Fastboot，A retry=3、unbootable=no。没有第二次启动或新 Candidate 刷写。
 - [C30 首启报告](reports/C30_FIRST_BOOT_AND_PSTORE_REPORT.md) · [C30 原始证据与主机时间线](evidence/candidate30/first-boot-20260930/run_20260930_115223/) · [项目当前状态](logs/PROJECT_STATUS.md)
 
 ## 设备与来源
