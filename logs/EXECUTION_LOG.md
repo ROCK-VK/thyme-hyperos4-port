@@ -14131,3 +14131,11 @@
 - 验证：匿名 GitHub API 显示仓库为 Public，`main` 与内容提交一致；README、状态、报告和关键源码可匿名读取。
 - 保护：未上传 ROM/分区镜像、raw metadata/misc 或设备身份序列号。
 - 尚未验证：C30 设备端 canary、logger 和服务时序；本次未执行设备操作。
+## 2026-09-30｜C30 最终门禁与受限刷写
+
+- 状态：C30 已刷写；保持 Bootloader Fastboot，未启动。
+- 改动/结论：仓库原先没有 C30 专用刷写脚本；C29 脚本硬编码旧 manifest，因此新增带 C30 manifest/差异/哈希校验、A/B 全槽预检及刷后回查的受限脚本。仅写 `super` 与 `vbmeta_system_a`。
+- 验证：目标镜像大小/SHA 与 manifest 相符；C29→C30 `unexpected_changes=[]`，变化限于诊断 helper/RC、init 导入和关联策略/contexts；neverallow 检查通过。刷前后为 thyme/A/unlocked/non-userspace，A 为 no/no/retry4，B 为 no/no/retry7；刷写均返回 exit 0且状态不变。
+- 保护：没有 reboot、set_active、擦除、Standalone boot、其他分区写入或 PixelOS 恢复。公开版不含本机 Fastboot transcript/设备标识及镜像文件。
+- 尚未验证：C30 首次启动、canary/logger 运行、Zygote/netd/system_server 事件顺序。
+- 待处理：等待用户单独明确授权首次启动 C30。
