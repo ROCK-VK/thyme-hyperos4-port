@@ -14231,3 +14231,10 @@
 - 决策：Result B，不构建 C31。下一实验方向为 init 原生 kmsg/pstore 服务状态+PID记录，并只对 primary Zygote 临时启用 `init.svc_debug.no_fatal.zygote=true`，确认或证伪 critical escalation；实施前核验当前 init 与 SELinux 支持。此诊断版本尚未构建。
 - 本轮未查询设备，历史 A retry=3 不是实时值；未刷写、reboot、set_active、清数据或恢复 PixelOS。C/D/E 均高于 50 GiB；Docker 未触碰。
 - 报告：`reports/c30_init_fatal_chain_20261001/C30_NETD_ZYGOTE_INIT_FATAL_CAUSAL_CLOSURE.md`。仅发布报告与脱敏状态/文字记录，无原始 pstore、metadata/misc、镜像或二进制。
+
+## 2026-10-01 11:12 HKT｜C30 因果补充报告公开同步验证
+
+- 状态：已推送并完成远端匿名读取核验。
+- 改动/结论：提交 `79356d72a97dbf309a4e410f55e449775a6579c8` 发布 C30 netd/Zygote/init fatal 因果报告、脱敏状态/执行记录及报告索引；本轮结果为不构建 C31。
+- 验证：远端 main 与提交一致，工作树干净；commit 页面、不可变 raw 报告、PROJECT_STATUS、EXECUTION_LOG 和 reports/README 均匿名可读。main 分支 raw 缓存仍旧，按不可变 commit URL 核验新内容。
+- 安全：仅 Markdown 与脱敏日志；未上传 pstore、metadata/misc、镜像或二进制。未查询或操作手机。

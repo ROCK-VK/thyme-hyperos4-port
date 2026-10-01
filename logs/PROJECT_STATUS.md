@@ -1,6 +1,6 @@
 # THYME-OS4 项目当前状态
 
-更新时间：2026-10-01 11:07 HKT
+更新时间：2026-10-01 11:12 HKT
 
 ## 项目目标与阶段
 将 Xiaomi 15（dada）HyperOS 4 / Android 17 移植到 Xiaomi 10S（thyme）。当前主线是依据 C30 真实启动证据定位 PID 1 panic 的上游触发条件；第三方 Milo 包已完成离线评估，不作为当前 Candidate。
@@ -70,3 +70,4 @@
 - 本轮仅分析，设备未查询或操作。A retry=3/unbootable=no 仍是最近历史记录，不是实时状态；C/D/E 最近实测均高于 50 GiB，未清理，Docker 未触及。
 - 新增报告 `work/reports/c30_ultraframework_closure_20261001/C30_ULTRAFRAMEWORK_K40_CAUSAL_CLOSURE.md`、原始 AVC 表和空 C31 change-set；待取得 property key/PID/调用点与可用 Zygote backtrace，再决定是否存在启动修复。
 - 报告与 CSV 已公开同步；远端 main 与本地同步时 HEAD 一致，报告、两份 CSV、项目状态、执行记录及 reports 索引的匿名读取均返回 HTTP 200。公开发布内容仅为文本/CSV。
+- 最新 C30 netd/Zygote/init fatal 因果补充报告已发布于 `reports/c30_init_fatal_chain_20261001/`，报告和状态/执行记录同步提交 `79356d72a97dbf309a4e410f55e449775a6579c8`；GitHub commit 页面与不可变 raw 报告已匿名读取成功。未发布 raw pstore、metadata/misc、镜像或二进制。
