@@ -31,4 +31,4 @@ Port Xiaomi 15 (dada) HyperOS 4 / Android 17 to Xiaomi 10S (thyme, Snapdragon 87
 ## Reports
 - Current report: `reports/c32_diag_crash_handler_20261001/C31_C32_HANDLER_INSTRUMENTATION_FEASIBILITY.md`
 - Previous crash-dump evidence-gap report: `reports/c32_diag_zygote_abort_20261001/C31_CRASH_DUMP_FIRST_SCENE_GAP.md`
-- This status and the linked feasibility report are published together as the current offline-analysis snapshot; no binary or raw device evidence is included.
+- The feasibility report is published in commit `7d0f29c1afb75ab1382843f5ca803b8a1ccb1d75`; this status snapshot is current. No binary or raw device evidence is included.

@@ -14288,3 +14288,9 @@
 - Next: Statically assess one one-shot, noncritical fixed-SIGABRT canary explicitly launched in the zygote SELinux domain after tombstoned is running, with independent init markers and pstore-first Standalone capture. It will not reproduce actual Zygote ART/seccomp/namespace state; it was not implemented or run.
 - Files: `reports/c32_diag_crash_handler_20261001/C31_C32_HANDLER_INSTRUMENTATION_FEASIBILITY.md`, `logs/PROJECT_STATUS.md`, `logs/EXECUTION_LOG.md`.
 - Validation: Local ELF/APEX/symbol/string, init marker/pmsg, and build workflow review plus official AOSP source/build/APEX documentation. Static only, not device runtime verification. C/D/E free space recorded as about 90.66/191.83/161.25 GiB; no cleanup; Docker untouched. No raw evidence or ROM/image/binary was published.
+
+## 2026-10-01 20:23 HKT | C32 feasibility report public sync verification
+- Status: Sanitized report and state materials were pushed and verified for anonymous access.
+- Publication: The report is in commit `7d0f29c1afb75ab1382843f5ca803b8a1ccb1d75`. At verification, remote `main` matched that commit; anonymous raw GET returned HTTP 200 for the report, project status, execution log, and reports index.
+- Integrity: Local/public report SHA-256 matched: `369432562265CDD3ED5325AAB89E3A9B4599D0E9E8D29745095DC77A23AC095B`.
+- Safety: Only sanitized Markdown was published. No pstore, metadata/misc, ROM/APEX image, private key, or device identity data was uploaded. No device operation occurred.
