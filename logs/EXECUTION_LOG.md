@@ -14294,3 +14294,13 @@
 - Publication: The report is in commit `7d0f29c1afb75ab1382843f5ca803b8a1ccb1d75`. At verification, remote `main` matched that commit; anonymous raw GET returned HTTP 200 for the report, project status, execution log, and reports index.
 - Integrity: Local/public report SHA-256 matched: `369432562265CDD3ED5325AAB89E3A9B4599D0E9E8D29745095DC77A23AC095B`.
 - Safety: Only sanitized Markdown was published. No pstore, metadata/misc, ROM/APEX image, private key, or device identity data was uploaded. No device operation occurred.
+
+## 2026-10-01 22:03 HKT | C32-DIAG build, static gates, and restricted flash
+- Status: C32-DIAG was built and flashed to slot A; it remains unbooted in Bootloader Fastboot.
+- Change: Added one native, one-shot SIGABRT canary that reuses the existing init-to-zygote transition, plus init lifecycle markers. No SELinux allow/CIL/property-context change or formal boot fix was added.
+- Images: super.img is 7,703,595,992 bytes, SHA-256 690658F64A7AA6DE254358DF9728C3085A5FB24D23BD5E94158F18A395A7B06B; vbmeta_system.img is 131,072 bytes, SHA-256 FEEBAF0C5087CA4233B8BD5DA2F424C175840AEBB0ACEFE51D51E35743E65C01.
+- Verification: EROFS/fsck and final readbacks, canary ELF identity, system AVB, vbmeta descriptor, LP rebuild/readback, unchanged non-system logical inputs, and restricted-script Dry-Run passed. Two earlier partial build attempts remain local; accepted output is run3.
+- Device: Only super and vbmeta_system_a were written. Post-flash state remained A unbootable=no/successful=no/retry=2 and B no/no/retry=7. No reboot, set_active, erase, format, or restore was performed; no raw device partition readback was made.
+- Follow-up tooling: Corrected the builder so an existing run3 output blocks only a full rebuild, not --preflight-only; Python syntax and Ubuntu WSL preflight passed. This post-build tooling change did not alter the built system tree or images.
+- Not verified: Canary runtime/domain, tombstone, abort message, helper/tombstoned outcome, actual Android boot stage, or root cause of the real Zygote SIGABRT.
+- Safety: Public sync excludes the local Fastboot transcript, raw pstore/metadata/misc/Standalone files, ROMs, images, device serials, credentials, and hardware identity data.

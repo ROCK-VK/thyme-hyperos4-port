@@ -1,0 +1,27 @@
+
+# C32-DIAG: one native abort after tombstoned is running; executable file
+# context zygote_exec uses the existing init -> zygote process transition.
+service c32_zygote_canary /system/bin/c32_zygote_canary
+    class main
+    user root
+    group root readproc reserved_disk
+    disabled
+    oneshot
+
+# The boot event is one-shot. Tombstoned is started during post-fs-data,
+# before zygote-start and boot. If it is not running here, do not run canary.
+on boot
+    write /dev/kmsg "THYME_C32_CANARY event=boot tombstoned=${init.svc.tombstoned}"
+
+on boot && property:init.svc.tombstoned=running
+    write /dev/kmsg "THYME_C32_CANARY event=trigger tombstoned=running executable_context=zygote_exec expected_domain=u:r:zygote:s0"
+    start c32_zygote_canary
+
+on property:init.svc_debug_pid.c32_zygote_canary=*
+    write /dev/kmsg "THYME_C32_CANARY event=pid pid=${init.svc_debug_pid.c32_zygote_canary} state=${init.svc.c32_zygote_canary}"
+
+on property:init.svc.c32_zygote_canary=running
+    write /dev/kmsg "THYME_C32_CANARY event=running pid=${init.svc_debug_pid.c32_zygote_canary} state=running"
+
+on property:init.svc.c32_zygote_canary=stopped && property:init.svc_debug_pid.c32_zygote_canary=*
+    write /dev/kmsg "THYME_C32_CANARY event=stopped pid=${init.svc_debug_pid.c32_zygote_canary} state=stopped"
