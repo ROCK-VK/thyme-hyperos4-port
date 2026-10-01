@@ -25,3 +25,5 @@ Raw `misc`/BCB, partition backups, `persist`, radio/NV/EFS data, user data, comp
 - c31_diag_critical_20261001/ documents the C31-DIAG single-variable primary Zygote critical-escalation experiment, static build gates, restricted flash scope, and explicit unbooted runtime boundary. It contains text only; no images or raw device evidence.
 
 - c31_diag_critical_20261001/C31_DIAG_RUNTIME_RESULT_20261001.md records the C31-DIAG controlled boot and complete local Standalone capture. It finds strong differential support for suppressed Zygote critical escalation, but the missing gate readback and init reap/fatal records leave the causal chain incomplete. Raw pstore/metadata/misc and device identifiers remain local.
+
+- c32_diag_zygote_abort_20261001/ documents the C31 first primary-Zygote SIGABRT and the repeated crash_dump handshake EOF. It confirms the abort reason remains unknown, distinguishes static crash_dump/tombstoned assets from runtime helper success, and proposes one noncritical one-shot canary as the next diagnostic step. No raw pstore, metadata/misc, ROM, or device dump is included.

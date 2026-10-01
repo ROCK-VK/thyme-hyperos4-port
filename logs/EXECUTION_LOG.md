@@ -14269,3 +14269,13 @@
 - Commit: b56bf1296873d4bd1baf24e3dabe287b6eed4084; immutable report URL: https://github.com/ROCK-VK/thyme-hyperos4-port/commit/b56bf1296873d4bd1baf24e3dabe287b6eed4084.
 - Validation: Remote main matched the commit at publication time. Anonymous GET returned HTTP 200 for the immutable runtime report, its README, project status, reports index, and commit page.
 - Safety: This publication contains text summaries only. Raw pstore, raw metadata/misc, Standalone dmesg, host transcripts, and device-specific command-line data remain local.
+## 2026-10-01 18:23 HKT | C31 crash_dump evidence gap and C32 decision
+
+- Status: Host-side offline analysis only; Result C. No Candidate change, C32 build/flash/boot, phone query, slot change, erase, metadata write, or PixelOS restore.
+- Findings: The first main SIGABRT PID 1059 matches the init marker's primary Zygote PID. pmsg has 103 main SIGABRTs across distinct PIDs. Each retained only the generic crash_dump helper handshake EOF message; no abort reason/backtrace, exec errno, or child exit status is present.
+- Crash path: crash_dump64, static dependency paths, tombstoned configuration, and relevant merged SELinux transition/access rules exist. The targeted logs contain no crash_dump/tombstoned AVC. A netd crash produced a native tombstone in the same runtime, so global crash-dump unavailability is not established; the Zygote-specific helper failure remains unknown. No SELinux grant was added.
+- no_fatal: C31 has no PID1 sysrq/panic through uptime 527.837 seconds, versus C30 at about 32.922 seconds, despite many Zygote SIGABRTs. This strongly supports critical escalation suppression but does not directly prove the runtime property or critical branch.
+- Report: reports/c32_diag_zygote_abort_20261001/C31_CRASH_DUMP_FIRST_SCENE_GAP.md. Static pmsg, ELF/dependency, merged CIL, init config, and upstream handshake-semantics review; not a device runtime validation.
+- Next: Statically validate a one-shot noncritical zygote-domain crash-dump canary, triggered after tombstoned is running, with a fixed abort message and independent init PID/start/stop markers. It does not reproduce the true Zygote ART/seccomp/namespace context. Decide on C32 only after checking explicit seclabel feasibility.
+- Device: Last recorded A retry=2/unbootable=no, B retry=7/unbootable=no; user had reported returning to Fastboot after C31 capture. No live query occurred this turn.
+- Safety: Raw pstore, metadata/misc, Standalone dmesg, ROM/images, and device identity data remain unpublished.
