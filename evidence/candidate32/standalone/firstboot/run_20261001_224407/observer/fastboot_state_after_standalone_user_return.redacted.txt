@@ -1,0 +1,55 @@
+readback_utc=2026-10-01T15:35:30.389+00:00
+
+$ fastboot devices -l
+exit_code=0
+[REDACTED_DEVICE_SERIAL]               fastboot
+
+$ fastboot getvar product
+exit_code=0
+product: thyme
+Finished. Total time: 0.002s
+
+$ fastboot getvar current-slot
+exit_code=0
+current-slot: a
+Finished. Total time: 0.002s
+
+$ fastboot getvar unlocked
+exit_code=0
+unlocked: yes
+Finished. Total time: 0.001s
+
+$ fastboot getvar is-userspace
+exit_code=0
+is-userspace: no
+Finished. Total time: 0.002s
+
+$ fastboot getvar slot-unbootable:a
+exit_code=0
+slot-unbootable:a: no
+Finished. Total time: 0.003s
+
+$ fastboot getvar slot-successful:a
+exit_code=0
+slot-successful:a: no
+Finished. Total time: 0.003s
+
+$ fastboot getvar slot-retry-count:a
+exit_code=0
+slot-retry-count:a: 1
+Finished. Total time: 0.003s
+
+$ fastboot getvar slot-unbootable:b
+exit_code=0
+slot-unbootable:b: no
+Finished. Total time: 0.003s
+
+$ fastboot getvar slot-successful:b
+exit_code=0
+slot-successful:b: no
+Finished. Total time: 0.003s
+
+$ fastboot getvar slot-retry-count:b
+exit_code=0
+slot-retry-count:b: 7
+Finished. Total time: 0.003s

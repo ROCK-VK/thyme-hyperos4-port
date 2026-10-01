@@ -1,0 +1,55 @@
+C32 first boot preboot state; read-only Fastboot queries
+host_utc=2026-10-01T14:29:35.3335499+00:00
+candidate=C32-DIAG-firstboot
+=[REDACTED_DEVICE_SERIAL]
+[REDACTED_DEVICE_SERIAL]               fastboot
+product=thyme
+current-slot=a
+unlocked=yes
+is-userspace=no
+slot-unbootable:a=no
+slot-successful:a=no
+slot-retry-count:a=2
+slot-unbootable:b=no
+slot-successful:b=no
+slot-retry-count:b=7
+--- product exit=0 ---
+product: thyme
+Finished. Total time: 0.002s
+
+--- current-slot exit=0 ---
+current-slot: a
+Finished. Total time: 0.002s
+
+--- unlocked exit=0 ---
+unlocked: yes
+Finished. Total time: 0.001s
+
+--- is-userspace exit=0 ---
+is-userspace: no
+Finished. Total time: 0.003s
+
+--- slot-unbootable:a exit=0 ---
+slot-unbootable:a: no
+Finished. Total time: 0.003s
+
+--- slot-successful:a exit=0 ---
+slot-successful:a: no
+Finished. Total time: 0.003s
+
+--- slot-retry-count:a exit=0 ---
+slot-retry-count:a: 2
+Finished. Total time: 0.003s
+
+--- slot-unbootable:b exit=0 ---
+slot-unbootable:b: no
+Finished. Total time: 0.006s
+
+--- slot-successful:b exit=0 ---
+slot-successful:b: no
+Finished. Total time: 0.003s
+
+--- slot-retry-count:b exit=0 ---
+slot-retry-count:b: 7
+Finished. Total time: 0.003s
+

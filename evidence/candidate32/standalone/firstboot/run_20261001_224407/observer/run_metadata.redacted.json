@@ -1,0 +1,8 @@
+{
+  "candidate": "C32-DIAG-firstboot",
+  "observer_started_utc": "2026-10-01T14:28:22.250+00:00",
+  "serial": "[REDACTED_DEVICE_SERIAL]",
+  "observation_seconds": 1800,
+  "run_dir": "<local-project>\\reports\\c32_diag_zygote_domain_canary_20261001\\observations\\run_20261001_222822",
+  "host_timezone": "中国标准时间"
+}

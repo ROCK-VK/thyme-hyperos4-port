@@ -1,0 +1,27 @@
+=================================================
+  THYME STANDALONE DIAGNOSTIC ENVIRONMENT v1.1   
+=================================================
+Boot Time (UTC): Fri Jan 23 22:45:20 UTC 1970
+Kernel: Linux version 4.19.325-perf-g45b9b954f074 (root@<redacted-host>) (Android (13989888, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349), LLD 21.0.0 (<redacted-build-path> 5e96669f06077099aa41290cdb4c5e6fa0f59349)) #1 SMP PREEMPT Tue Sep 22 15:06:57 CST 2026
+Cmdline: [REDACTED: device identity and panel/boot identifiers]
+PID 1: 1 (sh on busybox)
+Dev nodes created successfully
+[C28] exact PARTNAME=metadata matches: 1
+[C28] metadata PARTNAME=metadata DEVNAME=sda18 MAJOR=259 MINOR=2 node=103:2 sysfs_bytes=16777216 node_bytes=16777216 expected_bytes=16777216
+[C28][OK] read-only raw metadata copy bytes=16777216 source_sha256=3dea9b7ddad1ba3c2f9fbb12b4d3a5b46ba8c20c32d5d24e31684357013a844d copy_sha256=3dea9b7ddad1ba3c2f9fbb12b4d3a5b46ba8c20c32d5d24e31684357013a844d
+[INFO] Exact PARTNAME=misc sysfs matches: 1
+[INFO] misc sysfs event: /sys/class/block/sda11/uevent
+[INFO] misc PARTNAME=misc MAJOR=8 MINOR=11 DEVNAME=sda11
+[INFO] node /dev/sda11 stat device=8:b; sysfs expected=8:b (hex)
+[INFO] sysfs-verified misc node capacity: 4194304 bytes
+[INFO] temporary by-name link target: /dev/sda11
+[INFO] by-name target stat device=8:b; stat -L device=8:b; link capacity=4194304 bytes
+[OK] Unique sysfs misc mapping, block type, device number, symlink target, and 4 MiB capacity verified
+[INFO] Reading /dev/block/by-name/misc using dd if= only; output is in RAM /tmp
+[INFO] captured byte count: 4194304
+[OK] misc.raw SHA-256: 2988e9feaec8c2c1bfeff1ed924e90f98c84e14c98efcc4b48f8d3ec6d778f51
+[OK] complete raw misc copy saved in RAM
+standalone_dmesg_source=Standalone diagnostic kernel; not the preceding Android Candidate
+unified_payload_manifest=FILE_MANIFEST.tsv sha256_manifest=SHA256SUMS.txt
+[INFO] Formatting 64MB FAT32 RAM disk image...
+[OK] Mounted FAT32 RAM disk, copying dump files...

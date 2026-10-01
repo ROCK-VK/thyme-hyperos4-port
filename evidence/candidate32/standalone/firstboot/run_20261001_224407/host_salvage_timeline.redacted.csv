@@ -1,0 +1,9 @@
+host_utc,event,details_json
+2026-10-01T14:44:07.593+00:00,salvage_script_started,"{""image_bytes"": 201326592, ""image_path"": ""<local-project>\\work\\standalone_diag_unified_first_response_20260930_run2\\standalone_diag_boot.img"", ""image_sha256"": ""AB454793FBE595408B71A905BA176FE4A35E5C4C380439E5114E647A8CEB1DBA""}"
+2026-10-01T14:44:07.595+00:00,fastboot_wait_started,"{""serial"": ""[REDACTED_DEVICE_SERIAL]""}"
+2026-10-01T14:44:07.789+00:00,fastboot_preflight_passed,"{""current_slot"": ""a"", ""is_userspace"": ""no"", ""product"": ""thyme"", ""serial"": ""[REDACTED_DEVICE_SERIAL]"", ""unlocked"": ""yes""}"
+2026-10-01T14:44:07.790+00:00,fastboot_boot_started,"{""command"": ""fastboot boot <verified Standalone image>"", ""image_path"": ""<local-project>\\work\\standalone_diag_unified_first_response_20260930_run2\\standalone_diag_boot.img"", ""image_sha256"": ""AB454793FBE595408B71A905BA176FE4A35E5C4C380439E5114E647A8CEB1DBA""}"
+2026-10-01T14:44:13.325+00:00,fastboot_boot_finished,"{""exit_code"": 0, ""stderr"": ""Sending 'boot.img' (196608 KB)                     OKAY [  5.228s]\nBooting                                            OKAY [  0.222s]\nFinished. Total time: 5.504s\n"", ""stdout"": """"}"
+2026-10-01T14:44:22.143+00:00,diag_volume_found,"{""volume"": ""G:\\""}"
+2026-10-01T14:44:22.144+00:00,copy_started,"{""volume"": ""G:\\""}"
+2026-10-01T14:44:22.931+00:00,copy_finished,"{""copy_error_count"": 0, ""copy_errors"": [], ""file_count"": 13, ""files"": [""FILE_MANIFEST.tsv"", ""SHA256SUMS.txt"", ""diag_status.log"", ""metadata.raw"", ""metadata.raw.sha256"", ""misc.raw"", ""misc.raw.sha256"", ""pstore_status.txt"", ""standalone_dmesg.txt"", ""System Volume Information/IndexerVolumeGuid"", ""System Volume Information/WPSettings.dat"", ""pstore/console-ramoops-0"", ""pstore/pmsg-ramoops-0""]}"

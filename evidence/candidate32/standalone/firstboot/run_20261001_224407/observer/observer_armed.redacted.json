@@ -1,0 +1,11 @@
+{
+  "candidate": "C32-DIAG-firstboot",
+  "armed_utc": "2026-10-01T14:28:24.318+00:00",
+  "elapsed_seconds": 2.068,
+  "serial": "[REDACTED_DEVICE_SERIAL]",
+  "usb_pnp_state": "present",
+  "usb_pnp_output": "{\"state\":\"present\",\"devices\":[{\"Status\":\"OK\",\"Class\":\"AndroidUsbDeviceClass\",\"FriendlyName\":\"Android Bootloader Interface\",\"InstanceId\":\"USB\\\\VID_18D1&PID_D00D\\\\[REDACTED_DEVICE_SERIAL]\"}]}",
+  "adb_state": "absent",
+  "fastboot_state": "fastboot",
+  "run_dir": "<local-project>\\reports\\c32_diag_zygote_domain_canary_20261001\\observations\\run_20261001_222822"
+}

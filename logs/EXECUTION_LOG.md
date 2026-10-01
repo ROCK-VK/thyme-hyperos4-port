@@ -14304,3 +14304,23 @@
 - Follow-up tooling: Corrected the builder so an existing run3 output blocks only a full rebuild, not --preflight-only; Python syntax and Ubuntu WSL preflight passed. This post-build tooling change did not alter the built system tree or images.
 - Not verified: Canary runtime/domain, tombstone, abort message, helper/tombstoned outcome, actual Android boot stage, or root cause of the real Zygote SIGABRT.
 - Safety: Public sync excludes the local Fastboot transcript, raw pstore/metadata/misc/Standalone files, ROMs, images, device serials, credentials, and hardware identity data.
+
+
+## 2026-10-01 23:27 HKT | C32-DIAG first boot, capture, and evidence publication
+
+- Status: One controlled C32-DIAG boot, one Unified First-Response Standalone capture, host analysis, and sanitized public sync completed. No startup repair was identified.
+- Device: Observer was ARMED before the sole `fastboot reboot`; it returned success at 2026-10-01 14:29:35.333 UTC. Host Fastboot was visible again at 14:38:01.484 UTC. User reported only the static Xiaomi first screen with “Powered by Android”; ADB never came online. The exact screen report is not timestamp-aligned tightly enough to tie it to the host reconnect instant.
+- Boot control: A retry changed from 2 to 1; A remains `unbootable=no`/`successful=no`. B remains `no`/`no`/retry 7. A fresh live read-only query after the user returned from Standalone confirms one Bootloader Fastboot device, thyme/A/unlocked/non-userspace, A retry 1, B retry 7. No repeat boot, `set_active`, flash, erase, data operation, or PixelOS restore followed.
+- Evidence: The first Unified Standalone capture saved Candidate pstore first, then raw metadata and misc, Standalone dmesg, and the complete THYME_DIAG volume. All 13 volume entries passed host source/copy size and SHA-256 comparison; zero copy errors. Local raw originals remain unmodified.
+- Finding: Canary PID 1453 has a fixed `THYME_C32_CANARY_ABORT` tombstone and three-frame native backtrace. Among 98 `main` SIGABRT PIDs, the remaining 97 match the 97 helper-failure PID records one-to-one. This supports a difference in the real Zygote crash-dump context but does not identify its cause; the canary runtime SELinux label is absent. `UltraFrameworkComponentFactoryImpl` ClassNotFoundException precedes primary PID 1068's abort, but the abort reason/backtrace is missing, so causality is unproven. No system_server/UI/boot_completed evidence.
+- Observer correction: An append-only event was added because the observer's stop reason retained a stale Standalone-UMS state. The correction records the user's later Fastboot return and a live read-only state query; the original event was preserved.
+- Publication: Added the C32 runtime report and evidence bundle. Exact PMSG is public after checking it for the known device serial/CPUID and common credential markers; console, Standalone dmesg, diag_status and host observation records are redacted text derivatives. `metadata.raw`, `misc.raw`, and Windows-generated volume metadata are excluded. Every source item is accounted for with source and published hashes in the provenance manifest.
+- Next: Do targeted host-side analysis of crash-dump context differences. Do not repeat C32, `set_active`, or build C33 without a specific evidence-backed change.
+
+
+## 2026-10-01 23:36 HKT | Post-Standalone Fastboot state correction
+
+- Status: A fresh read-only Fastboot state capture was saved after the user returned from Standalone UMS; it confirms the same single thyme device on slot A, Bootloader unlocked, non-userspace Fastboot, A retry 1, and B retry 7.
+- Record correction: The original observer stop event still says the phone was in UMS. It was preserved; a later event records the user's Fastboot return and the live state.
+- Publication: The redacted readback is included in the C32 public evidence bundle and the provenance manifest was updated.
+- Safety: No reboot, `set_active`, flash, erase, userdata/metadata operation, or restore occurred.
