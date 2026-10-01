@@ -1,0 +1,25 @@
+
+# C31-DIAG: preserve C30 behavior while correlating init-managed service PIDs
+# with the SIGABRT records already preserved by pstore. Kernel printk prefixes
+# these writes with monotonic boot uptime; no helper or metadata write is used.
+on early-init
+    setprop init.svc_debug.no_fatal.zygote true
+    write /dev/kmsg "THYME_C31DIAG event=critical_gate property=init.svc_debug.no_fatal.zygote value=${init.svc_debug.no_fatal.zygote} boot_completed=${sys.boot_completed}"
+
+on zygote-start
+    write /dev/kmsg "THYME_C31DIAG event=zygote_start zygote_state=${init.svc.zygote} zygote_pid=${init.svc_debug_pid.zygote} secondary_state=${init.svc.zygote_secondary} secondary_pid=${init.svc_debug_pid.zygote_secondary} netd_state=${init.svc.netd} netd_pid=${init.svc_debug_pid.netd}"
+
+on property:init.svc.zygote=*
+    write /dev/kmsg "THYME_C31DIAG service=zygote state=${init.svc.zygote} pid=${init.svc_debug_pid.zygote} boot_completed=${sys.boot_completed}"
+
+on property:init.svc.zygote_secondary=*
+    write /dev/kmsg "THYME_C31DIAG service=zygote_secondary state=${init.svc.zygote_secondary} pid=${init.svc_debug_pid.zygote_secondary} boot_completed=${sys.boot_completed}"
+
+on property:init.svc.netd=*
+    write /dev/kmsg "THYME_C31DIAG service=netd state=${init.svc.netd} pid=${init.svc_debug_pid.netd} boot_completed=${sys.boot_completed}"
+
+on property:sys.boot_completed=*
+    write /dev/kmsg "THYME_C31DIAG property=sys.boot_completed value=${sys.boot_completed}"
+
+on property:sys.powerctl=*
+    write /dev/kmsg "THYME_C31DIAG property=sys.powerctl value=${sys.powerctl}"

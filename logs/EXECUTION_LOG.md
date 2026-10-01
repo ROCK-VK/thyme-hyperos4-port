@@ -14238,3 +14238,15 @@
 - 改动/结论：提交 `79356d72a97dbf309a4e410f55e449775a6579c8` 发布 C30 netd/Zygote/init fatal 因果报告、脱敏状态/执行记录及报告索引；本轮结果为不构建 C31。
 - 验证：远端 main 与提交一致，工作树干净；commit 页面、不可变 raw 报告、PROJECT_STATUS、EXECUTION_LOG 和 reports/README 均匿名可读。main 分支 raw 缓存仍旧，按不可变 commit URL 核验新内容。
 - 安全：仅 Markdown 与脱敏日志；未上传 pstore、metadata/misc、镜像或二进制。未查询或操作手机。
+
+## 2026-10-01 13:28 HKT | C31-DIAG build, static gates, and restricted flash
+
+- Status: C31-DIAG built and flashed; phone remains in Bootloader Fastboot and has not been booted.
+- Change: The only C30-to-C31-DIAG system-tree change is system/etc/init/hw/init.rc. It sets init.svc_debug.no_fatal.zygote=true during early-init and adds low-frequency init-native kmsg markers. It does not change service critical/onrestart definitions, netd, secondary Zygote, SELinux/property contexts, ART/framework, GPU/HWC/Vulkan, kernel, fstab, AVB behavior, or data partitions.
+- Validation: EROFS, AVB descriptor, LP repack/readback, manifest size/SHA, PowerShell script parsing, and restricted-script Dry-Run passed. Existing init property/kmsg policy permissions were sufficient; no SELinux rules were added. Static binary strings and upstream init documentation support the diagnostic property path, but runtime behavior is not yet verified.
+- Images: super 7,703,591,896 bytes, SHA-256 B03611977936715F3DE10B93ECBDF7E55DF9BCC7E435D74EB26859B3BD33E29E; vbmeta_system_a 131,072 bytes, SHA-256 79BE47B31F027FCA8A98FC8B81EEF5779058843BAEDF95B0FDADFA6A474DEE9E.
+- Device: Read-only checks before and after flash confirmed one thyme Bootloader Fastboot device, slot A, unlocked, non-userspace. Only super and vbmeta_system_a were written. A remains unbootable=no/successful=no/retry=3; B remains no/no/retry=7. No reboot, set_active, erase/format, userdata/metadata operation, or PixelOS restore occurred.
+- Files: reports/c31_diag_critical_20261001/C31_DIAG_BUILD_FLASH_AND_RUNTIME_BOUNDARY.md; tools/candidate31_critical_diag/init.rc.append; tools/build_candidate31_diag_critical_escalation.py; tools/flash_candidate31_diag_critical_escalation.ps1.
+- Not verified: Runtime no_fatal effect, service-to-PID/signal identity, Zygote reap/restart ordering, and whether PID1 still panics. This is static/build/flash verification, not a boot test.
+- Next step: Wait for the user to explicitly say “开始启动”; arm the observer first. If the candidate fails, first Standalone capture must save pstore before the remaining evidence.
+- Safety: No ROM/image/raw device backup, serial, credentials, Docker asset, or private hardware data was published.
