@@ -36,4 +36,4 @@ Port Xiaomi 15 (dada) HyperOS 4 / Android 17 to Xiaomi 10S (thyme, Snapdragon 87
 
 ## Latest report
 - reports/c31_diag_critical_20261001/C31_DIAG_RUNTIME_RESULT_20261001.md
-- Current commit URL will be added after publication.
+- Runtime result report (immutable commit link): https://github.com/ROCK-VK/thyme-hyperos4-port/commit/b56bf1296873d4bd1baf24e3dabe287b6eed4084

@@ -14263,3 +14263,9 @@
 - Next: Inspect crash_dump/debuggerd exec, SELinux/namespace, and tombstone path; inspect the same-PID UltraFramework class-init fallback. Do not build a repair Candidate without a concrete cause or repeat C31.
 - Safety: No raw pstore, raw metadata/misc, Standalone dmesg, device command-line identity, ROM, or partition image was published. No Docker asset was touched.
 - Replaces: The earlier public status saying C31 was unbooted was correct at its timestamp but no longer represents the current device state.
+## 2026-10-01 14:29 HKT | C31-DIAG runtime report public verification
+
+- Status: Sanitized runtime report published on public main.
+- Commit: b56bf1296873d4bd1baf24e3dabe287b6eed4084; immutable report URL: https://github.com/ROCK-VK/thyme-hyperos4-port/commit/b56bf1296873d4bd1baf24e3dabe287b6eed4084.
+- Validation: Remote main matched the commit at publication time. Anonymous GET returned HTTP 200 for the immutable runtime report, its README, project status, reports index, and commit page.
+- Safety: This publication contains text summaries only. Raw pstore, raw metadata/misc, Standalone dmesg, host transcripts, and device-specific command-line data remain local.
