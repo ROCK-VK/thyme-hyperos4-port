@@ -14222,3 +14222,12 @@
 - 改动/结论：公开提交 `3568c6d0707363fd82867608b8a87e2d7d5b34b1` 发布闭环报告、七条 AVC CSV、空 C31 change-set、报告索引及脱敏项目状态/执行记录。
 - 验证：`git ls-remote origin refs/heads/main` 与该提交一致；报告、两份 CSV、项目状态、执行记录、reports 索引匿名 GET 均 HTTP 200；公开工作树干净。
 - 安全与设备：提交仅含文本/CSV；未上传 ROM、镜像、metadata/misc raw、第三方二进制或设备身份数据。未查询或操作手机，C30 未启动，C31 未构建。
+## 2026-10-01 11:07 HKT｜C30 netd / Zygote / PID1 fatal 补充因果分析
+
+- 状态：仅主机侧分析；未查询/操作设备，未启动或刷写 C30、未构建 C31。
+- 结论：C30 pmsg 有五个 `main` SIGABRT，末次估计 uptime 32.879 秒，距 PID1 32.921975 秒 sysrq panic 约 43 ms。primary Zygote 配置为 critical（window=10）；这是最强候选，但 PID/service 映射、critical fatal 文本、wait status 和 abort backtrace 均缺失，不能确认 Zygote critical escalation 为根因。
+- netd 的 25Q2/Linux 4.19 SIGABRT 已确认。C26 时其 onrestart 回调曾直接杀两套 Zygote；C27/C30 已删除该边。C30 仍有 Zygote→netd、secondary→primary 回调；无有序 marker，无法判定谁先失败。
+- 七条 AVC 仍缺 exact property key/PID/caller；UltraFramework 异常是已有 fallback，不构成已证实 fatal。无 SELinux allow 或 Candidate 行为改动。
+- 决策：Result B，不构建 C31。下一实验方向为 init 原生 kmsg/pstore 服务状态+PID记录，并只对 primary Zygote 临时启用 `init.svc_debug.no_fatal.zygote=true`，确认或证伪 critical escalation；实施前核验当前 init 与 SELinux 支持。此诊断版本尚未构建。
+- 本轮未查询设备，历史 A retry=3 不是实时值；未刷写、reboot、set_active、清数据或恢复 PixelOS。C/D/E 均高于 50 GiB；Docker 未触碰。
+- 报告：`reports/c30_init_fatal_chain_20261001/C30_NETD_ZYGOTE_INIT_FATAL_CAUSAL_CLOSURE.md`。仅发布报告与脱敏状态/文字记录，无原始 pstore、metadata/misc、镜像或二进制。
