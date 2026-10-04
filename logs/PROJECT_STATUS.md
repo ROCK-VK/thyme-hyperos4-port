@@ -1,41 +1,40 @@
 # THYME-OS4 项目当前状态
 
-更新时间：2026-10-04 20:40 HKT
+更新时间：2026-10-04 22:45 HKT
 
 ## 项目目标与阶段
 
 将 Xiaomi 15（`dada`）HyperOS 4 / Android 17 移植到 Xiaomi 10S（`thyme` / Snapdragon 870）。  
-当前阶段：**Candidate 45 首启实测与 Standalone RAM 证据打捞完成；确证 4096 字节对齐彻底消除了内核 loop9 扇区读取错误与 superblock 挂载失败，EXT4 文件系统成功挂载；精准定位全新第一阻塞为 Manifest 版本内外不匹配（内部 370399999 vs 外部 370400000）；正在执行文档闭环与 GitHub 增量同步，准备推进 Candidate 46**。
+当前阶段：**Candidate 46 实机首启与 Standalone RAM 取证全量完成（0 拷贝错误）；实现历史性里程碑级重大突破：apexd 成功激活全部 41 个 APEX 容器包（`com.android.tethering` 彻底成功激活）；SurfaceFlinger 与 Zygote 彻底摆脱原生库缺失崩溃；SystemServer 历史首次深度启动（ActivityManagerService, ActivityTaskManagerService, PackageManagerService, AppOps, PowerStats 全面启动运行，artd 后台编译）；新第一阻塞精准锁定：`/system/bin/netd` 在 `Controllers::init()+336` 因 `BandwidthController::enableBandwidthControl()` 注入带 BPF 扩展的 iptables 规则失败硬编码调用 `exit(2)` 陷入无限循环退出**。
 
 ## 核心有效事实与突破证据
 
-1. **C45 核心突破：内核 Loop 挂载与 Superblock 彻底攻克**：
-   - **验证事实**：C44 的 `loop9 sector 0 I/O error`、`EXT4-fs unable to read superblock`、`apexd: Mounting failed: Invalid argument` 在 C45 中 **彻底消除（0 次复现）**；
-   - **挂载成功日志**：`[13.903044] EXT4-fs (dm-11): mounted filesystem without journal. Opts:`；
-   - 证明 4096 字节扇区对齐假说完全成立且工程修复完全奏效，成功打通了内核块驱动 Direct I/O 屏障。
+1. **C46 历史性重大突破：APEX 激活、Zygote、SurfaceFlinger 与 SystemServer 全面推进**：
+   - **APEX 全量激活**：`[13.771829] apexd: Activated 41 packages. duration=2903ms`，`[15.096176] apexd-snapshotde: Marking APEXd as ready`；
+   - **C45 Manifest 不匹配彻底消除**：0 次复现，Tethering 预装 CAPEX 顺利解压并成功验证激活；
+   - **SurfaceFlinger 与 Zygote 畅通**：不再发生 `libcom.android.tethering.connectivity_native.so` 缺失 SIGABRT，Zygote 正常启动（pid=1065, secondary pid=1066）；
+   - **SystemServer 深度运行**：SystemServer 成功拉起并执行核心服务：`ActivityManagerService$Lifecycle`、`ActivityTaskManagerService$Lifecycle`、`PackageManagerService`、`AppOps`、`PowerStatsService`、`IntentFirewall`、`BatteryStatsImpl`，且 `artd` 成功执行 Binder 事务编译应用包！
 
-2. **C45 捕获全新第一阻断点：Manifest 版本内外不匹配**：
-   - **真实错误日志**：`apexd: Failed to verify /data/apex/decompressed/[REDACTED_EMAIL]: Manifest inside filesystem does not match manifest outside it`；
-   - **根因确认**：`debugfs` 提取 `apex_payload.img` 内部 inode 93（`apex_manifest.pb`）反解，内部版本为 **`370399999`**（来自 dada 官方基线）；而容器外层 manifest 编码为 **`370400000`**（此前人为递增 1 所致）。AOSP `apexd` 的 `VerifyManifestMatches()` 强制比对内部与外部 manifest，因版本号不一致判定文件被篡改并拒绝激活；
-   - **连锁故障**：由于 Tethering APEX 激活被拒，其提供的 `libcom.android.tethering.connectivity_native.so` 缺失，导致 Zygote 预加载 `libandroid.so` 循环 abort、SurfaceFlinger 停留在第一屏、netd 无法链接。
+2. **新第一阻塞精准锁定：netd 在 Controllers::init() 硬编码 exit(2)**：
+   - **崩溃栈证据**：`#06 pc 00000000000762d4 /system/bin/netd (android::net::Controllers::init()+336)` -> `#05 pc exit+40`；
+   - **反汇编确证根因**：`netd` 的 `Controllers::init()` 在 `0x761bc` 调用 `BandwidthController::enableBandwidthControl()`，后者尝试通过 `iptables-restore` 插入带 `-m bpf --object-pinned /sys/fs/bpf/netd_shared/prog_netd_skfilter_...` 的带宽控制规则；
+   - **失败链条**：由于官方 4.19 内核无定制 BPF 支持，对应 BPF 对象文件未被 pin 到该路径，内核模块 `xt_bpf` 拒绝该规则导致 `iptables-restore` 失败；`enableBandwidthControl()` 返回非零值；`Controllers::init()` 检测到返回值非零，在 `0x762d0` 打印 `Failed to initialize BandwidthController` 并直接执行 `exit(2)`；
+   - **系统级连锁反应**：init 不断重启 netd（每 5 秒退出一次，累计崩溃 300+ 次），导致 `INetd` / `NetdService` 始终无法在 ServiceManager 注册；SystemServer 的 `NetworkManagementService` 阻塞等待 netd，最终在 60 秒后触发 Watchdog。
 
-3. **Candidate 46 解决路线**：
-   - 将 inner 与 outer manifest 的版本统一修正为 **`370399999`**，与 `apex_payload.img` 内部保持 100% 字节一致；
-   - 保持 4096 字节对齐与 `--alignment-preserved` 签名机制；
-   - 预期实现 Tethering APEX 顺利通过校验并完成 `activate`，首次真正检验 patched netd 运行表现。
-
-4. **历史有效资产 100% 保持有效**：
+3. **历史有效资产 100% 保持有效**：
    - C40 media codecs variant (`ro.media.xml_variant.codecs=_V1_0`) 保持有效；
    - C42 DisplayDeviceConfig 最低亮度修复 (`0.000854597`) 保持有效；
    - C43 netd 4 字节 NOP 兼容性补丁保持有效；
-   - C44 originalApexDigest 动态注入逻辑保持有效。
+   - C44 originalApexDigest 动态注入逻辑保持有效；
+   - C45 4096 字节扇区对齐与内核 Direct I/O loop 挂载修复保持有效；
+   - C46 统一 Manifest 版本号 `370399999` 保持有效。
 
 ## 当前设备物理状态
 
 - **设备**：Xiaomi 10S (`[REDACTED_DEVICE_ID]`)
-- **当前模式**：Bootloader Fastboot（已完成 C45 首启与 RAM 证据打捞，切回 Fastboot 待命）
-- **当前槽位**：A 槽（健康）
-- **宿主空间门禁**：C 盘 81+ GiB, D 盘 172+ GiB, E 盘 350+ GiB（全绿，远超 50 GiB）
+- **当前状态**：手机当前运行 Standalone Diag RAM 诊断系统（挂载 `G:\` 虚拟磁盘，证据已完全打捞并持久化归档），需长按电源 + 音量下重启进入 Bootloader Fastboot
+- **当前槽位**：A 槽 (`current-slot: a`)
+- **宿主空间门禁**：C 盘 81+ GiB, D 盘 172+ GiB, E 盘 317+ GiB（全绿，远超 50 GiB）
 - **Docker/WSL 数据**：100% 零触碰
 
 ## 已排除的错误方向与红线纪律
@@ -43,10 +42,11 @@
 - 严禁清除 `userdata` / `metadata`；
 - 严禁修改内核（Kernel）；
 - 严禁 Bootloader relock；
-- 严禁将 Tethering APEX 改为非压缩格式（dada 和 K40 均保持 CAPEX，C45 已证实内核挂载成功）；
+- 严禁将 Tethering APEX 改为非压缩格式；
+- 严禁在外部 manifest 中使用不一致的版本号（`370400000` 或 `370400128`）；
 - 固定闭环纪律：查完日志后先进行 GitHub 增量上传和修改 readme，严禁在同步前草率修改下一个 Candidate。
 
 ## 下一步最优先任务
 
-1. 完成公开仓库增量同步与 push，提交 C44-C45 证据与分析报告；
-2. 推进 Candidate 46 构建与验证。
+1. 完成 GitHub 增量同步与 push（闭环 C46 证据与文档）；
+2. 规划 Candidate 47：在 `/system/bin/netd` 中将 `Controllers::init()` 中调用 `enableBandwidthControl()` 后的条件跳转 `cbnz w0, 0x762b0`（跳转到 exit(2)）安全 NOP（4 字节 NOP），使 netd 即使在带宽控制 iptables 规则失败时不退出的稳定常驻，成功注册 INetd 救活 NetworkManagementService！

@@ -111,3 +111,10 @@ The original workflow used Windows 11, WSL Ubuntu, local Android platform-tools,
 - `salvage_c45_when_ready.py` — Standalone RAM diagnostic export tool for Candidate 45 non-destructively salvaging `console-ramoops-0`, `pmsg-ramoops-0`, and diagnostics files from DDR RAM.
 - `compare_three_way_tethering.py` — Forensic three-way comparison script inspecting container format, payload ZIP offsets, alignment, compression, digests, and manifest versions across Xiaomi 15 (dada), K40 (alioth), and thyme.
 
+## Candidate 46 Tools
+
+- `build_candidate46.py` — Builds Candidate 46 by strictly unifying outer container manifest, inner APEX manifest, and `apex_payload.img` filesystem manifest version to `370399999`, enforcing 4096-byte ZIP alignment and `--alignment-preserved` signing.
+- `flash_candidate46.ps1` — Restrictive flashing script for Candidate 46 with `-RestoreRetryBudget` logic and strict post-flash Fastboot hold state.
+- `start_candidate46_observed_boot.ps1` — Controlled observation boot script for Candidate 46 with 120s ADB monitoring window.
+- `salvage_c46_when_ready.py` — Standalone RAM diagnostic export tool for Candidate 46 non-destructively salvaging `console-ramoops-0`, `pmsg-ramoops-0`, and diagnostics files from DDR RAM.
+

@@ -174,6 +174,13 @@ $Allowlist = @(
     @{ Source='reports/c45_candidate45_build_20261004/C45_BUILD_AND_GATE_READINESS_REPORT.md'; Destination='reports/c45_candidate45_build_20261004/C45_BUILD_AND_GATE_READINESS_REPORT.md' }
     @{ Source='reports/c45_candidate45_build_20261004/C45_FIRST_BOOT_AND_POSTMORTEM_REPORT.md'; Destination='reports/c45_candidate45_build_20261004/C45_FIRST_BOOT_AND_POSTMORTEM_REPORT.md' }
     @{ Source='reports/c45_candidate45_build_20261004/C45_BUILD_MANIFEST.json'; Destination='reports/c45_candidate45_build_20261004/C45_BUILD_MANIFEST.json' }
+    @{ Source='tools/build_candidate46.py'; Destination='tools/build_candidate46.py' }
+    @{ Source='tools/flash_candidate46.ps1'; Destination='tools/flash_candidate46.ps1' }
+    @{ Source='tools/start_candidate46_observed_boot.ps1'; Destination='tools/start_candidate46_observed_boot.ps1' }
+    @{ Source='tools/salvage_c46_when_ready.py'; Destination='tools/salvage_c46_when_ready.py' }
+    @{ Source='reports/c46_candidate46_build_20261004/C46_BUILD_AND_GATE_READINESS_REPORT.md'; Destination='reports/c46_candidate46_build_20261004/C46_BUILD_AND_GATE_READINESS_REPORT.md' }
+    @{ Source='reports/c46_candidate46_build_20261004/C46_FIRST_BOOT_AND_POSTMORTEM_REPORT.md'; Destination='reports/c46_candidate46_build_20261004/C46_FIRST_BOOT_AND_POSTMORTEM_REPORT.md' }
+    @{ Source='reports/c46_candidate46_build_20261004/C46_BUILD_MANIFEST.json'; Destination='reports/c46_candidate46_build_20261004/C46_BUILD_MANIFEST.json' }
 )
 
 function Resolve-AllowlistedSource([string]$RelativeSource) {
