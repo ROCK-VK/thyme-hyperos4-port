@@ -166,6 +166,14 @@ $Allowlist = @(
     @{ Source='reports/c44_candidate44_build_20261004/C44_FLASH_AND_READINESS_REPORT.md'; Destination='reports/c44_candidate44_build_20261004/C44_FLASH_AND_READINESS_REPORT.md' }
     @{ Source='reports/c44_candidate44_build_20261004/C44_FIRST_BOOT_AND_ROOTCAUSE_REPORT.md'; Destination='reports/c44_candidate44_build_20261004/C44_FIRST_BOOT_AND_ROOTCAUSE_REPORT.md' }
     @{ Source='reports/c44_candidate44_build_20261004/C44_BUILD_MANIFEST.json'; Destination='reports/c44_candidate44_build_20261004/C44_BUILD_MANIFEST.json' }
+    @{ Source='tools/build_candidate45.py'; Destination='tools/build_candidate45.py' }
+    @{ Source='tools/flash_candidate45.ps1'; Destination='tools/flash_candidate45.ps1' }
+    @{ Source='tools/start_candidate45_observed_boot.ps1'; Destination='tools/start_candidate45_observed_boot.ps1' }
+    @{ Source='tools/salvage_c45_when_ready.py'; Destination='tools/salvage_c45_when_ready.py' }
+    @{ Source='tools/compare_three_way_tethering.py'; Destination='tools/compare_three_way_tethering.py' }
+    @{ Source='reports/c45_candidate45_build_20261004/C45_BUILD_AND_GATE_READINESS_REPORT.md'; Destination='reports/c45_candidate45_build_20261004/C45_BUILD_AND_GATE_READINESS_REPORT.md' }
+    @{ Source='reports/c45_candidate45_build_20261004/C45_FIRST_BOOT_AND_POSTMORTEM_REPORT.md'; Destination='reports/c45_candidate45_build_20261004/C45_FIRST_BOOT_AND_POSTMORTEM_REPORT.md' }
+    @{ Source='reports/c45_candidate45_build_20261004/C45_BUILD_MANIFEST.json'; Destination='reports/c45_candidate45_build_20261004/C45_BUILD_MANIFEST.json' }
 )
 
 function Resolve-AllowlistedSource([string]$RelativeSource) {

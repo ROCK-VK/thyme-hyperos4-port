@@ -1,5 +1,86 @@
 # 执行记录
 
+## 2026-10-04 20:36｜Candidate 45 首启实测与 Standalone RAM 证据打捞完成：内核 Loop 挂载与 Superblock 彻底攻克（EXT4-fs dm-11 成功挂载）；精准定位 Manifest 版本内外不匹配为新第一阻塞
+
+- 状态：已完成（Phase 1 用户下达启动指令，通过 tools/start_candidate45_observed_boot.ps1 执行受控首启；120s ADB 监听未连通，屏幕停留在第一屏 Mi Logo 常亮；用户按规程通过电源+音量下切入 Fastboot 保持 RAM 未断电；Phase 2 tools/salvage_c45_when_ready.py 成功导出 1,398,459 B console-ramoops-0 与 1,262,381 B pmsg-ramoops-0，全量保全于 reports/c45_candidate45_build_20261004/standalone/run_20261004_202821/THYME_DIAG/；Phase 3 深入解析证实：C44 的 loop9 sector 0 I/O error、unable to read superblock、apexd mount EINVAL 全部彻底消除，0 次复现，内核成功挂载 [13.903044] EXT4-fs (dm-11): mounted filesystem without journal，确证 4096 字节对齐修复在内核驱动与块设备层 100% 成功；Phase 4 精准锁定全新第一阻断点：apexd 在挂载后校验报错 apexd: Failed to verify /data/apex/decompressed/[REDACTED_EMAIL]: Manifest inside filesystem does not match manifest outside it；Phase 5 debugfs 深入提取证实：apex_payload.img 内部实际封装的 apex_manifest.pb 版本为 370399999，而容器外层 manifest 编码为 370400000，apexd 因版本号不一致拒绝激活 Tethering APEX，引发 Zygote/SurfaceFlinger 缺失 libcom.android.tethering.connectivity_native.so 循环 abort；Phase 6 明确 Candidate 46 方案：将容器内外 manifest 统一对齐为 370399999，保持 4096 对齐）。
+- 改动/结论：
+  1. **C45 4096 对齐修复在内核块设备层彻底证实成功**：
+     - `loop9 sector 0 I/O error`：彻底消除（0 次复现）；
+     - `unable to read superblock`：彻底消除（0 次复现）；
+     - `apexd Mounting failed: Invalid argument`：彻底消除（0 次复现）；
+     - **内核与 dm-verity 挂载成功**：`[13.903044] EXT4-fs (dm-11): mounted filesystem without journal. Opts:`，证明 4096 字节对齐假说完全成立且完全攻克了内核 Direct I/O 读取屏障！
+  2. **全新第一阻塞精准锁定（Manifest 版本内外不匹配）**：
+     - 真实错误：`apexd: Failed to verify /data/apex/decompressed/[REDACTED_EMAIL]: Manifest inside filesystem does not match manifest outside it`；
+     - 根因：`debugfs` 提取 `apex_payload.img` 内部 inode 93（`apex_manifest.pb`）反解，内部版本为 `370399999`（dada 官方基线版本）；而容器外层 manifest 编码为 `370400000`（此前人为递增所致）。AOSP `apexd` 的 `VerifyManifestMatches()` 强制要求内部与外部 manifest 字段完全一致，因版本差 1 拒绝激活；
+     - 连锁故障：Zygote、SurfaceFlinger 缺失 `libcom.android.tethering.connectivity_native.so` 循环崩溃；netd 缺失 `libnetd_updatable.so`。
+  3. **Candidate 46 解决路径明确**：
+     - 将 inner 与 outer manifest 版本统一对齐为 `370399999`，与 `apex_payload.img` 内部保持 100% 恒等；
+     - 保持 4096 字节对齐与 `--alignment-preserved` 签名机制。
+- 涉及文件：
+  - `tools/start_candidate45_observed_boot.ps1`
+  - `tools/salvage_c45_when_ready.py`
+  - `reports/c45_candidate45_build_20261004/C45_FIRST_BOOT_AND_POSTMORTEM_REPORT.md`
+  - `reports/c45_candidate45_build_20261004/standalone/run_20261004_202821/`
+  - `日志/执行记录.md`
+  - `日志/项目当前状态.md`
+- 验证：
+  - Standalone RAM 证据打捞 100% 成功，0 拷贝错误；
+  - 内核 loop9 I/O 错误与 superblock 挂载错误 100% 根除；
+  - EXT4-fs (dm-11) 挂载事实确证；
+  - debugfs 十六进制比对确证内部版本 370399999 与外部版本 370400000 差异。
+- 尚未验证：
+  - Candidate 46 版本内外一致化后的 Tethering APEX 激活与 netd 运行表现。
+- 待处理：
+  - 完成 GitHub 增量同步与 push；
+  - 推进 Candidate 46。
+
+- 状态：已完成（Phase 1 定点三方对照：官方 dada 与移植包 K40 均保持 .capex 架构且 inner APEX 的 apex_payload.img 严格 4096 对齐（offset=4096, mod 4096=0），证实 C44 未对齐 offset=52 引发内核 loop9 Direct I/O 扇区读取错误为确凿诱因；Phase 2 工具关键突破：确证 Android build-tools 36.0.0 的 apksigner 默认会将未压缩文件重置为 4 字节对齐并破坏自定义对齐，通过引入 --alignment-preserved 选项与 zipalign -f 4096，成功实现最终签名 inner APEX 的 payload offset=4096 且 zipalign -c 4096 验证通过；Phase 3 版本号真相查明与纠正：核验 protobuf 真实编码，C43/C44/C45 内部与外部版本均为 370400000（此前个别文档推算的 370400128 确认为误记，予以纠正并统一保持 370400000）；Phase 4 资产与逻辑 100% 继承：payload SHA256 ([REDACTED_DEVICE_ID]...)、patched netd SO SHA256 ([REDACTED_DEVICE_ID]...)、AVB root digest ([REDACTED_DEVICE_ID]...) 及 outer originalApexDigest 严格相等；Phase 5 系统与镜像多重门禁通过：system tree 严格单变量仅 capex 变动，EROFS 回读与 staging CAPEX 哈希 [REDACTED_DEVICE_ID]... 恒等且回读解包 4096 对齐校验通过，super.img 与 vbmeta_system.img 生成并通过 lpdump 验证；Phase 6 受控刷写与预算恢复：前置安全审计通过，执行 set_active a 将 A 槽预算成功从 6 恢复为 7，严格仅刷写 super 与 vbmeta_system_a，刷写完成后严格停留在 Bootloader Fastboot，未执行 reboot，未触碰 userdata/metadata）。
+- 改动/结论：
+  1. **三方 Tethering 定点对照权威闭环**：
+     - Xiaomi 15 (dada) 官方原始：.capex，inner APEX payload offset = 4096（mod 4096 = 0，ALIGNED: True）；
+     - K40 (alioth) Milo 移植成功包：.capex，inner APEX payload offset = 4096（mod 4096 = 0，ALIGNED: True）；
+     - Candidate 44 (失败包)：.capex，inner APEX payload offset = 52（mod 4096 = 52，ALIGNED: False）；
+     - 结论：坚决采纳“Aligned CAPEX C45”方案，保留 `/system/apex/com.android.tethering.capex` 原生架构，不转非压缩 .apex。
+  2. **打包与签名工具链核心突破**：
+     - AOSP SDK `apksigner` 在执行 v3 签名时，默认参数 `--alignment-preserved false` 会主动将除 .so 外的所有未压缩文件重置为 4 字节对齐，这是 C43/C44 对齐失效的隐性根因；
+     - 增加 `--alignment-preserved` 参数后，签名后的 inner APEX 完美保持 4096 对齐；
+     - 最终 signed inner APEX 执行 `zipalign -c 4096` 返回 PASS（`apex_payload.img (OK)`）。
+  3. **版本号记录纠正**：
+     - C43/C44/C45 inner & outer manifest 真实 protobuf 编码均为 `370400000`（varint `\x80\xb6\xcf\xb0\x01`）；
+     - 统一保持真实值 `370400000`，纠正旧文档误记的 370400128。
+  4. **资产与逻辑 100% 完整继承**：
+     - `apex_payload.img` SHA256: `cf284e425f8c7b9f30dbb09e7ab6010791e69f32cc943d4a2630a98f0b75d347`；
+     - `libnetd_updatable.so` 4 字节 NOP 补丁完整保留，SHA256: `a70a3176b82d792cdea3ed876c90980c1d459fbcdb859d5e21f12c3a5eaf92f5`；
+     - AVB payload root digest: `4bdfe2f9158035e7d4dd5efe814f5d1dd9eee1d9052eb7c1f571125e9c67e042`；
+     - Outer manifest `capexMetadata.originalApexDigest`: `4bdfe2f9158035e7d4dd5efe814f5d1dd9eee1d9052eb7c1f571125e9c67e042`（严格相等）；
+     - C40 media codecs variant (`_V1_0`) 与 C42 display configuration (`0.000854597`) 100% 继承。
+  5. **镜像与双重 EROFS 回读门禁**：
+     - Staging CAPEX SHA256: `ACCB09B26FE97166F1FAE46FC5F9F95722154AB39EF9C360E7CE8538BABA4843`；
+     - EROFS 回读 CAPEX SHA256: `ACCB09B26FE97166F1FAE46FC5F9F95722154AB39EF9C360E7CE8538BABA4843`（恒等）；
+     - 回读解包 inner APEX payload offset = 4096，`zipalign -c 4096` PASS；
+     - `system_c45.img`: 1,092,616,192 B, SHA256: `EA8235C2059527D0098C8D4CF0FFCB75EA60E01DB5616581450D448DD0106ECE`；
+     - `vbmeta_system.img`: 131,072 B, SHA256: `AB36B0D874EC18870EA0FADE77F4923496F13FD5C33CFCA5581A1FEE54B6A837`；
+     - `super.img`: 7,703,526,364 B, SHA256: `A4DD2E0A59492E297586CAD7FE2E3DC31847163EBE507A991808EFB0D8CB5AB3`。
+  6. **受控刷写执行与预算恢复**：
+     - 刷写前 A 槽启动重试预算：6，执行受控 `fastboot set_active a` 恢复为 7；
+     - 严格仅刷写 `super` 与 `vbmeta_system_a`；
+     - 刷写后状态：product=thyme, current-slot=a, unlocked=yes, is-userspace=no, retry-count:a=7；
+     - 严格停留在 Bootloader Fastboot，未调用 reboot。
+- 涉及文件：
+  - `tools/build_candidate45.py`
+  - `tools/flash_candidate45.ps1`
+  - `work/compare_three_way_tethering.py`
+  - `work/stage_c45_aligned_capex_20261004/images/BUILD_MANIFEST.json`
+  - `reports/c45_candidate45_build_20261004/C45_BUILD_MANIFEST.json`
+- 验证：
+  - 本地与 EROFS 回读门禁：100% PASS；
+  - 物理设备刷写：super 10 个 sparse 分片与 vbmeta_system_a 刷写退出码均为 0；
+  - 槽位回读确认：retry-count:a = 7，驻留 Bootloader Fastboot。
+- 尚未验证：
+  - Candidate 45 首启后的实机 loop 设备挂载、superblock 读取以及 netd 运行表现（等待用户人工指令授权）。
+- 待处理：
+  - 汇报 8 项指标，等待用户人工指令“开始启动 C45”。
+
 ## 2026-10-04 18:00｜Candidate 44 首启实测与 Standalone RAM 证据打捞完成：C43 Root Digest 错误 100% 彻底攻克（0次复现）；全新第一阻塞锁定为 apexd 挂载解压 APEX 报 Invalid argument (EINVAL) 导致 Tethering APEX 激活受阻
 
 - 状态：已完成（Phase 1 用户下达“开始启动”授权，执行 fastboot reboot 受控首启；120s ADB 监听未连通，用户反馈屏幕处于 Mi Logo + powered by Android 常亮，手动长按电源+音量下切入 Fastboot；Phase 2 保持未断电，通过 tools/salvage_c44_when_ready.py 成功导出 1,278,916 B console-ramoops-0 与 1,129,490 B pmsg-ramoops-0，全量保全于 reports/c44_candidate44_build_20261004/standalone/run_20261004_175451/THYME_DIAG/；Phase 3 深入解析证实：C43 中出现的 "Root digest ... does not match with expected root digest" 彻底消失，0 次复现，apexd 解压缩校验 100% 成功；Phase 4 权威锁定当前全新第一阻断点：apexd 在调用 Linux 原生 mount 挂载 /data/apex/decompressed/[REDACTED_EMAIL] 时返回 -1 (errno = EINVAL，Invalid argument)，导致 Tethering APEX 激活失败，SurfaceFlinger 与 Zygote 缺失 libcom.android.tethering.connectivity_native.so 循环崩溃无法进入开机动画，netd 缺失 libnetd_updatable.so 无法链接；Phase 5 规划 Candidate 45：首选方案 A 将 /system/apex/com.android.tethering.capex 转换为非压缩标准 APEX，避开 CAPEX 在 /data 下的 dm-verity 设备映射约束）。

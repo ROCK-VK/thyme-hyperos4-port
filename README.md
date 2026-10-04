@@ -69,7 +69,8 @@ K40 对照资料显示，成功包的 vendor_boot ramdisk 与原包不同，并�
 - **C41**：捕获全新阻断点：内置屏幕因最低亮度下界（`0.001709819`）不满足 HyperOS 4 框架下界（`0.000854597`）引发 `DisplayDeviceConfig.constrainNitsAndBacklightArrays` 致命异常与系统崩溃。
 - **C42**：修改 vendor 屏幕配置下界至 `0.000854597`，`DisplayDeviceConfig` 异常彻底归零（0次复现），内置屏幕成功点亮供电（state=ON），`BootAnimation` (PID 2082) 首次拉起，系统越过 Phase 100 推进至 Phase 200 并解锁用户 0 加密存储；权威锁定新第一阻断点：netd eBPF 循环 abort 导致 Watchdog 67 秒杀死 system_server。
 - **C44**：根据 AOSP `apex_compression_tool.py` 标准将提取的实际 payload `root_digest` (`4bdfe2f9...`) 注入外层 manifest 的 `originalApexDigest`，8 重运行时等价门禁全绿；首启 RAM 日志确证 `Root digest ... does not match` 错误 100% 彻底攻克（0 次复现）；Standalone 微内核打捞出 1.28MB console 与 1.13MB pmsg 证据，权威锁定全新第一阻塞：`apexd` 挂载解压产物报 `Invalid argument` (EINVAL)，导致 Tethering APEX 激活受阻。
-- **C45**：规划将 `/system/apex/com.android.tethering.capex` 转换为非压缩标准 APEX（`com.android.tethering.apex`），对标 `com.android.runtime.apex` 直接由 loop 设备挂载，彻底规避 CAPEX 在 `/data` 目录下的 dm-verity 映射对齐约束。
+- **C45**：三方定点比对确证 dada/K40 均保持 CAPEX 架构且 inner APEX 均为 4096 字节扇区对齐；查明 apksigner 默认重置对齐的工具陷阱并引入 `--alignment-preserved` 与 `zipalign -f 4096`；首启实测证实：C44 的 `loop9 sector 0 I/O error`、`unable to read superblock` 及 `apexd mount EINVAL` 彻底消除（0 次复现），内核成功挂载 ext4 文件系统 (`[13.903044] EXT4-fs (dm-11): mounted filesystem without journal`)；精准锁定全新第一阻塞：apexd 报告 `Manifest inside filesystem does not match manifest outside it`，debugfs 证实 payload 内部封装版本为 `370399999`（dada 官方基线版本），而容器外层编码为 `370400000`，版本差 1 导致 apexd 拒绝激活。
+- **C46**：规划将 inner 与 outer manifest 版本统一对齐为 `370399999`，与 `apex_payload.img` 内部保持 100% 字节一致，保持 4096 字节对齐与 `--alignment-preserved` 签名机制。
 
 
 

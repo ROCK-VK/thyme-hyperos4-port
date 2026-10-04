@@ -1,0 +1,131 @@
+{
+  "candidate": "Candidate 45 Aligned CAPEX Tethering & System Integration",
+  "base_candidate": "Candidate 44 Tethering CAPEX originalApexDigest Fix",
+  "storage": {
+    "C_free_gib": 81.46,
+    "D_free_gib": 172.45,
+    "E_free_gib": 350.97
+  },
+  "single_variable_modification": {
+    "component": "/system/apex/com.android.tethering.capex",
+    "fix": "Inner ordinary APEX apex_payload.img 4096-byte alignment repair",
+    "c44_inner_payload_offset": 52,
+    "c45_inner_payload_offset": 4096,
+    "c45_inner_payload_offset_mod_4096": 0,
+    "library": "/apex/com.android.tethering/lib64/libnetd_updatable.so",
+    "symbol": "libnetd_updatable_init",
+    "netd_patch": "4-byte NOP (0x1f 0x20 0x03 0xd5) retained identical to C43",
+    "patched_so_sha256": "a70a3176b82d792cdea3ed876c90980c1d459fbcdb859d5e21f12c3a5eaf92f5",
+    "payload_sha256": "cf284e425f8c7b9f30dbb09e7ab6010791e69f32cc943d4a2630a98f0b75d347",
+    "manifest_version": 370400000,
+    "actual_payload_root_digest": "4bdfe2f9158035e7d4dd5efe814f5d1dd9eee1d9052eb7c1f571125e9c67e042",
+    "outer_original_apex_digest": "4bdfe2f9158035e7d4dd5efe814f5d1dd9eee1d9052eb7c1f571125e9c67e042",
+    "capex_sha256": "ACCB09B26FE97166F1FAE46FC5F9F95722154AB39EF9C360E7CE8538BABA4843",
+    "capex_size": 17314320,
+    "capex_meta": {
+      "context": "STAGING_CAPEX",
+      "outer_package": "com.android.tethering",
+      "outer_version": 370400000,
+      "outer_originalApexDigest": "4bdfe2f9158035e7d4dd5efe814f5d1dd9eee1d9052eb7c1f571125e9c67e042",
+      "actual_payload_root_digest": "4bdfe2f9158035e7d4dd5efe814f5d1dd9eee1d9052eb7c1f571125e9c67e042",
+      "digest_match": true,
+      "payload_offset": 4096,
+      "payload_offset_mod_4096": 0,
+      "payload_compress_type": 0,
+      "payload_sha256": "cf284e425f8c7b9f30dbb09e7ab6010791e69f32cc943d4a2630a98f0b75d347",
+      "original_apex_sha256": "ee222fb3127b900daa9014d708901abcbcb874da7d466102fbeb069990422c9d",
+      "pubkey_sha1": "944fdf0f06b2c517710befe752a8931b3d4d3ca8"
+    },
+    "system_tree_diff": {
+      "old_capex_sha256": "98C2197598CA8DF182216ABA958CE8AD3603CA9F1BEF81A9B8620BCE0C9A5566",
+      "new_capex_sha256": "ACCB09B26FE97166F1FAE46FC5F9F95722154AB39EF9C360E7CE8538BABA4843",
+      "diff_count": 1,
+      "diff_file": "system/apex/com.android.tethering.capex"
+    }
+  },
+  "system_image": {
+    "bytes": 1092616192,
+    "sha256": "EA8235C2059527D0098C8D4CF0FFCB75EA60E01DB5616581450D448DD0106ECE",
+    "root_digest": "fdc33eea62c2c7a06f80c788c01afe0415348e165cfde35afc8cb2591a38cc69",
+    "raw_erofs_size": 959778816,
+    "tree_meta": {
+      "old_capex_sha256": "98C2197598CA8DF182216ABA958CE8AD3603CA9F1BEF81A9B8620BCE0C9A5566",
+      "new_capex_sha256": "ACCB09B26FE97166F1FAE46FC5F9F95722154AB39EF9C360E7CE8538BABA4843",
+      "diff_count": 1,
+      "diff_file": "system/apex/com.android.tethering.capex"
+    },
+    "readback_equiv": {
+      "context": "READBACK_IMAGE_CAPEX",
+      "outer_package": "com.android.tethering",
+      "outer_version": 370400000,
+      "outer_originalApexDigest": "4bdfe2f9158035e7d4dd5efe814f5d1dd9eee1d9052eb7c1f571125e9c67e042",
+      "actual_payload_root_digest": "4bdfe2f9158035e7d4dd5efe814f5d1dd9eee1d9052eb7c1f571125e9c67e042",
+      "digest_match": true,
+      "payload_offset": 4096,
+      "payload_offset_mod_4096": 0,
+      "payload_compress_type": 0,
+      "payload_sha256": "cf284e425f8c7b9f30dbb09e7ab6010791e69f32cc943d4a2630a98f0b75d347",
+      "original_apex_sha256": "ee222fb3127b900daa9014d708901abcbcb874da7d466102fbeb069990422c9d",
+      "pubkey_sha1": "944fdf0f06b2c517710befe752a8931b3d4d3ca8"
+    }
+  },
+  "vendor_image": {
+    "bytes": 1510998016,
+    "sha256": "615FC15C287CF81E2871D1BC00A85F5435FF29BA0C49F5D14085198D691924DE",
+    "source": "Candidate 42 DisplayDeviceConfig Minimum Brightness Fix"
+  },
+  "vbmeta_system_image": {
+    "base_sha256": "3D93756D579A32EAEC1E771924710B448DB70EA1D4D5C872A221E40ED885724D",
+    "new_sha256": "AB36B0D874EC18870EA0FADE77F4923496F13FD5C33CFCA5581A1FEE54B6A837",
+    "system_root_digest_before": "9470f941f8fb125c0ffdc2532ecc7ff793f2aab2852315f1afb5cd1342069a7c",
+    "system_root_digest_after": "fdc33eea62c2c7a06f80c788c01afe0415348e165cfde35afc8cb2591a38cc69"
+  },
+  "super_image": {
+    "bytes": 7703526364,
+    "sha256": "A4DD2E0A59492E297586CAD7FE2E3DC31847163EBE507A991808EFB0D8CB5AB3"
+  },
+  "logical_partition_inputs": {
+    "mi_ext_a": {
+      "bytes": 202375168,
+      "sha256": "43ED8FC0D1848F5D53BFB7206AC91FE5E5ED4E3F71E958D49F2EEA4C9C8B4BCE"
+    },
+    "odm_a": {
+      "bytes": 36700160,
+      "sha256": "46AE3BFBBF1BB14DE348D04B9D2569B7EE239A7E293F5D0FF78C1EF54604C347"
+    },
+    "product_a": {
+      "bytes": 4387241984,
+      "sha256": "87955DBE97AC28B01A214273BD03F36B5886310DC3B2E4128B9F4661E1C3345E"
+    },
+    "system_a": {
+      "bytes": 1092616192,
+      "sha256": "EA8235C2059527D0098C8D4CF0FFCB75EA60E01DB5616581450D448DD0106ECE"
+    },
+    "system_ext_a": {
+      "bytes": 942669824,
+      "sha256": "6B63E58346DA5B2FEBA7F51980CCEBF886D5991DD07F91541FE4D9F1485CDAD5"
+    },
+    "vendor_a": {
+      "bytes": 1510998016,
+      "sha256": "615FC15C287CF81E2871D1BC00A85F5435FF29BA0C49F5D14085198D691924DE"
+    }
+  },
+  "inherited_boot_images": {
+    "boot.img": {
+      "bytes": 201326592,
+      "sha256": "E5A016056D5C93C7A886980A7C062617EC44DC06A48417D7DD0F4476708A6368"
+    },
+    "vendor_boot.img": {
+      "bytes": 100663296,
+      "sha256": "02333B82BA936F1BAAB1ECAB744632C70F8FC16688A206C7041EF319F112A137"
+    },
+    "dtbo.img": {
+      "bytes": 33554432,
+      "sha256": "50E1AC0EDCBD333778217AA6FE8D972F6FF85ADD0DAE8A015A6642C2172DD886"
+    },
+    "vbmeta.img": {
+      "bytes": 131072,
+      "sha256": "6D46FA9E36D2FFC9BF45F5365691A85AED488622F0254C864EFF3DD42A23FE6D"
+    }
+  }
+}

@@ -103,3 +103,11 @@ The original workflow used Windows 11, WSL Ubuntu, local Android platform-tools,
 - `start_candidate44_observed_boot.ps1` — Controlled observation boot script for Candidate 44 issuing `fastboot reboot` with timeout protection.
 - `salvage_c44_when_ready.py` — Standalone RAM diagnostic export tool for Candidate 44 non-destructively salvaging `console-ramoops-0`, `pmsg-ramoops-0`, and diagnostics files from RAM.
 
+## Candidate 45 Tools
+
+- `build_candidate45.py` — Builds Candidate 45 Aligned CAPEX container enforcing AOSP standard 4096-byte ZIP alignment on inner APEX `apex_payload.img`, discovering and bypassing `apksigner` default alignment stripping with `--alignment-preserved`, injecting dynamic `originalApexDigest`, and enforcing multi-gate EROFS readback verification.
+- `flash_candidate45.ps1` — Restrictive flashing script for Candidate 45 with `-RestoreRetryBudget` logic and strict post-flash Fastboot hold state.
+- `start_candidate45_observed_boot.ps1` — Controlled observation boot script for Candidate 45 with 120s ADB monitoring window.
+- `salvage_c45_when_ready.py` — Standalone RAM diagnostic export tool for Candidate 45 non-destructively salvaging `console-ramoops-0`, `pmsg-ramoops-0`, and diagnostics files from DDR RAM.
+- `compare_three_way_tethering.py` — Forensic three-way comparison script inspecting container format, payload ZIP offsets, alignment, compression, digests, and manifest versions across Xiaomi 15 (dada), K40 (alioth), and thyme.
+
