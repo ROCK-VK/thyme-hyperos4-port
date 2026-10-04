@@ -11,11 +11,11 @@ $SourceRoot = (Resolve-Path -LiteralPath $SourceRoot).Path
 $DestinationRoot = [System.IO.Path]::GetFullPath($DestinationRoot)
 if (-not (Test-Path -LiteralPath $DestinationRoot)) { throw "Destination repository does not exist: $DestinationRoot" }
 
-$LogDirName = [string]::Concat([char]0x65E5,[char]0x5FD7)
-$StateMarker = [string]::Concat([char]0x9879,[char]0x76EE,[char]0x5F53,[char]0x524D,[char]0x72B6,[char]0x6001)
-$ExecMarker = [string]::Concat([char]0x6267,[char]0x884C,[char]0x8BB0,[char]0x5F55)
-$GuideMarker = [string]::Concat([char]0x5B89,[char]0x5353,[char]0x79FB,[char]0x690D,[char]0x5165,[char]0x95E8,[char]0x6307,[char]0x5357)
-$PlanMarker = [string]::Concat([char]0x79FB,[char]0x690D,[char]0x51C6,[char]0x5907,[char]0x8BA1,[char]0x5212)
+$LogDirName = [string]::new([char[]]@(0x65E5,0x5FD7))
+$StateMarker = [string]::new([char[]]@(0x9879,0x76EE,0x5F53,0x524D,0x72B6,0x6001))
+$ExecMarker = [string]::new([char[]]@(0x6267,0x884C,0x8BB0,0x5F55))
+$GuideMarker = [string]::new([char[]]@(0x5B89,0x5353,0x79FB,0x690D,0x5165,0x95E8,0x6307,0x5357))
+$PlanMarker = [string]::new([char[]]@(0x79FB,0x690D,0x51C6,0x5907,0x8BA1,0x5212))
 
 # Explicit allowlist: source paths not listed here are never copied.
 $Allowlist = @(
@@ -111,6 +111,50 @@ $Allowlist = @(
     @{ Source='work/reports/20260925_CANDIDATE13_LOG_SALVAGE/run_20260925_165614/pstore/console-ramoops-0'; Destination='reports/boot-logs/candidate13_recovery_console-ramoops.txt' }
     @{ Source='work/reports/20260925_CANDIDATE13_LOG_SALVAGE/run_20260926_002005/pstore/console-ramoops-0'; Destination='reports/boot-logs/candidate13_clean_data_console-ramoops.txt' }
     @{ Source='work/reports/20260925_CANDIDATE13_STORAGE_SAFETY_AND_FIRST_FAILURE/observations/run_20260926_001542/usb_adb_fastboot_timeline.csv'; Destination='reports/boot-logs/candidate13_usb_adb_fastboot_timeline.csv' }
+    @{ Source='tools/build_candidate27_netd_zygote_cycle_break.py'; Destination='tools/build_candidate27_netd_zygote_cycle_break.py' }
+    @{ Source='tools/build_candidate28_recovery_diag.py'; Destination='tools/build_candidate28_recovery_diag.py' }
+    @{ Source='tools/build_candidate29_pid1_zygote_diag.py'; Destination='tools/build_candidate29_pid1_zygote_diag.py' }
+    @{ Source='tools/build_candidate30_diag_write_canary.py'; Destination='tools/build_candidate30_diag_write_canary.py' }
+    @{ Source='tools/build_candidate31_diag_critical_escalation.py'; Destination='tools/build_candidate31_diag_critical_escalation.py' }
+    @{ Source='tools/build_candidate32_diag_zygote_domain_canary.py'; Destination='tools/build_candidate32_diag_zygote_domain_canary.py' }
+    @{ Source='tools/build_candidate35_diag_linker_capture.py'; Destination='tools/build_candidate35_diag_linker_capture.py' }
+    @{ Source='tools/build_candidate37_diag.py'; Destination='tools/build_candidate37_diag.py' }
+    @{ Source='tools/build_candidate38_diag.py'; Destination='tools/build_candidate38_diag.py' }
+    @{ Source='tools/build_candidate39_diag.py'; Destination='tools/build_candidate39_diag.py' }
+    @{ Source='tools/build_candidate40.py'; Destination='tools/build_candidate40.py' }
+    @{ Source='tools/build_candidate42.py'; Destination='tools/build_candidate42.py' }
+    @{ Source='tools/build_candidate43.py'; Destination='tools/build_candidate43.py' }
+    @{ Source='tools/verify_c42_build_gates.py'; Destination='tools/verify_c42_build_gates.py' }
+    @{ Source='tools/verify_c43_build_gate.py'; Destination='tools/verify_c43_build_gate.py' }
+    @{ Source='tools/flash_candidate35_diag_linker_capture.ps1'; Destination='tools/flash_candidate35_diag_linker_capture.ps1' }
+    @{ Source='tools/flash_candidate37_diag.ps1'; Destination='tools/flash_candidate37_diag.ps1' }
+    @{ Source='tools/flash_candidate38_diag.ps1'; Destination='tools/flash_candidate38_diag.ps1' }
+    @{ Source='tools/flash_candidate39_diag.ps1'; Destination='tools/flash_candidate39_diag.ps1' }
+    @{ Source='tools/flash_candidate40.ps1'; Destination='tools/flash_candidate40.ps1' }
+    @{ Source='tools/flash_candidate42.ps1'; Destination='tools/flash_candidate42.ps1' }
+    @{ Source='tools/flash_candidate43.ps1'; Destination='tools/flash_candidate43.ps1' }
+    @{ Source='reports/c33_static_realzygote_crashdump_20261002/C33_STATIC_REALZYGOTE_CRASHDUMP_ANALYSIS_20261002.md'; Destination='reports/c33_static_realzygote_crashdump_20261002/C33_STATIC_REALZYGOTE_CRASHDUMP_ANALYSIS_20261002.md' }
+    @{ Source='reports/c34_static_linker_environment_20261002/C34_STATIC_LINKER_ENVIRONMENT_ANALYSIS_20261002.md'; Destination='reports/c34_static_linker_environment_20261002/C34_STATIC_LINKER_ENVIRONMENT_ANALYSIS_20261002.md' }
+    @{ Source='reports/c35_diag_candidate35_build_20261002/C35_DIAG_BUILD_GATE_AND_FLASH_READINESS_REPORT.md'; Destination='reports/c35_diag_candidate35_build_20261002/C35_DIAG_BUILD_GATE_AND_FLASH_READINESS_REPORT.md' }
+    @{ Source='reports/c35_diag_pipe_protocol_20261002/C35_LINKER_PATCH_AUDIT_REPORT.md'; Destination='reports/c35_diag_pipe_protocol_20261002/C35_LINKER_PATCH_AUDIT_REPORT.md' }
+    @{ Source='reports/c35_diag_stdio_verification_20261002/C35_STDIO_FACILITY_VERIFICATION_REPORT.md'; Destination='reports/c35_diag_stdio_verification_20261002/C35_STDIO_FACILITY_VERIFICATION_REPORT.md' }
+    @{ Source='reports/c36_diag_zygote_sigabrt_20261002/C36_DIAG_REAL_ZYGOTE_SIGABRT_REPORT.md'; Destination='reports/c36_diag_zygote_sigabrt_20261002/C36_DIAG_REAL_ZYGOTE_SIGABRT_REPORT.md' }
+    @{ Source='reports/c38_diag_candidate38_build_20261003/C38_DIAG_ABORT_CALLER_SYMBOLIZATION_REPORT.md'; Destination='reports/c38_diag_candidate38_build_20261003/C38_DIAG_ABORT_CALLER_SYMBOLIZATION_REPORT.md' }
+    @{ Source='reports/c38_diag_candidate38_build_20261003/C38_DIAG_BUILD_GATE_AND_FLASH_READINESS_REPORT.md'; Destination='reports/c38_diag_candidate38_build_20261003/C38_DIAG_BUILD_GATE_AND_FLASH_READINESS_REPORT.md' }
+    @{ Source='reports/c38_diag_candidate38_build_20261003/C38_BUILD_MANIFEST.json'; Destination='reports/c38_diag_candidate38_build_20261003/C38_BUILD_MANIFEST.json' }
+    @{ Source='reports/c39_diag_candidate39_build_20261003/C39_DIAG_SYMBOLIZATION_AND_ROOTCAUSE_REPORT.md'; Destination='reports/c39_diag_candidate39_build_20261003/C39_DIAG_SYMBOLIZATION_AND_ROOTCAUSE_REPORT.md' }
+    @{ Source='reports/c39_diag_candidate39_build_20261003/C39_DIAG_BUILD_GATE_AND_FLASH_READINESS_REPORT.md'; Destination='reports/c39_diag_candidate39_build_20261003/C39_DIAG_BUILD_GATE_AND_FLASH_READINESS_REPORT.md' }
+    @{ Source='reports/c39_diag_candidate39_build_20261003/C39_BUILD_MANIFEST.json'; Destination='reports/c39_diag_candidate39_build_20261003/C39_BUILD_MANIFEST.json' }
+    @{ Source='reports/c40_candidate40_build_20261003/C40_BUILD_AND_FLASH_READINESS_REPORT.md'; Destination='reports/c40_candidate40_build_20261003/C40_BUILD_AND_FLASH_READINESS_REPORT.md' }
+    @{ Source='reports/c40_candidate40_build_20261003/C40_FIRST_BOOT_AND_BREAKTHROUGH_REPORT.md'; Destination='reports/c40_candidate40_build_20261003/C40_FIRST_BOOT_AND_BREAKTHROUGH_REPORT.md' }
+    @{ Source='reports/c40_candidate40_build_20261003/C40_BUILD_MANIFEST.json'; Destination='reports/c40_candidate40_build_20261003/C40_BUILD_MANIFEST.json' }
+    @{ Source='reports/c42_candidate42_build_20261004/C41_DIAG_DISPLAY_DEVICE_CONFIG_REPORT.md'; Destination='reports/c42_candidate42_build_20261004/C41_DIAG_DISPLAY_DEVICE_CONFIG_REPORT.md' }
+    @{ Source='reports/c42_candidate42_build_20261004/C42_BUILD_AND_FLASH_READINESS_REPORT.md'; Destination='reports/c42_candidate42_build_20261004/C42_BUILD_AND_FLASH_READINESS_REPORT.md' }
+    @{ Source='reports/c42_candidate42_build_20261004/C42_FIRST_BOOT_AND_EVIDENCE_ANALYSIS_REPORT.md'; Destination='reports/c42_candidate42_build_20261004/C42_FIRST_BOOT_AND_EVIDENCE_ANALYSIS_REPORT.md' }
+    @{ Source='reports/c42_candidate42_build_20261004/C42_BUILD_MANIFEST.json'; Destination='reports/c42_candidate42_build_20261004/C42_BUILD_MANIFEST.json' }
+    @{ Source='reports/c43_candidate43_build_20261004/C43_BUILD_AND_GATE_READINESS_REPORT.md'; Destination='reports/c43_candidate43_build_20261004/C43_BUILD_AND_GATE_READINESS_REPORT.md' }
+    @{ Source='reports/c43_candidate43_build_20261004/C43_BUILD_MANIFEST.json'; Destination='reports/c43_candidate43_build_20261004/C43_BUILD_MANIFEST.json' }
+    @{ Source='reports/c43_candidate43_build_20261004/C43_GATE_VERIFICATION_REPORT.json'; Destination='reports/c43_candidate43_build_20261004/C43_GATE_VERIFICATION_REPORT.json' }
 )
 
 function Resolve-AllowlistedSource([string]$RelativeSource) {

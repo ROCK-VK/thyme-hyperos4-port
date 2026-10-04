@@ -18,7 +18,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-WSL_BUILD = Path("/root/10s_os4_build")
+WSL_BUILD = Path("/path/to/thyme-os4-build")
 C31_STAGE = ROOT / "work/stage_c31_diag_zygote_critical_20261001_run1"
 C31_IMAGES = C31_STAGE / "images"
 C31_WORK = WSL_BUILD / "c31_diag_zygote_critical_20261001_run1"

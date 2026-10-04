@@ -45,8 +45,8 @@ print("=" * 72)
 # GATE 1: Modification Minimal & Precise
 # =========================================================================
 print("\n[GATE 1] Modification Minimal & Precise Verification...")
-wsl_c11_fc = "[LOCAL_WSL_USER]/c9_build_stage/system_ext_tree/etc/selinux/system_ext_file_contexts"
-wsl_c12_fc = "[LOCAL_WSL_USER]/c12_build_stage/system_ext_tree/etc/selinux/system_ext_file_contexts"
+wsl_c11_fc = "/path/to/thyme-os4-build/c9_build_stage/system_ext_tree/etc/selinux/system_ext_file_contexts"
+wsl_c12_fc = "/path/to/thyme-os4-build/c12_build_stage/system_ext_tree/etc/selinux/system_ext_file_contexts"
 
 res_diff = run_wsl(f"diff -u {wsl_c11_fc} {wsl_c12_fc} || true")
 diff_lines = [l for l in res_diff.stdout.splitlines() if l.startswith("+") and not l.startswith("+++")]
@@ -60,20 +60,20 @@ print("  [PASS] Gate 1: Exactly 1 line added: /dev/ion    u:object_r:ion_device:
 # =========================================================================
 print("\n[GATE 2] Target Issue Solved (Policy & Labeling Verification)...")
 # Check /dev/ion mapping inside system_ext_c12.raw.erofs
-wsl_c12_raw = "[LOCAL_WSL_USER]/c12_build_stage/system_ext_c12.raw.erofs"
+wsl_c12_raw = "/path/to/thyme-os4-build/c12_build_stage/system_ext_c12.raw.erofs"
 wsl_dump = f"{WSL_ROOT}/tools/erofs-utils/wsl/dump.erofs"
 res_cat = run_wsl(f"{wsl_dump} --cat --path=/etc/selinux/system_ext_file_contexts {wsl_c12_raw} | grep '/dev/ion'")
 assert "/dev/ion" in res_cat.stdout and "ion_device:s0" in res_cat.stdout, "FAIL: /dev/ion missing from system_ext_file_contexts inside raw image!"
 print(f"  [PASS] /dev/ion mapped inside image: {res_cat.stdout.strip()}")
 
 # Verify ion_device exists in active policy
-wsl_plat_sepolicy = "[LOCAL_WSL_USER]/thyme_xiaomi15_os4_first_boot_candidate_1/rootlike_stage/system/etc/selinux/plat_sepolicy.cil"
+wsl_plat_sepolicy = "/path/to/thyme-os4-build/thyme_xiaomi15_os4_first_boot_candidate_1/rootlike_stage/system/etc/selinux/plat_sepolicy.cil"
 res_type = run_wsl(f"grep '(type ion_device)' {wsl_plat_sepolicy}")
 assert "(type ion_device)" in res_type.stdout, "FAIL: (type ion_device) missing from plat_sepolicy.cil!"
 print(f"  [PASS] (type ion_device) confirmed in policy: {res_type.stdout.strip()}")
 
 # Verify allow rules for keymaster, gatekeeper, sensors
-wsl_vendor_sepolicy = "[LOCAL_WSL_USER]/thyme_native_base_1/official_a13/metadata/vendor/selinux/vendor_sepolicy.cil"
+wsl_vendor_sepolicy = "/path/to/thyme-os4-build/thyme_native_base_1/official_a13/metadata/vendor/selinux/vendor_sepolicy.cil"
 res_allow_sensors = run_wsl(f"grep 'allow vendor_sensors ion_device_30_0' {wsl_vendor_sepolicy}")
 assert "allow vendor_sensors ion_device_30_0" in res_allow_sensors.stdout, "FAIL: vendor_sensors allow missing!"
 print(f"  [PASS] vendor_sensors allow confirmed: {res_allow_sensors.stdout.strip()}")

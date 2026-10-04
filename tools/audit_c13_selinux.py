@@ -12,8 +12,8 @@ def main():
     print("=== AUDITING SELINUX CIL AND MAPPING FOR CANDIDATE 13 ===")
     
     # 1. Check plat_sepolicy_vers.txt across partitions
-    vendor_img = "[LOCAL_WSL_USER]/thyme_xiaomi15_os4_first_boot_candidate_1/provider_images/vendor.img"
-    odm_img = "[LOCAL_WSL_USER]/thyme_xiaomi15_os4_first_boot_candidate_1/provider_images/odm.img"
+    vendor_img = "/path/to/thyme-os4-build/thyme_xiaomi15_os4_first_boot_candidate_1/provider_images/vendor.img"
+    odm_img = "/path/to/thyme-os4-build/thyme_xiaomi15_os4_first_boot_candidate_1/provider_images/odm.img"
     
     out, err, rc = run(f"debugfs -R 'cat etc/selinux/plat_sepolicy_vers.txt' {vendor_img} 2>/dev/null")
     print(f"vendor plat_sepolicy_vers: {out}")
@@ -23,7 +23,7 @@ def main():
     print(f"odm plat_sepolicy_vers: {out}")
 
     # 2. Extract vendor_sepolicy.cil and odm_sepolicy.cil
-    audit_dir = "[LOCAL_WSL_USER]/c13_audit"
+    audit_dir = "/path/to/thyme-os4-build/c13_audit"
     os.makedirs(audit_dir, exist_ok=True)
     run(f"debugfs -R 'dump etc/selinux/vendor_sepolicy.cil {audit_dir}/vendor_sepolicy.cil' {vendor_img} 2>/dev/null")
     run(f"debugfs -R 'dump etc/selinux/odm_sepolicy.cil {audit_dir}/odm_sepolicy.cil' {odm_img} 2>/dev/null")
@@ -35,7 +35,7 @@ def main():
 
     # 3. List active CIL files for vers (202604)
     # System
-    sys_dir = "[LOCAL_WSL_USER]/thyme_xiaomi15_os4_first_boot_candidate_1/rootlike_stage/system/etc/selinux"
+    sys_dir = "/path/to/thyme-os4-build/thyme_xiaomi15_os4_first_boot_candidate_1/rootlike_stage/system/etc/selinux"
     plat_cil = f"{sys_dir}/plat_sepolicy.cil"
     mapping_cil = f"{sys_dir}/mapping/{vers}.cil"
     genfs_cil = f"{sys_dir}/plat_sepolicy_genfs_{vers}.cil"
@@ -45,7 +45,7 @@ def main():
     print(f"system plat_sepolicy_genfs_{vers}.cil exists: {os.path.exists(genfs_cil)}")
     
     # System Ext
-    sys_ext_dir = "[LOCAL_WSL_USER]/c12_build_stage/system_ext_tree/etc/selinux"
+    sys_ext_dir = "/path/to/thyme-os4-build/c12_build_stage/system_ext_tree/etc/selinux"
     sys_ext_cil = f"{sys_ext_dir}/system_ext_sepolicy.cil"
     sys_ext_mapping_cil = f"{sys_ext_dir}/mapping/{vers}.cil"
     sys_ext_compat_cil = f"{sys_ext_dir}/mapping/{vers}.compat.cil"
@@ -56,7 +56,7 @@ def main():
 
     # Product
     # Check where product CILs are
-    out, _, _ = run("find [LOCAL_WSL_USER]/ -name product_sepolicy.cil")
+    out, _, _ = run("find /path/to/thyme-os4-build/ -name product_sepolicy.cil")
     print("Product sepolicy files found:", out.splitlines())
     prod_cil = out.splitlines()[0] if out.splitlines() else None
     

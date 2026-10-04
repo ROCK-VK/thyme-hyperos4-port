@@ -45,7 +45,7 @@ print("=" * 72)
 # GATE 1: File Metadata Repaired
 # =========================================================================
 print("\n[GATE 1] File Metadata Repaired Verification...")
-wsl_c11_raw = "[LOCAL_WSL_USER]/c11_build_stage/system_ext_c11.raw.erofs"
+wsl_c11_raw = "/path/to/thyme-os4-build/c11_build_stage/system_ext_c11.raw.erofs"
 wsl_dump = f"{WSL_ROOT}/tools/erofs-utils/wsl/dump.erofs"
 
 # Check /apex
@@ -75,7 +75,7 @@ print("GATE 1 RESULT: 100% PASS")
 # GATE 2: Historical PropertyContexts Deduplication Retained
 # =========================================================================
 print("\n[GATE 2] Property Contexts Deduplication Retained Verification...")
-wsl_tree = "[LOCAL_WSL_USER]/c9_build_stage/system_ext_tree"
+wsl_tree = "/path/to/thyme-os4-build/c9_build_stage/system_ext_tree"
 res = run_wsl(f"grep -n 'C9_FIX_DUPLICATE_PREFIX' {wsl_tree}/etc/selinux/system_ext_property_contexts")
 lines = [l.strip() for l in res.stdout.splitlines() if l.strip()]
 print(f"  Commented prefix lines count: {len(lines)}")

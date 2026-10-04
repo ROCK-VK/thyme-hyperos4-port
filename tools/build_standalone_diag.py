@@ -7,7 +7,7 @@ import hashlib
 import shutil
 from datetime import datetime
 
-REPO_ROOT = os.environ.get("THYME_OS4_ROOT", os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+REPO_ROOT = "[LOCAL_PROJECT_ROOT]"
 DEFAULT_OUT_DIR = os.path.join(REPO_ROOT, "work", "standalone_diag")
 parser = argparse.ArgumentParser(description="Build a Standalone Diag image into a new, isolated output directory.")
 parser.add_argument("--out-dir", required=True, help="New output directory; existing paths are refused to preserve prior artifacts.")
@@ -79,7 +79,7 @@ ln -s ../bin usr/bin
 ln -s ../bin usr/sbin
 
 # Copy busybox static
-cp /mnt/e/RVK/10S_OS4/work/bin/busybox.static bin/busybox
+cp /path/to/thyme-os4-local/work/bin/busybox.static bin/busybox
 chmod 755 bin/busybox
 
 # Create symlinks for all applets

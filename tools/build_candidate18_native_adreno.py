@@ -28,7 +28,7 @@ if ROOT.drive:
     WSL_ROOT = f"/mnt/{ROOT.drive[0].lower()}/{ROOT.as_posix()[3:]}"
 else:
     WSL_ROOT = ROOT.as_posix()
-WSL_BUILD_ROOT = "[LOCAL_WSL_USER]
+WSL_BUILD_ROOT = "/path/to/thyme-os4-build"
 WSL_C1_BASE = f"{WSL_BUILD_ROOT}/thyme_xiaomi15_os4_first_boot_candidate_1"
 WSL_C15_STAGE = f"{WSL_BUILD_ROOT}/c15_angle_egl_20260926_run1"
 WSL_C17_STAGE = f"{WSL_BUILD_ROOT}/c17_graphics_allocator_open_20260926_run1"

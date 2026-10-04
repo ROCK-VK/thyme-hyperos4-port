@@ -247,7 +247,7 @@ def main():
     try:
         wsl_lpdump = f"{WSL_ROOT}/tools/android-tools-static/linux/android-tools-static/lpdump"
         wsl_simg2img = f"{WSL_ROOT}/tools/android-tools-static/linux/android-tools-static/simg2img"
-        wsl_raw_super = "[LOCAL_WSL_USER]/c9_build_stage/super_c9_gate_raw.img"
+        wsl_raw_super = "/path/to/thyme-os4-build/c9_build_stage/super_c9_gate_raw.img"
         wsl_super_sparse = f"{WSL_ROOT}/work/stage_c_thyme_os4_candidate_9_init_fatal_panic/images/super.img"
 
         cmd = f"""
@@ -270,7 +270,7 @@ def main():
     # ----------------------------------------------------
     try:
         wsl_fsck = f"{WSL_ROOT}/tools/erofs-utils/wsl/fsck.erofs"
-        wsl_sys_ext = "[LOCAL_WSL_USER]/c9_build_stage/system_ext_c9.img"
+        wsl_sys_ext = "/path/to/thyme-os4-build/c9_build_stage/system_ext_c9.img"
         res = run_wsl(f"{wsl_fsck} -d0 {wsl_sys_ext}")
         report_gate(10, "system_ext_a EROFS Filesystem Integrity", True, "fsck.erofs exit 0 (clean)")
     except Exception as e:
@@ -311,7 +311,7 @@ def main():
         wsl_lpunpack = f"{WSL_ROOT}/tools/android-tools-static/linux/android-tools-static/lpunpack"
         wsl_simg2img = f"{WSL_ROOT}/tools/android-tools-static/linux/android-tools-static/simg2img"
         wsl_fsck = f"{WSL_ROOT}/tools/erofs-utils/wsl/fsck.erofs"
-        wsl_stage = "[LOCAL_WSL_USER]/c9_build_stage"
+        wsl_stage = "/path/to/thyme-os4-build/c9_build_stage"
         wsl_unpack_dir = f"{wsl_stage}/gate13_unpack"
         wsl_extract_dir = f"{wsl_stage}/gate13_extracted"
         wsl_super_sparse = f"{WSL_ROOT}/work/stage_c_thyme_os4_candidate_9_init_fatal_panic/images/super.img"

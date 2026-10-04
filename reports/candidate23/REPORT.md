@@ -1,6 +1,6 @@
 # THYME-OS4 Candidate 23：SurfaceFlinger shader-cache prime 绕过实验
 
-日期：2026-09-27（香港时间）
+日期：2026-09-27（香港时间）  
 状态：主机构建、两分区刷写及一次首次启动尝试完成；观察到 Recovery 分支，C23 HyperOS 图形阶段尚未验证。最新设备只读状态见文末。
 
 ## C22 依据

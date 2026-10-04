@@ -1,4 +1,5 @@
-# THYME-OS4 项目独立技术审核员正式接手
+# THYME-OS4 项目独立技术审核员正式接手（修订版）
+
 
 你现在正式接手我的 THYME-OS4 项目独立技术审核工作。
 
@@ -234,7 +235,7 @@ fastboot erase metadata
 
 ------
 
-## 六、执行 Agent 是 Codex
+## 六、执行 Agent 是 Codex/GEMINI
 
 当前主要执行 Agent：
 
@@ -375,7 +376,7 @@ EFS/NV；
 
 其他非实验目标分区。
 
-正式刷写和首次启动应分别获得明确授权。
+Candidate 指定实验分区的受控刷写不需要逐次人工审批；但刷写完成后准备进行该 Candidate 的首次正式启动时，必须等待我现场明确授权。
 
 已经授权的主机侧研发任务允许 Codex连续完成，不需要每执行一个小命令都暂停。
 
@@ -491,6 +492,134 @@ Codex 本轮实际完成了什么？
 
 ------
 
+## 十二（补充）、当前实际最新状态：Candidate 42 已结项，下一步为 Candidate 43
+
+> 本节是本次交接时刻的实际项目快照。若它与前面的历史背景描述冲突，以本节以及随后收到的最新 Codex 报告/实际真机证据为准；若新的 Codex 报告比本节更新，以更新后的真实证据为准。
+
+### A. 当前已经完成并由真机证据支持的进展
+
+截至 2026-10-04，Candidate 42 已完成构建、门禁、受控刷写、首启和 Standalone DDR RAM 证据打捞。
+
+C42 的唯一目标修改是：
+
+`/vendor/etc/displayconfig/display_id_4630946545580055169.xml`
+
+将 `<screenBrightnessMap>` 第一个 `<point>` 的：
+
+`0.001709819` → `0.000854597`
+
+该值与 K40/alioth HyperOS 4 对应 displayconfig 的首点以及当前 HyperOS 4 框架计算得到的 `mBacklightMinimum` 对齐。
+
+C42 真机证据已经证明以下事情发生了实质性推进：
+
+- `DisplayDeviceConfig` 的 `Min or max values are invalid` 在 C42 现场为 0 次；
+- 内置显示设备已经成功注册，日志出现 `DisplayDeviceInfo`；
+- `LocalDisplayAdapter` 已成功执行 SurfaceFlinger 显示电源模式设置；
+- BootAnimation 进程已经真正启动，并产生 `ShownTiming` 记录；
+- `system_server` 已越过此前的显示初始化阻塞，并继续推进到 Phase 200；
+- PackageManagerService、ActivityTaskManager、WindowManagerService 等均出现了继续工作的实证；
+- CE storage 已进入 unlocked 状态。
+
+因此，C42 已经把项目从“显示配置导致 system_server 无法继续”推进到了“OtherServices 中新的服务级阻塞”。
+
+### B. 当前不要误写成已经完成的内容
+
+1. C42 的日志证明 BootAnimation 进程启动，不等于已经由用户肉眼确认进入第二屏 `Xiaomi HyperOS + 三点动画`；物理屏幕阶段仍应以现场观察为准。
+2. C42 证明 SurfaceFlinger/DisplayManager 的关键初始化继续推进，不等于整个图形栈、所有 HAL 和日常显示功能已经长期稳定。
+3. C42 证明 MediaProfiles 的旧崩溃链已消失，不等于 Zygote 已经成为完全无问题状态。
+4. “eBPF 兼容性导致 netd abort”目前具有很强的既有证据支持，但 C43 仍应通过准确反汇编和 K40 对照确认具体致命分支；不要仅凭函数名把整个 `libnetd_updatable_init()` 判定为可整体忽略。
+
+### C. C42 当前第一阻塞点
+
+C42 现场抓到的新的直接阻塞为：
+
+`/system/bin/netd`
+→ `/apex/com.android.tethering/lib64/libnetd_updatable.so`
+→ `libnetd_updatable_init.cfi+576`
+→ `abort()` / SIGABRT
+
+典型 tombstone 调用链：
+
+`libc.so (abort)`
+→ `libnetd_updatable.so (libnetd_updatable_init.cfi+576)`
+→ `/system/bin/netd (main.cfi+336)`
+→ `libc.so (__libc_init+124)`
+
+C42 全场记录到 netd 反复崩溃，之后 `NetworkManagementService` 主线程在：
+
+`NetdService.get()`
+→ `NetworkManagementService.connectNativeNetdService()`
+→ `NetworkManagementService.create()`
+→ `SystemServer.startOtherServices()`
+
+持续等待 netd，最终被 Watchdog 因主线程阻塞约 67 秒而杀死。
+
+当前最可靠的工程描述应是：
+
+**“netd 启动即 SIGABRT，导致 NMS 等待 netd，进而触发 system_server Watchdog。”**
+
+至于 SIGABRT 的最内层原因，优先验证既有 C13/C26 证据所指向的 Linux 4.19 与 Android 17 eBPF/NetBpfLoad 能力不匹配。
+
+### D. 当前设备状态
+
+C42 首启和取证结束后，设备已返回 Bootloader Fastboot。
+
+已知最新状态：
+
+- `product=thyme`
+- `current-slot=a`
+- `slot-unbootable:a=no`
+- `slot-retry-count:a=1`
+- `slot-successful:a=no`
+- `slot-retry-count:b=7`
+
+**A 槽当前仅剩 1 次 retry，不得直接拿这一预算进行新的盲目首启。** C43 首启前必须先读取并按既有流程恢复可接受的 A 槽启动预算；任何 `set_active` 都必须是明确、受控且有目的的操作，不得反复切槽或重启试错。
+
+### E. C43 的正确技术方向
+
+C43 不应该直接把整个 `libnetd_updatable_init()` 改成恒等成功。
+
+正确顺序是：
+
+1. 提取 C42 实际使用的 `libnetd_updatable.so`；
+2. 精确定位 `libnetd_updatable_init.cfi+576` 对应的代码和 `abort()` 调用点；
+3. 分析 abort 前的条件分支和返回值；
+4. 用 C13/C26 的 4.19/eBPF 证据进行对应；
+5. 优先找 alioth/K40 成功 Android 17/HyperOS 4 对应实现；
+6. 只有确认具体失败属于可选兼容性能力时，才对该失败分支实施最小 fallback/skip；
+7. 保留其余 netd 初始化逻辑不变；
+8. 构建并完成必要的 AVB/LP 门禁；
+9. 受控刷写后停留 Fastboot；
+10. 等待我明确说“开始启动 C43”；
+11. 首启重点验证 netd 是否成功常驻、INetd 是否注册、NMS 是否越过 `NetdService.get()`、system_server 是否越过 Watchdog；
+12. 找到新的第一阻塞后，再决定 C44。
+
+C43 的工程目标是“最小地让 netd 正常进入可用状态”，而不是关闭 Watchdog、修改 system_server、修改 kernel 或用大范围 SELinux 放行来掩盖问题。
+
+### F. GitHub 交接状态
+
+GitHub 仍然是项目公开审核副本，但**不能假设当前本地 C42 已经同步到 GitHub**。
+
+本次 Codex 执行记录中可以看到 C42 本地报告、工具和日志更新，但在交接材料里没有看到明确的 `git commit` / `git push` 成功记录。因此新窗口首次接手时应：
+
+1. 先查询 GitHub 最新 Commit；
+2. 检查是否已经包含 C42 相关工具、报告和日志；
+3. 如果没有，不要用旧 GitHub 状态否定本地已经完成的 C42；
+4. 下一次里程碑（C43）完成后，必须把适合公开的代码、脚本、报告和关键证据索引同步，并在最终报告写明 Commit SHA；
+5. 大型 super、raw、oops 等原始镜像/超大取证文件不为了“完整”而强行上传，使用报告中的文件清单、SHA256 和索引保留可追溯性。
+
+### G. 当前项目总判断
+
+项目目前已经明显越过了最早期的：
+
+`init / APEX / /data / Zygote / EGLConfig / DisplayDeviceConfig`
+
+连续阻塞链中的多个阶段，C42 是一次真实的框架级推进。
+
+当前最有价值的下一次真机实验不是继续研究显示，而是解决 **netd 启动链**，因为现在它已经是直接拖垮 `system_server` 的第一阻塞点。
+
+---
+
 ## 十三、立即开始的接手任务
 
 现在请实际打开：
@@ -545,6 +674,8 @@ https://github.com/ROCK-VK/thyme-hyperos4-port
 | 回锁 Bootloader                                      | 永久禁止           |
 | 修改 persist、EFS/NV、射频校准、设备身份等非实验目标 | 禁止擅自操作       |
 
+> **人工确认节点的最终定义：** 项目常规流程只保留一个必须由我现场确认的人工节点：Candidate 已刷写完成、设备仍停留在 Bootloader Fastboot，准备对该新 Candidate 执行首次正式启动时。此时必须停止并等待我明确下达“开始启动 Cxx”。此前的代码修改、构建、必要的受控刷写、Standalone RAM 取证、userdata/metadata 擦除（有明确工程理由时）及 PixelOS 恢复，均可在本交接手册规定的范围内自主连续执行。
+
 ### 两项重要执行原则
 
 **数据清除：**既然这台小米 10S 没有需要保留的个人数据，Codex 可以根据首次安装、加密状态和实际故障判断是否清除 userdata、metadata，不必反复请示，但也不要每轮无意义地重复清除。
@@ -559,3 +690,30 @@ https://github.com/ROCK-VK/thyme-hyperos4-port
 如果日志已经明确证明存在多个启动阻塞，而且它们的修复方法都有足够依据，完全可以在同一个 Candidate 中一起解决，不必故意拆成 C15、C16、C17，每次刷入、开机、失败、进入 Standalone 再重新构建。
 但也不能反过来，把十几个只有理论风险的问题一起改掉。否则一旦启动情况发生变化，Codex 又会不知道究竟是哪项修改起了作用。
 我的建议是把“严格单变量”调整为证据驱动的最小修复集合。
+
+今后 Codex 遇到新的启动或兼容性问题，我会默认采用这个顺序：
+
+1. 先看小米 10S 的真实故障日志，确定卡在哪个阶段、报什么错误。
+2. 立即对照 K40 成功移植包，寻找它针对同类问题采用的适配方式。
+3. 比较 K40 成功包、原版供体和当前 Candidate，判断我们遗漏了什么。
+4. 如果找到适用于 thyme 的现成修复，优先复用；如果没有，再安排定点诊断或新的修复实验。
+
+这条规则不只适用于当前 EGLConfig 问题，后续遇到显示、Vulkan、HAL、SELinux、启动链等问题也一样。
+
+同时保留一个原则：优先参考 K40 的成功经验，但不盲目照搬 K40 的设备专属驱动、内核或固件。
+
+给 THYME-OS4 的 Codex Prompt，会固定加上这条“磁盘空间门禁”。
+
+核心规则是：**每次开始重型操作前先检查 C、D、E 三个盘的剩余空间；只要任一盘 `<= 50 GB`，就先排查所有盘内本项目相关占用并做必要清理。**
+
+清理范围优先包括：
+
+- 后续不再需要的旧 `stage/run` 临时目录
+- 重复解包目录
+- 可重新生成的大型 `raw/sparse super` 临时文件
+- 旧 Candidate 的重复中间产物
+- 已确认不会再复用的构建缓存
+
+但要保留当前有效 Candidate、源码、原始取证、日志、报告、可信基线和仍可能复用的中间资产。
+
+**特别规则：绝对不要动 Docker。** 包括 Docker Desktop、镜像、容器、volume、Docker/WSL 数据目录等，即使它们占很多空间，也不能为了本项目腾空间去删。

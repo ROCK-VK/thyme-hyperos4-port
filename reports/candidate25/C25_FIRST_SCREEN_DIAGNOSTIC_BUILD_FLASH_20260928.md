@@ -80,6 +80,6 @@ C25 仅替换 C24 未能形成可验证采样的 logd-only shell 诊断机制：
 - 用户观察始终为中央小米 Logo + `powered by Android` 第一屏，未看到 HyperOS 三点第二屏。BootAnimation service/PID/layer 存在，但是否真实显示到物理面板仍未知；zygote/system_server 尚未启动，因此当前优先收集 zygote 退出原因，不改 HWC/GPU。
 - C25 helper 记录只到 827.404s 且缺少完成标记。相较用户约 898s 的主机窗口，不能宣称诊断任务完整运行满 15 分钟；最后样本距 helper 配置的 900s 截止还差约 72.6s。
 - 下一步应准备最小 logcat/crash 采集增量，优先保留现有 C25 功能条件；获取 Zygote 启动失败首条日志后再定点修复。当前不构建 C26：最新磁盘读数 C=76.91 GiB，低于本项目 80 GiB 重型工作门槛；D=119.58 GiB、E=176.64 GiB。Docker 未触碰。
-- run3 后用户报告已手动返回 Bootloader Fastboot；本轮主机 `fastboot devices` 未枚举到设备，因此模式尚未主机确认。run3 期间为 Standalone RAM UMS，THYME_DIAG=G:。未执行持久分区修改、userdata/metadata 擦除、set_active、BCB 修改、PixelOS 恢复或 Bootloader 回锁。
+- run3 取证后用户报告已手动返回 Bootloader Fastboot；本轮只读 `fastboot devices` 未枚举到设备，因此尚未主机确认。run3 期间设备处于 Standalone RAM UMS，THYME_DIAG=G:。未进行任何持久分区修改、userdata/metadata 擦除、set_active、BCB 修改、PixelOS 恢复或 Bootloader 状态变化。
 
 ext4 选项语义参考：[Linux 4.19 ext4 文档](https://www.kernel.org/doc/html/v4.19/filesystems/ext4/ext4.html)。

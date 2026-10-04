@@ -45,8 +45,8 @@ print("=" * 72)
 # GATE 1: Modification Minimal & Precise
 # =========================================================================
 print("\n[GATE 1] Modification Minimal & Precise Verification...")
-wsl_c12_cil = "[LOCAL_WSL_USER]/c12_build_stage/system_ext_tree/etc/selinux/system_ext_sepolicy.cil"
-wsl_c13_cil = "[LOCAL_WSL_USER]/c13_build_stage/system_ext_tree/etc/selinux/system_ext_sepolicy.cil"
+wsl_c12_cil = "/path/to/thyme-os4-build/c12_build_stage/system_ext_tree/etc/selinux/system_ext_sepolicy.cil"
+wsl_c13_cil = "/path/to/thyme-os4-build/c13_build_stage/system_ext_tree/etc/selinux/system_ext_sepolicy.cil"
 
 res_diff = run_wsl(f"diff -u {wsl_c12_cil} {wsl_c13_cil} || true")
 diff_lines = [l for l in res_diff.stdout.splitlines() if l.startswith("+") and not l.startswith("+++")]
@@ -57,7 +57,7 @@ assert any("allow hal_gatekeeper ion_device" in l for l in diff_lines), "FAIL: h
 print("  [PASS] Gate 1: Diff verified strictly minimal (+2 rules in system_ext_sepolicy.cil)")
 
 # Check C12 file_contexts fix is retained
-wsl_c13_fc = "[LOCAL_WSL_USER]/c13_build_stage/system_ext_tree/etc/selinux/system_ext_file_contexts"
+wsl_c13_fc = "/path/to/thyme-os4-build/c13_build_stage/system_ext_tree/etc/selinux/system_ext_file_contexts"
 res_fc = run_wsl(f"grep '/dev/ion' {wsl_c13_fc}")
 assert "ion_device:s0" in res_fc.stdout, "FAIL: C12 /dev/ion mapping missing in C13!"
 print(f"  [PASS] Candidate 12 /dev/ion mapping intact: {res_fc.stdout.strip()}")
@@ -66,7 +66,7 @@ print(f"  [PASS] Candidate 12 /dev/ion mapping intact: {res_fc.stdout.strip()}")
 # GATE 2: Target Issue Solved (Policy & Label Verification via secilc & sesearch)
 # =========================================================================
 print("\n[GATE 2] Target Issue Solved (Binary Policy & sesearch Verification)...")
-wsl_c13_raw = "[LOCAL_WSL_USER]/c13_build_stage/system_ext_c13.raw.erofs"
+wsl_c13_raw = "/path/to/thyme-os4-build/c13_build_stage/system_ext_c13.raw.erofs"
 wsl_dump = f"{WSL_ROOT}/tools/erofs-utils/wsl/dump.erofs"
 
 # Verify rules inside system_ext_c13.raw.erofs

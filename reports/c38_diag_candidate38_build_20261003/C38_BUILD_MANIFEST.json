@@ -1,0 +1,122 @@
+{
+  "candidate": "Candidate 38-DIAG Real Zygote abort caller in-situ capture",
+  "base": "Candidate 32-DIAG zygote-domain crash-dump isolation canary",
+  "classification": "diagnostic-only; linker64 real zygote abort caller in-situ capture",
+  "canonical_linker64_sha256": "55cfddd9fa0d72448ef27908599c61885dedf11c20940a12ce4cb328a5c40939",
+  "linker_patch": {
+    "canonical_sha256": "55cfddd9fa0d72448ef27908599c61885dedf11c20940a12ce4cb328a5c40939",
+    "bytes": 2473488,
+    "modifications": [
+      ".rodata: format string replaced at 0x6000 (FMT_C37: C37_SIGABRT_CTX pid=%d tid=%d sig=%d si_code=%d pc=0x%llx lr=0x%llx sp=0x%llx x29=0x%llx\\n)",
+      ".rodata: format string added at 0x6060 (FMT_C38: C38_ABORT_CALLER pid=%d tid=%d pc=0x%llx sp=0x%llx fp=0x%llx pac=0x%llx lr=0x%llx callsite=0x%llx\\n)",
+      "Trampoline: b 0x09c9c0 at 0x1106f4",
+      "Stub: 0x09c9c0 ~ 0x09ca8f (52 instructions, BinaryExpr dead code cave, dual log output, in-situ capture of [x29 + 8] caller LR)"
+    ]
+  },
+  "apex_build": {
+    "bytes": 12981001,
+    "sha256": "F0FCE421C7FB38F0FDBE3EAD794FA7FF469BF7FEA69BC86BDCA03C264216F3BD",
+    "pubkey_sha1": "28b0e23bc7a1f066a59659c798f1ac89b04207ee",
+    "payload_bytes": 12853248,
+    "linker_sha256": "55cfddd9fa0d72448ef27908599c61885dedf11c20940a12ce4cb328a5c40939"
+  },
+  "source_delta": {
+    "removed": [],
+    "added": [],
+    "modified": [
+      "system/apex/com.android.runtime.apex"
+    ]
+  },
+  "system_build": {
+    "bytes": 1092616192,
+    "sha256": "592B587B540767E70EB1FA5A79C88F24093F152D6CCABC060B36B9F6B3534116",
+    "readbacks": {
+      "/system/etc/init/hw/init.rc": {
+        "bytes": 84201,
+        "sha256": "0BACB7ED45CBD046F6F2B86F1DE8EBF232F4F75F10D0B4D233119233426CE54E"
+      },
+      "/system/apex/com.android.runtime.apex": {
+        "bytes": 12981001,
+        "sha256": "F0FCE421C7FB38F0FDBE3EAD794FA7FF469BF7FEA69BC86BDCA03C264216F3BD"
+      },
+      "/system/bin/c32_zygote_canary": {
+        "bytes": 7264,
+        "sha256": "EB9C3E903B32FEA514C299921E16A8E4D9E86833A0772E6EA9A3D82999F948CB"
+      }
+    }
+  },
+  "vbmeta_system_update": {
+    "base_sha256": "FEEBAF0C5087CA4233B8BD5DA2F424C175840AEBB0ACEFE51D51E35743E65C01",
+    "system_image_size_before": 959848448,
+    "system_image_size_after": 959721472,
+    "system_tree_size": 7565312,
+    "system_root_digest": "ff5fa7b0ef1fe5763a2d618b748400fd6d83e59e98265cca7bd8999722c52af9",
+    "flags": 2,
+    "rollback_index": 0,
+    "rollback_index_location": 2,
+    "unchanged_other_descriptors": [
+      "product",
+      "system_ext"
+    ]
+  },
+  "logical_input_hashes": {
+    "vendor_c22.img": {
+      "bytes": 1510998016,
+      "sha256": "FCEAFEE5B5909D7BE9BBEC48D9E8720F37798DDEEBDBF193424FB3A095CBA675"
+    },
+    "system_ext_a.img": {
+      "bytes": 942669824,
+      "sha256": "6B63E58346DA5B2FEBA7F51980CCEBF886D5991DD07F91541FE4D9F1485CDAD5"
+    },
+    "mi_ext.img": {
+      "bytes": 202375168,
+      "sha256": "43ED8FC0D1848F5D53BFB7206AC91FE5E5ED4E3F71E958D49F2EEA4C9C8B4BCE"
+    },
+    "odm.img": {
+      "bytes": 35758080,
+      "sha256": "075E4A17DC4CA716399166388B1C175060D5CBB31139B2ACBD9E5B2DEE352E22"
+    },
+    "product.img": {
+      "bytes": 4387241984,
+      "sha256": "87955DBE97AC28B01A214273BD03F36B5886310DC3B2E4128B9F4661E1C3345E"
+    }
+  },
+  "flash_scope_prepared": [
+    "super",
+    "vbmeta_system_a"
+  ],
+  "inherited_images": {
+    "boot.img": {
+      "bytes": 201326592,
+      "sha256": "E5A016056D5C93C7A886980A7C062617EC44DC06A48417D7DD0F4476708A6368"
+    },
+    "vendor_boot.img": {
+      "bytes": 100663296,
+      "sha256": "02333B82BA936F1BAAB1ECAB744632C70F8FC16688A206C7041EF319F112A137"
+    },
+    "dtbo.img": {
+      "bytes": 33554432,
+      "sha256": "50E1AC0EDCBD333778217AA6FE8D972F6FF85ADD0DAE8A015A6642C2172DD886"
+    },
+    "vbmeta.img": {
+      "bytes": 131072,
+      "sha256": "66A53C2EC38247193CC86B7F5DE887556864413D1142C3C1994645DE1E3BAB10"
+    }
+  },
+  "images": {
+    "super.img": {
+      "bytes": 7703469016,
+      "sha256": "CC25068C99A83953F30F352B5A354227DD1FB76BA5CDB2D2528571D43E9008F2"
+    },
+    "vbmeta_system.img": {
+      "bytes": 131072,
+      "sha256": "BBBF8F3BE3C82791074AA468EAA7B3D16582043AB51BCB08D16306259EE7E180"
+    }
+  },
+  "host_storage_gate": {
+    "C_free_gib": 86.98,
+    "D_free_gib": 182.28,
+    "E_free_gib": 124.97
+  },
+  "device_state": "Fastboot A retry=5, B retry=7; DO NOT REBOOT without user explicit command"
+}

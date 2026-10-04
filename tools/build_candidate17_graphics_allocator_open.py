@@ -23,10 +23,10 @@ C17_DIR = ROOT / "work/stage_g_thyme_os4_candidate_17_graphics_allocator_open_ru
 C17_IMAGES = C17_DIR / "images"
 
 WSL_ROOT = "/path/to/thyme-os4-local"
-WSL_C1_BASE = "[LOCAL_WSL_USER]/thyme_xiaomi15_os4_first_boot_candidate_1"
-WSL_C15_STAGE = "[LOCAL_WSL_USER]/c15_angle_egl_20260926_run1"
-WSL_C16_STAGE = "[LOCAL_WSL_USER]/c16_graphics_allocator_ion_20260926_run1"
-WSL_C17_STAGE = "[LOCAL_WSL_USER]/c17_graphics_allocator_open_20260926_run1"
+WSL_C1_BASE = "/path/to/thyme-os4-build/thyme_xiaomi15_os4_first_boot_candidate_1"
+WSL_C15_STAGE = "/path/to/thyme-os4-build/c15_angle_egl_20260926_run1"
+WSL_C16_STAGE = "/path/to/thyme-os4-build/c16_graphics_allocator_ion_20260926_run1"
+WSL_C17_STAGE = "/path/to/thyme-os4-build/c17_graphics_allocator_open_20260926_run1"
 WSL_C16_IMAGES = f"{WSL_ROOT}/work/stage_f_thyme_os4_candidate_16_graphics_allocator_ion_run1/images"
 WSL_C17_IMAGES = f"{WSL_ROOT}/work/stage_g_thyme_os4_candidate_17_graphics_allocator_open_run1/images"
 
@@ -165,14 +165,14 @@ grep -F 'allow hal_gatekeeper ion_device' {q(c17_cil)}
     policy_test = f"{WSL_C17_STAGE}/policy_test"
     policy_cils = f"""
 set -euo pipefail
-sys=[LOCAL_WSL_USER]/thyme_xiaomi15_os4_first_boot_candidate_1/rootlike_stage/system/etc/selinux
-prod=[LOCAL_WSL_USER]/thyme_native_base_1/selinux_migration_1/inputs/product/etc/selinux
-audit=[LOCAL_WSL_USER]/c13_audit
+sys=/path/to/thyme-os4-build/thyme_xiaomi15_os4_first_boot_candidate_1/rootlike_stage/system/etc/selinux
+prod=/path/to/thyme-os4-build/thyme_native_base_1/selinux_migration_1/inputs/product/etc/selinux
+audit=/path/to/thyme-os4-build/c13_audit
 ext={q(c17_tree)}/etc/selinux
 mkdir -p {q(WSL_C17_STAGE + '/policy_test')}
 python3 - <<'PY'
 from pathlib import Path
-src = Path('[LOCAL_WSL_USER]/thyme_xiaomi15_os4_first_boot_candidate_1/rootlike_stage/system/etc/selinux/plat_sepolicy.cil')
+src = Path('/path/to/thyme-os4-build/thyme_xiaomi15_os4_first_boot_candidate_1/rootlike_stage/system/etc/selinux/plat_sepolicy.cil')
 dst = Path({(WSL_C17_STAGE + '/policy_test/plat_sepolicy.cil')!r})
 text = src.read_text(encoding='utf-8')
 dst.write_text(text.replace('(policycap functionfs_seclabel)', '; (policycap functionfs_seclabel)'), encoding='utf-8')

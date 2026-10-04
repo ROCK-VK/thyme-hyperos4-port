@@ -1,0 +1,88 @@
+{
+  "candidate": "Candidate 43 Netd eBPF Init Abort Surgical Bypass",
+  "base_candidate": "Candidate 42 DisplayDeviceConfig Minimum Brightness Fix",
+  "single_variable_modification": {
+    "library": "/apex/com.android.tethering/lib64/libnetd_updatable.so",
+    "symbol": "libnetd_updatable_init",
+    "patch_offset": 70964,
+    "instruction_before": "cbnz w8, 115d8 (0x28 0x05 0x00 0x35)",
+    "instruction_after": "nop (0x1f 0x20 0x03 0xd5)",
+    "orig_so_sha256": "2c811151e99f227bc8e180f64f0b686e8d696b5323ce2f81313914cc597277ad",
+    "patched_so_sha256": "a70a3176b82d792cdea3ed876c90980c1d459fbcdb859d5e21f12c3a5eaf92f5",
+    "manifest_version_before": 370400127,
+    "manifest_version_after": 370400128,
+    "capex_sha256": "39EFEE0A8B61A41EC96B6831F47054ED3FA425BFB0BA3A5242D07B7F00C10E73",
+    "capex_size": 17297936,
+    "system_tree_diff": {
+      "old_capex_sha256": "98C2197598CA8DF182216ABA958CE8AD3603CA9F1BEF81A9B8620BCE0C9A5566",
+      "new_capex_sha256": "39EFEE0A8B61A41EC96B6831F47054ED3FA425BFB0BA3A5242D07B7F00C10E73",
+      "diff_count": 1,
+      "diff_file": "system/apex/com.android.tethering.capex"
+    }
+  },
+  "system_image": {
+    "bytes": 1092616192,
+    "sha256": "78EDD0C2AB18C06056B3C5B92FD79E7B6E6305B7504785B239BF0C5EB19E3574",
+    "root_digest": "2231f6d333e12057a7bf413cff3f53e02912af03d6f9fe484a2a0a8de489204c",
+    "raw_erofs_size": 959778816
+  },
+  "vendor_image": {
+    "bytes": 1510998016,
+    "sha256": "615FC15C287CF81E2871D1BC00A85F5435FF29BA0C49F5D14085198D691924DE",
+    "source": "Candidate 42 DisplayDeviceConfig Minimum Brightness Fix"
+  },
+  "vbmeta_system_image": {
+    "base_sha256": "3D93756D579A32EAEC1E771924710B448DB70EA1D4D5C872A221E40ED885724D",
+    "new_sha256": "0C00581C29E7888E473BF4B97F2F88DA2DD08CA188A776B7C06BC4B22854ECCF",
+    "system_root_digest_before": "9470f941f8fb125c0ffdc2532ecc7ff793f2aab2852315f1afb5cd1342069a7c",
+    "system_root_digest_after": "2231f6d333e12057a7bf413cff3f53e02912af03d6f9fe484a2a0a8de489204c"
+  },
+  "super_image": {
+    "bytes": 7703526364,
+    "sha256": "D22390FA17B50909F6C87DA495DD35CF5EA962F8A7094CFD73F056D92626B778"
+  },
+  "logical_partition_inputs": {
+    "mi_ext_a": {
+      "bytes": 202375168,
+      "sha256": "43ED8FC0D1848F5D53BFB7206AC91FE5E5ED4E3F71E958D49F2EEA4C9C8B4BCE"
+    },
+    "odm_a": {
+      "bytes": 36700160,
+      "sha256": "46AE3BFBBF1BB14DE348D04B9D2569B7EE239A7E293F5D0FF78C1EF54604C347"
+    },
+    "product_a": {
+      "bytes": 4387241984,
+      "sha256": "87955DBE97AC28B01A214273BD03F36B5886310DC3B2E4128B9F4661E1C3345E"
+    },
+    "system_a": {
+      "bytes": 1092616192,
+      "sha256": "78EDD0C2AB18C06056B3C5B92FD79E7B6E6305B7504785B239BF0C5EB19E3574"
+    },
+    "system_ext_a": {
+      "bytes": 942669824,
+      "sha256": "6B63E58346DA5B2FEBA7F51980CCEBF886D5991DD07F91541FE4D9F1485CDAD5"
+    },
+    "vendor_a": {
+      "bytes": 1510998016,
+      "sha256": "615FC15C287CF81E2871D1BC00A85F5435FF29BA0C49F5D14085198D691924DE"
+    }
+  },
+  "inherited_boot_images": {
+    "boot.img": {
+      "bytes": 201326592,
+      "sha256": "E5A016056D5C93C7A886980A7C062617EC44DC06A48417D7DD0F4476708A6368"
+    },
+    "vendor_boot.img": {
+      "bytes": 100663296,
+      "sha256": "02333B82BA936F1BAAB1ECAB744632C70F8FC16688A206C7041EF319F112A137"
+    },
+    "dtbo.img": {
+      "bytes": 33554432,
+      "sha256": "50E1AC0EDCBD333778217AA6FE8D972F6FF85ADD0DAE8A015A6642C2172DD886"
+    },
+    "vbmeta.img": {
+      "bytes": 131072,
+      "sha256": "6D46FA9E36D2FFC9BF45F5365691A85AED488622F0254C864EFF3DD42A23FE6D"
+    }
+  }
+}

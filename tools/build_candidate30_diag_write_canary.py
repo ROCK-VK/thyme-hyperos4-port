@@ -19,12 +19,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 C29_STAGE = ROOT / "work/stage_c29_pid1_zygote_diag_20260929_run6"
 C29_IMAGES = C29_STAGE / "images"
-C29_WORK = Path("/root/10s_os4_build/c29_pid1_zygote_diag_20260929_run6")
+C29_WORK = Path("/path/to/thyme-os4-build/c29_pid1_zygote_diag_20260929_run6")
 C29_TREE = C29_WORK / "system_tree"
 C30_STAGE = ROOT / "work/stage_c30_diag_write_canary_20260930_run1"
 C30_IMAGES = C30_STAGE / "images"
 C30_REPORT = ROOT / "work/reports/20260930_C29_WRITE_AUDIT_C30_CANARY_DIAG"
-C30_WORK = Path("/root/10s_os4_build/c30_diag_write_canary_20260930_run1")
+C30_WORK = Path("/path/to/thyme-os4-build/c30_diag_write_canary_20260930_run1")
 C30_TREE = C30_WORK / "system_tree"
 TEMPLATE = ROOT / "tools/candidate30_diag_write_canary"
 SOURCE = TEMPLATE / "c30_diag.cpp"
@@ -303,7 +303,7 @@ def patch_init_and_tree() -> dict[str, object]:
 
 
 def compile_helper(stage: Path) -> tuple[Path, dict[str, object]]:
-    ndk = Path("/root/10s_os4_build/toolchains/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64")
+    ndk = Path("/path/to/thyme-os4-build/toolchains/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64")
     clang = ndk / "bin/clang++"
     sysroot = ndk / "sysroot"
     require_file(clang)

@@ -69,7 +69,7 @@ adb shell "getprop ro.product.device; getprop sys.boot_completed; getprop ro.boo
 with open('oops.raw', 'rb') as f:
     data = f.read()
 
-print('Rock-Laptop count:', data.count(b'Rock-Laptop'))          # 结果: 0
+print('[LOCAL_HOST] count:', data.count(b'[LOCAL_HOST]'))          # 结果: 0
 print('g45b9b954f074 count:', data.count(b'g45b9b954f074'))      # 结果: 0 (A5内核git commit)
 print('init_fatal_panic count:', data.count(b'init_fatal_panic')) # 结果: 0
 print('exited 4 times count:', data.count(b'exited 4 times'))     # 结果: 0
@@ -77,7 +77,7 @@ print('rebooting into recovery:', data.count(b'rebooting into recovery')) # 结�
 ```
 
 - **确凿结论**：
-  1. `oops.raw` 中**根本没有 Candidate 9 内核的任何足迹**（无 `Rock-Laptop`，无 `4.19.325`，无 `init_fatal_panic`）；
+  1. `oops.raw` 中**根本没有 Candidate 9 内核的任何足迹**（无 `[LOCAL_HOST]`，无 `4.19.325`，无 `init_fatal_panic`）；
   2. 内部全部 7 段记录均是 2024 年 6 月用户在使用官方 MIUI 时长按电源键强制关机的日志（`Reason: Long Press`）；
   3. 上一轮报告中推断的“`critical process exited 4 times in 4 minutes; rebooting into recovery`”，纯属上一位 Agent 为解释“米标亮 10~20 秒后自动退回 Fastboot”现象而推演出的假说，**并非实际日志内容**！
 

@@ -1,0 +1,109 @@
+{
+  "candidate": "Candidate 42 DisplayDeviceConfig Minimum Brightness Fix",
+  "base_candidate": "Candidate 40 MediaProfiles Single-Variable Property Fix",
+  "single_variable_modification": {
+    "file": "/etc/displayconfig/display_id_4630946545580055169.xml",
+    "old_value": "0.001709819",
+    "new_value": "0.000854597",
+    "old_xml_sha256": "BA944B1059096ABBF53DF0D1BEBBC04B20E06C552CA3C2D15BFD074F9515BA77",
+    "new_xml_sha256": "B0DBC94A9B9B71B9B5A8BFB86AA4C8C13B0E0C829BBCE75744FB5E15CC85DCB4",
+    "byte_diff_count": 7,
+    "diff_offsets": [
+      {
+        "offset": 189,
+        "old": "1",
+        "new": "0"
+      },
+      {
+        "offset": 190,
+        "old": "7",
+        "new": "8"
+      },
+      {
+        "offset": 191,
+        "old": "0",
+        "new": "5"
+      },
+      {
+        "offset": 192,
+        "old": "9",
+        "new": "4"
+      },
+      {
+        "offset": 193,
+        "old": "8",
+        "new": "5"
+      },
+      {
+        "offset": 194,
+        "old": "1",
+        "new": "9"
+      },
+      {
+        "offset": 195,
+        "old": "9",
+        "new": "7"
+      }
+    ]
+  },
+  "vendor_image": {
+    "bytes": 1510998016,
+    "sha256": "615FC15C287CF81E2871D1BC00A85F5435FF29BA0C49F5D14085198D691924DE",
+    "root_digest": "03934b9e5ddc8ab97c6c58cbf3082176721bc2fd1d74c7e39bdc389fda6e2cf6"
+  },
+  "vbmeta_image": {
+    "base_vbmeta_sha256": "66A53C2EC38247193CC86B7F5DE887556864413D1142C3C1994645DE1E3BAB10",
+    "new_vbmeta_sha256": "6D46FA9E36D2FFC9BF45F5365691A85AED488622F0254C864EFF3DD42A23FE6D",
+    "vendor_root_digest_before": "743d0bfebb1dfd42ebf55d37321702a8529546396c72716676f28cc48987c857",
+    "vendor_root_digest_after": "03934b9e5ddc8ab97c6c58cbf3082176721bc2fd1d74c7e39bdc389fda6e2cf6",
+    "other_descriptors_unchanged": true
+  },
+  "vbmeta_system_image": {
+    "bytes": 131072,
+    "sha256": "3D93756D579A32EAEC1E771924710B448DB70EA1D4D5C872A221E40ED885724D"
+  },
+  "super_image": {
+    "bytes": 7703469020,
+    "sha256": "4385F5BD1C456A8BB42CBE3DCB9989E9316C82DD581458D1090B5BD21B9A2F0E"
+  },
+  "logical_partition_inputs": {
+    "mi_ext_a": {
+      "bytes": 202375168,
+      "sha256": "43ED8FC0D1848F5D53BFB7206AC91FE5E5ED4E3F71E958D49F2EEA4C9C8B4BCE"
+    },
+    "odm_a": {
+      "bytes": 36700160,
+      "sha256": "46AE3BFBBF1BB14DE348D04B9D2569B7EE239A7E293F5D0FF78C1EF54604C347"
+    },
+    "product_a": {
+      "bytes": 4387241984,
+      "sha256": "87955DBE97AC28B01A214273BD03F36B5886310DC3B2E4128B9F4661E1C3345E"
+    },
+    "system_a": {
+      "bytes": 1092616192,
+      "sha256": "1D6F45FF1FB0645BA95E4A133CF44196D98531F4DEBB0699D6D881641C3BBFC5"
+    },
+    "system_ext_a": {
+      "bytes": 942669824,
+      "sha256": "6B63E58346DA5B2FEBA7F51980CCEBF886D5991DD07F91541FE4D9F1485CDAD5"
+    },
+    "vendor_a": {
+      "bytes": 1510998016,
+      "sha256": "615FC15C287CF81E2871D1BC00A85F5435FF29BA0C49F5D14085198D691924DE"
+    }
+  },
+  "inherited_boot_images": {
+    "boot.img": {
+      "bytes": 201326592,
+      "sha256": "E5A016056D5C93C7A886980A7C062617EC44DC06A48417D7DD0F4476708A6368"
+    },
+    "vendor_boot.img": {
+      "bytes": 100663296,
+      "sha256": "02333B82BA936F1BAAB1ECAB744632C70F8FC16688A206C7041EF319F112A137"
+    },
+    "dtbo.img": {
+      "bytes": 33554432,
+      "sha256": "50E1AC0EDCBD333778217AA6FE8D972F6FF85ADD0DAE8A015A6642C2172DD886"
+    }
+  }
+}

@@ -22,7 +22,7 @@
 
 从 C13 镜像提取的实际二进制：
 
-- `system/lib64/libfs_mgr.so` SHA-256 `eb3f772f940c5eddf22e14f85b1ae68dbd36ecc668011e4709d2e9377af9d877`。从 pinned C13 `system_a` EROFS 重新提取并复核 SHA-256；ELF 为 AArch64 Android 37，动态符号表保留 `fs_mgr_mount_all`（0x317b0）、`WasMetadataEncryptionInterrupted`（0x31584）和 `fs_mgr_do_format`（0x43f84）。实际库还含 C13 特有错误字符串“Failure while mounting metadata, setting flag to needing recovery partition …”。这些证据确认对应实现/错误文案存在，并强烈指向 `/metadata` 挂载失败可请求 Recovery；但本轮控制流反汇编未闭合该字符串分支的准确调用条件，也未确认 `fs_mgr_mount_all` 到格式化函数的完整可达调用链。errno、分区状态门槛及 Xiaomi 对应 AOSP 的偏差仍未知。静态提取/反汇编中间证据保存在 WSL `[LOCAL_WSL_USER]/c13_audit/fs_mgr_probe_20260925_2329/`。
+- `system/lib64/libfs_mgr.so` SHA-256 `eb3f772f940c5eddf22e14f85b1ae68dbd36ecc668011e4709d2e9377af9d877`。从 pinned C13 `system_a` EROFS 重新提取并复核 SHA-256；ELF 为 AArch64 Android 37，动态符号表保留 `fs_mgr_mount_all`（0x317b0）、`WasMetadataEncryptionInterrupted`（0x31584）和 `fs_mgr_do_format`（0x43f84）。实际库还含 C13 特有错误字符串“Failure while mounting metadata, setting flag to needing recovery partition …”。这些证据确认对应实现/错误文案存在，并强烈指向 `/metadata` 挂载失败可请求 Recovery；但本轮控制流反汇编未闭合该字符串分支的准确调用条件，也未确认 `fs_mgr_mount_all` 到格式化函数的完整可达调用链。errno、分区状态门槛及 Xiaomi 对应 AOSP 的偏差仍未知。静态提取/反汇编中间证据保存在 WSL `/path/to/thyme-os4-build/c13_audit/fs_mgr_probe_20260925_2329/`。
 - `system/bin/vold` SHA-256 `f93d8d75894dacf39842fd349c7c271f18794dec0a3a450d56b39464b89273e4`。含 `encryptFstab`、`mke2fs`、`make_f2fs` 等格式化能力字符串。这证明格式化能力存在于镜像，不单独证明这次启动调用了它。
 
 ## 二、数据风险与证据等级

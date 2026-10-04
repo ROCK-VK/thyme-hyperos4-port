@@ -27,7 +27,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 ADB = ROOT / "tools" / "platform-tools" / "adb.exe"
 FASTBOOT = ROOT / "tools" / "platform-tools" / "fastboot.exe"
-SERIAL = ""
+SERIAL = "[REDACTED_DEVICE_ID]"
 DEFAULT_BASE = ROOT / "work" / "reports" / "20260925_CANDIDATE13_STORAGE_SAFETY_AND_FIRST_FAILURE" / "observations"
 SNAPSHOT_PROPERTIES = (
     "ro.product.device",
@@ -280,14 +280,11 @@ def capture_pstore_from_adb(run_dir: Path, index: int) -> None:
 
 
 def main() -> int:
-    global SERIAL
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--serial", required=True, help="Target device serial; never stored as a public default.")
     parser.add_argument("--seconds", type=int, default=600, help="Observation window (default: 600 seconds).")
     parser.add_argument("--output-base", type=Path, default=DEFAULT_BASE, help="Parent directory for a new timestamped run folder.")
     parser.add_argument("--candidate", default="C13-original", help="Candidate label stored in the run metadata (default: C13-original).")
     args = parser.parse_args()
-    SERIAL = args.serial
     if args.seconds < 30 or args.seconds > 3600:
         parser.error("--seconds must be between 30 and 3600")
     if not ADB.is_file() or not FASTBOOT.is_file():

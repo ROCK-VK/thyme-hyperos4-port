@@ -6,8 +6,8 @@ Constructs Candidate 11 (system_ext Metadata Fix & APEX Bootstrap Unblock Candid
 2. Target Directory: work/stage_c_thyme_os4_candidate_11_metadata_fix/images/
 3. Core Modification:
    - Re-packs system_ext.raw.erofs via mkfs.erofs using:
-     --fs-config-file=[LOCAL_WSL_USER]/thyme_xiaomi15_os4_first_boot_candidate_1/configs_retained/system_ext/fs_config
-     --file-contexts=[LOCAL_WSL_USER]/thyme_xiaomi15_os4_first_boot_candidate_1/configs_retained/system_ext/file_contexts
+     --fs-config-file=/path/to/thyme-os4-build/thyme_xiaomi15_os4_first_boot_candidate_1/configs_retained/system_ext/fs_config
+     --file-contexts=/path/to/thyme-os4-build/thyme_xiaomi15_os4_first_boot_candidate_1/configs_retained/system_ext/file_contexts
    - Strictly preserves Candidate 9's PropertyContexts fix (lines 278-282 commented out).
    - Injects AVB hashtree footer to system_ext.img (size 942,669,824 bytes).
    - Updates vbmeta_system.img with the new system_ext hashtree descriptor.
@@ -73,17 +73,17 @@ for name in unchanged:
     print(f"[UNCHANGED] {name:20s}: {dst.stat().st_size:,} bytes, SHA256={dst_sha}")
 
 # 2. Prepare C11 staging in WSL
-wsl_stage = "[LOCAL_WSL_USER]/c11_build_stage"
-wsl_tree = "[LOCAL_WSL_USER]/c9_build_stage/system_ext_tree"
-wsl_fs_cfg = "[LOCAL_WSL_USER]/thyme_xiaomi15_os4_first_boot_candidate_1/configs_retained/system_ext/fs_config"
-wsl_file_ctx = "[LOCAL_WSL_USER]/thyme_xiaomi15_os4_first_boot_candidate_1/configs_retained/system_ext/file_contexts"
+wsl_stage = "/path/to/thyme-os4-build/c11_build_stage"
+wsl_tree = "/path/to/thyme-os4-build/c9_build_stage/system_ext_tree"
+wsl_fs_cfg = "/path/to/thyme-os4-build/thyme_xiaomi15_os4_first_boot_candidate_1/configs_retained/system_ext/fs_config"
+wsl_file_ctx = "/path/to/thyme-os4-build/thyme_xiaomi15_os4_first_boot_candidate_1/configs_retained/system_ext/file_contexts"
 wsl_raw_erofs = f"{wsl_stage}/system_ext_c11.raw.erofs"
 wsl_avb_img = f"{wsl_stage}/system_ext_c11.img"
 wsl_mkfs = f"{WSL_ROOT}/tools/erofs-utils/wsl/mkfs.erofs"
 wsl_fsck = f"{WSL_ROOT}/tools/erofs-utils/wsl/fsck.erofs"
 wsl_dump = f"{WSL_ROOT}/tools/erofs-utils/wsl/dump.erofs"
 wsl_avbtool = f"{WSL_ROOT}/tools/bootimg/avbtool.py"
-wsl_c1_base = "[LOCAL_WSL_USER]/thyme_xiaomi15_os4_first_boot_candidate_1"
+wsl_c1_base = "/path/to/thyme-os4-build/thyme_xiaomi15_os4_first_boot_candidate_1"
 
 print("\n[Step 1] Verifying system_ext_tree prerequisites...")
 run_wsl(f"mkdir -p {wsl_stage}")
@@ -214,7 +214,7 @@ PARTITION_EXTENTS = {
 
 wsl_super_sparse = f"{wsl_stage}/super_c11_sparse.img"
 wsl_super_raw = f"{wsl_stage}/super_c11_raw.img"
-wsl_system_sar_avb = "[LOCAL_WSL_USER]/c7_stage/system_sar_avb.img"
+wsl_system_sar_avb = "/path/to/thyme-os4-build/c7_stage/system_sar_avb.img"
 
 lpmake_cmd = (
     f"{wsl_lpmake} --metadata-size 65536 --metadata-slots 3 --device-size {DEVICE_SIZE} "

@@ -25,9 +25,9 @@ C16_DIR = ROOT / "work/stage_f_thyme_os4_candidate_16_graphics_allocator_ion_run
 C16_IMAGES = C16_DIR / "images"
 
 WSL_ROOT = "/path/to/thyme-os4-local"
-WSL_C15_STAGE = "[LOCAL_WSL_USER]/c15_angle_egl_20260926_run1"
-WSL_C16_STAGE = "[LOCAL_WSL_USER]/c16_graphics_allocator_ion_20260926_run1"
-WSL_C1_BASE = "[LOCAL_WSL_USER]/thyme_xiaomi15_os4_first_boot_candidate_1"
+WSL_C15_STAGE = "/path/to/thyme-os4-build/c15_angle_egl_20260926_run1"
+WSL_C16_STAGE = "/path/to/thyme-os4-build/c16_graphics_allocator_ion_20260926_run1"
+WSL_C1_BASE = "/path/to/thyme-os4-build/thyme_xiaomi15_os4_first_boot_candidate_1"
 WSL_C15_IMAGES = f"{WSL_ROOT}/work/stage_e_thyme_os4_candidate_15_angle_egl_run1/images"
 WSL_C16_IMAGES = f"{WSL_ROOT}/work/stage_f_thyme_os4_candidate_16_graphics_allocator_ion_run1/images"
 

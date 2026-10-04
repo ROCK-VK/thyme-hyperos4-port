@@ -11,12 +11,12 @@ def run(cmd):
 print("=== AUDITING CANDIDATE 8 PROPERTY CONTEXTS ACROSS ALL PARTITIONS ===")
 
 wsl_images = {
-    "system": "[LOCAL_WSL_USER]/c7_stage/system_sar_avb.img",
-    "system_ext": "[LOCAL_WSL_USER]/thyme_xiaomi15_os4_first_boot_candidate_1/super/avb_images/system_ext.img",
-    "product": "[LOCAL_WSL_USER]/thyme_xiaomi15_os4_first_boot_candidate_1/super/avb_images/product.img",
-    "vendor": "[LOCAL_WSL_USER]/thyme_xiaomi15_os4_first_boot_candidate_1/provider_images/vendor.img",
-    "odm": "[LOCAL_WSL_USER]/thyme_xiaomi15_os4_first_boot_candidate_1/provider_images/odm.img",
-    "mi_ext": "[LOCAL_WSL_USER]/thyme_xiaomi15_os4_first_boot_candidate_1/super/avb_images/mi_ext.img",
+    "system": "/path/to/thyme-os4-build/c7_stage/system_sar_avb.img",
+    "system_ext": "/path/to/thyme-os4-build/thyme_xiaomi15_os4_first_boot_candidate_1/super/avb_images/system_ext.img",
+    "product": "/path/to/thyme-os4-build/thyme_xiaomi15_os4_first_boot_candidate_1/super/avb_images/product.img",
+    "vendor": "/path/to/thyme-os4-build/thyme_xiaomi15_os4_first_boot_candidate_1/provider_images/vendor.img",
+    "odm": "/path/to/thyme-os4-build/thyme_xiaomi15_os4_first_boot_candidate_1/provider_images/odm.img",
+    "mi_ext": "/path/to/thyme-os4-build/thyme_xiaomi15_os4_first_boot_candidate_1/super/avb_images/mi_ext.img",
 }
 
 stage_dir = "/path/to/thyme-os4-local/work/audit_c8_property_contexts"

@@ -83,5 +83,16 @@ The original workflow used Windows 11, WSL Ubuntu, local Android platform-tools,
 - candidate25_bootdiag contains the native AArch64 helper, init service and narrow CIL fragment. Samples are capped and written to logd plus a dedicated metadata directory; real startup behavior remains unverified until C25 boots.
 - flash_candidate25_first_screen_diag.ps1 requires an explicit serial and Execute switch; it writes only super and vbmeta_system_a and never reboots.
 - start_candidate25_observed_boot.ps1 verifies a fresh C25 ARMED record and current device/slot state. It defaults to no reboot; a single reboot requires both Execute and UserWatchingConfirmed.
-- build_standalone_diag.py supports --export-c25-metadata to add a sysfs-identified, capacity-checked, read-only metadata diagnostic export path. The separate generated Standalone image is not in this repository.
 - See the [C25 build and flash report](../reports/candidate25/C25_FIRST_SCREEN_DIAGNOSTIC_BUILD_FLASH_20260928.md).
+
+## Candidate 40 to Candidate 43 Tools
+
+- `build_candidate40.py` — Builds Candidate 40 system image injecting single-variable `ro.media.xml_variant.codecs=_V1_0` into `system/build.prop`, resolving the Zygote MediaProfiles fatal crash.
+- `flash_candidate40.ps1` — Restrictive flashing tool writing `super` and `vbmeta_system_a` for Candidate 40 with strict prechecks.
+- `build_candidate42.py` — Builds Candidate 42 updating `/vendor/etc/displayconfig/display_id_4630946545580055169.xml` minimum brightness point from `0.001709819` to `0.000854597`, resolving `DisplayDeviceConfig` crashes.
+- `verify_c42_build_gates.py` — 12-gate build verification suite verifying byte-diff, XML structure, AVB descriptors, and partition integrity for Candidate 42.
+- `flash_candidate42.ps1` — Restrictive flashing tool for Candidate 42 with slot-budget verification.
+- `build_candidate43.py` — Builds Candidate 43 with minimal 4-byte NOP patch to `/apex/com.android.tethering/lib64/libnetd_updatable.so` resolving netd eBPF abort loops on Linux 4.19, resigning APEX with dual-layer APK Signature Scheme v3.
+- `verify_c43_build_gate.py` — 6-gate deep verification script covering SO binary/ELF, APEX container & v3 signature, EROFS fsck, AVB root digest, Super LP metadata, and strict single-variable isolation.
+- `flash_candidate43.ps1` — Restrictive flashing script for Candidate 43 featuring `-RestoreRetryBudget` logic to safely restore slot A retry budget to 7.
+

@@ -17,9 +17,9 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-C26_WORK = Path("/root/10s_os4_build/c26_zygote_diag_20260929_run2")
+C26_WORK = Path("/path/to/thyme-os4-build/c26_zygote_diag_20260929_run2")
 C26_TREE = C26_WORK / "system_tree"
-C27_WORK = Path("/root/10s_os4_build/c27_netd_zygote_cycle_break_20260929_run1")
+C27_WORK = Path("/path/to/thyme-os4-build/c27_netd_zygote_cycle_break_20260929_run1")
 C27_TREE = C27_WORK / "system_tree"
 C26_DIR = ROOT / "work/stage_c26_zygote_diag_20260929_run2"
 C26_IMAGES = C26_DIR / "images"
@@ -205,7 +205,7 @@ def install_c27_tree() -> dict[str, object]:
 
 
 def compile_helper(stage: Path) -> tuple[Path, dict[str, object]]:
-    ndk = Path("/root/10s_os4_build/toolchains/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64")
+    ndk = Path("/path/to/thyme-os4-build/toolchains/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64")
     clang = ndk / "bin/clang++"
     sysroot = ndk / "sysroot"
     source = TEMPLATE_DIR / "c27_zygote_diag.cpp"

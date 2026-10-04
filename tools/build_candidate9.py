@@ -74,7 +74,7 @@ for name in unchanged:
     print(f"[UNCHANGED] {name:20s}: {dst.stat().st_size:,} bytes, SHA256={dst_sha}")
 
 # 2. Prepare C9 staging in WSL
-wsl_stage = "[LOCAL_WSL_USER]/c9_build_stage"
+wsl_stage = "/path/to/thyme-os4-build/c9_build_stage"
 wsl_tree = f"{wsl_stage}/system_ext_tree"
 wsl_mnt = f"{wsl_stage}/system_ext_mnt"
 wsl_raw_erofs = f"{wsl_stage}/system_ext_c9.raw.erofs"
@@ -82,7 +82,7 @@ wsl_avb_img = f"{wsl_stage}/system_ext_c9.img"
 wsl_mkfs = f"{WSL_ROOT}/tools/erofs-utils/wsl/mkfs.erofs"
 wsl_fsck = f"{WSL_ROOT}/tools/erofs-utils/wsl/fsck.erofs"
 wsl_avbtool = f"{WSL_ROOT}/tools/bootimg/avbtool.py"
-wsl_c1_base = "[LOCAL_WSL_USER]/thyme_xiaomi15_os4_first_boot_candidate_1"
+wsl_c1_base = "/path/to/thyme-os4-build/thyme_xiaomi15_os4_first_boot_candidate_1"
 
 print("\n[Step 1] Preparing system_ext tree with commented duplicate prefixes...")
 prepare_tree_cmd = f"""
@@ -226,7 +226,7 @@ PARTITION_EXTENTS = {
 
 wsl_super_sparse = f"{wsl_stage}/super_c9_sparse.img"
 wsl_super_raw = f"{wsl_stage}/super_c9_raw.img"
-wsl_system_sar_avb = "[LOCAL_WSL_USER]/c7_stage/system_sar_avb.img"
+wsl_system_sar_avb = "/path/to/thyme-os4-build/c7_stage/system_sar_avb.img"
 
 lpmake_cmd = (
     f"{wsl_lpmake} --metadata-size 65536 --metadata-slots 3 --device-size {DEVICE_SIZE} "

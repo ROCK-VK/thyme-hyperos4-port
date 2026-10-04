@@ -120,6 +120,21 @@ def main() -> int:
         help="Parent directory for a new, non-overwriting export folder.",
     )
     parser.add_argument(
+        "--diag-boot",
+        type=Path,
+        default=DIAG_BOOT,
+        help="Standalone RAM image to boot. A non-default image requires explicit expected size and SHA-256.",
+    )
+    parser.add_argument(
+        "--expected-bytes",
+        type=int,
+        help="Required with --expected-sha256 when using a non-default --diag-boot.",
+    )
+    parser.add_argument(
+        "--expected-sha256",
+        help="Required with --expected-bytes when using a non-default --diag-boot.",
+    )
+    parser.add_argument(
         "--execute-authorized-ram-boot",
         action="store_true",
         help="Permit fastboot boot only after the user has separately authorized this Standalone RAM session.",
@@ -132,15 +147,26 @@ def main() -> int:
     if not FASTBOOT.is_file():
         print(f"[ERROR] Fastboot executable missing: {FASTBOOT}")
         return 1
-    if not DIAG_BOOT.is_file() or DIAG_BOOT.stat().st_size != DIAG_BOOT_BYTES:
-        print(f"[ERROR] Standalone Diag image missing or wrong size: {DIAG_BOOT}")
+    diag_boot = args.diag_boot.resolve()
+    using_default_image = diag_boot == DIAG_BOOT.resolve()
+    if using_default_image:
+        expected_bytes = DIAG_BOOT_BYTES
+        expected_sha256 = DIAG_BOOT_SHA256
+    else:
+        if args.expected_bytes is None or not args.expected_sha256:
+            print("[ERROR] A non-default --diag-boot requires both --expected-bytes and --expected-sha256.")
+            return 1
+        expected_bytes = args.expected_bytes
+        expected_sha256 = args.expected_sha256.upper()
+    if not diag_boot.is_file() or diag_boot.stat().st_size != expected_bytes:
+        print(f"[ERROR] Standalone Diag image missing or wrong size: {diag_boot}; expected {expected_bytes} bytes")
         return 1
-    actual_hash = sha256_file(DIAG_BOOT)
-    if actual_hash != DIAG_BOOT_SHA256:
+    actual_hash = sha256_file(diag_boot)
+    if actual_hash != expected_sha256:
         print(f"[ERROR] Standalone Diag SHA256 mismatch: {actual_hash}")
         return 1
 
-    print(f"[READY] Standalone Diag SHA256 verified: {actual_hash}")
+    print(f"[READY] Standalone Diag image verified: {diag_boot} ({expected_bytes} bytes; SHA256={actual_hash})")
     if not args.execute_authorized_ram_boot:
         print("[DRY-RUN] No Fastboot query or device command issued.")
         print("[NEXT] Pass --execute-authorized-ram-boot only when this RAM diagnostic boot is authorized.")
@@ -148,7 +174,9 @@ def main() -> int:
 
     export_dir = new_export_dir(args.output_base)
     event_path = export_dir / "host_salvage_timeline.csv"
-    timeline(event_path, "salvage_script_started", {"image_sha256": actual_hash, "image_bytes": DIAG_BOOT_BYTES})
+    timeline(event_path, "salvage_script_started", {
+        "image_path": str(diag_boot), "image_sha256": actual_hash, "image_bytes": expected_bytes,
+    })
     print(f"[WAIT] Waiting up to 300 seconds for Fastboot target {SERIAL}...")
     timeline(event_path, "fastboot_wait_started", {"serial": SERIAL})
     deadline = time.monotonic() + 300
@@ -182,8 +210,11 @@ def main() -> int:
     })
 
     print("[BOOT] Loading Standalone Diag into RAM with fastboot boot; no partition is written.")
-    timeline(event_path, "fastboot_boot_started", {"command": "fastboot boot standalone_diag_boot.img"})
-    boot = run([str(FASTBOOT), "-s", SERIAL, "boot", str(DIAG_BOOT)], timeout=120)
+    timeline(event_path, "fastboot_boot_started", {
+        "command": "fastboot boot <verified Standalone image>", "image_path": str(diag_boot),
+        "image_sha256": actual_hash,
+    })
+    boot = run([str(FASTBOOT), "-s", SERIAL, "boot", str(diag_boot)], timeout=120)
     print(boot.stdout, end="")
     print(boot.stderr, end="", file=sys.stderr)
     if boot.returncode != 0:
@@ -205,7 +236,10 @@ def main() -> int:
         timeline(event_path, "diag_volume_timeout", {})
         return 4
 
-    required_files = ("diag_status.log", "dmesg_diag_boot.txt")
+    # The RAM image may not expose a separate dmesg file. Its own dmesg, when
+    # captured, is explicitly named dmesg_standalone.txt and must not be
+    # mistaken for the preceding Android boot log.
+    required_files = ("diag_status.log",)
     missing_files = [name for name in required_files if not (volume / name).is_file()]
     if missing_files:
         print(
