@@ -153,8 +153,11 @@ $Allowlist = @(
     @{ Source='reports/c42_candidate42_build_20261004/C42_FIRST_BOOT_AND_EVIDENCE_ANALYSIS_REPORT.md'; Destination='reports/c42_candidate42_build_20261004/C42_FIRST_BOOT_AND_EVIDENCE_ANALYSIS_REPORT.md' }
     @{ Source='reports/c42_candidate42_build_20261004/C42_BUILD_MANIFEST.json'; Destination='reports/c42_candidate42_build_20261004/C42_BUILD_MANIFEST.json' }
     @{ Source='reports/c43_candidate43_build_20261004/C43_BUILD_AND_GATE_READINESS_REPORT.md'; Destination='reports/c43_candidate43_build_20261004/C43_BUILD_AND_GATE_READINESS_REPORT.md' }
+    @{ Source='reports/c43_candidate43_build_20261004/C43_FIRST_BOOT_AND_ROOTCAUSE_REPORT.md'; Destination='reports/c43_candidate43_build_20261004/C43_FIRST_BOOT_AND_ROOTCAUSE_REPORT.md' }
     @{ Source='reports/c43_candidate43_build_20261004/C43_BUILD_MANIFEST.json'; Destination='reports/c43_candidate43_build_20261004/C43_BUILD_MANIFEST.json' }
     @{ Source='reports/c43_candidate43_build_20261004/C43_GATE_VERIFICATION_REPORT.json'; Destination='reports/c43_candidate43_build_20261004/C43_GATE_VERIFICATION_REPORT.json' }
+    @{ Source='tools/salvage_c43_when_ready.py'; Destination='tools/salvage_c43_when_ready.py' }
+    @{ Source='tools/analyze_c43_ram_evidence.py'; Destination='tools/analyze_c43_ram_evidence.py' }
 )
 
 function Resolve-AllowlistedSource([string]$RelativeSource) {

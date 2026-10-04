@@ -1,5 +1,1 @@
 Candidate,Source,Reason
-
-C25,work/reports/20260928_C25_FIRST_SCREEN_DIAG/standalone/run_20260928_234427_meta_ro/THYME_DIAG/misc.raw,"Raw misc partition backup retained locally; not published"
-C25,work/reports/20260928_C25_FIRST_SCREEN_DIAG/standalone/run_20260928_234427_meta_ro/THYME_DIAG/misc.raw.sha256,"Hash file for excluded raw misc backup not published"
-C25,work/reports/20260928_C25_FIRST_SCREEN_DIAG/standalone/run_20260928_234427_meta_ro/THYME_DIAG/FILE_MANIFEST.csv,"Original volume inventory includes excluded raw misc backup metadata; not published"

@@ -1,5 +1,105 @@
 # 执行记录
 
+## 2026-10-04 15:35｜Candidate 43 首启实测与 RAM 证据打捞完成：设备停留在第一屏（Mi Logo），Standalone RAM 诊断成功导出 1.57MB console-ramoops 与 1.46MB pmsg-ramoops；权威定位根因：com.android.tethering.capex 外层 apex_manifest.pb 缺少更新后的 originalApexDigest，导致 apexd 拒绝激活 APEX，SurfaceFlinger 与 Zygote 缺少动态依赖崩溃
+
+- 状态：已完成（Phase 1 遵照用户明确“开始”授权，通过 tools/start_candidate43_observed_boot.ps1 执行受控首启 fastboot reboot；Phase 2 用户现场观测反馈设备停留在第一屏 Mi Logo + powered by Android，手动长按电源+音量下安全切入 Fastboot；Phase 3 立即运行 tools/salvage_c43_when_ready.py，加载 Standalone RAM 诊断微内核，成功无损导出 console-ramoops-0（1,571,670 B）与 pmsg-ramoops-0（1,462,944 B）；Phase 4 深度日志解析与 AOSP 源码溯源确证：apexd 报告 "Failed to decompress CAPEX: Root digest of /data/apex/decompressed/[REDACTED_EMAIL] does not match with expected root digest in /system/apex/com.android.tethering.capex"；apexd 放弃激活 com.android.tethering，导致 libcom.android.tethering.connectivity_native.so 未挂载，SurfaceFlinger 与 Zygote 无法链接该库循环崩溃，系统无法进入第二屏；Phase 5 对标 AOSP apex_compression_tool.py 锁定根因：外层 CAPEX 的 apex_manifest.pb 中必须通过 avbtool print_partition_digests 注入解压内层 apex_payload.img 的 root_digest (0x4bdfe2f9...)，而 C43 构建时外层保留了出厂旧 digest (0x49a137fd...) 导致校验被拒；制定 Candidate 44 方案：按 Google 官方标准注入 originalApexDigest 并版本递增至 370400129）。
+- 改动/结论：
+  1. **首启物理表现与 RAM 证据打捞**：
+     - 现象：第一屏（Mi Logo + powered by Android）常亮，未进入第二屏 BootAnimation；
+     - RAM 证据导出：无损获取本次启动的全部 Kernel console 日志与用户空间 pmsg 日志（累计超过 3 MB）；
+  2. **根本原因权威锁定（Root Cause Closed）**：
+     - `apexd` 解压缩 CAPEX 校验失败：
+       `[ 13.758144] apexd: Failed to decompress CAPEX: Root digest of ... does not match with expected root digest in /system/apex/com.android.tethering.capex`；
+     - 连锁崩溃反应：
+       * `surfaceflinger`: `library "libcom.android.tethering.connectivity_native.so" not found`（显示合成器起不来）；
+       * `zygote`: preload `libandroid.so` 失败触发 `abort()`（应用运行时起不来）；
+       * `netd`: `library "libnetd_updatable.so" not found`；
+  3. **AOSP 原生 CAPEX 机制与技术规范突破**：
+     - AOSP 工具 `apex_compression_tool.py` 规定：
+       在压缩 APEX（CAPEX）时，必须执行 `avbtool print_partition_digests --image apex_payload.img`，将计算得到的 `root_digest` 填入外层 `apex_manifest.pb` 的 `capexMetadata.originalApexDigest` 字段中；
+     - 实测 C43 的 `apex_payload.img` 实际 root_digest 为 `4bdfe2f9158035e7d4dd5efe814f5d1dd9eee1d9052eb7c1f571125e9c67e042`，而外层遗留的是旧原版 `49a137fdb36d5f497f6304ea59fd9eb7e53dca9f3b388856dc5f8d1f6f522340`；
+  4. **Candidate 44 修复方向明确**：
+     - 严格按照官方 `apex_compression_tool.py` 标准，将计算出的最新 `root_digest` 填入外层 `apex_manifest.pb` 的 `originalApexDigest`；
+     - 版本号升为 `370400129`，重新进行双层 APK v3 签名、EROFS 打包与 AVB 签名。
+- 涉及文件：
+  - `reports/c43_candidate43_build_20261004/standalone/run_20261004_152655/THYME_DIAG/pstore/console-ramoops-0`
+  - `reports/c43_candidate43_build_20261004/standalone/run_20261004_152655/THYME_DIAG/pstore/pmsg-ramoops-0`
+  - `tools/salvage_c43_when_ready.py`
+  - `tools/analyze_c43_ram_evidence.py`
+  - `tools/build_candidate43.py`
+  - `日志/执行记录.md`
+  - `日志/项目当前状态.md`
+- 验证：
+  - RAM 日志导出 SHA256 校验 100% 完整通过；
+  - `avbtool print_partition_digests` 实测成功并与报错证据 100% 闭环对应。
+- 尚未验证：
+  - Candidate 44 注入正确 `originalApexDigest` 后的实机开机验证。
+- 待处理：
+  - 编写并执行 Candidate 44 构建脚本、验证门禁并准备受控刷写。
+
+
+## 2026-10-04 15:13｜Candidate 43 受控刷写 100% 成功完成：A 槽启动预算安全恢复为 7，super 与 vbmeta_system_a 写入成功，设备严格驻留 Bootloader Fastboot 待命首启
+
+- 状态：已完成（tools/flash_candidate43.ps1 执行成功；Phase 1 前置安全审计证实唯一设备 [REDACTED_DEVICE_ID] 在线，A 槽 unbootable=no，retry=1；Phase 2 执行受控 fastboot set_active a，确证 slot-retry-count:a 成功从 1 恢复至 7；Phase 3 校验 super.img（7,703,526,364 B，SHA256: [REDACTED_DEVICE_ID]...）与 vbmeta_system.img（131,072 B，SHA256: [REDACTED_DEVICE_ID]...）哈希通过；Phase 4 顺序刷入 super（10个 sparse 分片，耗时 202.4s）与 vbmeta_system_a（耗时 12.4s），退出码均为 0；Phase 5 重新回读 Slot 快照证实：current-slot=a, unlocked=yes, is-userspace=no, unbootable:a=no, retry-count:a=7；严格执行红线纪律，未执行 fastboot reboot，设备安全停留在 Bootloader Fastboot 待命）。
+- 改动/结论：
+  1. **物理设备刷写与启动预算恢复闭环**：
+     - A 槽启动重试预算：成功从 1 恢复为 7（重获充足实验容错裕度）；
+     - 刷写目标分区：严格仅写入 `super` 与 `vbmeta_system_a`；
+     - 绝对禁止操作：未执行 reboot、erase userdata、erase metadata，零触碰底层固件与硬件标识分区；
+  2. **回读快照验证**：
+     - `product=thyme`
+     - `current-slot=a`
+     - `slot-retry-count:a=7`
+     - `slot-unbootable:a=no`
+     - `slot-successful:a=no`
+     - `is-userspace=no`
+- 涉及文件：
+  - `work/stage_c43_netd_ebpf_bypass_20261004/images/super.img`
+  - `work/stage_c43_netd_ebpf_bypass_20261004/images/vbmeta_system.img`
+  - `tools/flash_candidate43.ps1`
+  - `reports/c43_candidate43_build_20261004/` 下实时生成的刷写日志
+  - `日志/执行记录.md`
+  - `日志/项目当前状态.md`
+- 验证：
+  - `fastboot flash` 退出码 0；
+  - 刷写后 `getvar` 确证 A 槽健康且 `retry=7`；
+  - 设备物理保持在 Bootloader Fastboot。
+- 尚未验证：
+  - Candidate 43 实机首次开机表现、netd 是否成功越过 eBPF abort、SystemServer 是否解除 Watchdog 死锁（等待用户现场明确下达“开始启动 C43”指令）。
+- 待处理：
+  - 等待用户确认并下达开机指令。
+
+## 2026-10-04 13:38｜GitHub 公开仓库全量增量同步完成：C33–C43 历程文档、README、项目状态、诊断报告与脱敏工具 100% 同步推送至 GitHub (commit a36a696)
+
+- 状态：已完成（Phase 1 修复 scripts/sync_from_local.ps1 的 DestinationRoot 解析与 DLR 字符串构造缺陷；Phase 2 将 C27–C43 构建工具、验证门禁脚本、刷写脚本与 C33–C43 阶段报告及 Manifest 加入同步白名单；Phase 3 执行脱敏流水线导出 130 项资产，严格通过 81 个变更文件的零泄密、零大文件、零未授权镜像安全审计；Phase 4 更新 README.md 当前状态至 2026-10-04 (C40/C42/C43) 并补齐 C31–C43 历程摘要，同步更新 reports/README.md 与 tools/README.md；Phase 5 生成 commit a36a696 并通过本地代理成功推送至远程 origin/main；公开仓库工作树 100% clean）。
+- 改动/结论：
+  1. **同步范围全面覆盖**：
+     - `README.md`：更新当前状态为 Candidate 43，完整记录 C31–C43 历程（包括 C40 媒体变体突破、C42 屏幕最低亮度下界修复至 0.000854597、C43 netd eBPF 4字节手术）；
+     - `logs/PROJECT_STATUS.md` & `logs/EXECUTION_LOG.md`：由 C32 跨越同步至最新 C43 状态；
+     - `reports/`：纳入 C33–C36 崩溃分析、C37–C39 Linker CFI/Abort 符号化、C40 媒体突破报告、C41/C42 屏幕亮度修复与 C43 netd 门禁验收报告；
+     - `tools/`：纳入 C35–C43 构建、刷写与 6/12 重深度门禁验证脚本；
+  2. **安全与合规审计**：
+     - 81 个变更文件 100% 达成脱敏要求，设备序列号、CPUID、私钥及本地宿主绝对路径均完成合规替换，无 raw 镜像泄漏；
+  3. **远程推送验证**：
+     - `git push origin main` 成功交付，commit `a36a696` 成为 GitHub 远端 HEAD。
+- 涉及文件：
+  - `README.md`
+  - `logs/PROJECT_STATUS.md`
+  - `logs/EXECUTION_LOG.md`
+  - `reports/README.md`
+  - `tools/README.md`
+  - `scripts/sync_from_local.ps1`
+  - `reports/` 下 C33–C43 各项报告
+  - `tools/` 下 C35–C43 各项脚本
+- 验证：
+  - 81 项变更文件安全审计 100% PASS；
+  - `git push origin main` 退出码 0，远程仓库确认更新；
+  - `git status` 确认 working tree clean。
+- 尚未验证：
+  - 硬件端 C43 首次启动验证（等待用户将手机切回 Fastboot 并下达开机指令）。
+- 待处理：
+  - 提示用户手机仍处于 Standalone 模式，需按键切回 Fastboot，执行 C43 刷写与首启。
+
 ## 2026-10-04 12:35｜Candidate 43 构建与 6 重深度静态门禁 100% 验收通过：针对 netd (libnetd_updatable.so) eBPF abort 完成 4 字节 NOP 外科手术修复，双层 APK v3 签名验证通过，单变量隔离度与 AVB 树全绿就绪
 
 - 状态：已完成（tools/build_candidate43.py 构建成功；libnetd_updatable.so 仅在偏移 0x11534 将 cbnz w8, 115d8 替换为 nop，严格 4 字节变更，AArch64 动态依赖无变化；com.android.tethering.capex apex_manifest.pb 版本升至 370400128，双层 APK Signature Scheme v3 签名验证通过；EROFS 文件系统与 AVB vbmeta_system.img Digest 精准吻合；Super LP 动态分区打包完成且 vendor 保持 C42 最低亮度修复；tools/verify_c43_build_gate.py 6 重门禁 100% PASS；tools/flash_candidate43.ps1 dry-run 验证通过，内置 -RestoreRetryBudget 逻辑；手机保持在 Standalone RAM 诊断模式待命）。
