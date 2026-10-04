@@ -1,5 +1,150 @@
 # 执行记录
 
+## 2026-10-04 18:00｜Candidate 44 首启实测与 Standalone RAM 证据打捞完成：C43 Root Digest 错误 100% 彻底攻克（0次复现）；全新第一阻塞锁定为 apexd 挂载解压 APEX 报 Invalid argument (EINVAL) 导致 Tethering APEX 激活受阻
+
+- 状态：已完成（Phase 1 用户下达“开始启动”授权，执行 fastboot reboot 受控首启；120s ADB 监听未连通，用户反馈屏幕处于 Mi Logo + powered by Android 常亮，手动长按电源+音量下切入 Fastboot；Phase 2 保持未断电，通过 tools/salvage_c44_when_ready.py 成功导出 1,278,916 B console-ramoops-0 与 1,129,490 B pmsg-ramoops-0，全量保全于 reports/c44_candidate44_build_20261004/standalone/run_20261004_175451/THYME_DIAG/；Phase 3 深入解析证实：C43 中出现的 "Root digest ... does not match with expected root digest" 彻底消失，0 次复现，apexd 解压缩校验 100% 成功；Phase 4 权威锁定当前全新第一阻断点：apexd 在调用 Linux 原生 mount 挂载 /data/apex/decompressed/[REDACTED_EMAIL] 时返回 -1 (errno = EINVAL，Invalid argument)，导致 Tethering APEX 激活失败，SurfaceFlinger 与 Zygote 缺失 libcom.android.tethering.connectivity_native.so 循环崩溃无法进入开机动画，netd 缺失 libnetd_updatable.so 无法链接；Phase 5 规划 Candidate 45：首选方案 A 将 /system/apex/com.android.tethering.capex 转换为非压缩标准 APEX，避开 CAPEX 在 /data 下的 dm-verity 设备映射约束）。
+- 改动/结论：
+  1. **C44 制包修复权威证实成功（Root Digest 闭环）**：
+     - C43 `Root digest ... does not match` 错误 100% 消除；
+     - `apexd` 成功校验并解压缩 `com.android.tethering.capex`，证明动态提取 root digest 注入外层 manifest 的工程逻辑完全正确；
+  2. **新第一阻塞精准锁定（Mounting failed: Invalid argument）**：
+     - `apexd: Mounting failed for package /data/apex/decompressed/[REDACTED_EMAIL]: Invalid argument`；
+     - `SurfaceFlinger`: `library "libcom.android.tethering.connectivity_native.so" not found` -> 停留在第一屏；
+     - `Zygote`: `dlopen failed: library "libcom.android.tethering.connectivity_native.so" not found` -> 循环 SIGABRT；
+     - `netd`: `library "libnetd_updatable.so" not found` -> 链接失败；
+  3. **取证资产全量归档**：
+     - `console-ramoops-0` (1,278,916 B, SHA256: `AB54E6B038B964F2...`)；
+     - `pmsg-ramoops-0` (1,129,490 B, SHA256: `E541926DC358CB7F...`)；
+     - `dmesg_diag_boot.txt` (155,210 B)；
+     - `oops.raw` (16,777,216 B)；
+     - `diag_status.log` (3,159 B)；
+  4. **Candidate 45 方案就绪**：
+     - 首选方案 A：将 `/system/apex/com.android.tethering.capex` 转换为非压缩标准 APEX（`com.android.tethering.apex`），直接对标 `com.android.runtime.apex`，由系统预装 APEX loop 挂载通道直接激活，彻底绕开 CAPEX 在 `/data/apex/decompressed` 下的 dm-verity 映射对齐约束。
+- 涉及文件：
+  - `tools/start_candidate44_observed_boot.ps1`
+  - `tools/salvage_c44_when_ready.py`
+  - `reports/c44_candidate44_build_20261004/C44_FIRST_BOOT_AND_ROOTCAUSE_REPORT.md`
+  - `reports/c44_candidate44_build_20261004/c44_evidence_summary.txt`
+  - `reports/c44_candidate44_build_20261004/standalone/run_20261004_175451/`
+  - `日志/执行记录.md`
+  - `日志/项目当前状态.md`
+- 验证：
+  - RAM 证据打捞 100% 成功，0 错误；
+  - C43 Root Digest 错误 0 次复现（证伪已修复）；
+  - apexd EINVAL 挂载错误日志事实闭环确证。
+- 尚未验证：
+  - Candidate 45 非压缩 APEX / 修复挂载后的实机激活表现。
+- 待处理：
+  - GitHub 公开仓库增量同步与 push；
+  - 推进 Candidate 45。
+
+## 2026-10-04 17:45｜Candidate 44 受控刷写 100% 成功完成：A 槽启动预算安全恢复为 7，super 与 vbmeta_system_a 写入成功，设备严格驻留 Bootloader Fastboot 待命首启
+
+- 状态：已完成（tools/wait_and_flash_c44.ps1 检测到设备 [REDACTED_DEVICE_ID] 进入 Bootloader Fastboot 并自动触发 tools/flash_candidate44.ps1；Phase 1 前置安全审计证实唯一设备 [REDACTED_DEVICE_ID] 在线，A 槽 unbootable=no，retry=6；Phase 2 执行受控 fastboot set_active a，确证 slot-retry-count:a 成功从 6 恢复至 7；Phase 3 校验 super.img（7,703,526,364 B，SHA256: [REDACTED_DEVICE_ID]...）与 vbmeta_system.img（131,072 B，SHA256: [REDACTED_DEVICE_ID]...）哈希通过；Phase 4 顺序刷入 super（10 个 sparse 分片，耗时 199.3s）与 vbmeta_system_a（耗时 12.4s），退出码均为 0；Phase 5 重新回读 Slot 快照证实：product=thyme, current-slot=a, unlocked=yes, is-userspace=no, unbootable:a=no, retry-count:a=7；严格执行红线纪律，未执行 fastboot reboot，设备安全停留在 Bootloader Fastboot 待命）。
+- 改动/结论：
+  1. **物理设备刷写与启动预算恢复闭环**：
+     - A 槽启动重试预算：成功从 6 恢复为 7（重获充足实验容错裕度）；
+     - 刷写目标分区：严格仅写入 `super` 与 `vbmeta_system_a`；
+     - 绝对禁止操作：未执行 reboot、erase userdata、erase metadata，零触碰底层固件与硬件标识分区；
+  2. **回读快照验证**：
+     - `product=thyme`
+     - `current-slot=a`
+     - `unlocked=yes`
+     - `is-userspace=no`
+     - `slot-unbootable:a=no`
+     - `slot-successful:a=no`
+     - `slot-retry-count:a=7`
+     - `slot-unbootable:b=no`
+     - `slot-successful:b=no`
+     - `slot-retry-count:b=7`
+- 涉及文件：
+  - `work/stage_c44_capex_digest_fix_20261004/images/super.img`
+  - `work/stage_c44_capex_digest_fix_20261004/images/vbmeta_system.img`
+  - `tools/flash_candidate44.ps1`
+  - `tools/wait_and_flash_c44.ps1`
+  - `reports/c44_candidate44_build_20261004/`
+  - `日志/执行记录.md`
+  - `日志/项目当前状态.md`
+- 验证：
+  - `fastboot flash` 退出码 0；
+  - 刷写后 `getvar` 确证 A 槽健康且 `retry=7`；
+  - 设备物理保持在 Bootloader Fastboot。
+- 尚未验证：
+  - Candidate 44 实机首次开机表现、apexd 是否通过 originalApexDigest 校验并成功解压激活 com.android.tethering、SurfaceFlinger 与 Zygote 是否解除动态依赖缺失崩溃（严格等待用户人工下达“开始启动 C44”指令）。
+- 待处理：
+  - 请求用户人工确认首启。
+
+## 2026-10-04 17:25｜Candidate 44 构建完成与 8 重运行时等价门禁 100% 通过：修复 CAPEX 外层 originalApexDigest 制包缺陷，保持 C43 内部 patched original_apex 100% 逐字节不变，EROFS 回读与静态门禁全部闭环，就绪受控刷写
+
+- 状态：已完成（构建完成，静态与运行时等价门禁全绿，刷写脚本就绪）。
+- 改动/结论：
+  1. **严格单变量制包缺陷修复**：
+     - 复用 C43 原始 patched inner `original_apex`（SHA256: `c6c010d1d829ac138e0c93889728167202c8f510b3f5948fe900cc2006cfbfd3`），内含 4 字节 netd NOP patch，逐字节 100% 保持不变；
+     - 通过 `avbtool print_partition_digests` 从 `apex_payload.img` 精准提取实际 root digest: `4bdfe2f9158035e7d4dd5efe814f5d1dd9eee1d9052eb7c1f571125e9c67e042`；
+     - 注入外层 `apex_manifest.pb` 的 `capexMetadata.originalApexDigest`；
+     - 外层与内层版本号统一保持 `370400000`（varint `\x80\xb6\xcf\xb0\x01`，即 C43 内部 APEX 真实编码版本）；
+     - `apksigner` v3 重新签署外层 CAPEX 容器；
+  2. **双重运行时等价门禁通过**：
+     - 阶段 1 Staging CAPEX：外层 originalApexDigest 与内层 payload root digest 逐字符完全一致；
+     - 阶段 2 EROFS Readback CAPEX：从生成的 `system_c44.img` (1,092,616,192 B) 中通过 `dump.erofs --cat` 提取出 `com.android.tethering.capex`，SHA256 (`FF7104A95CAF4C25A20DB20691358C53A2FAF1E27574F6D01BC6BD3FB2A75A31`) 与 Staging CAPEX 100% 逐字节一致，再次运行解包、root digest 提取与匹配门禁，100% PASS；
+  3. **系统镜像与 Super 重建**：
+     - `system_c44.img`: 1,092,616,192 B, SHA256: `6493E92E2F7841725988D292B9CACB8F3B2305096531B21C2F4E198BD8087E37`, Root Digest: `c57ba49264e6e9e9252506f5511d9631e8ea96229bd7355e5c29b33d1324ddd9`；
+     - `vbmeta_system.img`: 131,072 B, SHA256: `E710488DF68CD1485FB5F5B7DF64541C7A98B198B5E87B071406E192B7599B72`；
+     - `super.img`: 7,703,526,364 B, SHA256: `727579EE75D3274CFB7270B37CCDDCF6E56E10400E1D393049ACCF69ED519746`，lpdump 6 分区校验通过；
+  4. **C43 Standalone 取证合规审计**：
+     - 确证 `reports/c43_candidate43_build_20261004/standalone/run_20261004_152655/` 包含全量 THYME_DIAG 树备份、文件清单与 SHA256 校验文件，合规性 100%；
+  5. **受控刷写脚本就绪**：
+     - 编写 `tools/flash_candidate44.ps1`，DRY-RUN 门禁测试通过。严格仅刷写 `super` 与 `vbmeta_system_a`，严禁 wipe userdata/metadata，刷写后严格保留在 Fastboot。
+- 涉及文件：
+  - `tools/build_candidate44.py`
+  - `tools/flash_candidate44.ps1`
+  - `reports/c44_candidate44_build_20261004/C44_BUILD_MANIFEST.json`
+  - `reports/c44_candidate44_build_20261004/C44_BUILD_AND_GATE_READINESS_REPORT.md`
+  - `work/stage_c44_capex_digest_fix_20261004/images/system_c44.img`
+  - `work/stage_c44_capex_digest_fix_20261004/images/vbmeta_system.img`
+  - `work/stage_c44_capex_digest_fix_20261004/images/super.img`
+  - `日志/执行记录.md`
+  - `日志/项目当前状态.md`
+- 验证：
+  - `build_candidate44.py` 执行 exit_code=0；
+  - `flash_candidate44.ps1 -Serial [REDACTED_DEVICE_ID]` (DRY-RUN) exit_code=0；
+  - 8 重静态与运行时等价门禁 100% PASS。
+- 尚未验证：
+  - 实机刷写与首次启动验证（等待设备进入 Fastboot 并执行受控刷写）。
+- 待处理：
+  - 用户按键将手机从 Standalone Diag 退出进入 Fastboot，执行受控刷写并保留在 Fastboot。
+- 替代：
+  - 替代 Candidate 43 外层 manifest 遗留出厂 root digest 的旧制包缺陷。
+
+## 2026-10-04 16:10｜GitHub 公开仓库全量增量同步完成：C43 首启实测、RAM 证据打捞、CAPEX root digest 根因报告及分析工具 100% 同步推送至 GitHub (commit 96c3c26)
+
+- 状态：已完成（Phase 1 将 C43 首启分析报告导出至 reports/c43_candidate43_build_20261004/C43_FIRST_BOOT_AND_ROOTCAUSE_REPORT.md；Phase 2 将该报告及 tools/salvage_c43_when_ready.py、tools/analyze_c43_ram_evidence.py 加入 scripts/sync_from_local.ps1 白名单；Phase 3 执行 sync_from_local.ps1，成功导出 133 项文本/报告资产并完成脱敏，安全审计 100% PASS（零宿主绝对路径、零私钥、零 raw 镜像泄漏）；Phase 4 更新公开 README.md：详细说明 C43 实测首启停留在第一屏、打捞出的 1.57MB console 与 1.46MB pmsg 证据、apexd 校验 originalApexDigest 失败的根本原因，以及 C44 规划；Phase 5 生成 commit 96c3c26 并成功推送到 GitHub origin/main；公开仓库工作树 100% clean）。
+- 改动/结论：
+  1. **公开仓库同步范围**：
+     - `README.md`：更新当前状态与历程摘要至 C43 实测结论与 C44 规划；
+     - `reports/c43_candidate43_build_20261004/C43_FIRST_BOOT_AND_ROOTCAUSE_REPORT.md`：C43 首启实测全量分析报告；
+     - `tools/salvage_c43_when_ready.py` & `tools/analyze_c43_ram_evidence.py`：RAM 诊断与证据解析工具；
+     - `logs/PROJECT_STATUS.md` & `logs/EXECUTION_LOG.md`：同步最新状态事实；
+  2. **安全审计与交付**：
+     - 9 个变更文件 100% PASS 安全审计；
+     - Commit `96c3c26` 已正式推送至远程 `ROCK-VK/thyme-hyperos4-port:main`。
+- 涉及文件：
+  - `[LOCAL_PATH]
+  - `[LOCAL_PATH]
+  - `[LOCAL_PATH]
+  - `[LOCAL_PATH]
+  - `[LOCAL_PATH]
+  - `[LOCAL_PATH]
+  - `[LOCAL_PATH]
+- 验证：
+  - `git push origin main` 退出码 0（更新至 `96c3c26`）；
+  - `git status` 确认 working tree clean。
+- 尚未验证：
+  - Candidate 44 实机构建与测试。
+- 待处理：
+  - 开始 Candidate 44 构建与验证门禁。
+
+
 ## 2026-10-04 15:35｜Candidate 43 首启实测与 RAM 证据打捞完成：设备停留在第一屏（Mi Logo），Standalone RAM 诊断成功导出 1.57MB console-ramoops 与 1.46MB pmsg-ramoops；权威定位根因：com.android.tethering.capex 外层 apex_manifest.pb 缺少更新后的 originalApexDigest，导致 apexd 拒绝激活 APEX，SurfaceFlinger 与 Zygote 缺少动态依赖崩溃
 
 - 状态：已完成（Phase 1 遵照用户明确“开始”授权，通过 tools/start_candidate43_observed_boot.ps1 执行受控首启 fastboot reboot；Phase 2 用户现场观测反馈设备停留在第一屏 Mi Logo + powered by Android，手动长按电源+音量下安全切入 Fastboot；Phase 3 立即运行 tools/salvage_c43_when_ready.py，加载 Standalone RAM 诊断微内核，成功无损导出 console-ramoops-0（1,571,670 B）与 pmsg-ramoops-0（1,462,944 B）；Phase 4 深度日志解析与 AOSP 源码溯源确证：apexd 报告 "Failed to decompress CAPEX: Root digest of /data/apex/decompressed/[REDACTED_EMAIL] does not match with expected root digest in /system/apex/com.android.tethering.capex"；apexd 放弃激活 com.android.tethering，导致 libcom.android.tethering.connectivity_native.so 未挂载，SurfaceFlinger 与 Zygote 无法链接该库循环崩溃，系统无法进入第二屏；Phase 5 对标 AOSP apex_compression_tool.py 锁定根因：外层 CAPEX 的 apex_manifest.pb 中必须通过 avbtool print_partition_digests 注入解压内层 apex_payload.img 的 root_digest (0x4bdfe2f9...)，而 C43 构建时外层保留了出厂旧 digest (0x49a137fd...) 导致校验被拒；制定 Candidate 44 方案：按 Google 官方标准注入 originalApexDigest 并版本递增至 370400129）。

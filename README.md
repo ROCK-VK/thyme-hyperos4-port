@@ -13,9 +13,14 @@
   * **首启物理表现**：受控刷入后首次开机，设备停留在第一屏（Mi Logo + powered by Android），未进入第二屏 BootAnimation；
   * **RAM 证据打捞**：通过 Standalone RAM 诊断微内核无损导出 1.57MB `console-ramoops-0` 与 1.46MB `pmsg-ramoops-0`；
   * **权威锁定根本原因**：`apexd` 在开机第 13.7 秒报错 `Failed to decompress CAPEX: Root digest ... does not match with expected root digest in com.android.tethering.capex`，由于外层 CAPEX manifest 遗留出厂旧 digest 未更新，导致 `apexd` 拒绝激活该 APEX；SurfaceFlinger 与 Zygote 因缺失 `libcom.android.tethering.connectivity_native.so` 循环崩溃，无法拉起开机动画。
-- **C44 规划与准备**：遵循 AOSP 原生 `apex_compression_tool.py` 官方标准，通过 `avbtool print_partition_digests` 将新签 payload 的 `root_digest = 4bdfe2f9158035e7d4dd5efe814f5d1dd9eee1d9052eb7c1f571125e9c67e042` 精准注入外层 manifest 的 `originalApexDigest`，版本步进至 `370400129`，彻底闭环消除 APEX 激活校验阻断。
+- **C44 制包修复验证、首启实测与全新阻塞锁定**：
+  * **修复验证**：动态提取 payload root digest (`4bdfe2f9...`) 注入外层 `originalApexDigest`，8 重运行时等价门禁全绿；首启 RAM 日志确证 `Root digest ... does not match` 错误 100% 彻底攻克（0 次复现），CAPEX 解压缩校验成功通过；
+  * **首启实测**：受控首启设备停留在第一屏（Mi Logo + powered by Android），120s ADB 超时；用户手动切回 Fastboot 待命；
+  * **RAM 证据打捞**：Standalone 微内核成功完整打捞 1.28MB `console-ramoops-0` 与 1.13MB `pmsg-ramoops-0`，保全全量诊断树；
+  * **全新第一阻塞**：`apexd` 在 mount 解压后的 `/data/apex/decompressed/com.android.tethering@370400000.decompressed.apex` 时内核返回 `Invalid argument` (EINVAL)，导致 Tethering APEX 激活受阻，SurfaceFlinger 和 Zygote 因缺失 `libcom.android.tethering.connectivity_native.so` 循环崩溃；
+- **C45 规划与准备**：将 `/system/apex/com.android.tethering.capex` 转换为非压缩标准 APEX（`com.android.tethering.apex`），对标 `com.android.runtime.apex`，直接走系统预装 APEX loop 挂载通道，避开 CAPEX 在 `/data` 目录下的 dm-verity 设备映射约束。
 
-- [C43 首启实测与根因分析报告](reports/c43_candidate43_build_20261004/C43_FIRST_BOOT_AND_ROOTCAUSE_REPORT.md) · [C43 构建与门禁报告](reports/c43_candidate43_build_20261004/C43_BUILD_AND_GATE_READINESS_REPORT.md) · [C42 首启与证据分析报告](reports/c42_candidate42_build_20261004/C42_FIRST_BOOT_AND_EVIDENCE_ANALYSIS_REPORT.md) · [C40 突破报告](reports/c40_candidate40_build_20261003/C40_FIRST_BOOT_AND_BREAKTHROUGH_REPORT.md) · [项目当前状态](logs/PROJECT_STATUS.md)
+- [C44 首启与根因报告](reports/c44_candidate44_build_20261004/C44_FIRST_BOOT_AND_ROOTCAUSE_REPORT.md) · [C44 构建与门禁报告](reports/c44_candidate44_build_20261004/C44_BUILD_AND_GATE_READINESS_REPORT.md) · [C44 刷写与就绪报告](reports/c44_candidate44_build_20261004/C44_FLASH_AND_READINESS_REPORT.md) · [C43 首启实测与根因分析报告](reports/c43_candidate43_build_20261004/C43_FIRST_BOOT_AND_ROOTCAUSE_REPORT.md) · [C42 首启与证据分析报告](reports/c42_candidate42_build_20261004/C42_FIRST_BOOT_AND_EVIDENCE_ANALYSIS_REPORT.md) · [C40 突破报告](reports/c40_candidate40_build_20261003/C40_FIRST_BOOT_AND_BREAKTHROUGH_REPORT.md) · [项目当前状态](logs/PROJECT_STATUS.md)
 
 
 ## 设备与来源
@@ -63,8 +68,9 @@ K40 对照资料显示，成功包的 vendor_boot ramdisk 与原包不同，并�
 - **C40**：在 `system/build.prop` 注入 `ro.media.xml_variant.codecs=_V1_0`，单变量修复彻底攻克 Zygote 崩溃（0 次复现），Real Zygote 成功进入主循环并 Fork 出 `system_server`，系统跨越 Phase 100 推进至 DisplayDeviceConfig。
 - **C41**：捕获全新阻断点：内置屏幕因最低亮度下界（`0.001709819`）不满足 HyperOS 4 框架下界（`0.000854597`）引发 `DisplayDeviceConfig.constrainNitsAndBacklightArrays` 致命异常与系统崩溃。
 - **C42**：修改 vendor 屏幕配置下界至 `0.000854597`，`DisplayDeviceConfig` 异常彻底归零（0次复现），内置屏幕成功点亮供电（state=ON），`BootAnimation` (PID 2082) 首次拉起，系统越过 Phase 100 推进至 Phase 200 并解锁用户 0 加密存储；权威锁定新第一阻断点：netd eBPF 循环 abort 导致 Watchdog 67 秒杀死 system_server。
-- **C43**：针对 `netd` (`libnetd_updatable.so`) eBPF abort 完成 4 字节 NOP 外科手术修复与 6 重深度门禁；实机受控首启停留在第一屏，Standalone RAM 诊断无损打捞出 1.57MB console 与 1.46MB pmsg 证据；权威锁定根因为 CAPEX 外层 manifest 缺少更新后的 originalApexDigest 导致 apexd 拒绝激活 Tethering APEX，阻断 SurfaceFlinger / Zygote。
-- **C44**：根据 AOSP `apex_compression_tool.py` 标准将计算出的最新 `root_digest` 注入外层 manifest 的 `originalApexDigest`，版本升至 `370400129`，彻底解决 CAPEX 激活阻断。
+- **C44**：根据 AOSP `apex_compression_tool.py` 标准将提取的实际 payload `root_digest` (`4bdfe2f9...`) 注入外层 manifest 的 `originalApexDigest`，8 重运行时等价门禁全绿；首启 RAM 日志确证 `Root digest ... does not match` 错误 100% 彻底攻克（0 次复现）；Standalone 微内核打捞出 1.28MB console 与 1.13MB pmsg 证据，权威锁定全新第一阻塞：`apexd` 挂载解压产物报 `Invalid argument` (EINVAL)，导致 Tethering APEX 激活受阻。
+- **C45**：规划将 `/system/apex/com.android.tethering.capex` 转换为非压缩标准 APEX（`com.android.tethering.apex`），对标 `com.android.runtime.apex` 直接由 loop 设备挂载，彻底规避 CAPEX 在 `/data` 目录下的 dm-verity 映射对齐约束。
+
 
 
 具体阶段和证据等级以项目状态文件及 Candidate 报告为准，旧报告的“计划/待验证”不会自动成为当前结论。

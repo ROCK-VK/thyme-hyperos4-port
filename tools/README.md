@@ -96,3 +96,10 @@ The original workflow used Windows 11, WSL Ubuntu, local Android platform-tools,
 - `verify_c43_build_gate.py` — 6-gate deep verification script covering SO binary/ELF, APEX container & v3 signature, EROFS fsck, AVB root digest, Super LP metadata, and strict single-variable isolation.
 - `flash_candidate43.ps1` — Restrictive flashing script for Candidate 43 featuring `-RestoreRetryBudget` logic to safely restore slot A retry budget to 7.
 
+## Candidate 44 Tools
+
+- `build_candidate44.py` — Builds Candidate 44 by dynamically injecting the exact AVB root digest (`4bdfe2f9...`) of `apex_payload.img` into outer `apex_manifest.pb.capexMetadata.originalApexDigest`, retaining C43's patched inner `original_apex` byte-for-byte, and enforcing 8-fold runtime equivalence build gates.
+- `flash_candidate44.ps1` — Restrictive flashing script for Candidate 44 with `-RestoreRetryBudget` logic and post-flash Fastboot hold state.
+- `start_candidate44_observed_boot.ps1` — Controlled observation boot script for Candidate 44 issuing `fastboot reboot` with timeout protection.
+- `salvage_c44_when_ready.py` — Standalone RAM diagnostic export tool for Candidate 44 non-destructively salvaging `console-ramoops-0`, `pmsg-ramoops-0`, and diagnostics files from RAM.
+
