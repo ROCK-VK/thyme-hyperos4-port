@@ -20,15 +20,18 @@
 
 
 
-## M01 Known-Good 首次真机实验（2026-10-05）— 当前阶段
+## M01 Known-Good 真机实验（2026-10-05）— R2 未推进，等待下一阶段审核
 
-M01-R1 将社区 Known-Good madrid OS4.0.15 → thyme 包的五分区安全子集写入 Xiaomi 10S，五项均返回 OKAY。首次启动停留在 Level 0：Mi Logo 与黑屏交替后回到 Fastboot，ADB 未出现。该实验没有完整复现社区包原始刷机矩阵，因此失败不否定 Known-Good 原包。
+M01-R1 测试了社区 Known-Good madrid OS4.0.15 → thyme 包的五分区安全子集，没有复现原包的完整刷机矩阵。R1 首启失败后未发现有效 M01 kernel/pstore 现场。
 
-首启失败后已使用 Standalone RAM 诊断环境完整复制 THYME_DIAG 卷。pstore 挂载成功但记录为 0；没有本次 M01 的 console-ramoops、pmsg-ramoops 或其他 kernel log。Standalone 自身 dmesg 不能代替 Known-Good kernel 日志；R1 根因仍未确定。
+M01-R2 在同一刷机基线上仅补写 top-level vbmeta_a，写入成功。一次授权启动会话后 Fastboot USB 消失约 33 秒再枚举，ADB 未出现，A 槽 retry 从 7 减至 5。随后立即 RAM boot Standalone 并完成取证归档。此次 R2 未显示可观察的 Android 启动推进，但不否定完整 Known-Good 原始刷机矩阵。
 
-- **[M01 失败现场与 M01-R2 预检报告](reports/m01_known_good_runtime/M01_FAILURE_SALVAGE_REPORT.md)** —— 记录取证完整性、日志归属、根因证据边界及只补刷 Known-Good vbmeta_a 的单变量计划。
-- M01-R2 尚未刷写或启动。刷写前必须在 Bootloader Fastboot 重新确认设备状态；刷后停在 Fastboot，只有收到明确“开始启动 M01-R2”指令后才启动。
-- 未上传 ROM、super、boot、raw 分区或专有二进制；公开内容仅为经过脱敏的结论摘要。
+pstore 挂载成功但为空；没有本次 M01-R2 的 console-ramoops、pmsg-ramoops 或 Known-Good kernel log。可见的 4.19.325-perf banner 和 dmesg 来自 Standalone 自身；oops.raw 与历史 R1/C47 文件相同。因此最早失败点仍未知，vbmeta 作为唯一/主要阻塞假说已降级，未被完全排除。
+
+- **[M01-R1 失败现场与预检报告](reports/m01_known_good_runtime/M01_FAILURE_SALVAGE_REPORT.md)** —— 记录 R1 取证结果及证据边界。
+- **[M01-R2 受控实验报告](reports/m01_known_good_runtime/M01_R2_REPORT.md)** —— 记录单分区写入、一次首启、RAM 现场完整性和 R2 判断。
+- 公开副本只包含脱敏文本摘要；未上传 ROM、分区镜像、pstore/oops raw 或其他专有二进制。
+- 当前停止进一步 ROM 启动与刷写。下一阶段先评估原成功包刷机矩阵的剩余差异：firmware dependency、boot/vendor_boot/ramdisk 配对、dtbo 与 clean-data requirement。
 
 ## M00 Madrid Intake（2026-10-05）— 已完成静态审计
 
@@ -251,7 +254,7 @@ tools/             精选构建、预检、刷写和诊断脚本
 
 patches/           可审阅的最小策略补丁
 
-reports/           K40 对照、Candidate 分析报告、M00 madrid 结构审计报告
+reports/           K40 对照、Candidate 分析、M00 madrid 审计与 M01 Known-Good 真机报告
 
 evidence/          C13–C25 Standalone 诊断卷及 USB/ADB/Fastboot 主机观察记录；
                    m00_kernel_configs/ 为各 boot 镜像内嵌 IKCONFIG 实解出的原始 .config 证据

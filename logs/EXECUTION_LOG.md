@@ -16715,3 +16715,14 @@
 - 安全审查：仅同步脱敏文字；未加入设备序列号、绝对路径、raw pstore、ROM、镜像或其他专有二进制。
 - 验证：文档内核对关键状态、SHA256 与下一步授权门槛；待提交前复查 diff 与公开敏感信息扫描。
 - 待处理：设备回 Fastboot 后执行 M01-R2 预检与单分区刷写；之后停机等待启动授权。
+
+## 2026-10-05 15:10 HKT｜M01-R2 首启结果与 Standalone RAM salvage 完成（脱敏摘要）
+
+- 状态：单次受控首启失败；Standalone RAM 取证和公开摘要准备完成；未重复启动或扩大刷写。
+- 结论：top-level vbmeta_a 写入成功。Fastboot USB 离开约 33 秒后重新枚举，ADB 未出现；A 槽 retry 从 7 降到 5。pstore 为空，没有 M01-R2 kernel log。Standalone banner/dmesg 不属于 Known-Good 启动；oops.raw 与旧 R1/C47 内容相同。
+- 证据边界：Known-Good kernel 是否执行及最早失败阶段均未知。R2 未显示 Android 推进，故 vbmeta 为唯一/主要阻塞的假说降级但未完全排除。R1 “second-stage 前失败”旧推断仍未被日志验证。
+- 涉及公开文件：README.md、logs/PROJECT_STATUS.md、logs/EXECUTION_LOG.md、reports/m01_known_good_runtime/M01_R2_REPORT.md。
+- 安全处理：公开摘要不包含设备序列号、主机路径、raw evidence、ROM/image 或专有二进制；完整诊断卷与校验清单只留在私有工作区。
+- 验证：公开文档依据私有现场日志摘要编写；还需提交前安全扫描、diff 检查、push 与远端复核。
+- 待处理：审核成功包原始刷机矩阵剩余差异（firmware、boot/vendor_boot/ramdisk、dtbo、clean-data）；在下一阶段审核前不再启动或扩大刷写。
+- 替代：降低“top-level vbmeta 是唯一/主要阻塞”的当前假说等级；根因仍未确认。
