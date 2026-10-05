@@ -16643,3 +16643,62 @@
 - 替代：替代「成功包与官方 madrid 差异很大、升级需要重做移植」的初步担忧。
 - 说明：本条目数据来自派生的只读审计子代理，其完整报告未产出（子代理在收尾阶段被中止）；
   上述结论均由**已落盘的哈希矩阵文件**直接支撑，可独立复核。
+
+
+## 2026-10-05 12:10 HKT｜M00 公开归档增量同步完成：donor 更正与 madrid 结构审计已推送 GitHub
+
+- 状态：已完成（**仅文档与工具同步**；未刷写、未重启、未与设备交互）
+- 改动/结论：
+
+  1. **公开仓库增量同步**：`ROCK-VK/thyme-hyperos4-port` main 分支
+     `c9b5bb2` → **`f4a1d36`**（19 files changed, +31216 / -44），已 push 并 `fetch` 复核
+     `origin/main` 与本地 `HEAD` 差值为 0/0，工作树干净。
+
+  2. **同步内容（新增）**：
+     - `reports/m00_madrid_intake_20261005/` 五份报告：
+       `SUCCESS_PORT_DONOR_IDENTITY.md`、`THYME_SUCCESS_REFERENCE_ARCHITECTURE.md`、
+       `MADRID_PAYLOAD_INVENTORY.md`、`THREE_WAY_STRUCTURE_MAP.md`、
+       `CONTROLLED_FLASH_MATRIX_AND_RISK.md`
+     - `evidence/m00_kernel_configs/` 四份原始内核 `.config`（由各 boot 镜像内嵌 IKCONFIG 实解）：
+       `succ_hyperos4_0_15_boot_noroot`、`madrid_os4_0_19_boot`、`stock_thyme_os1_0_4_0_boot`、
+       `legacy_c47_boot` —— 这是"BPF_LSM / EROFS / ANDROID_VENDOR_HOOKS 三方对照"的原始证据
+     - `tools/`：`controlled_thyme_success_flash.ps1`（+ `.constants.json`）、`extract_success_super.py`、
+       `parse_lp_metadata.py`、`scan_identity_strings.py`、`read_ext4_props.py`
+     - `logs/PROJECT_STATUS.md`、`logs/EXECUTION_LOG.md`（经白名单同步脚本自动 sanitization）
+     - `scripts/sync_from_local.ps1`：白名单新增上述 M00 条目
+
+  3. **README 已做目标更正**（重要）：
+     - 标题由「Xiaomi 15 (dada)」改为「**Xiaomi 18 Pro Max (`madrid`)**」
+     - 新增显式 donor 更正声明块（说明为何从 dada 改为 madrid、`XEOCNXM` 与 `XOCCNXM` 是两条版本线）
+     - 新增 `## M00 Madrid Intake（2026-10-05）— 最新阶段` 章节，含五份报告链接与
+       「本轮推翻的两个假设」
+     - `## 设备与来源` 表格更新：最终 OS 供体改为 madrid；新增「Known-Good 参照」与
+       「Legacy OS 供体（已停用）」两行
+     - 旧状态章节改标题为 `## Legacy 线当前状态（截至 2026-10-04，donor = dada）`，
+       并补充 C47 之后不再延续 C 编号的说明
+     - `## 仓库内容` 补充 M00 报告与 `evidence/m00_kernel_configs/`
+
+  4. **Sanitization 执行与复核**：
+     - 新增文件经同步脚本 `ConvertTo-PublicText` 处理；新增 M00 日志尾部独立复扫
+       （宿主名 / 用户名 / 本地路径 / WSL 路径 / 设备序列号 / 上游用户名）结果为 **CLEAN**，
+       设备序列号出现 2 处且均已替换为 `[REDACTED_DEVICE_ID]`
+     - 全量 staged 内容安全复扫：唯一命中为 `scripts/sync_from_local.ps1` 内**作为替换规则字面量**的
+       `/path/to/thyme-os4-build`，属预期内容，非泄漏
+     - 确认**无任何** `.img` / `.bin` / `.so` / `.apex` / `.capex` / `.zip` / `.jar` / `.apk` / `.raw` 被暂存
+     - 报告内的宿主构建者标识 `root@[LOCAL_HOST]` 已在同步前手工改为 `[LOCAL_BUILD_HOST]`
+
+- 原因：用户要求「增量同步到 GitHub，把你认为重要的部分同步」。
+- 涉及文件：
+  - `[LOCAL_PATH] 19 个文件
+  - `[LOCAL_PROJECT_ROOT]\reports\m00_madrid_intake_20261005\THREE_WAY_STRUCTURE_MAP.md`（同步前已脱敏：宿主构建者标识替换为 [LOCAL_BUILD_HOST]）
+- 验证：
+  - `git push origin main` 输出 `c9b5bb2..f4a1d36  main -> main`；
+  - `git fetch origin` 后 `rev-list --left-right --count origin/main...HEAD` = `0 0`；
+  - `git log origin/main -1` 确认为 `f4a1d36e156df2fead6668874dd4acd318f36b6f`；
+  - `git status --short` 为空（工作树干净）；
+  - 验证级别：**仓库状态与内容实读复核**，不含真机验证。
+- 尚未验证：GitHub 网页端渲染效果（未逐页人工目视）。
+- 待处理：
+  1. 等待用户「刷入成功包」授权（M01）；
+  2. M01 证据产生后按同一流程增量同步。
+- 替代：无。本条为归档同步记录，不改变任何技术结论。
