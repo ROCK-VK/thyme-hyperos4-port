@@ -20,18 +20,22 @@
 
 
 
-## M01 Known-Good 真机实验（2026-10-05）— R2 未推进，等待下一阶段审核
+## M01 Known-Good 真机实验（2026-10-05）— R3 已进入 Android framework/UI
 
-M01-R1 测试了社区 Known-Good madrid OS4.0.15 → thyme 包的五分区安全子集，没有复现原包的完整刷机矩阵。R1 首启失败后未发现有效 M01 kernel/pstore 现场。
+M01-R1 使用 Known-Good madrid OS4.0.15 → thyme 包的五分区安全子集，首启未见 ADB；没有取得可归属到该次启动的 kernel/pstore 现场。R1 不是成功包原始完整刷机矩阵的复现。
 
-M01-R2 在同一刷机基线上仅补写 top-level vbmeta_a，写入成功。一次授权启动会话后 Fastboot USB 消失约 33 秒再枚举，ADB 未出现，A 槽 retry 从 7 减至 5。随后立即 RAM boot Standalone 并完成取证归档。此次 R2 未显示可观察的 Android 启动推进，但不否定完整 Known-Good 原始刷机矩阵。
+M01-R2 在 R1 基线上仅补写 Known-Good top-level `vbmeta_a`，一次启动后仍未见 ADB；Standalone RAM salvage 无本轮 kernel log，最早失败位置仍未知。无 pstore 不等于 kernel 未执行。
 
-pstore 挂载成功但为空；没有本次 M01-R2 的 console-ramoops、pmsg-ramoops 或 Known-Good kernel log。可见的 4.19.325-perf banner 和 dmesg 来自 Standalone 自身；oops.raw 与历史 R1/C47 文件相同。因此最早失败点仍未知，vbmeta 作为唯一/主要阻塞假说已降级，未被完全排除。
+M01-R3 在不重刷 OS stack 或 firmware 的前提下，仅按成功包 clean-data 逻辑 `erase userdata` 与 `erase metadata`（均 exit 0）。一次授权首启后，ADB 于 T+238 秒上线；`sys.boot_completed=1`，用户确认启动成功并在 Settings 打开 USB debugging。只读观察窗口 900 秒结束时 ADB 仍在线。用户可交互 Settings，达到 Android framework/UI boot（Level 2 或更高）；没有屏幕录像，具体 SetupWizard/锁屏/桌面等级未独立记录。
 
-- **[M01-R1 失败现场与预检报告](reports/m01_known_good_runtime/M01_FAILURE_SALVAGE_REPORT.md)** —— 记录 R1 取证结果及证据边界。
-- **[M01-R2 受控实验报告](reports/m01_known_good_runtime/M01_R2_REPORT.md)** —— 记录单分区写入、一次首启、RAM 现场完整性和 R2 判断。
-- 公开副本只包含脱敏文本摘要；未上传 ROM、分区镜像、pstore/oops raw 或其他专有二进制。
-- 当前停止进一步 ROM 启动与刷写。下一阶段先评估原成功包刷机矩阵的剩余差异：firmware dependency、boot/vendor_boot/ramdisk 配对、dtbo 与 clean-data requirement。
+本轮 `/proc/version` 确认 Known-Good `4.19.325-cxk` kernel 实际执行。`com.android.tethering` 是 Active/mounted APEX，INetd/Tethering service 存在，netd running 且 updatable init 成功，BPF enabled 且主要 maps OK；本轮没有运行真实热点/转发流量。`/proc/<netd-pid>/maps` 被 production user build 拒绝读取，精确共享库映射仍未验证。另有单次 `traced` restarting 状态，作为非阻塞项留待 review。
+
+R3 清除 data/metadata 后从 R1/R2 无 ADB 推进到 Android UI，强烈支持旧 data/metadata 状态是主要阻塞候选；因为两个分区同时清除，具体因果贡献尚未隔离。
+
+- **[M01-R3 clean-data 真机与 runtime 报告](reports/m01_known_good_runtime/M01_R3_REPORT.md)** —— 脱敏结果、运行时证据与限制。
+- **[M01-R2 受控实验报告](reports/m01_known_good_runtime/M01_R2_REPORT.md)**；**[R1 失败现场报告](reports/m01_known_good_runtime/M01_FAILURE_SALVAGE_REPORT.md)**。
+- 公开副本不含 ROM、分区镜像、raw pstore/oops、ADB dump、raw log 或设备身份信息。
+- 本轮停止后续启动与刷写；先 review 已验证的 Known-Good runtime，再审议如何迁移至官方 madrid OS4.0.19。
 
 ## M00 Madrid Intake（2026-10-05）— 已完成静态审计
 

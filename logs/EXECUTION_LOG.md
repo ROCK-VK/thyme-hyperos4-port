@@ -16726,3 +16726,14 @@
 - 验证：公开文档依据私有现场日志摘要编写；还需提交前安全扫描、diff 检查、push 与远端复核。
 - 待处理：审核成功包原始刷机矩阵剩余差异（firmware、boot/vendor_boot/ramdisk、dtbo、clean-data）；在下一阶段审核前不再启动或扩大刷写。
 - 替代：降低“top-level vbmeta 是唯一/主要阻塞”的当前假说等级；根因仍未确认。
+
+## 2026-10-05 16:06 HKT｜M01-R3 clean-data Known-Good boot 与 runtime capture 完成（脱敏摘要）
+
+- 状态：一次受控首启进入 Android framework/UI；只读 USB/ADB/Fastboot 观察 900 秒完成；没有第二次 reboot。
+- 结论：R3 仅 erase userdata 与 metadata（两条 exit 0），保留 R1/R2 的 Known-Good A 槽 OS stack，不刷 firmware。首启后 ADB 于 T+238 秒上线，`sys.boot_completed=1`，用户确认开机成功并打开 USB debugging；观察窗口末尾 ADB 仍在线。
+- 启动证据：`/proc/version` 确认 Known-Good `4.19.325-cxk` kernel 实际执行。达到 Android framework/UI boot（Level 2 或更高）；没有屏幕录像来确认 SetupWizard、锁屏或桌面具体阶段。R1/R2 无 pstore 不能反推 kernel 未运行。
+- Runtime：Tethering APEX active/mounted；INetd/Tethering services 存在；netd running 且 updatable init 成功；BPF enabled、主要 maps OK。未启动真实 tethering session。production `user` build 限制 `/proc/<netd-pid>/maps` 读取，精确 `.so` map 未验证。
+- 判断：data/metadata clean 与 R3 相对 R1/R2 的明显启动推进强相关，主要阻塞候选显著增强；两分区同时清除，不能拆分具体因果贡献。单次快照另见 `traced` restarting，待 review。
+- 安全：公开只加入脱敏 Markdown 摘要；未上传 ROM、boot/super image、firmware、ADB dump、raw pstore/log、设备序列号或本地路径。
+- 下一步：停止本轮设备操作，保持 Android 在线；审核 Known-Good runtime，再规划官方 madrid OS4.0.19 移植。不得自动启动新实验。
+- 替代：R3 状态替代此前“等待 M01-R3 首启”的状态；R1/R2 历史失败与根因未知仍保留。旧 Tethering APEX 未激活推断被本轮 active/mount/service 证据否定。
