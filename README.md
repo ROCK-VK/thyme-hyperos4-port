@@ -2,15 +2,83 @@
 
 
 
-**Xiaomi 15 (dada) HyperOS 4 / Android 17 移植至 Xiaomi Mi 10S (thyme)**
+**Xiaomi 18 Pro Max (`madrid`) HyperOS 4 / Android 17 移植至 Xiaomi Mi 10S (`thyme`)**
 
 
 
-这是一个实验性 Android 移植工程。当前首要目标是让小米 10S 越过 HyperOS 4 启动阻塞并进入启动动画、设置向导或桌面。仓库保存可审核的脚本、补丁、项目日志与用户授权公开的 C13–C43 启动诊断与修复证据；不提供 ROM 下载。
+> **Donor 已更正（2026-10-05）**：本项目此前的移植 donor 是 Xiaomi 15（`dada`）。
+> 经 M00 静态审计确证，社区中**实测可在小米 10S 上启动 HyperOS 4** 的包来自
+> **Xiaomi 18 Pro Max（`madrid`）**。项目最终目标自此正式定为
+> **官方 madrid HyperOS 4.0.19.0.XEOCNXM → thyme**。
+> C13–C47 保留为 `Legacy THYME Android-17 Compatibility Research Line`（历史真机故障数据库与
+> thyme 适配知识仍有效），新的 madrid 主线改用 **M01 / M02 / M03 …** 编号。
 
 
 
-## 当前状态（2026-10-04）
+这是一个实验性 Android 移植工程。仓库保存可审核的脚本、补丁、项目日志、结构审计报告与用户授权
+公开的真机启动诊断与修复证据；**不提供 ROM 下载**。
+
+
+
+## M00 Madrid Intake（2026-10-05）— 最新阶段
+
+
+
+本轮为**只读静态审计**，未刷写、未重启、未与设备交互。五项产出：
+
+
+
+- **[成功包 donor 身份审计](reports/m00_madrid_intake_20261005/SUCCESS_PORT_DONOR_IDENTITY.md)** —— 结论 **A. Confirmed madrid**。
+  决定性证据：社区包 `product_a:/etc/build.prop` 的 `ro.product.product.name=miproduct_madrid` 与
+  `ro.product.build.fingerprint=Xiaomi/madrid/miproduct:17/…/OS4.0.15.0.XEOCNXM`；
+  `mi_ext_a` 的 `ro.vendor.build.ab_ota_partitions` 与官方 madrid 4.0.19 **逐字符完全相同**（70 项 madrid 专属分区布局）。
+  同时澄清：`ro.product.system.device=missi` 在**官方 madrid 包中同样存在**，`missi` 是平台/SSI 代号，
+  不构成否证。
+
+- **[成功包启动兼容架构审计](reports/m00_madrid_intake_20261005/THYME_SUCCESS_REFERENCE_ARCHITECTURE.md)** —— 该 port 靠**三层拼合**启动：
+  A 层为 madrid/missi 的 `OS4.0.15.0.XEOCNXM`（与官方 4.0.19 的 `system/apex` **36 个中 35 个逐字节相同**）；
+  B 层为 thyme 自己重建的 vendor/odm/mi_ext（**ext4**，官方 madrid 侧全是 EROFS）；
+  C 层为社区 thyme 固件包（**不含任何 madrid 固件**）。
+  启动键是 `boot` 里一个 **50.6 MB 的 TWRP/Magisk 派生自包含 ramdisk**（`ro.product.system.name=twrp_thyme`），
+  因此 `vendor_boot` 的 ramdisk 只有 2,180 B。
+
+- **[官方 madrid OS4.0.19 基线盘点](reports/m00_madrid_intake_20261005/MADRID_PAYLOAD_INVENTORY.md)** —— 66 个分区镜像 / 14.9424 GiB 全量哈希入库。
+  两个关键结构事实：**该 OTA 内没有 `super.img`**（super 几何在 manifest，**18,790,481,920 B = 17.50 GiB**，9 个 EROFS 成员，
+  `abl`/`devcfg` 缺席）；**madrid 身份是分裂的**（madrid 侧为 odm/product/mi_ext/dlkm，
+  `system`/`system_ext`/`init_boot` 是 `missi`，`vendor` 是通用 `mivendor`）。
+
+- **[三方结构地图](reports/m00_madrid_intake_20261005/THREE_WAY_STRUCTURE_MAP.md)** —— 社区成功包 / 官方 madrid 4.0.19 / Legacy C47 的
+  A-Kernel·Boot、B-Vendor·ODM、C-System·Framework、D-Network·BPF、E-SELinux·init·VINTF、F-Firmware 六层对照。
+
+- **[受控刷写矩阵与风险评估](reports/m00_madrid_intake_20261005/CONTROLLED_FLASH_MATRIX_AND_RISK.md)** —— 对应脚本
+  [`tools/controlled_thyme_success_flash.ps1`](tools/controlled_thyme_success_flash.ps1)（**已生成、DRY-RUN 通过、未执行**）。
+
+
+
+### 本轮推翻的两个假设（值得记录）
+
+1. **「旧 4.19 内核没有 BPF 能力 ⇒ netd 必失败」不成立。**
+   从各 boot 镜像内嵌 IKCONFIG 实解出的内核配置显示：Legacy C47 与社区成功包的内核**同属 4.19.325 谱系**，
+   且**都已启用** `CONFIG_BPF_LSM=y`、`CONFIG_EROFS_FS=y`、`CONFIG_ANDROID_VENDOR_HOOKS=y`；
+   而官方 thyme 的 4.19.157 **三者全部缺失**（因此回退官方 thyme 内核不可行）。
+   原始 `.config` 见 [`evidence/m00_kernel_configs/`](evidence/m00_kernel_configs/)。
+
+2. **「成功包靠打补丁让 netd 跑通」不成立。**
+   社区包的 `libnetd_updatable.so`（103,648 B，SHA256 `2C811151…77AD`）与本项目 dada 参考副本
+   `cmp` 结果 **IDENTICAL**，且反汇编确认 `0x11534` 与 `0x1a92b8` **两处均为未修补形态**。
+   而 AOSP 源码 `BpfHandler.cpp` 显示该 gate 是**纯内核版本号比较**（`isAtLeast25Q2 && !isAtLeastKernelVersion(5,4,0)`），
+   **不做任何 BPF 能力探测** —— 因此「换内核」永远无法通过它；唯一能解释社区包的，是
+   **tethering CAPEX 未激活时 `netd` 根本不加载该库**（C44 真机日志中确有
+   `netd: library "libnetd_updatable.so" not found`）。
+   这一开放问题将由 M01 Known-Good 真机取证回答。
+
+
+
+---
+
+
+
+## Legacy 线当前状态（截至 2026-10-04，donor = dada）
 
 
 
@@ -44,6 +112,11 @@
   * **全新第一阻塞精准锁定**：`/system/bin/netd` 在 `Controllers::init()+336` 检测到 `BandwidthController::enableBandwidthControl()` 失败后硬编码调用 `exit(2)`。因官方 4.19 内核无 eBPF pin 规则导致 iptables-restore 失败，`netd` 循环崩溃（5 秒一次累计 300+ 次），`INetd` / `NetdService` 无法注册，SystemServer 的 `NetworkManagementService` 阻塞等待超时（60 秒）触发 Watchdog 重启。
 - **C47 规划**：在 `/system/bin/netd` 的 `0x761c0` 处将 `cbnz w0, 0x762b0` 替换为 4 字节 `nop`（`0x1f 0x20 0x03 0xd5`），单变量旁路 exit(2) 退出逻辑，使 netd 正常常驻并向 ServiceManager 注册 `INetd`，解开 SystemServer 网络栈死锁。
 
+- **Legacy 线现状与后续定位（2026-10-05 更新）**：C47 之后**不再延续 C 编号**。原因见上方 M00 章节：
+  Legacy 线的 donor 是 `dada`（版本线 `XOCCNXM`），而社区已知可启动包的 donor 是 `madrid`（版本线 `XEOCNXM`），
+  两者属于不同机型版本线。C1–C47 的全部真机故障数据、thyme 适配知识与工程基础设施继续有效并复用，
+  但新实验统一走 madrid 主线（M01/M02/M03…）。
+
 - [C46 首启突破与根因分析报告](reports/c46_candidate46_build_20261004/C46_FIRST_BOOT_AND_POSTMORTEM_REPORT.md) · [C46 构建与门禁报告](reports/c46_candidate46_build_20261004/C46_BUILD_AND_GATE_READINESS_REPORT.md) · [C45 首启与根因报告](reports/c45_candidate45_build_20261004/C45_FIRST_BOOT_AND_POSTMORTEM_REPORT.md) · [C45 构建与门禁报告](reports/c45_candidate45_build_20261004/C45_BUILD_AND_GATE_READINESS_REPORT.md) · [C44 首启与根因报告](reports/c44_candidate44_build_20261004/C44_FIRST_BOOT_AND_ROOTCAUSE_REPORT.md) · [C43 首启实测与根因分析报告](reports/c43_candidate43_build_20261004/C43_FIRST_BOOT_AND_ROOTCAUSE_REPORT.md) · [C42 首启与证据分析报告](reports/c42_candidate42_build_20261004/C42_FIRST_BOOT_AND_EVIDENCE_ANALYSIS_REPORT.md) · [C40 突破报告](reports/c40_candidate40_build_20261003/C40_FIRST_BOOT_AND_BREAKTHROUGH_REPORT.md) · [项目当前状态](logs/PROJECT_STATUS.md)
 
 
@@ -58,7 +131,11 @@
 
 | 目标机 | Xiaomi Mi 10S，`thyme`，Snapdragon 870 | 保留目标机自身的内核、设备树、启动链和硬件适配边界 |
 
-| OS 供体 | Xiaomi 15，`dada`，HyperOS 4 / Android 17 | 提供待移植的系统用户空间 |
+| **最终 OS 供体（2026-10-05 起）** | **Xiaomi 18 Pro Max，`madrid`，HyperOS 4 / Android 17，版本线 `XEOCNXM`** | **提供待移植的系统用户空间；最终目标为官方 `OS4.0.19.0.XEOCNXM`** |
+
+| Known-Good 参照 | 社区 `Mi18pm HyperOS 4.0.15 for thyme` 包 | 提供**同机实测可启动**的 thyme 适配层与启动兼容栈参照（已确证其 donor 为 madrid） |
+
+| Legacy OS 供体（已停用） | Xiaomi 15，`dada`，版本线 `XOCCNXM` | C13–C47 使用的旧 donor；结论与真机证据仍有效，但不再是最终目标 |
 
 | 移植参考 | Redmi K40，`alioth`，Snapdragon 870 | 参考成功启动的移植方案和适配方式；不直接移植其硬件专属镜像或分区 |
 
@@ -164,9 +241,10 @@ tools/             精选构建、预检、刷写和诊断脚本
 
 patches/           可审阅的最小策略补丁
 
-reports/           K40 对照与 Candidate 分析报告
+reports/           K40 对照、Candidate 分析报告、M00 madrid 结构审计报告
 
-evidence/          C13–C25 Standalone 诊断卷及 USB/ADB/Fastboot 主机观察记录
+evidence/          C13–C25 Standalone 诊断卷及 USB/ADB/Fastboot 主机观察记录；
+                   m00_kernel_configs/ 为各 boot 镜像内嵌 IKCONFIG 实解出的原始 .config 证据
 
 scripts/           带明确文件白名单的本地增量同步脚本
 

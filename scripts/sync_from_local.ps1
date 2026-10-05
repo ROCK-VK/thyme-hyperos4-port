@@ -181,6 +181,28 @@ $Allowlist = @(
     @{ Source='reports/c46_candidate46_build_20261004/C46_BUILD_AND_GATE_READINESS_REPORT.md'; Destination='reports/c46_candidate46_build_20261004/C46_BUILD_AND_GATE_READINESS_REPORT.md' }
     @{ Source='reports/c46_candidate46_build_20261004/C46_FIRST_BOOT_AND_POSTMORTEM_REPORT.md'; Destination='reports/c46_candidate46_build_20261004/C46_FIRST_BOOT_AND_POSTMORTEM_REPORT.md' }
     @{ Source='reports/c46_candidate46_build_20261004/C46_BUILD_MANIFEST.json'; Destination='reports/c46_candidate46_build_20261004/C46_BUILD_MANIFEST.json' }
+
+    # ---- M00 Madrid Intake (2026-10-05): donor retarget from Xiaomi 15 / dada to Xiaomi 18 Pro Max / madrid ----
+    # These five reports are the public evidence base for the donor-identity audit, the known-good
+    # community port architecture audit, the official madrid OS4.0.19 baseline inventory, the
+    # three-way structure map, and the controlled flash matrix.
+    @{ Source='reports\m00_madrid_intake_20261005\SUCCESS_PORT_DONOR_IDENTITY.md'; Destination='reports\m00_madrid_intake_20261005\SUCCESS_PORT_DONOR_IDENTITY.md' }
+    @{ Source='reports\m00_madrid_intake_20261005\THYME_SUCCESS_REFERENCE_ARCHITECTURE.md'; Destination='reports\m00_madrid_intake_20261005\THYME_SUCCESS_REFERENCE_ARCHITECTURE.md' }
+    @{ Source='reports\m00_madrid_intake_20261005\MADRID_PAYLOAD_INVENTORY.md'; Destination='reports\m00_madrid_intake_20261005\MADRID_PAYLOAD_INVENTORY.md' }
+    @{ Source='reports\m00_madrid_intake_20261005\THREE_WAY_STRUCTURE_MAP.md'; Destination='reports\m00_madrid_intake_20261005\THREE_WAY_STRUCTURE_MAP.md' }
+    @{ Source='reports\m00_madrid_intake_20261005\CONTROLLED_FLASH_MATRIX_AND_RISK.md'; Destination='reports\m00_madrid_intake_20261005\CONTROLLED_FLASH_MATRIX_AND_RISK.md' }
+    @{ Source='tools/controlled_thyme_success_flash.ps1'; Destination='tools/controlled_thyme_success_flash.ps1' }
+    @{ Source='tools/controlled_thyme_success_flash.constants.json'; Destination='tools/controlled_thyme_success_flash.constants.json' }
+    @{ Source='tools/extract_success_super.py'; Destination='tools/extract_success_super.py' }
+    @{ Source='tools/parse_lp_metadata.py'; Destination='tools/parse_lp_metadata.py' }
+    @{ Source='tools/scan_identity_strings.py'; Destination='tools/scan_identity_strings.py' }
+    @{ Source='tools/read_ext4_props.py'; Destination='tools/read_ext4_props.py' }
+    # Kernel .config evidence (decompressed IKCONFIG from each boot image). These are the raw
+    # artefacts behind the BPF_LSM / EROFS / ANDROID_VENDOR_HOOKS comparison in the reports.
+    @{ Source='work\madrid_m01_audit\ikconfig_SUCC_boot_noroot.txt'; Destination='evidence\m00_kernel_configs\succ_hyperos4_0_15_boot_noroot.config.txt' }
+    @{ Source='work\madrid_m01_audit\ikconfig_MADRID_boot_4.0.19.txt'; Destination='evidence\m00_kernel_configs\madrid_os4_0_19_boot.config.txt' }
+    @{ Source='work\madrid_m01_audit\ikconfig_STOCK_THYME_boot.txt'; Destination='evidence\m00_kernel_configs\stock_thyme_os1_0_4_0_boot.config.txt' }
+    @{ Source='work\madrid_m01_audit\ikconfig_C47_boot.txt'; Destination='evidence\m00_kernel_configs\legacy_c47_boot.config.txt' }
 )
 
 function Resolve-AllowlistedSource([string]$RelativeSource) {

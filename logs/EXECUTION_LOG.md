@@ -1,5 +1,87 @@
 # 执行记录
 
+## 2026-10-05 00:25｜Candidate 47 受控物理刷写、实机首启观测与 RAM 现场证据打捞完成：C46 exit(2) 致命阻塞 100% 彻底攻克（0 次复现）；SystemServer 达到历史最深运行阶段（生成 ANDROID_ID、启动 WindowManager 与 BootAnimation）；全新第一阻塞精准锁定为 libnetd_resolv.so 中 DnsProxyListener 在 0x1a92b8 因 BPF helper 失败触发 abort()；严格遵守指令未触碰 C48
+
+- 状态：已完成（Phase 1 遵照指令通过 tools/flash_candidate47.ps1 执行受控刷写，恢复 A 槽预算至 7，写入 super 与 vbmeta_system_a，退出码 0；Phase 2 tools/start_candidate47_observed_boot.ps1 执行受控首启，用户现场观测反馈处于第一屏 Mi Logo 常亮；Phase 3 用户按规程长按电源+音量下切入 Fastboot 保持 DDR 未断电，tools/salvage_c47_when_ready.py 成功无损导出 console-ramoops-0 [331,590 B] 与 pmsg-ramoops-0 [2,097,140 B]，保全于 reports/c47_candidate47_build_20261004/standalone/run_20261004_234935/THYME_DIAG/；Phase 4 深度日志比对确证重大突破：C46 的 Controllers::init() exit(2) 出现次数严格为 0，netd 4 字节 NOP 补丁 100% 生效，Controllers::init() 成功返回 main()；Phase 5 SystemServer 深度运行证实：顺利生成全新 ANDROID_ID [690ee954ff3a97b3]，成功初始化 SettingsProvider、UsageStatsService、AccountManagerService、WindowManagerService、DisplayContentStubImpl，并记录 BootAnimationShownTiming start time: 27574ms；Phase 6 全新第一阻塞逆向闭环：netd 推进至 resolv_init()，在 /apex/com.android.tethering/lib64/libnetd_resolv.so 中因 DnsProxyListener 在 0x1a92b4 调用 DnsBpfHelper 检查 UID 网络封锁失败返回非零，0x1a92b8 处的 cbnz w0, 0x1a9388 分支直接跳转至 abort@plt，触发 Fatal signal 6 (SIGABRT)；netd 循环崩溃导致 INetd 无法发布，SystemServer 挂起等待 NetworkManagementService 无法完成开机流程；Phase 7 严格遵守用户纪律：未修改任何代码，未构建 C48，完成全量根因分析并向用户汇报）。
+- 改动/结论：
+  1. **C46 第一阻塞彻底清零（Breakthrough Confirmed）**：
+     - 在 C47 现场 `pmsg-ramoops-0` 中，`exit(2)`、`BandwidthController` 退出计数严格为 0；
+     - 确证针对 `/system/bin/netd` 偏移 `0x761c0` 实施的 4 字节 NOP（`1f 20 03 d5`）完全切除了 BPF iptables 报错致命退出的根因，顺利放行后续初始化流程。
+  2. **SystemServer 达到历史最深运行状态**：
+     - 生成并持久化 `ANDROID_ID [690ee954ff3a97b3]`；
+     - 启动并跑通 `SettingsProvider`、`WindowManagerService`、`UsageStatsService`、`AccountManagerService` 等核心基础服务；
+     - 启动阶段成功记录 `BootAnimationShownTiming start time: 27574ms`。
+  3. **全新第一阻塞精准还原与逆向分析（Root Cause Closed）**：
+     - 崩溃位置：`netd` 主线程在 `main.cfi+832`（`0x67d0c`）调用 `resolv_init()`，进入 `/apex/com.android.tethering/lib64/libnetd_resolv.so` 中的 `android::net::DnsProxyListener::DnsProxyListener()+708`（`0x1a9388`）触发 `abort()`；
+     - 逆向细节：
+       `0x1a92b4: bl 0x1eb314`（调用 `DnsBpfHelper` BPF 检查）；
+       `0x1a92b8: cbnz w0, 0x1a9388`（检查失败返回非零时分支跳转）；
+       `0x1a9388: bl abort@plt`（调用 `abort()` 触发 `SIGABRT`）；
+     - 影响机制：`netd` 每次启动都在此处 abort 退出（5 秒重启一次，全周期累计 61 次），导致 `INetd` / `NetdService` 始终无法在 `ServiceManager` 注册；`SystemServer` 推进到 `StartNetworkManagementService` 时陷入无休止挂起等待，整个开机序列阻塞在此处。
+  4. **候选解决方案方向（仅供用户决策，未擅自修改）**：
+     - 方案：在 `/apex/com.android.tethering/lib64/libnetd_resolv.so` 中将 `0x1a92b8` 处的 `cbnz w0, 0x1a9388`（4 字节：`80 06 00 35`）精准替换为 `nop`（`1f 20 03 d5`）；
+     - 严格遵守用户规则，当前未做任何修改，等待用户审批。
+- 涉及文件：
+  - `reports/c47_candidate47_build_20261004/standalone/run_20261004_234935/THYME_DIAG/pstore/console-ramoops-0`
+  - `reports/c47_candidate47_build_20261004/standalone/run_20261004_234935/THYME_DIAG/pstore/pmsg-ramoops-0`
+  - `work/c47_netd_check/libnetd_resolv.so`
+  - `日志/执行记录.md`
+  - `日志/项目当前状态.md`
+- 验证：
+  - C47 现场 RAM 证据无损导出完成（SHA256 校验 100% PASS）；
+  - `exit(2)` 出现次数经全量文本搜索确认严格为 0；
+  - `libnetd_resolv.so` AArch64 反汇编定点比对确认 `0x1a92b4`/`0x1a92b8` 逻辑与崩溃栈严格吻合；
+  - 验证级别：实机现场 RAM 级取证确证、AArch64 反汇编逻辑比对确证。
+- 尚未验证：
+  - Candidate 48 修复后的实机运行表现（等待用户授权决策）。
+- 待处理：
+  - 仅向用户汇报分析结论，等待用户明确决策与指令。
+
+## 2026-10-04 23:25｜Candidate 47 构建与多重静态门禁 100% 全绿通过：/system/bin/netd 实施 4 字节 NOP 外科手术修复，旁路 exit(2) 退出逻辑；单变量系统树、EROFS 回读与 super 重构完成；刷写预检通过
+
+- 状态：已完成（静态构建与全链路门禁验证 100% 通过；刷写脚本 dry-run 验证通过；设备驻留 Standalone 诊断环境等待切入 Fastboot 刷写）。
+- 改动/结论：
+  1. **定位 netd 循环崩溃致命根因**：
+     - C46 首启现场确证 `/system/bin/netd` 在 `Controllers::init()+336` (偏移 `0x762d4`) 循环调用 `exit(2)`（每 5 秒一次累计 300+ 次），引发 static mutex 析构触发 Fortify Fatal 导致 `libc Fatal signal 6 (SIGABRT)`；
+     - 根因剖析：`Controllers::init()` 在 `0x761bc` 调用 `BandwidthController::enableBandwidthControl()` 插入带 `-m bpf --object-pinned` 的 iptables 规则失败返回非零，`0x761c0` 处的 `cbnz w0, 0x762b0` 判定失败跳转至 `exit(2)` 退出逻辑；
+     - 连锁死锁：netd 崩溃导致 `INetd` / `NetdService` 无法在 ServiceManager 注册，SystemServer 的 `NetworkManagementService` 挂起等待超时（60 秒），触发 SystemServer Watchdog 重启。
+  2. **单变量外科手术级修复方案**：
+     - 针对 `/system/bin/netd` 在偏移 `0x761c0` 处将 `cbnz w0, 0x762b0`（4 字节：`80 07 00 35`）精准替换为 `nop`（`1f 20 03 d5`）；
+     - 大小严格保持 695,440 字节不变，SHA256 由 `[REDACTED_DEVICE_ID]...` 变为 `[REDACTED_DEVICE_ID]...`；
+     - AArch64 反汇编验证：`0x761c0` 确认为 `nop`，失败后平滑落入耗时统计与后续控制器初始化流程，不再退出；
+     - 整个 system tree diff 相比 C46 严格仅有 `system/bin/netd` 1 处变动，净修改字节数严格为 4 字节！
+  3. **完整镜像体系打包与深度门禁验收**：
+     - `system_c47.img`：EROFS 压缩包 959MB，扩展分区 1,092,616,192 字节，AVB Root Digest 为 `07b73a0a5e62f252418523047c9532970a6f685ba41a3afdefef8d68d81e3b40`；
+     - `vbmeta_system.img`：更新系统 hashtree 描述符，大小 131,072 字节，AVB 签名验证通过；
+     - `super.img`：继承 C42 `vendor_c42.img`（含屏幕亮度下界修复）及 `mi_ext_a`, `odm_a`, `product_a`, `system_ext_a`，`lpmake` 重构出 7,703,526,364 字节，`simg2img` + `lpdump` 验证全部 6 个动态分区元数据 100% PASS；
+     - EROFS 回读验证：`dump.erofs` 从 `system_c47.img` 原位抽检 `netd`（SHA256: `[REDACTED_DEVICE_ID]...`）与 `com.android.tethering.capex`（SHA256: `[REDACTED_DEVICE_ID]...`）均 100% 字节吻合。
+  4. **刷写与首启准备**：
+     - `tools/flash_candidate47.ps1`：dry-run 验证通过（super 与 vbmeta_system_a 哈希尺寸双重校验通过）；
+     - `tools/start_candidate47_observed_boot.ps1` 与 `tools/salvage_c47_when_ready.py` 就绪。
+- 涉及文件：
+  - `tools/build_candidate47.py`
+  - `tools/flash_candidate47.ps1`
+  - `tools/start_candidate47_observed_boot.ps1`
+  - `tools/salvage_c47_when_ready.py`
+  - `work/stage_c47_netd_exit2_bypass_20261004/images/*`
+  - `reports/c47_candidate47_build_20261004/C47_BUILD_MANIFEST.json`
+  - `reports/c47_candidate47_build_20261004/C47_BUILD_AND_GATE_READINESS_REPORT.md`
+  - `日志/项目当前状态.md`
+  - `日志/执行记录.md`
+- 验证：
+  - AArch64 反汇编验证 nop 替换 100% 正确；
+  - 树级 diff 严格仅 1 个文件，字节级 diff 严格仅 4 个字节；
+  - EROFS 双重回读哈希 100% 吻合；
+  - AVB verify-image 与 lpdump 100% PASS；
+  - `tools/flash_candidate47.ps1` dry-run PASS；
+  - 验证级别：静态汇编级验证、文件系统回读验证、AVB/LP 镜像级验证。
+- 尚未验证：实机刷写与首次开机运行（等待手机切入 Fastboot 后受控刷写并获得用户开机授权）。
+- 待处理：
+  1. 提示用户将处于 Standalone 诊断环境（G 盘）的手机手动长按【电源键 + 音量下键】切入 Fastboot 模式；
+  2. 执行 `tools/flash_candidate47.ps1 -Serial "[REDACTED_DEVICE_ID]" -Execute -RestoreRetryBudget` 刷写 `super` 与 `vbmeta_system_a` 并恢复 A 槽启动预算至 7；
+  3. 严守纪守，停留在 Fastboot 等待用户指令：“开始启动 C47”。
+- 替代：替代此前 `/system/bin/netd` 中包含 `exit(2)` 致命退出分支的 C46 系统镜像。
+
 ## 2026-10-04 22:45｜Candidate 46 首启实测与 Standalone RAM 证据打捞完成：实现历史性里程碑级突破（apexd 成功激活全部 41 个 APEX，com.android.tethering 激活，SurfaceFlinger/Zygote 正常推进，SystemServer 历史首次深度运行）；新第一阻塞精准锁定为 netd 在 Controllers::init() 因带宽控制 BPF 规则失败调用 exit(2)
 
 - 状态：已完成（Phase 1 用户下达“启动”指令，通过 tools/start_candidate46_observed_boot.ps1 执行受控首启；120s ADB 监听未连通，屏幕处于第一屏 Mi Logo 常亮，用户手动长按电源+音量下切入 Fastboot 保持 RAM 未断电；Phase 2 tools/salvage_c46_when_ready.py 成功导出 367,946 B console-ramoops-0 与 2,097,140 B pmsg-ramoops-0，全量保全于 reports/c46_candidate46_build_20261004/standalone/run_20261004_223201/THYME_DIAG/，0 拷贝错误；Phase 3 深入解析证实历史性重大突破：apexd 成功解压并激活全部 41 个 APEX 容器（com.android.tethering 成功激活，[13.771829] apexd: Activated 41 packages），C45 的 Manifest 不匹配彻底消除，0 次复现；SurfaceFlinger 与 Zygote 摆脱库缺失循环崩溃；SystemServer 历史首次深度启动，ActivityManagerService, ActivityTaskManagerService, PackageManagerService, AppOps, PowerStats 全面就绪运行，artd 在线编译应用；Phase 4 精准锁定全新第一阻断点：netd 出现循环 SIGABRT 崩溃，崩溃栈定位于 pc 0x762d4 Controllers::init()+336 调用 exit(2)；反汇编确认为 Controllers::init() 在 0x761bc 调用 BandwidthController::enableBandwidthControl() 插入带 -m bpf --object-pinned 规则失败，返回非零并触发 exit(2)；netd 每 5 秒崩溃一次导致 INetd 无法注册，SystemServer 最终在 60 秒后触发 Watchdog；Phase 5 明确 Candidate 47 方案：在 /system/bin/netd 的 Controllers::init() 中将 0x761c0 处跳转至 exit(2) 的条件分支 cbnz w0, 0x762b0 安全 NOP，保持 netd 稳定常驻）。
@@ -16237,3 +16319,327 @@
   2. 执行 `tools/flash_candidate43.ps1 -Serial "[REDACTED_DEVICE_ID]" -Execute -RestoreRetryBudget` 刷写 `super` 与 `vbmeta_system_a` 并恢复 A 槽启动预算至 7；
   3. 严守纪律，停留在 Fastboot 等待用户指令：“开始启动 C43”。
 - 替代：替代此前未对 `libnetd_updatable.so` 实施 eBPF abort 绕过的旧系统镜像。
+
+
+## 2026-10-05 11:05 HKT｜M00 Madrid Intake：成功包 donor 确证为 madrid、官方 4.0.19 解包、三方结构地图建立、受控刷写脚本就绪（未执行）
+
+- 状态：已完成（**仅只读静态分析**；未刷写、未擦除、未重启、未与设备交互、未执行任何 adb/fastboot 命令）
+- 改动/结论：
+
+  1. **项目主线正式切换**：最终 donor 由 Xiaomi 15 / `dada` 改为 **Xiaomi 18 Pro Max / `madrid`**，
+     最终目标为 **官方 madrid HyperOS 4.0.19.0.XEOCNXM → thyme**。C1–C47 定性为
+     `Legacy THYME Android-17 Compatibility Research Line`，保留不废弃，但新实验改用 **M01/M02/M03** 编号。
+
+  2. **成功包 donor identity 确证为 madrid（A 级）**：
+     - `product_a:/etc/build.prop` → `ro.product.product.name=miproduct_madrid`、
+       `ro.product.build.fingerprint=Xiaomi/madrid/miproduct:17/CP2A.260605.016/OS4.0.15.0.XEOCNXM:user/release-keys`
+     - `mi_ext_a:/etc/build.prop` → `ro.mi.os.version.incremental=OS4.0.15.0.XEOCNXM`；
+       `ro.vendor.build.ab_ota_partitions` 与官方 madrid 4.0.19 **逐字符完全一致**（70 项 madrid 专属分区）
+     - 官方 OTA `META-INF/com/android/metadata` → `pre-device=madrid`
+     - 澄清：`ro.product.system.device=missi` 在官方 madrid 包中**同样存在**，
+       `missi` 是平台/SSI 代号而非替代机型 → 不构成否证
+     - 报告：`reports\m00_madrid_intake_20261005\SUCCESS_PORT_DONOR_IDENTITY.md`
+
+  3. **成功包 `super.img` 结构破解**：9,126,805,504 B、**非 sparse**、
+     LP 元数据为**非 AOSP 布局**（geometry @0x1000、geometry 副本 @0x2000、真 header magic `0x414C5030` @0x3000），
+     故 `lpdump`/`lpunpack` 拒绝解析；新增 `tools\extract_success_super.py` 完成只读提取，
+     6 个 extent 落地 `work\reference_thyme_success_mi18pm_20261005\`
+     （mi_ext_a/odm_a/vendor_a 为 **ext4**，product_a/system_a/system_ext_a 为 EROFS）
+
+  4. **官方 madrid OS4.0.19 payload 解包完成**：64 个分区镜像共 14.94 GiB，落地
+     `work\reference_madrid_os4_0_19\images\`；原始 OTA 未做任何修改。
+
+  5. **kernel 事实（推翻重要假设）**：
+     - 成功包 `4.19.325-cxk-lxsclnb-g33d88af64048`；Legacy C47 `4.19.325-perf-g45b9b954f074`；
+       官方 madrid `6.18.21-android17-5-…`；官方 thyme `4.19.157-perf-…`
+     - **C47 与成功包的内核同属 4.19.325 谱系，且两者均已 `CONFIG_BPF_LSM=y`、`CONFIG_EROFS_FS=y`、
+       `CONFIG_ANDROID_VENDOR_HOOKS=y`**
+     - → 「旧 4.19 内核缺 BPF 能力导致 netd 必失败」**不成立**；
+       回退官方 thyme 4.19.157 内核会同时丢掉 BPF LSM 与 EROFS，不可行
+
+  6. **Legacy C47 donor 身份新发现**：C47 `system/build.prop` 为
+     `Xiaomi/custom_thyme/thyme:17/CP2A.260605.016/OS4.0.0.8.XOCCNXM`，
+     版本线 `XOCCNXM`（**dada 线**）≠ madrid 的 `XEOCNXM`。
+     → C47 = **dada 系统层 + 官方 thyme A13 vendor/odm**；成功包 = **madrid 系统层 + thyme vendor**。
+     这是两者最本质差别，且属于 **userspace compatibility 层**而非 kernel。
+
+  7. **成功包 AVB 状态**：`vbmeta.img` 与 `vbmeta_system.img` 均 4096 B、
+     `Algorithm: NONE`、`Flags: 2`（verification disabled）、`Descriptors: (none)`、两者 SHA256 相同。
+     与 C47 现状同语义，不引入 madrid AVB 公钥信任链，无 rollback index 抬升风险。
+
+  8. **固件层来源逐字节确认**：成功包 `aop/bluetooth/cmnlib/cmnlib64/devcfg/dsp/featenabler/hyp/
+     keymaster/modem/qupfw/tz/uefisecapp/xbl/xbl_config` 与
+     `OurSky_Mi10s_OS3.0.318.0.WPBCNXM_A16_b3334\firmware-update\*` **SHA256 全等**；
+     `abl/dtbo/imagefv` 与官方 thyme `OS1.0.4.0` 包全等。
+     → 成功包的固件层**不是 donor 内容**，是社区 thyme 固件包。
+
+  9. **受控刷写脚本已生成（未执行）**：`tools\controlled_thyme_success_flash.ps1`
+     - 默认只写 5 项：`super` / `vbmeta_system` / `boot`(boot_noroot) / `vendor_boot` / `dtbo`
+     - 硬门禁：`product=thyme`、`current-slot=a`、`unlocked=yes`、`is-userspace=no`、
+       `slot-unbootable:a=no`、`slot-retry-count:a ≥ 3`、5 个镜像 SHA256 全部匹配冻结值
+     - 内置禁止分区黑名单（persist/modemst*/EFS/NV/cust/countrycode/所有 `_b` 槽等），任何开关都无法写入
+     - 固件层（xbl/abl/tz/hyp/aop/modem/dsp…）默认**不刷**，需 `-IncludeFirmwareLayer` 显式开启
+     - userdata/metadata 需 `-FormatUserData` **且** `-ConfirmUserDataWipe` 双开关
+     - 刷完**不 reboot**，设备停在 Fastboot
+     - `pwsh -File ... -Serial [REDACTED_DEVICE_ID]` DRY-RUN 实测 5/5 镜像哈希 PASS，未产生任何设备交互或文件写入
+
+- 原因：用户要求先恢复真实项目状态、纠正旧目标、核验成功包 donor、解包官方 madrid 4.0.19、
+  建立三方结构地图并准备受控刷写脚本，**明确禁止先构建新 Candidate**。
+- 涉及文件：
+  - `reports\m00_madrid_intake_20261005\SUCCESS_PORT_DONOR_IDENTITY.md`
+  - `reports\m00_madrid_intake_20261005\THYME_SUCCESS_REFERENCE_ARCHITECTURE.md`
+  - `reports\m00_madrid_intake_20261005\MADRID_PAYLOAD_INVENTORY.md`
+  - `reports\m00_madrid_intake_20261005\CONTROLLED_FLASH_MATRIX_AND_RISK.md`
+  - `reports\m00_madrid_intake_20261005\THREE_WAY_STRUCTURE_MAP.md`
+  - `tools\controlled_thyme_success_flash.ps1`、`tools\controlled_thyme_success_flash.constants.json`
+  - `tools\extract_success_super.py`、`tools\parse_lp_metadata.py`、
+    `tools\scan_identity_strings.py`、`tools\read_ext4_props.py`
+  - `日志\项目当前状态.md`
+- 验证：
+  - 成功包 product/mi_ext/odm/vendor/system_ext/system 的 `build.prop` 经 EROFS `dump.erofs --cat`
+    与 `debugfs -R cat` 实读；
+  - 官方 madrid 全部 dynamic partition 经 erofs-utils 实读 `build.prop` 与 `file` 类型判定；
+  - kernel config 经镜像内嵌 IKCONFIG（`IKCFG_ST`/`IKCFG_ED` + gzip）实解；
+  - 成功包 `super.img` LP extent 经文件系统 magic 实测校验（ext4 `0xEF53` / EROFS `0xE0F5E1E2`）；
+  - 固件层经 SHA256 全等比对；
+  - 刷写脚本经 PowerShell AST `PARSE_OK` + DRY-RUN 5/5 PASS；
+  - 验证级别：**静态文件证据 + 工具实读输出**，**不含任何真机验证**。
+- 尚未验证：
+  - 成功包真机可启动性（仅社区口述，本机未验证）；
+  - 「既然 C47 内核已有 BPF_LSM，为何 `libnetd_updatable.so` 的 `BpfHandler` 仍失败」这一开放问题；
+  - Fastboot 写回 / 失败回滚演练、EDL/9008 救援；
+  - 成功包 A 层与官方 madrid 4.0.15 的逐文件差分（本机无 4.0.15 官方包）；
+  - 子代理审计项（netd/tethering 原版 vs 补丁、SELinux/init/VINTF、madrid vendor_boot ramdisk 结构）
+- 待处理：
+  1. 等待用户明确发出「**刷入成功包**」指令；
+  2. 执行前先备份 A 槽 `boot_a`/`vendor_boot_a`/`dtbo_a`/`vbmeta_system_a` 与 `metadata`，并记录回退资产哈希；
+  3. 执行受控刷写 → 停在 Fastboot → 报告 → 等待「**开始启动成功包**」指令；
+  4. 首启成功后执行 M01-B：Known-Good 成功态完整取证。
+- 替代：
+  - 替代「最终 donor = Xiaomi 15 / dada」的旧项目目标（C1–C47 全部基于该假设）；
+  - 替代「成功包 donor 需先推定、目录名不可信」的待验证状态（现已确证 madrid）；
+  - 替代「旧 4.19 内核缺 BPF 能力导致 netd 必失败」这一假设（已由内核 config 实解推翻）；
+  - **不替代** Legacy C1–C47 的真机故障数据库与 thyme 适配知识，那些继续有效。
+
+
+## 2026-10-05 11:35 HKT｜M00-B：成功包 tethering CAPEX / netd / kernel 字节级对照完成，纠正了 C47 根因的归因方向
+
+- 状态：已完成（**仅只读静态分析**；未刷写、未重启、未与设备交互）
+- 改动/结论：
+
+  1. **成功包 tethering CAPEX 实际解出**：
+     `system_a.img → /system/apex/com.android.tethering.capex` 实读为
+     17,248,810 B，SHA256 `327C191797AC3CBFB4562DF5423AE0129A68A4F02F4D91B7171A526E861B1A35`；
+     内层 `original_apex`(36,724,736 B) → `apex_payload.img`(36,421,632 B) 为 **ext4**（非 EROFS，
+     UUID `[REDACTED_DEVICE_ID]-9dfa-5edb-a43e-98e3a4d20250`），经 `debugfs` 只读导出目标库。
+
+  2. **决定性发现：`libnetd_updatable.so` 在成功包与 dada 参考副本中逐字节相同**
+     - 成功包：103,648 B，SHA256 `2C811151E99F227BC8E180F64F0B686E8D696B5323CE2F81313914CC597277AD`
+     - `work\reference_thyme_success_20261004\libnetd_updatable_dada.so`：**同一 SHA256**
+     - `cmp` 结果 **IDENTICAL**
+     - 反汇编实读成功包该文件 `0x11534` 处**仍是未修补形态** `cbnz w8, 0x115d8`（编码 `28 05 00 35`）
+
+  3. **`libnetd_resolv.so` 同样未修补**：
+     成功包内 2,482,912 B，SHA256 `FF9E1619C298A787748B8BB9ABFFBC3A9065E2CD8216B4C328EEECA192D737B5`；
+     `0x1a92b8` 处是 `cbnz w0, 0x1a9388`（Legacy-C48A 计划旁路的那一条）。
+
+  4. **归因方向纠正（重要）**：
+     既然成功包携带的是**同一份未打补丁**的 `libnetd_updatable.so`，
+     则「成功包打了补丁所以 netd 能跑」**不成立**。
+     结合 C44 首启真机日志（`日志\执行记录.md` 2026-10-04 18:00 条）中
+     `netd: library "libnetd_updatable.so" not found` 可以推断：
+     **当 tethering CAPEX 未激活时，`netd` 根本不会加载该库，因而永远不会执行到那两个 gate。**
+     因此成功包要么同样处于"缺该库"的部分降级状态，要么其 CAPEX 激活但走了别的路径 ——
+     **两种可能均未验证，必须由真机证据（M01 Known-Good 取证）回答。**
+
+  5. **AOSP 源码实读确认该 gate 的性质**（`work\BpfHandler.cpp` 行 78–107）：
+     ```cpp
+     if (isAtLeast25Q2 && !isAtLeastKernelVersion(5, 4, 0)) {
+         return Status("25Q2+ platform with kernel version < 5.4.0 is unsupported");
+     }
+     ```
+     这是**纯内核版本号比较，不做任何 BPF 能力探测**。
+     → 无论 4.19 内核 backport 多少 BPF 特性，该 gate 都不会因此通过。
+     → 修正任务书第四节对 C43/C47 NOP 的分类依据：它命中的是 **AOSP 硬编码版本下限**，
+       不是"绕过缺失的 BPF 能力"；但它**是否仍然需要**，由第 4 条的真机问题决定。
+
+  6. **kernel 侧能力对照（排除"内核缺能力"解释）**：
+     - 成功包 `4.19.325-cxk-lxsclnb-g33d88af64048`：`BPF_LSM=y`、`EROFS_FS=y`（含 XATTR/ZIP/SECURITY/ACL）、
+       `ANDROID_VENDOR_HOOKS=y`、`BPF_JIT_DEFAULT_ON=y`、`NET_ACT_BPF=y`、`NET_SCH_TBF=y`、
+       `NET_CLS_MATCHALL=y`、`DM_USER=y`、`DM_BOW=y`
+     - Legacy C47 `4.19.325-perf-g45b9b954f074`：`BPF_LSM=y`、`EROFS_FS=y`、`ANDROID_VENDOR_HOOKS=y`
+     - 官方 thyme `4.19.157`：**三者全部缺失**
+     - → 内核能力**不是**成功包与 C47 的分水岭；**回退官方 thyme 内核不可行**。
+
+  7. **成功包 `/system/bin/netd` 为未打补丁形态**：695,816 B，
+     SHA256 `5B316597C9AD3FBB6B3E35DF04A10AEAC8C5A3730FDAE18E4060CE93F362661`，
+     `0x761c0` 附近字节与本项目 C47 的 NOP 特征不吻合。
+
+  8. **boot 栈对照（补充）**：
+     - 成功包 boot：kernel 4.19.325-cxk，boot ramdisk **50,637,560 B**；
+       vendor_boot ramdisk **仅 2,180 B**，cmdline 为官方 thyme 原版
+     - Legacy C47 boot：kernel 4.19.325-perf，boot ramdisk **3,564,549 B**；
+       vendor_boot ramdisk **23,340,130 B**（legacy-LZ4），cmdline 大幅扩展
+     - 官方 madrid boot：kernel **6.18.21-android17**（不可用于 thyme）
+     - → 两者的 boot/vendor_boot 职责划分**完全不同**，属结构性差异，不能逐项类比。 `[B]`
+
+- 原因：用户要求核验成功包的启动兼容架构，并判断 C47 的 NOP 链是否仍应继续。
+- 涉及文件：
+  - `reports\m00_madrid_intake_20261005\THREE_WAY_STRUCTURE_MAP.md`（第 4 节已按本条目更新）
+  - `work\BpfHandler.cpp`（AOSP 源码，实读引用）
+  - 新解出产物：`/path/to/thyme-os4-build/madrid_m00_intake_20261005/`（WSL 内）
+    `libnetd_updatable_succ.so`、`libnetd_resolv_succ.so`、`apex_inner/apex_payload.img`、
+    `capex_out/.../com.android.tethering.capex`、`succ_bin/system_a/system/bin/netd`
+- 验证：
+  - CAPEX → original_apex → apex_payload.img → debugfs 导出，全链路实读；
+  - `sha256sum` / `cmp` 双工具交叉确认逐字节相同；
+  - `aarch64-linux-gnu-objdump` 对 `0x11534`、`0x1a92b8` 定点反汇编；
+  - kernel config 经镜像内嵌 IKCONFIG 实解（gzip）；
+  - 验证级别：**静态二进制与文件系统实读**，**不含真机验证**。
+- 尚未验证：
+  - 成功包真机上 tethering CAPEX 是否实际激活（**这是决定 NOP 链去留的唯一判据**）；
+  - 成功包 `libnetd_resolv.so` 的 `0x1a92b8` 在真机上是否会被执行到；
+  - 成功包 50 MB boot ramdisk 与 legacy-LZ4 vendor_ramdisk 的实际内容差异。
+- 待处理：
+  1. 等待用户「刷入成功包」授权；
+  2. 首启后**优先取证**：`apexd` 是否成功激活 `com.android.tethering`、
+     `netd` 是否报告 `libnetd_updatable.so not found`、`inetd` 是否注册、`dumpsys connectivity` 表现；
+  3. 依据该取证决定：保留 / 放弃 Legacy-C48A（`libnetd_resolv.so` `0x1a92b8` NOP）。
+- 替代：
+  - 纠正「成功包通过打补丁让 netd 跑通」的初步归因（已被字节级证据推翻）；
+  - 纠正「C43/C47 的 NOP 是在绕过缺失的 BPF 能力」的表述（实为绕过 AOSP 硬编码内核版本下限）；
+  - **不替代** Legacy C1–C47 的真机故障数据库与工程基础设施。
+
+
+## 2026-10-05 11:20 HKT｜M00-C：官方 madrid OS4.0.19 payload 完整盘点完成（66 分区 / 14.94 GiB），super 布局与身份分裂两大新事实入库
+
+- 状态：已完成（**仅只读静态分析**；未刷写、未重启、未与设备交互；`10S系统`、`18promax系统`、
+  `reports\c*`、`work\stage_c*` 零改动，经 mtime 审计确认）
+- 改动/结论：
+
+  1. **完整性**：66 个分区镜像，合计 16,044,277,760 B（14.9424 GiB），全部以 8 MiB 分块重算 SHA256；
+     `payload.bin` SHA-256 base64 = `4cIklcMQ9pT3FGhI0S1pWzbMhyxZQtPm7QHsG9FPcLY=`，
+     与 `payload_properties.txt` 的 `FILE_HASH` **逐字节一致**；
+     `certutil` 独立复算 `vbmeta.img` 与 `odm.img` 摘要一致。
+     容器构成：ELF 39、EROFS 9、FAT 7、Android boot image 3、ext4 2、DT table 2、vbmeta 2、raw 1。
+
+  2. **重大新事实 1：该 OTA 内没有 `super.img`，super 几何在 `DeltaArchiveManifest` field 15**
+     - group：`qti_dynamic_partitions`，`max_size` = **18,779,996,160 B**（17.4924 GiB）
+     - **super 分区本身 = 18,790,481,920 B（17.5021 GiB）**
+     - 成员恰为 **9 个**：`odm`、`product`、`system`、`system_dlkm`、`system_ext`、
+       `vendor`、`vendor_dlkm`、`mi_product`、`mi_ext`（**`mi_ext` 属同一 group，非独立组**）
+     - 这 9 个也是唯一带 COW 估算的（Σ f19 = 14,823,394,593 B）；`system` 是唯一 `run_postinstall=1`
+     - 全部 **EROFS**、4096 B 块、`LZ4_0PADDING`、元数据声明 **"required kernel 5.4"**
+     - **`abl` 与 `devcfg` 在本 payload 中不存在**
+     - `mi_product.img` 是**空壳**（单块 EROFS，仅 `ro.mi.version.mi_product=empty`，AVB 原始 4,096 B）
+     - `countrycode.img` 仅 32 B 有效内容（`cn`），零填充到 1 MiB
+     - `fstab.qcom` 以 `logical,first_stage_mount` 将 8 个 logical 分区经 dm 挂载，
+       **不按名字挂载 `super`**，`mi_product` **不在 fstab 中**
+
+     **对 thyme 移植的直接含义**：madrid super 为 **17.50 GiB**，而 thyme super 为 **8.5 GiB**（成功包）
+     或 7.7 GB（C47）——**madrid 的 super 完全放不进 thyme，必须重新裁剪 dynamic partition 尺寸**。
+     EROFS 元数据声明需要 5.4 内核，而 thyme 侧是 4.19.325（带 EROFS backport）；
+     成功包已证明 4.19.325 能挂载 madrid 侧 EROFS，**但 4.0.19 这一版尚未在 4.19 上验证**。
+
+  3. **重大新事实 2：madrid 的身份是"分裂"的，不是整包 madrid**
+     - **madrid 专属**：`odm`（`ro.product.odm.model=M154FF`、
+       `ro.product.odm.marketname=Xiaomi 18 Pro Max`）、`product`（`miproduct_madrid`、`OS4.0.19.0.XEOCNXM`）、
+       `mi_ext`（`ro.product.mod_device=madrid`、66 项 `ab_ota_partitions`）、`system_dlkm`、`vendor_dlkm`、
+       `dtbo`、`vendor_boot`、`boot`、`pvmfw`
+     - **非 madrid 专属**：`system` + `system_ext` + `init_boot` 是 **`missi` 平台**
+       （`Xiaomi/missi/missi:17/…/17OS4.0.261004.020338398.QCPECN.S`）；
+       `vendor` 是**通用 `mivendor`**（`mivendor_sm8950`，`ro.board.platform=art`）
+     - 同一 OTA 内**并存两条版本线**：`OS4.0.19.0.XEOCNXM`（product/mi_ext/boot 侧）
+       与 `OS4.0.17.1.XEOCN`（odm/vendor/*dlkm/dtbo/vendor_boot）；
+       `mi_ext` 记录 `ro.build.version.smr_baseversion=OS4.0.17.0.XEOCNXM`
+     - `care_map.pb` 与 `metadata.pb` 的 per-partition 身份表**独立印证**了上述分裂
+       （`system`/`system_ext`/`init_boot` → `missi`；`odm`/`system_dlkm`/`vendor_dlkm` → `madrid`；
+       `product` → `miproduct`；`vendor` → `mivendor`）
+
+  4. **SoC 平台确认**：`ro.board.platform=art`（SM8950 级）。`vendor_boot` 的 4 个 DTB 全部
+     `qcom,board-id <0x00 0x00>`、`qcom,msm-id 0x2c3/0x2c4`、机型名 "Art SoC / Art v2 / ArtP SoC / ArtP v2"；
+     `dtbo.img` **只有 1 个 entry（id 0x00000000）**。
+     → madrid 侧**不存在基于 board-id 的面板/变体选择机制**，与 thyme 依赖 dtbo 面板选择的机制**根本不同**。
+
+  5. **boot / init_boot / vendor_boot 结构**：
+     `boot.img` header **v4**、kernel 42,674,688 B、**ramdisk 0**、`os_version 0`，内含 Google 构建的 GKI；
+     `init_boot.img` v4、kernel 0、ramdisk 2,588,339（LZ4）、os_version 17.0.0 / patch 2026-09；
+     `vendor_boot.img` v4、ramdisk 76,143,885（3 段 LZ4：platform / recovery / "16K" modules）、
+     dtb 2,148,992、**无 kernel**。
+
+  6. **固件矩阵**：51 个存在的固件镜像全部标记 **QF（never flash to a different SoC）**；
+     格式涵盖 RISC-V ELF（aop、cpucp、shrm_lp5/6、tme_*）、Hexagon（qupfw）、
+     FAT12/16（modem、bluetooth、dcp、soccp、dcb、pmic_psi）、ext4（dsp、vm-bootsys）。
+     **`abl`、`devcfg` 缺席**。
+     → 强化本项目红线：**严禁把 madrid 固件写入 thyme**。
+
+- 原因：用户要求解包官方 madrid OS4.0.19 payload 并建立基线；本轮为 M00 的第三部分。
+- 涉及文件：
+  - `reports\m00_madrid_intake_20261005\MADRID_PAYLOAD_INVENTORY.md`（373 行）
+  - `work\madrid_m00_intake\IMAGE_INVENTORY.csv` / `.json`（66 行）
+  - `work\madrid_m00_intake\{pb_decode.txt,payload_manifest.txt,payload_super_layout.txt,`
+    `payload_field15.txt,file_magic.txt,erofs_ident_full.txt,ramdisks\ramdisk_probe.txt,`
+    `dtb_probe.txt,vbmeta_info.txt,vbmeta_system_info.txt}`
+  - `reports\m00_madrid_intake_20261005\THREE_WAY_STRUCTURE_MAP.md`（新增 1.0 节）
+- 验证：
+  - 66 个镜像全量重算 SHA256；`certutil` 独立复算交叉确认；
+  - `payload.bin` 摘要与 `FILE_HASH` 逐字节比对；
+  - `apex_info.pb`（42 条 APEX 记录）、`metadata.pb`、`care_map.pb`、manifest field 15 全部**手工解码**
+    （工作区无 AOSP `.proto` 源，故字段仅按编号报告，未断言字段名）；
+  - EROFS 块数 8 项与 `care_map.pb` **逐项吻合**；
+  - 验证级别：**静态文件证据**，**不含真机验证**。
+- 尚未验证：
+  - super 内各 logical 分区的**设备端实际 LV 尺寸**（payload 证据无法给出：无 `super.img`、无 LP 元数据）；
+  - `apex_info.pb` 的 f2/f3/f4 语义，manifest f15 子字段语义、f19/f20 语义（缺 `.proto` 源）；
+  - madrid 4.0.19 的 EROFS 能否在 thyme 的 4.19.325 内核上挂载；
+  - madrid 4.0.19 的 super（17.50 GiB）如何裁剪进 thyme 的 8.5 GiB super。
+- 待处理：
+  1. 等待用户「刷入成功包」授权，先完成 M01 Known-Good 实物基线；
+  2. Known-Good 取证时同时记录**实测 LV 尺寸**，作为 M02 裁剪 madrid super 的输入；
+  3. M02 设计时必须以「重裁 dynamic partition 尺寸」为前提，不能假设 madrid super 可直接使用。
+- 替代：
+  - 替代「madrid OTA 含一个可直接复用的 `super.img`」的隐含假设（该 OTA 无 `super.img`）；
+  - 修正「madrid 整包都是 madrid 身份」的表述（实为 madrid / missi / mivendor 三分）；
+  - **不替代** donor identity 审计结论（donor 仍为 madrid，只是身份分布在 odm/product/mi_ext 侧）。
+
+
+## 2026-10-05 11:45 HKT｜M00-D：成功包与官方 madrid 4.0.19 的 APEX 逐包哈希矩阵完成 —— system 层几乎完全相同，A 层可整体替换
+
+- 状态：已完成（**仅只读静态分析**；未刷写、未重启、未与设备交互）
+- 改动/结论：
+
+  1. **逐包哈希矩阵**（`work\madrid_m01_audit\apex_hash_matrix.txt`）：
+     - `system/apex` 下 **36 个包中 35 个 SHA256 完全相同**，仅 `com.android.virt.apex` 不同：
+       两者大小均为 93,360,128 B，但
+       成功包 `16C1483DF521AF52B4F18A7A833863A01AA37F6AC3F7912A9C442BC56FAF0AE6`
+       vs madrid `DB9BCDF21A0ACE8F969C4ADFD64A49C8B5E88457B98A95352124C583EAD7230B`
+     - `com.android.tethering.capex` 的成功包 SHA256
+       `327C191797AC3CBFB4562DF5423AE0129A68A4F02F4D91B7171A526E861B1A35` 与 madrid **相同**
+     - `com.android.runtime.apex`（含 linker64）也**相同**：`021646695BA127260EA9CC96DF6C924EDFEB86BA783781A9CC276DB232443FC4`
+     - `system_ext/apex`：`art.compatible`、`compos`、`vndk.v34` 三个**相同**；
+       **成功包多出 `com.android.vndk.v30.apex`（114,769,920 B），而 madrid 没有**
+
+  2. **判读（A 层可整体替换的强证据）**：
+     成功包与官方 madrid 4.0.19 的 **system 层 APEX 36 个中 35 个逐字节相同**，
+     说明二者共用同一 `missi` 平台构建谱系；差异仅集中于：
+     - 一个 `com.android.virt.apex`（同尺寸不同哈希，属构建/签名差异，非结构差异）`[D]`
+     - 一个额外的 VNDK v30 APEX（成功包为兼容更老 vendor 保留，madrid 已移除）`[B]`
+     → **任务 4「Known-good 4.0.15 port → upgrade to official madrid 4.0.19」的可行性得到实质支持**：
+       A 层替换不需要重做架构，主要是版本抬升 + VNDK 组合调整。
+     → 同时说明 `com.android.vndk.v30.apex` 的存在与成功包的 vendor 层（A13 底座）相关，
+       替换 A 层时必须同步评估 VNDK 组合，不能只看版本号。
+
+  3. **`libnetd_resolv.so` / `libnetd_updatable.so` 在两包中同为未修补形态**（见 M00-B 条），
+     且承载它们的 `com.android.tethering.capex` 在两包中**哈希相同** →
+     这两个 gate 的存在与版本线无关，是 AOSP 4.0.x 的共有代码。 `[B]`
+
+- 原因：闭合任务 4 所需的"成功包 vs 官方 madrid"版本差分，判断 A 层能否整体替换。
+- 涉及文件：
+  - `work\madrid_m01_audit\apex_hash_matrix.txt`
+  - `reports\m00_madrid_intake_20261005\THREE_WAY_STRUCTURE_MAP.md`
+- 验证：对两包 `system/apex` 与 `system_ext/apex` 目录逐文件 SHA256 计算并逐项比对（8 MiB 分块）。
+- 尚未验证：`com.android.virt.apex` 同尺寸不同哈希的**具体差异位置**（未做逐字节解包差分）；
+- 待处理：M02 设计阶段需补做 vndk v30 依赖评估。
+- 替代：替代「成功包与官方 madrid 差异很大、升级需要重做移植」的初步担忧。
+- 说明：本条目数据来自派生的只读审计子代理，其完整报告未产出（子代理在收尾阶段被中止）；
+  上述结论均由**已落盘的哈希矩阵文件**直接支撑，可独立复核。
