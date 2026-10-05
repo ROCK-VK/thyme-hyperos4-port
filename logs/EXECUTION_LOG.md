@@ -16749,3 +16749,15 @@
 - 尚未验证：4.0.19 framework 在 Known-Good 4.19.325 kernel + thyme vendor/odm上的实机兼容性、ADB上线及UI级别。
 - 下一步：等待正式首启确认；随后一次启动并按首次失败立即截断/取证，若有 ADB 则保持运行并做限界 runtime capture。
 - 替代：更新 M01-R3 后的当前阶段信息；Known-Good baseline和Legacy C1-C47历史记录保持有效。
+
+## 2026-10-06 00:35 HKT｜MADRID-M02 r3 首次启动完成 framework boot
+
+- 状态：单次正式启动达到 Android framework boot complete；用户确认开机成功且稳定；设备保持运行。
+- 改动/结论：启动前六个镜像 hash 与冻结清单一致，Fastboot gates 通过。一次 `fastboot reboot` 成功；ADB 在 T+207.2 秒成为 `device`，`sys.boot_completed=1`，fingerprint 为 OS4.0.19.0.XEOCNXM，实际 kernel 为 Known-Good `4.19.325-cxk`。Tethering APEX 已挂载，netd/INetd 与 Tethering service 可见，BPF enabled 且主要 maps 正常。
+- 运行限制：没有屏幕录像，不独立细分 SetupWizard/锁屏/桌面；未验证真实 hotspot/转发流量。普通 shell 无权读取 cmdline、bootconfig 与 netd maps。发现 `vendor.ir-hal-1-0` restarting，根因及功能影响未确认。
+- 观察：用户要求不等待 10 分钟。主机只读轮询在约 121 秒后停止；末次 ADB online、Fastboot absent、boot complete=1。没有第二次 reboot。
+- 安全：仅同步脱敏 Markdown；原始 ADB/runtime/dmesg 文件、设备标识、ROM、镜像与专有二进制未公开。
+- 涉及文件：`README.md`、`logs/PROJECT_STATUS.md`、`logs/EXECUTION_LOG.md`、`reports/README.md`、`reports/m02_runtime/M02_FIRST_BOOT_RUNTIME_REPORT.md`。
+- 验证：ADB runtime capture 确认 framework boot complete、实际 OS4.0.19 fingerprint、Known-Good kernel、APEX/netd/Tethering/BPF 状态。验证级别为一次实机 framework boot，不是长时稳定性或完整硬件认证。用户另确认设备稳定。
+- 待处理：设备保持运行；后续只读 review `vendor.ir-hal-1-0` restarting，并决定需要的有限功能检查。不得自动 reboot 或扩大刷写。
+- 替代：更新并替代 2026-10-05 staging 记录中的“等待首启授权、运行状态未验证”；M01 Known-Good 与 R1/R2 失败历史仍有效。

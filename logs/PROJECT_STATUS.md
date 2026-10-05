@@ -1,52 +1,46 @@
 # THYME-OS4 项目当前状态
 
-更新时间：2026-10-05 22:07 HKT（MADRID-M02 Candidate r3 已 staged，正式首启未执行）
+更新时间：2026-10-06（HKT）
 
 ## 最终目标
 
-将 Xiaomi 18 Pro Max（madrid）HyperOS 4 / Android 17 官方 OS4.0.19.0.XEOCNXM 移植到 Xiaomi 10S（thyme / Snapdragon 870 / SM8250-AC）。社区 Known-Good 基线为 madrid OS4.0.15 → thyme。
+将 Xiaomi 18 Pro Max（`madrid`）HyperOS 4 / Android 17 官方 OS4.0.19.0.XEOCNXM 移植到 Xiaomi 10S（`thyme` / Snapdragon 870 / SM8250-AC）。社区 Known-Good madrid OS4.0.15 → thyme 是已验证的恢复基线。
 
 ## 阶段状态
 
 | 阶段 | 当前事实 |
 | --- | --- |
-| M00 Madrid Intake | 完成；Known-Good donor 确认为 madrid OS4.0.15，最终目标为官方 madrid OS4.0.19 |
-| M01-R1 | 安全子集首启未见 ADB；本轮有效 kernel/pstore log 未取得 |
-| M01-R2 | 仅补写 Known-Good top-level vbmeta 后仍未见 ADB；Standalone salvage 无本轮 kernel log |
-| M01-R3 | 仅擦 userdata、metadata 后，未重刷 OS stack 的首启达到 Android framework/UI；ADB 与 runtime capture 完成 |
-| MADRID-M02 r3 | 离线构建及静态门禁通过；A 槽/shared 分区写入与 data clean 完成；当前停在 Bootloader Fastboot，等待唯一首启确认 |
+| M00 Madrid Intake | 完成；Known-Good donor 确认为 madrid OS4.0.15，目标为官方 madrid OS4.0.19 |
+| M01-R1 / R2 | Known-Good 安全子集分别未启动成功；无可归属到当次启动的 pstore，最早失败阶段未知 |
+| M01-R3 | clean userdata/metadata 后 Known-Good Android framework 启动成功；ADB 持续在线 900 秒 |
+| MADRID-M02 r3 | 首次实机启动成功；ADB `device`、`sys.boot_completed=1`，用户确认设备稳定 |
 
-## MADRID-M02 r3 当前状态
+## MADRID-M02 r3 当前设备状态
 
-- Exact Official madrid OS4.0.15.0.XEOCNXM 已与实机验证的 Known-Good port 4.0.15、Official 4.0.19 完成三方差异分析；C1–C47 保持研究数据库，Legacy-C48/netd NOP 不在当前主线。
-- Candidate 使用 Known-Good boot/vendor_boot/dtbo/vbmeta/vbmeta_system 和 thyme vendor/odm/mi_ext 适配，叠加 Official 4.0.19 `system`/`system_ext` changed paths 与 allowlisted build properties；不包含 Madrid firmware、DLKM、B 槽或保护分区。
-- 12-image inventory/hash gate、EROFS/ext4 检查、三套 EROFS tree round-trip、property allowlist、LP metadata checksum 与 A/B extent gates 均通过。Candidate super raw 展开大小为 9,126,805,504 bytes；candidate static validation 不等于 Android runtime 验证。
-- 六条镜像 flash、`erase userdata`、`erase metadata`、`set_active a` 均 exit 0。擦除命令响应曾提示对应 filesystem 可 format，但 `erase` 返回 `OKAY`；没有执行 format。
-- Post-check：product `thyme`、slot A、unlocked、Bootloader Fastboot、A 槽 not-unbootable、retry budget 7、Fastboot 在线；slot-successful 当前为 `no`。没有正式 reboot。
-- 唯一待用户动作：明确发送 **“开始启动 MADRID-M02”** 后才进行本轮第一次正式启动。Candidate 的运行阶段尚未验证。
-- M02 candidate、staging、super 预算及三方 delta 报告均见 [`reports/m02_adaptation_delta/`](../reports/m02_adaptation_delta/)。
+- 设备正在运行 MADRID-M02 r3；不要自动重启、切 Fastboot、进 Standalone、rollback 或刷写。
+- 首启前 Fastboot gates 通过，六个部署镜像 SHA256 与冻结 manifest 一致；仅执行过一次正式 `fastboot reboot`。
+- ADB 于启动后 T+207.2 秒上线。运行 fingerprint 为 `Xiaomi/thyme/thyme:17/CP2A.260605.016/OS4.0.19.0.XEOCNXM:user/release-keys`；实际 kernel 为 `4.19.325-cxk-lxsclnb-g33d88af64048`，与 Known-Good boot stack 一致。
+- `com.android.tethering` APEX 已挂载；netd、INetd 与 Tethering service 可见；netd updatable init 成功；Tethering 报告 BPF enabled，主要 maps 状态为 OK。真实 hotspot/上游转发流量尚未测试。
+- 用户确认开机成功且设备稳定，并要求停止 10 分钟观察。停止前约 121 秒的末次只读轮询为 ADB online、Fastboot absent、`sys.boot_completed=1`；没有第二次 reboot。未取得屏幕录像，具体物理 UI 阶段不细分。
+- 待调查运行现象：`vendor.ir-hal-1-0` service restarting；当前没有证明其根因或用户可见影响，且未阻止 framework boot complete。
+- 生产 user build 拒绝普通 shell 读取 `/proc/cmdline`、`/proc/bootconfig` 和 netd process maps；没有尝试 adb root。
+- 脱敏运行报告：[M02_FIRST_BOOT_RUNTIME_REPORT.md](../reports/m02_runtime/M02_FIRST_BOOT_RUNTIME_REPORT.md)。完整 raw runtime capture 仅在私有工作区。
 
-## M01-R3 已验证事实
+## M02 构建与来源
 
-- Fastboot `erase userdata`、`erase metadata` 均 exit 0；没有 format、fastboot -w、FRP、firmware、B 槽或永久危险分区操作。
-- R1/R2 的 Known-Good A 槽 stack 未重刷：boot、vendor_boot、dtbo、super、vbmeta、vbmeta_system。
-- 一次授权启动后，ADB 于 T+238 秒成为 `device`；`sys.boot_completed=1`；900 秒 observer 结束时 ADB 仍在线。用户确认启动成功并打开 USB debugging。达到 Android framework/UI boot（Level 2 或更高）；物理 UI 子阶段没有屏幕录像佐证。
-- 实际内核确认是 Known-Good `4.19.325-cxk`。R1/R2 pstore 为空不能据此推断其 kernel 未运行。
-- Tethering APEX active/mounted；INetd/Tethering services 存在；netd running、updatable init 成功；BPF enabled 且主要 maps OK。没有活动 upstream/forwarding，热点数据路径未测。
-- production `user` build 拒绝 shell 读取 `/proc/cmdline` 和 `/proc/<netd-pid>/maps`；精确 netd `.so` 映射未确认。
-- 单次快照显示 `traced` restarting / `sys.init.updatable_crashing=1`，后续 review；非本次启动阻塞。
+- Exact Official madrid OS4.0.15、Known-Good thyme 4.0.15 与 Official 4.0.19 已完成三方对照。MADRID-M02 r3 保留 Known-Good boot/vendor_boot/dtbo/vbmeta/vbmeta_system 和 thyme vendor/odm/mi_ext 适配，叠加受控的 Official 4.0.19 system/system_ext 更新及 allowlisted release properties。
+- 12-image inventory/hash、EROFS/ext4、EROFS 全树 round-trip、property allowlist、LP metadata checksums 与 A/B extent gates 均通过。静态 gate 与本轮 framework boot complete 证据分开记录。
+- 首次 OS4.0.19 base 前清理过 userdata 与 metadata。未刷 Madrid firmware、DLKM、B 槽或保护分区。
+- 当前 Candidate 及构建报告：[M02 adaptation delta](../reports/m02_adaptation_delta/M02_ADAPTATION_DELTA_REPORT.md)、[build report](../reports/m02_adaptation_delta/M02_CANDIDATE_BUILD_REPORT.md)、[staging report](../reports/m02_adaptation_delta/MADRID_M02_STAGING_REPORT.md)。
 
-清除 userdata+metadata 与 R1/R2 未见 ADB 到 R3 Android framework/UI 成功强相关；clean-data 作为主要阻塞候选显著增强，但因两分区同时清除，具体因果贡献尚未隔离。详细报告见 [M01-R3_REPORT.md](../reports/m01_known_good_runtime/M01_R3_REPORT.md)。
+## Known-Good 与 Legacy 边界
 
-## 当前阶段与下一步
+- M01-R3 已实机确认 Known-Good OS4.0.15 thyme stack、4.19.325-cxk kernel、Tethering APEX、netd/INetd、BPF runtime 可启动；未刷 success firmware。R1/R2 空 pstore 不代表 kernel 未执行。
+- M01-R3 同时清除了 userdata 与 metadata，因此 clean-data 与启动成功强相关，但没有拆分两者单独作用。
+- Legacy C1–C47 保留为兼容性研究数据库；Legacy-C48/netd NOP、旧 netd patch 和 firmware bundle 不在当前主线。
 
-M01-R3 clean-data Known-Good framework boot 已完成并继续作为恢复基线。M02 已完成 staging；当前设备处于 Bootloader Fastboot，禁止在确认前启动 Candidate。Legacy-C48 不在当前路线。
+## 下一步与安全边界
 
-原始 runtime capture 只保存在私有工作区；公开仓库仅同步脱敏报告，不包含 raw log、ADB dump、设备序列号或 ROM/image。
-
-## 安全边界
-
-- 不 relock；不写 persist、modemst、fsg/EFS、NV、RF calibration、identity 或 FRP。
-- 不因 R3 成功而直接扩大 firmware 刷写；需先建立设备归属、rollback/anti-rollback 与恢复证据。
-- userdata/metadata 已擦除；普通 OS rollback 不能恢复其中数据。
-- 不公开 ROM、boot/super images、proprietary firmware 或 raw device logs。
+- 下一步审阅已采集的 M02 runtime，并以只读方式分析 `vendor.ir-hal-1-0` restarting 现象；只补充会影响 M02 决策的有限数据。
+- 保持当前 Android 运行。任何新正式启动实验都必须等候该轮唯一启动确认；本轮没有新的启动计划。
+- 不 relock；不写 `persist`、`modemst*`、`fsg/EFS`、NV、RF calibration、identity 或 FRP。不公开 ROM、镜像、专有二进制、raw device logs 或设备标识。

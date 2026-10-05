@@ -2,6 +2,8 @@
 
 Reports retain conclusions at the evidence level documented when they were written. Older reports are historical snapshots; the current project state and later execution records take precedence when results changed.
 
+- `m02_runtime/M02_FIRST_BOOT_RUNTIME_REPORT.md` records MADRID-M02 r3's first real boot to `sys.boot_completed=1`, the Known-Good kernel and Tethering/netd/BPF observations, the user's early stop of the 10-minute host poll, and the remaining runtime limits. Raw device logs and identifiers remain private.
+
 Some historical reports use emphatic phrases such as “100%” or “司法级”. These are original wording, not an independent certification; judge each claim by its listed validation and the linked primary evidence.
 
 - `k40/` contains the three-way K40, Xiaomi 15 donor, and thyme comparison plus its review. It is a static package analysis, not a claim that every K40 change can be transplanted.
