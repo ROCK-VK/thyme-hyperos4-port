@@ -16702,3 +16702,16 @@
   1. 等待用户「刷入成功包」授权（M01）；
   2. M01 证据产生后按同一流程增量同步。
 - 替代：无。本条为归档同步记录，不改变任何技术结论。
+
+## 2026-10-05 14:43 HKT | M01-R1 failure RAM salvage complete; no current pstore and R2 remains unflashed
+
+- 状态：已完成 M01-R1 现场打捞和 R2 单变量预检；没有执行 R2 flash 或启动。
+- 结论：Standalone RAM boot 成功；完整复制 THYME_DIAG 共 6 个文件、16,937,642 bytes，原始逐文件校验与归档后 SHA256/size manifests 均通过，复制错误为 0。
+- pstore 挂载成功但记录数为 0；无 M01 console-ramoops、pmsg-ramoops 或其他 kernel log。Standalone 自身 dmesg 不代表 Known-Good kernel。oops.raw 与 C47 归档相同，是历史残留。
+- 根因未确定。top-level vbmeta descriptor hypothesis 保持 C/D 级，仅列为优先单变量实验方向。
+- 已准备只补刷 Known-Good vbmeta_a 的 M01-R2；目标与回滚文件散列已复核，但设备分区原始内容无法通过 Fastboot 读回。
+- 归档后主机未枚举 Fastboot/ADB，需现场返回 Bootloader Fastboot，再执行实时只读门禁。刷后停在 Fastboot；必须等待用户明确“开始启动 M01-R2”才启动。
+- 涉及公开文件：README.md、logs/PROJECT_STATUS.md、logs/EXECUTION_LOG.md、reports/m01_known_good_runtime/M01_FAILURE_SALVAGE_REPORT.md。
+- 安全审查：仅同步脱敏文字；未加入设备序列号、绝对路径、raw pstore、ROM、镜像或其他专有二进制。
+- 验证：文档内核对关键状态、SHA256 与下一步授权门槛；待提交前复查 diff 与公开敏感信息扫描。
+- 待处理：设备回 Fastboot 后执行 M01-R2 预检与单分区刷写；之后停机等待启动授权。

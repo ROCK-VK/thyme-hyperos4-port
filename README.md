@@ -20,7 +20,17 @@
 
 
 
-## M00 Madrid Intake（2026-10-05）— 最新阶段
+## M01 Known-Good 首次真机实验（2026-10-05）— 当前阶段
+
+M01-R1 将社区 Known-Good madrid OS4.0.15 → thyme 包的五分区安全子集写入 Xiaomi 10S，五项均返回 OKAY。首次启动停留在 Level 0：Mi Logo 与黑屏交替后回到 Fastboot，ADB 未出现。该实验没有完整复现社区包原始刷机矩阵，因此失败不否定 Known-Good 原包。
+
+首启失败后已使用 Standalone RAM 诊断环境完整复制 THYME_DIAG 卷。pstore 挂载成功但记录为 0；没有本次 M01 的 console-ramoops、pmsg-ramoops 或其他 kernel log。Standalone 自身 dmesg 不能代替 Known-Good kernel 日志；R1 根因仍未确定。
+
+- **[M01 失败现场与 M01-R2 预检报告](reports/m01_known_good_runtime/M01_FAILURE_SALVAGE_REPORT.md)** —— 记录取证完整性、日志归属、根因证据边界及只补刷 Known-Good vbmeta_a 的单变量计划。
+- M01-R2 尚未刷写或启动。刷写前必须在 Bootloader Fastboot 重新确认设备状态；刷后停在 Fastboot，只有收到明确“开始启动 M01-R2”指令后才启动。
+- 未上传 ROM、super、boot、raw 分区或专有二进制；公开内容仅为经过脱敏的结论摘要。
+
+## M00 Madrid Intake（2026-10-05）— 已完成静态审计
 
 
 
