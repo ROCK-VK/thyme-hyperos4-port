@@ -16737,3 +16737,15 @@
 - 安全：公开只加入脱敏 Markdown 摘要；未上传 ROM、boot/super image、firmware、ADB dump、raw pstore/log、设备序列号或本地路径。
 - 下一步：停止本轮设备操作，保持 Android 在线；审核 Known-Good runtime，再规划官方 madrid OS4.0.19 移植。不得自动启动新实验。
 - 替代：R3 状态替代此前“等待 M01-R3 首启”的状态；R1/R2 历史失败与根因未知仍保留。旧 Tethering APEX 未激活推断被本轮 active/mount/service 证据否定。
+
+## 2026-10-05 22:07 HKT｜MADRID-M02 r3 静态构建、门禁与 Fastboot staging（脱敏摘要）
+
+- 状态：Candidate r3 构建和镜像静态 gates 通过；A 槽/shared 部署及首次 OS4.0.19 data clean 完成；停留 Fastboot，未启动。
+- 改动/结论：以 Known-Good thyme boot stack/vendor/odm/mi_ext 为硬件兼容基线，叠加 Official madrid 4.0.19 system/system_ext 改动和受控 build.prop keys。Candidate 包含 12 个镜像；未包含 firmware、DLKM、B 槽或保护分区。
+- 静态验证：inventory/hash/size一致；system/system_ext/product EROFS 重建和全树 round-trip 零差异；EROFS/ext4 检查通过；独立 LP parser 与 lpdump一致，LP checksum均通过，A 槽分区有效、B槽extent为空。Sparse super raw扩展至目标 physical super容量。
+- 真机 staging：boot_a、vendor_boot_a、dtbo_a、super、vbmeta_a、vbmeta_system_a 六个 flash均 exit 0；`erase userdata` 与 `erase metadata` 均 `OKAY`；`set_active a` exit 0。Fastboot post-check为 thyme/A/unlocked/Bootloader Fastboot、slot A不处于unbootable、retry budget 7且设备在线。擦除响应含 format提示但未执行 format。
+- 边界：无正式 reboot，无 Candidate runtime/Android启动验证。当前唯一首启门槛仍是用户明确发送“开始启动 MADRID-M02”。公开副本没有镜像、专有二进制、raw device logs、序列号或本机绝对路径。
+- 涉及公开文件：`README.md`、`logs/PROJECT_STATUS.md`、`logs/EXECUTION_LOG.md`、`reports/m02_adaptation_delta/` 文档集。
+- 尚未验证：4.0.19 framework 在 Known-Good 4.19.325 kernel + thyme vendor/odm上的实机兼容性、ADB上线及UI级别。
+- 下一步：等待正式首启确认；随后一次启动并按首次失败立即截断/取证，若有 ADB 则保持运行并做限界 runtime capture。
+- 替代：更新 M01-R3 后的当前阶段信息；Known-Good baseline和Legacy C1-C47历史记录保持有效。

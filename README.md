@@ -37,6 +37,22 @@ R3 清除 data/metadata 后从 R1/R2 无 ADB 推进到 Android UI，强烈支持
 - 公开副本不含 ROM、分区镜像、raw pstore/oops、ADB dump、raw log 或设备身份信息。
 - 本轮停止后续启动与刷写；先 review 已验证的 Known-Good runtime，再审议如何迁移至官方 madrid OS4.0.19。
 
+## M02 Madrid→Thyme rebase（2026-10-05）— Candidate r3 已 staged，尚未启动
+
+已获得 exact Official madrid `OS4.0.15.0.XEOCNXM`，从 Official 4.0.15 / Known-Good thyme 4.0.15 / Official 4.0.19 三方文件级比较中分离出 thyme adaptation delta 与 Madrid version delta。MADRID-M02 r3 以已实机验证的 Known-Good `boot`、`vendor_boot`、`dtbo`、`vbmeta`、`vbmeta_system` 和 thyme `vendor`/`odm` 为兼容基线，将 Official 4.0.19 `system`、`system_ext` changed paths 及 allowlisted release properties rebase 进去。
+
+Candidate 离线构建和静态 gates 已通过：12-image inventory/hash 对齐；LP 元数据 checksum 验证通过；六个 A 槽 logical partitions 已填充，B 槽为空；三套重建 EROFS 全量 round-trip 无差异。Sparse `super.img` 为 8,063,690,032 bytes，扩展后等于 thyme physical super 的 9,126,805,504 bytes。上述只证明构建和静态结构有效，不代表 OS4.0.19 运行时兼容。
+
+Candidate 已写入 A/shared 目标分区，`userdata` 与 `metadata` clean 均返回 `OKAY`；post-check 为 A 槽、unlocked、A 可启动预算 7，设备停在 Bootloader Fastboot。未写 firmware/B 槽/FRP/保护分区，也未执行正式 reboot。当前只等待唯一首启确认 **“开始启动 MADRID-M02”**。
+
+- [M02 adaptation delta 与候选构建摘要](reports/m02_adaptation_delta/M02_ADAPTATION_DELTA_REPORT.md)
+- [分区来源矩阵](reports/m02_adaptation_delta/PARTITION_PROVENANCE_MATRIX.md) · [thyme adaptation delta](reports/m02_adaptation_delta/THYME_ADAPTATION_DELTA.md) · [Madrid version delta](reports/m02_adaptation_delta/MADRID_VERSION_DELTA.md)
+- [rebase 冲突报告](reports/m02_adaptation_delta/ADAPTATION_REBASE_CONFLICTS.md) · [super 容量实测](reports/m02_adaptation_delta/SUPER_SIZE_BUDGET.md)
+- [candidate build report](reports/m02_adaptation_delta/M02_CANDIDATE_BUILD_REPORT.md) · [Fastboot staging report](reports/m02_adaptation_delta/MADRID_M02_STAGING_REPORT.md) · [build plan](reports/m02_adaptation_delta/MADRID_M02_BUILD_PLAN.md)
+- [M02 Fastboot staging tool](tools/flash_madrid_m02_candidate.ps1) and [Known-Good restore tool](tools/restore_known_good_madrid_4_0_15.ps1) are dry-run by default and do not start Android.
+
+公开报告只含脱敏文字、工具和镜像 hash/size 元数据；ROM、镜像、专有二进制、raw device logs 与设备标识留在私有工作区。
+
 ## M00 Madrid Intake（2026-10-05）— 已完成静态审计
 
 

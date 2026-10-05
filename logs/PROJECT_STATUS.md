@@ -1,6 +1,6 @@
 # THYME-OS4 项目当前状态
 
-更新时间：2026-10-05 16:06 HKT（M01-R3 clean-data 首启进入 Android framework/UI；runtime capture 完成）
+更新时间：2026-10-05 22:07 HKT（MADRID-M02 Candidate r3 已 staged，正式首启未执行）
 
 ## 最终目标
 
@@ -14,7 +14,17 @@
 | M01-R1 | 安全子集首启未见 ADB；本轮有效 kernel/pstore log 未取得 |
 | M01-R2 | 仅补写 Known-Good top-level vbmeta 后仍未见 ADB；Standalone salvage 无本轮 kernel log |
 | M01-R3 | 仅擦 userdata、metadata 后，未重刷 OS stack 的首启达到 Android framework/UI；ADB 与 runtime capture 完成 |
-| M02 / Legacy-C48 | 未构建 |
+| MADRID-M02 r3 | 离线构建及静态门禁通过；A 槽/shared 分区写入与 data clean 完成；当前停在 Bootloader Fastboot，等待唯一首启确认 |
+
+## MADRID-M02 r3 当前状态
+
+- Exact Official madrid OS4.0.15.0.XEOCNXM 已与实机验证的 Known-Good port 4.0.15、Official 4.0.19 完成三方差异分析；C1–C47 保持研究数据库，Legacy-C48/netd NOP 不在当前主线。
+- Candidate 使用 Known-Good boot/vendor_boot/dtbo/vbmeta/vbmeta_system 和 thyme vendor/odm/mi_ext 适配，叠加 Official 4.0.19 `system`/`system_ext` changed paths 与 allowlisted build properties；不包含 Madrid firmware、DLKM、B 槽或保护分区。
+- 12-image inventory/hash gate、EROFS/ext4 检查、三套 EROFS tree round-trip、property allowlist、LP metadata checksum 与 A/B extent gates 均通过。Candidate super raw 展开大小为 9,126,805,504 bytes；candidate static validation 不等于 Android runtime 验证。
+- 六条镜像 flash、`erase userdata`、`erase metadata`、`set_active a` 均 exit 0。擦除命令响应曾提示对应 filesystem 可 format，但 `erase` 返回 `OKAY`；没有执行 format。
+- Post-check：product `thyme`、slot A、unlocked、Bootloader Fastboot、A 槽 not-unbootable、retry budget 7、Fastboot 在线；slot-successful 当前为 `no`。没有正式 reboot。
+- 唯一待用户动作：明确发送 **“开始启动 MADRID-M02”** 后才进行本轮第一次正式启动。Candidate 的运行阶段尚未验证。
+- M02 candidate、staging、super 预算及三方 delta 报告均见 [`reports/m02_adaptation_delta/`](../reports/m02_adaptation_delta/)。
 
 ## M01-R3 已验证事实
 
@@ -30,7 +40,7 @@
 
 ## 当前阶段与下一步
 
-M01-R3 clean-data Known-Good framework boot 已完成。保持现有 Android 系统运行；本轮不再 reboot、不进 Standalone、不刷写 firmware 或 OS，不构建 Candidate/Legacy-C48。下一步为审核 Known-Good runtime baseline，再规划对官方 madrid OS4.0.19 的移植。
+M01-R3 clean-data Known-Good framework boot 已完成并继续作为恢复基线。M02 已完成 staging；当前设备处于 Bootloader Fastboot，禁止在确认前启动 Candidate。Legacy-C48 不在当前路线。
 
 原始 runtime capture 只保存在私有工作区；公开仓库仅同步脱敏报告，不包含 raw log、ADB dump、设备序列号或 ROM/image。
 

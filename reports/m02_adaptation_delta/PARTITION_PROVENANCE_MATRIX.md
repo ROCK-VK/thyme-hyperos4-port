@@ -1,0 +1,38 @@
+# M02 partition provenance matrix
+
+Updated: 2026-10-05 20:05 HKT
+Evidence: A = device runtime; B = exact local image/tree evidence; C = controlled comparison; D = inference.
+
+## Sources
+
+- Official 4.0.15: extracted `payload.bin` from the user-provided directory `18promax系统/madrid-ota_full-OS4.0.15.0.XEOCNXM-user-17.0-c9d5bd5f3c`. The OTA metadata says `pre-device=madrid`, Android 17 / SDK 37, internal incremental `17OS4.0.260925.012628646.QCPECN.S`. The payload is 12,430,808,716 bytes and SHA256 `3e23b46ba35ab5eab51117e654ba2d492381a923cd746407c80ae85b39066185`, matching the embedded payload hash. The archive ZIP is not present, so its advertised ZIP MD5/size were not independently checked.
+- Official 4.0.19: existing project extraction/inventory `work/madrid_m00_intake/IMAGE_INVENTORY.json` and `work/reference_madrid_os4_0_19/images/`.
+- Known-Good 4.0.15→thyme: user device booted to Android framework/UI, `sys.boot_completed=1`, ADB remained online for 900 seconds, and runtime kernel was `4.19.325-cxk-lxsclnb-g33d88af64048` (A). Its source images and hashes are frozen in `KNOWN_GOOD_BOOT_STACK.md`.
+
+## Image identities and provenance
+
+| Partition | Official Madrid 4.0.15 | Known-Good port | Classification of Known-Good | M02 disposition |
+| --- | --- | --- | --- | --- |
+| `boot` | 100,663,296 B; SHA256 `bda5dc1cf8c1f02e8b75af0cc0964135b11ccdd909ad882f55962814a964cb33` | `boot_noroot.img`, 134,217,728 B; `B059E885DAAA11F0032E05FF5B16C7EE6A13D84B8CDBD51033AC2B4999C3FA0F` | **HYBRID** — tested 4.19.325 thyme-compatible kernel plus a TWRP-derived self-contained ramdisk. Runtime kernel identity confirmed (A); composition is static (B). | Keep byte-for-byte as Known-Good. |
+| `vendor_boot` | 134,217,728 B; `a718bc059fe9ac3bc40cd6c15305c4b8d59fe59dfe64b56d577029a8cf16f7c8` | 100,663,296 B; `ED5391F9AD2BE11A0636657968972D005600658C45FF631E5462CE9779840B07` | **HYBRID** — 2,180-byte ramdisk and thyme DTB; full image differs from stock thyme reference images. It is proven only as part of the tested boot bundle (B/A). | Keep byte-for-byte with Known-Good `boot`. |
+| `dtbo` | 8,388,608 B; `4a73dcaff3f4a7ab51a0ede1b5c85e108a28623bc6588eb2f37f7696a28714c5` | 33,554,432 B; `A0F550A32C15B95A6BA0BBE141976BAD905D23FC74367E3E3FF0F41BC90C6D3A` | **THYME_BASED** — SHA256-equal to official thyme OS1.0.4 dtbo (B). | Keep byte-for-byte. |
+| `vbmeta` | 12,288 B; `9686182b8f16ee838ca6ca18573b50d2e1b46c0cb2bee71abab148b0a8eb9df8` | 4,096 B; `D2E1979739EC67076A90B0FC625DAE84A1AA2ED72D05D2B55D52539E3462B442` | **GENERATED** — Algorithm NONE, flags 2, no descriptors (B). | Keep Known-Good image; do not add Madrid AVB chain. |
+| `vbmeta_system` | 4,096 B; `b71585e107e355b203d896fc2cb708b66214059476f0c07300c99e58aa2c0b5b` | 4,096 B; same Known-Good SHA256 as top-level vbmeta | **GENERATED** — same empty/descriptors-free policy (B). | Keep Known-Good image. |
+| `super` / LP metadata | No `super.img` in the Official OTA payload. | 9,126,805,504 B; `D05DC8DFDD7DCD54A319D0051BDD1BB9942F3E162C52B2272DFC585E0B314496` | **GENERATED** — custom LP metadata plus six A-slot filesystem images; B extents are empty (B). | Regenerate LP metadata around the proposed six-partition M02 tree. |
+| `system` | 977,055,744 B; `5b14e4f974ad926f531c1d15e5fc04bc69cef60d0e6c86e3738f53a14f57733b` | 959,201,280 B EROFS; `0492A0180763414FEC9FF350F69F16ADA19AB3433DD007415D5D6ABD823310D3` | **MADRID_DERIVED_MODIFIED** — exact tree delta is 2 added + 2 modified paths. Platform identity remains Madrid/missi (B). | Known-Good tree plus non-conflicting Official 4.0.19 file delta. |
+| `system_ext` | 817,618,944 B; `c08f9a9a8a9727b27ab88dcd8575299bb93079dd73780e93885ff6b74b295d72` | 850,153,472 B EROFS; `1469B7A33FAB356BFC20BAD27DD72A21908AA0711823E0EF067F914ADABB903A` | **HYBRID** — Madrid platform plus VNDK30 and thyme-port changes: 3 added, 6 removed, 4 modified. | Known-Good tree plus non-conflicting Official 4.0.19 file delta. |
+| `product` | 5,667,659,776 B; `40b4bbc6df9198508f37cb65622d85b32c928064eb54383cc736acdf15a71e5b` | 4,110,647,296 B EROFS; `E5793C9F7B15D2686DC9633B2A67B9E927F8F1F856C52F67736928C9260898A2` | **HYBRID** — Madrid product base reworked with thyme features/display/overlays and application/media removals: 27 added, 159 removed, 17 content-modified paths. | Keep Known-Good product tree; merge 4.0.19 release identity properties only. |
+| `vendor` | 1,512,136,704 B EROFS; `fc4b18c4f0c453f927a9d550d28f300eae7796d695883d6756949d3a98bf296b` | 2,044,887,040 B ext4; `AF7E4894D924147659FA0D7B9AB19D5ABF523914102679D29C17ECAC0DA43113` | **THYME_BASED** — device properties identify thyme/SM8250/kona; tree contains thyme HAL, VINTF, init, sepolicy and 4.19 modules. Official415→Known-Good tree comparison: 2,524 added / 3,394 removed / 1,416 modified (987 content/type; 429 metadata-only). (B/C) | Keep exactly; do not replace with Madrid vendor. |
+| `odm` | 5,976,264,704 B EROFS; `339d01a890c1b2e4febfbc9f300dded5b4aaaa0953ded2aa7f5b4c8f0391de1f` | 2,351,104 B ext4; `220135E09680838D3E2AB50672FF89E05870CC6A12D93692FC1CD06294E5AF1D` | **THYME_BASED** — `M2102J2SC` / Mi 10S identity; 4 added / 2,859 removed / 18 modified (10 content/type; 8 metadata-only). (B/C) | Keep exactly; never copy Madrid's multi-GB ODM. |
+| `mi_ext` | 173,858,816 B EROFS; `a5427b485f0b63e409c5b3b5e75aa52dd13742f46537d3249dc3ce18cf3506d0` | 174,723,072 B ext4; `8B0EB84FA2A91A9D20A5DD37A44D8199946A3CFDF499F06A6AAA702A0A4C5A46` | **HYBRID** — nearly all file contents match Madrid 4.0.15; thyme `ro.product.mod_device`, ext4 rebuild, and removal of Madrid `vendor/etc/cust_features/device_features.xml`. Of 180 reported modifications, 179 are metadata-only and are not treated as content changes. (B/C) | Keep Known-Good tree; merge 4.0.19 release keys while retaining `ro.product.mod_device=thyme`. |
+| `system_dlkm` | Official415 8,949,760 B; Official419 same declared bytes, different SHA. Official module sample vermagic: `6.18.21-android17-5-g1d099fcb35e0-abogki540753930-4k`. | Absent from Known-Good super and its six-partition fstab. | **UNKNOWN / absent from Known-Good**; Official Madrid source only. | Omit: modules target 6.18.21, while the proven kernel is 4.19.325; no Known-Good first-stage mount. |
+| `vendor_dlkm` | Official415 78,315,520 B; Official419 same declared bytes, different SHA. Official sample vermagic: `6.18.21-android17-5-gacf29465d193-mi-4k`. | Absent from Known-Good super and its six-partition fstab; Known-Good vendor contains `/lib/modules` for its 4.19 stack. | **UNKNOWN / absent from Known-Good**; Official Madrid source only. | Omit the Madrid module image. |
+| `mi_product` | 348,160 B payload; one-block EROFS contains only `ro.mi.version.mi_product=empty`; absent from fstab. | Absent. | **UNKNOWN** for thyme; it is an unused Official stub. | Omit, consistent with the proven Known-Good layout. |
+
+## Slot deployment evidence
+
+The community fastboot BAT addresses boot/firmware targets with `_ab` and flashes one unsuffixed `super`; the recovery updater writes explicit `_a` and `_b`. M01 wrote only slot A for the boot stack and super. Known-Good's super metadata has populated A extents and empty B extents, and that exact A-only layout booted on-device. M02 will retain this proven A-only layout; it will not write B. (B)
+
+## Tree-manifest limits
+
+All generated manifests report zero file read errors. For EROFS trees mounted with FUSE, most `security.selinux` reads returned `errno 61`; only the xattrs reported as readable are evidence. The Known-Good ext4 vendor/odm/mi_ext manifests expose labels successfully. Hash/path/type/mode/owner records remain useful, but a missing FUSE label is **unknown**, not a proven SELinux-context delta.
