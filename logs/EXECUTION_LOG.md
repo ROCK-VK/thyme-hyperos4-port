@@ -16780,3 +16780,4 @@
 - 尚未验证：电量 workaround 是否单独造成改善；集成 init 服务权限/SELinux；Magisk 模块安装后的 live boot 状态；IMS/通话效果。
 - 待处理：若下一阶段集成，构建 battery-only ROM service 并完成静态 gates；首启仍停在唯一人工确认点。
 - 替代：无。此前 `boot_noroot` 是 MADRID-M02 r3 构建事实；用户模块安装后的当前设备 boot 栈尚未复核。
+- 额外只读检查：`adb devices -l` 没有列出设备，无法读取模块日志或当前 live boot 状态。

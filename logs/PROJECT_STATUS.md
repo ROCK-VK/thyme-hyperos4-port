@@ -26,6 +26,7 @@
 - 待调查运行现象：`vendor.ir-hal-1-0` service restarting；当前没有证明其根因或用户可见影响，且未阻止 framework boot complete。
 - 生产 user build 拒绝普通 shell 读取 `/proc/cmdline`、`/proc/bootconfig` 和 netd process maps；没有尝试 adb root。
 - 后续用户报告：在 M02 OS4.0.19 安装评论区提供的 Magisk 模块并重启后，惯性滑动掉帧改善。模块审计见 [M03_SCROLL_FIX_MODULE_AUDIT.md](../reports/m03_scroll_fix_module_audit/M03_SCROLL_FIX_MODULE_AUDIT.md)。模块安装后的 live boot/root 状态未重新只读核验，不能默认仍与冻结 `boot_noroot` r3 完全一致。
+- 本次 `adb devices -l` 没有列出设备；未读取模块运行日志或当前 boot 状态。
 - 脱敏运行报告：[M02_FIRST_BOOT_RUNTIME_REPORT.md](../reports/m02_runtime/M02_FIRST_BOOT_RUNTIME_REPORT.md)。完整 raw runtime capture 仅在私有工作区。
 
 ## M02 构建与来源
