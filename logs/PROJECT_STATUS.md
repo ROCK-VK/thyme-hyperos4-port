@@ -14,6 +14,7 @@
 | M01-R1 / R2 | Known-Good 安全子集分别未启动成功；无可归属到当次启动的 pstore，最早失败阶段未知 |
 | M01-R3 | clean userdata/metadata 后 Known-Good Android framework 启动成功；ADB 持续在线 900 秒 |
 | MADRID-M02 r3 | 首次实机启动成功；ADB `device`、`sys.boot_completed=1`，用户确认设备稳定 |
+| M03 Port Provenance Audit | 静态审计完成；报告待用户审阅；设备保持 MADRID-M02 r3 运行 |
 
 ## MADRID-M02 r3 当前设备状态
 
@@ -33,6 +34,13 @@
 - 首次 OS4.0.19 base 前清理过 userdata 与 metadata。未刷 Madrid firmware、DLKM、B 槽或保护分区。
 - 当前 Candidate 及构建报告：[M02 adaptation delta](../reports/m02_adaptation_delta/M02_ADAPTATION_DELTA_REPORT.md)、[build report](../reports/m02_adaptation_delta/M02_CANDIDATE_BUILD_REPORT.md)、[staging report](../reports/m02_adaptation_delta/MADRID_M02_STAGING_REPORT.md)。
 
+## M03 Port Provenance Audit
+
+- 报告：[M03_PORT_PROVENANCE_AND_METHOD_REPORT.md](../reports/m03_port_provenance/M03_PORT_PROVENANCE_AND_METHOD_REPORT.md)；[Component Provenance Matrix](../reports/m03_port_provenance/PORT_PROVENANCE_MATRIX.md)。
+- 结论：Known-Good package adaptation stack 已由 M01-R3 真机验证。M02 保留 Known-Good boot/kernel 与 thyme vendor/odm hardware layer，将官方 4.0.19 的 219 个 system、60 个 system_ext 变更及两处 build.prop 合并重基，重建 EROFS/super/LP；vbmeta 继承自 Known-Good。
+- 百分比仅是六个 dynamic filesystem regular-file 的 bytes/files 构成估算，不代表工程工作量。Kernel 来源、精确 stock vendor/odm ancestry、SELinux Permissive 来源及个人作者归属未证实。
+- 本轮只读分析，设备没有重启或修改；M02 仍运行。等待用户审阅报告后再决定下一阶段。
+
 ## Known-Good 与 Legacy 边界
 
 - M01-R3 已实机确认 Known-Good OS4.0.15 thyme stack、4.19.325-cxk kernel、Tethering APEX、netd/INetd、BPF runtime 可启动；未刷 success firmware。R1/R2 空 pstore 不代表 kernel 未执行。
@@ -41,6 +49,6 @@
 
 ## 下一步与安全边界
 
-- 下一步审阅已采集的 M02 runtime，并以只读方式分析 `vendor.ir-hal-1-0` restarting 现象；只补充会影响 M02 决策的有限数据。
+- M03 provenance audit 已完成，等待用户审阅后确定下一任务。vendor.ir-hal-1-0 restarting 仍未解释，但不属于本轮范围。
 - 保持当前 Android 运行。任何新正式启动实验都必须等候该轮唯一启动确认；本轮没有新的启动计划。
 - 不 relock；不写 `persist`、`modemst*`、`fsg/EFS`、NV、RF calibration、identity 或 FRP。不公开 ROM、镜像、专有二进制、raw device logs 或设备标识。

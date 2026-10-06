@@ -16761,3 +16761,12 @@
 - 验证：ADB runtime capture 确认 framework boot complete、实际 OS4.0.19 fingerprint、Known-Good kernel、APEX/netd/Tethering/BPF 状态。验证级别为一次实机 framework boot，不是长时稳定性或完整硬件认证。用户另确认设备稳定。
 - 待处理：设备保持运行；后续只读 review `vendor.ir-hal-1-0` restarting，并决定需要的有限功能检查。不得自动 reboot 或扩大刷写。
 - 替代：更新并替代 2026-10-05 staging 记录中的“等待首启授权、运行状态未验证”；M01 Known-Good 与 R1/R2 失败历史仍有效。
+
+## 2026-10-06｜M03 Madrid→Thyme provenance audit 完成
+
+- 状态：静态来源审计与脱敏报告完成；设备没有重启、刷写、Root、remount 或文件修改。
+- 结论：社区 Known-Good OS4.0.15→thyme 适配栈已由 M01-R3 真机启动验证。本项目的 M02 是在该基线上应用 Official Madrid 4.0.19 的 219 个 system、60 个 system_ext 路径变化及两处 build.prop 更新，重建 EROFS 与 A-only super/LP；AVB 镜像继承并验证，没有重新生成。
+- 证据边界：成功包携带 custom 4.19.325-cxk kernel，但原始 source/compiler/author 未证实；thyme vendor/odm 属于设备硬件 lineage，但没有证明每个文件来自某一精确 OS1 build；M02 运行时 Permissive 的来源未知。
+- 比例口径：仅统计六个动态分区中的 regular-file bytes/files，排除 boot/AVB/dtbo/firmware、容器开销和删除文件；不等于个人工作量。报告列明 byte、file 和 engineering-criticality 三种口径。
+- 公开文件：README、PROJECT_STATUS、EXECUTION_LOG、reports 索引，以及 M03 报告和矩阵。未公开 ROM、镜像、raw device logs、设备序列号或本机绝对路径。
+- 下一步：等待报告审核；MADRID-M02 保持运行。

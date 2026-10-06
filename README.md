@@ -56,6 +56,15 @@ Candidate 离线构建和静态 gates 已通过：12-image inventory/hash 对齐
 
 公开报告只含脱敏文字、工具和镜像 hash/size 元数据；ROM、镜像、专有二进制、raw device logs 与设备标识留在私有工作区。当前 M02 已通过首次 framework boot complete；保持设备运行，不自动重启或扩大刷写。
 
+## M03 Madrid→Thyme provenance audit（2026-10-06）— 已完成
+
+本轮只做静态来源归属审计；设备保持运行，没有重启、刷写、Root、remount 或功能修复。结论是：社区 Known-Good 包所携带的 Madrid OS4.0.15→thyme 适配栈已经在 M01-R3 实机启动验证。本项目没有从零重做 Android 17 硬件 bring-up，而是在此基线上将 Official Madrid 4.0.19 的 219 个 system、60 个 system_ext 路径变化及两处 build.prop 版本合并重基，重建 EROFS 与 A-only super/LP，并由 M02 首次启动达到 sys.boot_completed=1 验证。
+
+- [M03 provenance and method report](reports/m03_port_provenance/M03_PORT_PROVENANCE_AND_METHOD_REPORT.md) 包含修正后的架构图、Component Provenance、Original Porter Contribution、Our Contribution 三张表、百分比口径和剩余未知项。
+- [Component provenance matrix](reports/m03_port_provenance/PORT_PROVENANCE_MATRIX.md) 单列各分区来源。
+- 文件字节和文件数比例是动态分区内容构成估算，不是工程工作量。Kernel build provenance、特定 OS1 vendor/odm 文件来源、SELinux Permissive 来源和原移植者个人作者归属仍未证实。
+- 设备仍运行 MADRID-M02；IR HAL restart 现象未在本轮分析或修复。
+
 ## M00 Madrid Intake（2026-10-05）— 已完成静态审计
 
 
