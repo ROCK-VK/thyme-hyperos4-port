@@ -25,6 +25,7 @@
 - 用户确认开机成功且设备稳定，并要求停止 10 分钟观察。停止前约 121 秒的末次只读轮询为 ADB online、Fastboot absent、`sys.boot_completed=1`；没有第二次 reboot。未取得屏幕录像，具体物理 UI 阶段不细分。
 - 待调查运行现象：`vendor.ir-hal-1-0` service restarting；当前没有证明其根因或用户可见影响，且未阻止 framework boot complete。
 - 生产 user build 拒绝普通 shell 读取 `/proc/cmdline`、`/proc/bootconfig` 和 netd process maps；没有尝试 adb root。
+- 后续用户报告：在 M02 OS4.0.19 安装评论区提供的 Magisk 模块并重启后，惯性滑动掉帧改善。模块审计见 [M03_SCROLL_FIX_MODULE_AUDIT.md](../reports/m03_scroll_fix_module_audit/M03_SCROLL_FIX_MODULE_AUDIT.md)。模块安装后的 live boot/root 状态未重新只读核验，不能默认仍与冻结 `boot_noroot` r3 完全一致。
 - 脱敏运行报告：[M02_FIRST_BOOT_RUNTIME_REPORT.md](../reports/m02_runtime/M02_FIRST_BOOT_RUNTIME_REPORT.md)。完整 raw runtime capture 仅在私有工作区。
 
 ## M02 构建与来源
@@ -41,6 +42,12 @@
 - 百分比仅是六个 dynamic filesystem regular-file 的 bytes/files 构成估算，不代表工程工作量。Kernel 来源、精确 stock vendor/odm ancestry、SELinux Permissive 来源及个人作者归属未证实。
 - 本轮只读分析，设备没有重启或修改；M02 仍运行。等待用户审阅报告后再决定下一阶段。
 
+## 滑动掉帧模块审计
+
+- 用户报告完整 Magisk 模块在 M02 OS4.0.19 重启后改善惯性滑动。Battery workaround 短暂模拟 AC/充电/100% 状态并睡眠/唤醒屏幕，再 reset；没有直接调 governor、GPU、刷新率或触控 sysfs。
+- 下一步建议若集成，只带 battery-only 的 ROM init 一次性服务；模块里的 OS3/A16 IMS APK、6 个库及首次 `pm clear` 不与滑动 workaround 混合。
+- 这是用户现场观察，无模块日志或单变量对照。集成权限、SELinux 和 battery reset 仍待实机验证；本次没有构建或刷写。
+
 ## Known-Good 与 Legacy 边界
 
 - M01-R3 已实机确认 Known-Good OS4.0.15 thyme stack、4.19.325-cxk kernel、Tethering APEX、netd/INetd、BPF runtime 可启动；未刷 success firmware。R1/R2 空 pstore 不代表 kernel 未执行。
@@ -50,5 +57,5 @@
 ## 下一步与安全边界
 
 - M03 provenance audit 已完成，等待用户审阅后确定下一任务。vendor.ir-hal-1-0 restarting 仍未解释，但不属于本轮范围。
-- 保持当前 Android 运行。任何新正式启动实验都必须等候该轮唯一启动确认；本轮没有新的启动计划。
+- 保持当前 Android 运行。任何新正式启动实验都必须等候该轮唯一启动确认；模块安装后的确切 boot/root 状态尚未核验。
 - 不 relock；不写 `persist`、`modemst*`、`fsg/EFS`、NV、RF calibration、identity 或 FRP。不公开 ROM、镜像、专有二进制、raw device logs 或设备标识。

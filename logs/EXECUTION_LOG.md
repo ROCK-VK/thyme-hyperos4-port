@@ -16770,3 +16770,13 @@
 - 比例口径：仅统计六个动态分区中的 regular-file bytes/files，排除 boot/AVB/dtbo/firmware、容器开销和删除文件；不等于个人工作量。报告列明 byte、file 和 engineering-criticality 三种口径。
 - 公开文件：README、PROJECT_STATUS、EXECUTION_LOG、reports 索引，以及 M03 报告和矩阵。未公开 ROM、镜像、raw device logs、设备序列号或本机绝对路径。
 - 下一步：等待报告审核；MADRID-M02 保持运行。
+
+## 2026-10-06 18:06 HKT｜MADRID-M02 滑动掉帧模块静态审计
+
+- 状态：静态分析完成；未构建、刷写、安装或操作设备。
+- 改动/结论：用户确认测试对象为 MADRID-M02 OS4.0.19，安装完整模块并重启后观察到惯性滑动改善。审计确认模块为 Magisk 格式；滑动脚本短暂设置 BatteryService 模拟 AC/充电/100%，执行屏幕睡眠/唤醒后 reset，没有 governor/devfreq/刷新率/触控调节。因为 IMS overlay 同时安装且没有单变量量测，底层原因仍未确定。建议只考虑 battery-only init hook，排除旧版 IMS APK、6 个库和 `pm clear`。
+- 涉及文件：`reports/m03_scroll_fix_module_audit/M03_SCROLL_FIX_MODULE_AUDIT.md`；`logs/PROJECT_STATUS.md`；`reports/README.md`。
+- 验证：只读检查模块脚本/manifest/hash；M02 tree manifest 显示模块 IMS APK 不同于 Madrid OS4.0.19 APK。AOSP BatteryService 描述 `set` 冻结模拟值、`reset` 恢复硬件状态。未做 ROM 集成验证。
+- 尚未验证：电量 workaround 是否单独造成改善；集成 init 服务权限/SELinux；Magisk 模块安装后的 live boot 状态；IMS/通话效果。
+- 待处理：若下一阶段集成，构建 battery-only ROM service 并完成静态 gates；首启仍停在唯一人工确认点。
+- 替代：无。此前 `boot_noroot` 是 MADRID-M02 r3 构建事实；用户模块安装后的当前设备 boot 栈尚未复核。

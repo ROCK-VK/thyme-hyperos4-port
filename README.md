@@ -64,6 +64,7 @@ Candidate 离线构建和静态 gates 已通过：12-image inventory/hash 对齐
 - [Component provenance matrix](reports/m03_port_provenance/PORT_PROVENANCE_MATRIX.md) 单列各分区来源。
 - 文件字节和文件数比例是动态分区内容构成估算，不是工程工作量。Kernel build provenance、特定 OS1 vendor/odm 文件来源、SELinux Permissive 来源和原移植者个人作者归属仍未证实。
 - 设备仍运行 MADRID-M02；IR HAL restart 现象未在本轮分析或修复。
+- [滑动掉帧模块审计](reports/m03_scroll_fix_module_audit/M03_SCROLL_FIX_MODULE_AUDIT.md)：用户报告完整 Magisk 模块在 M02 OS4.0.19 重启后改善惯性滑动；审计建议只评估 battery-only init workaround，排除旧 IMS overlay，且当前 live boot 状态尚待核验。
 
 ## M00 Madrid Intake（2026-10-05）— 已完成静态审计
 
