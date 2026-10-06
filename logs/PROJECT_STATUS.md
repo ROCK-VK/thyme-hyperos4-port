@@ -16,9 +16,9 @@
 | MADRID-M02 r3 | 首次实机启动成功；ADB `device`、`sys.boot_completed=1`，用户确认设备稳定 |
 | M03 Port Provenance Audit | 静态审计完成；报告待用户审阅；设备保持 MADRID-M02 r3 运行 |
 
-## MADRID-M02 r3 当前设备状态
+## MADRID-M02 r3 最近确认状态
 
-- 设备正在运行 MADRID-M02 r3；不要自动重启、切 Fastboot、进 Standalone、rollback 或刷写。
+- 最近独立采集的 MADRID-M02 OS4.0.19 boot 已达到 `sys.boot_completed=1`。之后用户安装了 Magisk 模块并重启；当前 live boot/root/module overlay 未能独立核验，因为主机 `adb devices -l` 无设备。不要为了静态分析自动重启、切 Fastboot、进 Standalone、rollback 或刷写。
 - 首启前 Fastboot gates 通过，六个部署镜像 SHA256 与冻结 manifest 一致；仅执行过一次正式 `fastboot reboot`。
 - ADB 于启动后 T+207.2 秒上线。运行 fingerprint 为 `Xiaomi/thyme/thyme:17/CP2A.260605.016/OS4.0.19.0.XEOCNXM:user/release-keys`；实际 kernel 为 `4.19.325-cxk-lxsclnb-g33d88af64048`，与 Known-Good boot stack 一致。
 - `com.android.tethering` APEX 已挂载；netd、INetd 与 Tethering service 可见；netd updatable init 成功；Tethering 报告 BPF enabled，主要 maps 状态为 OK。真实 hotspot/上游转发流量尚未测试。
@@ -45,9 +45,10 @@
 
 ## 滑动掉帧模块审计
 
-- 用户报告完整 Magisk 模块在 M02 OS4.0.19 重启后改善惯性滑动。Battery workaround 短暂模拟 AC/充电/100% 状态并睡眠/唤醒屏幕，再 reset；没有直接调 governor、GPU、刷新率或触控 sysfs。
-- 下一步建议若集成，只带 battery-only 的 ROM init 一次性服务；模块里的 OS3/A16 IMS APK、6 个库及首次 `pm clear` 不与滑动 workaround 混合。
-- 这是用户现场观察，无模块日志或单变量对照。集成权限、SELinux 和 battery reset 仍待实机验证；本次没有构建或刷写。
+- 用户报告完整 Magisk 模块在 M02 OS4.0.19 重启后改善惯性滑动。脚本短暂伪造 AC/充电/100% BatteryService 状态，睡眠/唤醒屏幕，再恢复硬件状态；不要求真实电池充满，也没有直接调 governor、GPU、刷新率或触控 sysfs。该动作属于状态重触发 workaround。
+- 新静态候选：官方 Madrid OS4.0.15/4.0.19 PowerKeeper APK 哈希相同；Known-Good 与 M02 r3 PowerKeeper 哈希相同。对比发现唯一不同方法 `DisplayFrameSetting.setScreenEffect(String,int,int)` 在移植版是空实现，官方版本保留 FPS/DisplayFeature 策略逻辑。此为强静态线索，尚未证明是用户所见掉帧的根因。
+- 本地已准备可撤销 Magisk 测试包：恢复官方 OS4.0.19 PowerKeeper、停用假电量与睡眠/唤醒 workaround、保留原 IMS overlay，并以只读脚本记录状态。ZIP SHA256 `049d327613f6de065360920b8f2398c13f076b49a4987f5276eb91b85c7300fa`；未公开二进制包，未安装或重启。
+- 已有 runtime capture 的启动期 60→90Hz 转换和 SetupWizard jank 不等同于日常惯性滑动场景。用户报告没有模块运行日志或单变量对照；当前 live boot/root 状态仍未复核。
 
 ## Known-Good 与 Legacy 边界
 
@@ -57,6 +58,6 @@
 
 ## 下一步与安全边界
 
-- M03 provenance audit 已完成，等待用户审阅后确定下一任务。vendor.ir-hal-1-0 restarting 仍未解释，但不属于本轮范围。
-- 保持当前 Android 运行。任何新正式启动实验都必须等候该轮唯一启动确认；模块安装后的确切 boot/root 状态尚未核验。
+- M03 provenance audit 已完成。滑动问题下一步是用本地 PowerKeeper 测试包做一次受控启动；结果前不把 battery workaround 集成为 ROM 服务。主机当前未发现 ADB 设备，live boot/root/module 状态尚未核验。
+- 保持当前 Android 运行。任何新正式启动实验都必须等候该轮唯一启动确认。vendor.ir-hal-1-0 restarting 仍未解释，属于独立运行现象。
 - 不 relock；不写 `persist`、`modemst*`、`fsg/EFS`、NV、RF calibration、identity 或 FRP。不公开 ROM、镜像、专有二进制、raw device logs 或设备标识。

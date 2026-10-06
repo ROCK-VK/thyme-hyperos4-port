@@ -16781,3 +16781,12 @@
 - 待处理：若下一阶段集成，构建 battery-only ROM service 并完成静态 gates；首启仍停在唯一人工确认点。
 - 替代：无。此前 `boot_noroot` 是 MADRID-M02 r3 构建事实；用户模块安装后的当前设备 boot 栈尚未复核。
 - 额外只读检查：`adb devices -l` 没有列出设备，无法读取模块日志或当前 live boot 状态。
+
+## 2026-10-06 18:45 HKT｜PowerKeeper 帧率方法根因候选
+
+- 状态：静态调查和私有单变量测试包完成；未安装、修改或重启设备。
+- 结论：Madrid 官方 OS4.0.15/4.0.19 PowerKeeper APK 完全相同；Known-Good/M02 APK 也完全相同。APK 条目只在 `classes.dex` 不同；符号化 DEX 方法指令比较发现 `DisplayFrameSetting.setScreenEffect(String,int,int)` 在 Known-Good/M02 仅执行 `return-void`，官方实现保留完整 FPS/DisplayFeature 策略逻辑。这是强静态根因候选，不是实机根因闭环。
+- 证据边界：用户确认完整模块重启后改善，但模块把 BatteryService 状态模拟和睡眠/唤醒一起执行。旧 M02 日志中的启动期 60→90Hz 转换与 SetupWizard jank 不是日常惯性滑动现场。当前 ADB 不可见，没有模块执行日志或单变量真机数据。
+- 下一步：对照测试包恢复 exact 官方 4.0.19 PowerKeeper，去掉电池与屏幕状态 workaround，保留原 IMS overlay；包只读记录状态。安装和启动前按唯一启动确认点操作。
+- 安全：只公开脱敏报告和 hash 元数据；私有测试包、APK、IMS 二进制、ROM 与 raw logs 未上传。
+- 替代：更新并替代本日 18:06 的 battery-only init-workaround 集成建议；旧结论作为当时分析记录保留。

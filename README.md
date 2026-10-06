@@ -63,8 +63,9 @@ Candidate 离线构建和静态 gates 已通过：12-image inventory/hash 对齐
 - [M03 provenance and method report](reports/m03_port_provenance/M03_PORT_PROVENANCE_AND_METHOD_REPORT.md) 包含修正后的架构图、Component Provenance、Original Porter Contribution、Our Contribution 三张表、百分比口径和剩余未知项。
 - [Component provenance matrix](reports/m03_port_provenance/PORT_PROVENANCE_MATRIX.md) 单列各分区来源。
 - 文件字节和文件数比例是动态分区内容构成估算，不是工程工作量。Kernel build provenance、特定 OS1 vendor/odm 文件来源、SELinux Permissive 来源和原移植者个人作者归属仍未证实。
-- 设备仍运行 MADRID-M02；IR HAL restart 现象未在本轮分析或修复。
-- [滑动掉帧模块审计](reports/m03_scroll_fix_module_audit/M03_SCROLL_FIX_MODULE_AUDIT.md)：用户报告完整 Magisk 模块在 M02 OS4.0.19 重启后改善惯性滑动；审计建议只评估 battery-only init workaround，排除旧 IMS overlay，且当前 live boot 状态尚待核验。
+- 用户最后报告设备在安装模块后仍成功启动且稳定；主机暂时无法读取当前 live boot/root 状态。IR HAL restart 现象未在本轮分析或修复。
+- [滑动掉帧模块审计](reports/m03_scroll_fix_module_audit/M03_SCROLL_FIX_MODULE_AUDIT.md)：用户报告完整 Magisk 模块在 M02 OS4.0.19 重启后改善惯性滑动；模块动作是临时电池状态与屏幕状态重触发。
+- [滑动掉帧根因调查](reports/m03_scroll_fix_module_audit/M03_SCROLL_ROOT_CAUSE_INVESTIGATION.md)：发现 Known-Good/M02 的 PowerKeeper 将 FPS 策略方法改为空实现；这是待真机验证的强候选。已准备私有、可撤销单变量测试包，未公开 APK/模块包，也未安装或重启设备。
 
 ## M00 Madrid Intake（2026-10-05）— 已完成静态审计
 

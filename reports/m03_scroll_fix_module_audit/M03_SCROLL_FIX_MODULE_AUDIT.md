@@ -9,6 +9,8 @@
 
 本审计建议：若纳入新包，只移植电量状态恢复序列；不要将通信修复部分一并搬入。ROM 内集成应改为 init 触发的一次性服务，不能原样复制 Magisk 的 `service.sh` 期待它自行运行。命令权限、SELinux 域和屏幕键事件仍须在集成候选上验证。
 
+**后续状态（2026-10-06）：**这是一项初步 workaround 集成建议，现已由 [M03_SCROLL_ROOT_CAUSE_INVESTIGATION.md](M03_SCROLL_ROOT_CAUSE_INVESTIGATION.md) 中发现的 PowerKeeper 帧率方法空实现候选取代。当前先验证该代码差异；在单变量真机测试完成前，不把 battery-only workaround 作为 ROM 主线修复。
+
 ## 包与脚本证据
 
 - 用户提供包：`MI10s-4.0.15.0针对修复-v1.0.zip`，SHA256 `0f175d1db8467c949eb46673b210ea6ca662982adc340c8852155d3c5897cc12`。
