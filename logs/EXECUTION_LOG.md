@@ -16790,3 +16790,13 @@
 - 下一步：对照测试包恢复 exact 官方 4.0.19 PowerKeeper，去掉电池与屏幕状态 workaround，保留原 IMS overlay；包只读记录状态。安装和启动前按唯一启动确认点操作。
 - 安全：只公开脱敏报告和 hash 元数据；私有测试包、APK、IMS 二进制、ROM 与 raw logs 未上传。
 - 替代：更新并替代本日 18:06 的 battery-only init-workaround 集成建议；旧结论作为当时分析记录保留。
+
+## 2026-10-06 18:55 HKT｜PowerKeeper 复验改为匹配 P0/P1
+
+- 状态：测试设计已修订并完成静态门禁；尚未安装或重启设备。
+- 改动/结论：原先单包同时移除状态 workaround 并换入官方 PowerKeeper，存在两个变化，不能单独归因。现在 P0 保留 M02 PowerKeeper、停用 workaround；P1 使用相同 service/IMS 内容，只新增官方 OS4.0.19 PowerKeeper APK。两包除版本说明和该 APK 外内容相同。
+- 涉及公开文件：README、PROJECT_STATUS、EXECUTION_LOG、reports 索引及 M03 根因调查报告。测试 ZIP 与二进制不公开。
+- 验证：P0 SHA256 `72df859431b47f04ed5f488b70f07ac18a8d2b9aa892f08ac65ccd7ac3a5c114`；P1 SHA256 `720449201315cddf7b82b4c5199b4b53eb0631e8c64c4e8f54d71104dcee7713`。ZIP、服务脚本语法、APK hash 和 P0/P1 文件匹配检查通过。
+- 尚未验证：P0 是否重现惯性滑动掉帧；若重现，官方 PowerKeeper 是否改善；主机当前 ADB 无设备可见。
+- 待处理：连接设备后执行 P0 受控测试；只有 P0 重现才继续 P1。每次正式启动均遵守唯一确认点。
+- 替代：明确取代 18:45 所述单包测试设计；静态 PowerKeeper 候选本身仍是待实机验证假设。

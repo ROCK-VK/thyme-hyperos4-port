@@ -2,7 +2,7 @@
 
 日期：2026-10-06 HKT
 
-范围：静态检查模块、对比 Known-Good/M02 与官方 PowerKeeper、核对已有 M02 运行记录，并准备可撤销的单变量代码候选。未安装模块、未修改设备、未重启或刷写。
+范围：静态检查模块、对比 Known-Good/M02 与官方 PowerKeeper、核对已有 M02 运行记录，并准备可撤销的匹配对照包。未安装模块、未修改设备、未重启或刷写。
 
 ## 当前结论
 
@@ -46,20 +46,21 @@
 
 ## 下一步最小复验
 
-已在本机准备仅供诊断的 Magisk 更新 ZIP：
+已在本机准备成对的 Magisk 更新 ZIP。两包使用相同模块 ID、相同 IMS overlays 和逐字节相同的只读 `service.sh`；基线包不覆盖 PowerKeeper，候选包只新增官方 PowerKeeper overlay。
 
-- 文件：`work/scroll_source_audit/MI10s-PowerKeeper-Source-Test-v1.zip`
-- SHA256：`049d327613f6de065360920b8f2398c13f076b49a4987f5276eb91b85c7300fa`
+- **P0 基线包：**`work/scroll_source_audit/MI10s-PowerKeeper-Baseline-No-Workaround-v1.zip`；SHA256 `72df859431b47f04ed5f488b70f07ac18a8d2b9aa892f08ac65ccd7ac3a5c114`。它停用电量/屏幕 workaround，但不覆盖 M02 当前 Known-Good PowerKeeper（预期 hash `d900a0767b3008a7356c83a812fbbcbef029e77b7b16084efbfdb4aeddcd1f59`）。模块 versionCode=101。
+- **P1 官方代码包：**`work/scroll_source_audit/MI10s-PowerKeeper-Official-No-Workaround-v1.zip`；SHA256 `720449201315cddf7b82b4c5199b4b53eb0631e8c64c4e8f54d71104dcee7713`。它在 P0 完全相同的脚本/IMS 条件下，仅增加精确官方 Madrid OS4.0.19 PowerKeeper APK（hash `4847e9aaabee508e6ac8dd848d521900e4483d0a302ffa4cf66446aae3baa5ab`）。模块 versionCode=102。
 - 构建器：`tools/build_scroll_source_test_module.ps1`
 
-测试 ZIP 沿用原模块 ID，保留原有 IMS APK/库 overlay 不变；把 PowerKeeper 替换为哈希固定的官方 Madrid OS4.0.19 APK，并以只读日志脚本替代原滑动 workaround。新脚本只记录 boot 完成后的电池读数、刷新率设置、PowerKeeper 路径/hash 和 display mode，不伪造电量、不睡眠/唤醒屏幕、不清 IMS 数据。ZIP 条目校验确认原模块其他文件保持不变；shell 语法检查及 ZIP 完整性检查通过。
+P0/P1 的展开内容校验确认：除 `module.prop`/安装提示文字和 P1 新增的 PowerKeeper APK 外，其余模块文件相同；两包 IMS overlay 完全相同，`service.sh` SHA256 均为 `03b0e72cb363fb9f004ddfbe895229851758fa9aa939bd23c70b0bcaf13dbc8d`。脚本只记录 boot 完成后的电池读数、刷新率设置、PowerKeeper 路径/hash 和 display mode，不伪造电量、不睡眠/唤醒屏幕、不清 IMS 数据。两包 ZIP 完整性、APK 来源 hash 和 `sh -n` 检查通过。
 
-该 ZIP 尚未安装。设备 ADB 未连接，当前 root/Magisk live 状态没有被重新检查。安装后应只进行一次观察启动，并由用户在同样的惯性滑动场景检查现象，同时采集 `root_cause_test.log` 和有限的 display/PowerKeeper 日志。启动仍需遵守项目的唯一首启确认点。
+两包仅在私有本地工作区准备，未纳入公开仓库；也都尚未安装。设备 ADB 未连接，当前 root/Magisk live 状态没有被重新检查。复验顺序：先安装 P0，等用户通过本轮唯一确认点后启动一次；确认 `root_cause_test.log` 中 PowerKeeper hash 为 M02 版，并在同一界面手动检查惯性滑动。只有 P0 确实重现掉帧，才安装 P1 并申请下一次启动确认；再用相同场景复测。若 P0 不复现，停止比较，不把 P1 的结果宣称为根因证明。
 
 ### 结果解释
 
-- 若去掉电量/屏幕状态触发后，官方 PowerKeeper 候选仍能稳定消除卡顿，则“移植版 PowerKeeper 空方法”得到强实机支持；下一步再把单方法恢复方案做成正式 M02 修订并完成完整镜像门禁。
-- 若卡顿仍在，先不把 PowerKeeper 定为根因；随后分开测试 battery state transition 与 sleep/wake，最后再检查 thyme display/power/touch 配置和内核输入/调度路径。
+- 若 P0 可重现而 P1 在同条件下改善，则“移植版 PowerKeeper 空方法”得到强实机支持；下一步再把该 APK/方法恢复方案做成正式 M02 修订并完成完整镜像门禁。
+- 若 P0 可重现而 P1 无改善，降级 PowerKeeper 假说；随后分开测试 battery state transition 与 sleep/wake，再检查 thyme display/power/touch 配置和内核输入/调度路径。
+- 若 P0 不重现，停止测试，保持根因未定；既往的完整模块改善反馈不能代替匹配对照。
 - 若结果不稳定或条件变化，结论保持未定，不重复做无控制重启。
 
 ## 尚未确认

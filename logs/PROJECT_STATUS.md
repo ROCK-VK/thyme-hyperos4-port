@@ -47,7 +47,7 @@
 
 - 用户报告完整 Magisk 模块在 M02 OS4.0.19 重启后改善惯性滑动。脚本短暂伪造 AC/充电/100% BatteryService 状态，睡眠/唤醒屏幕，再恢复硬件状态；不要求真实电池充满，也没有直接调 governor、GPU、刷新率或触控 sysfs。该动作属于状态重触发 workaround。
 - 新静态候选：官方 Madrid OS4.0.15/4.0.19 PowerKeeper APK 哈希相同；Known-Good 与 M02 r3 PowerKeeper 哈希相同。对比发现唯一不同方法 `DisplayFrameSetting.setScreenEffect(String,int,int)` 在移植版是空实现，官方版本保留 FPS/DisplayFeature 策略逻辑。此为强静态线索，尚未证明是用户所见掉帧的根因。
-- 本地已准备可撤销 Magisk 测试包：恢复官方 OS4.0.19 PowerKeeper、停用假电量与睡眠/唤醒 workaround、保留原 IMS overlay，并以只读脚本记录状态。ZIP SHA256 `049d327613f6de065360920b8f2398c13f076b49a4987f5276eb91b85c7300fa`；未公开二进制包，未安装或重启。
+- 已准备私有 P0/P1 可撤销 Magisk 匹配测试包：P0 保留 M02 PowerKeeper，只停用假电量与睡眠/唤醒 workaround；P1 在相同只读 service 和 IMS overlays 下仅新增官方 OS4.0.19 PowerKeeper。P0 SHA256 `72df859431b47f04ed5f488b70f07ac18a8d2b9aa892f08ac65ccd7ac3a5c114`；P1 SHA256 `720449201315cddf7b82b4c5199b4b53eb0631e8c64c4e8f54d71104dcee7713`。二进制包仅在本地，不公开；尚未安装或重启。
 - 已有 runtime capture 的启动期 60→90Hz 转换和 SetupWizard jank 不等同于日常惯性滑动场景。用户报告没有模块运行日志或单变量对照；当前 live boot/root 状态仍未复核。
 
 ## Known-Good 与 Legacy 边界
@@ -58,6 +58,6 @@
 
 ## 下一步与安全边界
 
-- M03 provenance audit 已完成。滑动问题下一步是用本地 PowerKeeper 测试包做一次受控启动；结果前不把 battery workaround 集成为 ROM 服务。主机当前未发现 ADB 设备，live boot/root/module 状态尚未核验。
+- M03 provenance audit 已完成。滑动问题先用 P0 确认停用 workaround 后能否重现；只有复现才用匹配 P1 验证官方 PowerKeeper。尚无实机根因结论，也不把 battery workaround 集成为 ROM 服务。主机当前未发现 ADB 设备，live boot/root/module 状态尚未核验。
 - 保持当前 Android 运行。任何新正式启动实验都必须等候该轮唯一启动确认。vendor.ir-hal-1-0 restarting 仍未解释，属于独立运行现象。
 - 不 relock；不写 `persist`、`modemst*`、`fsg/EFS`、NV、RF calibration、identity 或 FRP。不公开 ROM、镜像、专有二进制、raw device logs 或设备标识。
